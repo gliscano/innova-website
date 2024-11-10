@@ -13,20 +13,20 @@ export default function Home() {
           priority
         />
         <ul className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
+          <li className="mb-1">
           🌟 Una nueva experiencia en el diseño y producción de insumos para fotógrafos y estudios creativos.
           </li>
-          <li>
+          <li className="mb-1">
           📸 Fondos fotográficos personalizados con piso.
           </li>
-          <li>
+          <li className="mb-1">
           🧺 Hermosos Props para recrear una experiencia innova
           </li>
         </ul>
 
         <div className="flex gap-4 items-center flex-col sm:flex-row">
           <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
+            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 mr-1"
             href="https://store.innova54.com/"
             target="_blank"
             rel="noopener noreferrer"
@@ -41,7 +41,7 @@ export default function Home() {
             Ir a la tienda
           </a>
           <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
+            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44 mr-1"
             href="https://wa.me/5491171142152"
             target="_blank"
             rel="noopener noreferrer"
@@ -54,6 +54,51 @@ export default function Home() {
               height={16}
             />
             Escribir a Whatsapp
+          </a>
+          <a
+            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44 mr-1"
+            href="https://docs.google.com/document/d/1lq788LEECGVgyHmRGsVBA7gkaJtXlwXzlD5Gr83ytws"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Image
+              aria-hidden
+              src="/gallery-icon.svg"
+              alt="design catalogue icon"
+              width={16}
+              height={16}
+            />
+            Catálogo de diseños
+          </a>
+          <a
+            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44 mr-1"
+            href="https://docs.google.com/document/d/1lq788LEECGVgyHmRGsVBA7gkaJtXlwXzlD5Gr83ytws"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Image
+              aria-hidden
+              src="/list-icon.svg"
+              alt="price list icon"
+              width={16}
+              height={16}
+            />
+            Lista de medidas y precios
+          </a>
+          <a
+            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44 mr-1"
+            href="https://docs.google.com/document/d/1lq788LEECGVgyHmRGsVBA7gkaJtXlwXzlD5Gr83ytws"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Image
+              aria-hidden
+              src="/list-icon.svg"
+              alt="price list icon"
+              width={16}
+              height={16}
+            />
+            Fondos a medidas
           </a>
         </div>
       </main>
