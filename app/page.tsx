@@ -58,7 +58,7 @@ export default function Home() {
           </a>
           <a
             className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://drive.google.com/drive/folders/1oTeKafCnPBfAM8RvCCma2zHHMDuXf63Y"
+            href="https://innova54store.empretienda.com.ar/catalogo-de-fondos"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -122,6 +122,33 @@ export default function Home() {
           />
           @innova54.store
         </a>
+        <a
+          className="flex items-center gap-4 hover:underline hover:underline-offset-4"
+          href="https://www.facebook.com/innova54.store"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Image
+            aria-hidden
+            src="/facebook-icon.svg"
+            alt="facebook icon"
+            width={16}
+            height={16}
+          />
+          @innova54.store
+        </a>
+        <div
+          className="flex items-center gap-4"
+        >
+          <Image
+            aria-hidden
+            src="/code-icon.svg"
+            alt="code devs icon"
+            width={16}
+            height={16}
+          />
+          By Innova Tech - 2024
+        </div>
       </footer>
     </div>
   );
