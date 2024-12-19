@@ -1,22 +1,12 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
-import "./globals.css";
+import './globals.css'
+import { Inter } from 'next/font/google'
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+const inter = Inter({ subsets: ['latin'] })
 
-export const metadata: Metadata = {
-  title: "Innova 54 - Fondos e Insumos de fotografia",
-  description: "Fondos e Insumos de fotografia",
-};
+export const metadata = {
+  title: 'Innova - Insumos para fotógrafos y estudios creativos',
+  description: 'Fondos fotográficos personalizados y props para recrear una experiencia innova.',
+}
 
 export default function RootLayout({
   children,
@@ -24,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="es">
       <head>
       <script async src="https://www.googletagmanager.com/gtag/js?id=G-EZ8J02VNPE"></script>
       <script id="google-analytics">
@@ -39,11 +29,7 @@ export default function RootLayout({
         }
       </script>
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }
