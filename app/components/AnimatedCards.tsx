@@ -3,12 +3,38 @@
 import { useEffect, useRef } from 'react'
 import lottie from 'lottie-web'
 
-const cards = [
-  { title: 'Ir a la tienda', animation: '/animations/store.json' },
-  { title: 'Catálogo de diseños', animation: '/animations/catalog.json' },
-  { title: 'Escribir a WhatsApp', animation: '/animations/whatsapp.json' },
-  { title: 'Lista de medidas y precios', animation: '/animations/list.json' },
-  { title: 'Pasos para fondos a medidas', animation: '/animations/steps.json' },
+type cardsProps = { 
+  title: string,
+  subtitle: string,
+  animation: string,
+  href: string,
+}
+
+const cards: Array<cardsProps> = [
+  { 
+    title: 'Ir a la tienda',
+    subtitle: 'Explora modelos, dimensiones y compra tus productos ideales',
+    animation: '/animations/store.json',
+    href: 'https://store.innova54.com/',
+  },
+  { 
+    title: 'Catálogo de diseños',
+    subtitle: 'Descubre nuestra colección exclusiva por categorías',
+    animation: '/animations/catalog.json',
+    href: 'https://innova54store.empretienda.com.ar/catalogo-de-fondos',
+  },
+  { 
+    title: 'Lista de medidas y precios',
+    subtitle: 'Consulta nuestras opciones estándar y sus precios. ¡Todo al alcance de un clic!',
+    animation: '/animations/list.json',
+    href: 'https://drive.google.com/file/d/1I9IiI0kLv6ONnIGAAVApNimCuFBiVqyt/view',
+  },
+  { 
+    title: 'Pasos para fondos a medidas',
+    subtitle: 'Personaliza tus fondos con dimensiones que se ajusten a tus ideas',
+    animation: '/animations/steps.json',
+    href: 'https://drive.google.com/file/d/1DuDfFYbicBrnVh1gldjAU1ig-ZGC7iHa/view',
+  },
 ]
 
 export default function AnimatedCards() {
@@ -31,11 +57,12 @@ export default function AnimatedCards() {
   return (
     <div className="bg-gray-100">
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {cards.map((card, index) => (
-            <div
+            <a
               key={card.title}
               className="bg-white overflow-hidden shadow rounded-lg cursor-pointer hover:shadow-lg transition-shadow duration-300"
+              href={card.href}
             >
               <div
                 ref={(el) => (animationRefs.current[index] = el as HTMLDivElement)}
@@ -43,8 +70,9 @@ export default function AnimatedCards() {
               ></div>
               <div className="px-4 py-2 sm:p-6">
                 <h3 className="text-lg font-medium text-gray-900">{card.title}</h3>
+                <h6 className="text-medium font-small text-gray-400">{card.subtitle}</h6>
               </div>
-            </div>
+            </a>
           ))}
         </div>
       </div>
