@@ -1,5 +1,16 @@
 import Image from 'next/image'
 import Carousel from './Carousel'
+import PhotographyBackdrop from './PhotographyBackdrop'
+
+const backdrops = [
+  { id: 0, name: 'Neoprene Backdrop', image: '/images/innova/neoprene.jpg' },
+  { id: 1, name: 'Innpets Backdrop', image: '/images/innpets/Innpets-5.jpg' },
+  { id: 2, name: 'school Backdrop', image: '/images/innova/003.jpg' },
+  { id: 3, name: 'school Backdrop', image: '/images/innova/004.jpg' },
+  { id: 4, name: 'childish Backdrop', image: '/images/innova/005.jpg' },
+  { id: 5, name: 'Mini Backdrop', image: '/images/innova/002.jpg' },
+  { id: 6, name: 'childish Backdrop', image: '/images/innova/006.jpg' },
+]
 
 export default function Hero() {
   return (
@@ -55,7 +66,9 @@ export default function Hero() {
             </div>
           </div>
         </div>
-        <Carousel />
+        <div className="relative w-full h-[280px] overflow-hidden rounded-lg">
+          <PhotographyBackdrop backdrops={backdrops} showPreview={false} />
+        </div>
       </div>
     </div>
   )
