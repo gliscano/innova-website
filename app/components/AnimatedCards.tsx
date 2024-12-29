@@ -27,7 +27,7 @@ const cards: Array<cardsProps> = [
     title: 'Lista de medidas y precios',
     subtitle: 'Consulta nuestras opciones estándar y sus precios. ¡Todo al alcance de un clic!',
     animation: '/animations/list.json',
-    href: 'https://drive.google.com/file/d/1I9IiI0kLv6ONnIGAAVApNimCuFBiVqyt/view',
+    href: '/prices',
   },
   { 
     title: 'Pasos para fondos a medidas',

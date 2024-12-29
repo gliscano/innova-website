@@ -25,7 +25,7 @@ export default function PhotographyBackdrop({ backdrops, showPreview }: Photogra
       } catch (error) {
         setCurrentBackdrop(backdrops[0])
       }
-    }, 4000)
+    }, 2000)
     return () => clearInterval(timer)
   }, [])
   

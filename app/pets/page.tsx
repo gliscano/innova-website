@@ -15,8 +15,8 @@ export default function PetsPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-grow">
-        <div className="relative w-full h-[calc(100vh)] mt-4 overflow-hidden">
+      <main className="flex items-center justify-center">
+        <div className="relative w-[calc(177vh)] h-[calc(80vh)] mt-4 overflow-hidden">
           <PhotographyBackdrop backdrops={backdrops} showPreview={true} />
         </div>
       </main>
