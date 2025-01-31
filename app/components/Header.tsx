@@ -8,9 +8,9 @@ export default function Header() {
         <a href='/'>
           <Image src="/svg/innova-logo.svg" alt="Innova Logo" width={180} height={43} />
         </a>
-        <a href='/pets'>
+        {/* <a href='/pets'>
           <Image src="/svg/innpets-logo.svg" alt="Innpets Logo" width={180} height={43} />
-        </a>
+        </a> */}
       </nav>
     </header>
   )

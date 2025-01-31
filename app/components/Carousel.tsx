@@ -36,7 +36,7 @@ export default function Carousel() {
   }
 
   return (
-    <div className="relative w-full h-[260px] overflow-hidden rounded-lg">
+    <div className="relative w-full h-full overflow-hidden rounded-lg">
       {images.map((src, index) => (
         <div
           key={src}
@@ -47,7 +47,7 @@ export default function Carousel() {
           <Image
             src={src}
             alt={`Studio workspace ${index + 1}`}
-            objectFit="cover"
+            objectFit="contain"
             fill={true}
           />
         </div>

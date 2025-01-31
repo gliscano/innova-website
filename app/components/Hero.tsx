@@ -33,7 +33,7 @@ export default function Hero() {
           <p className="mt-6 text-lg leading-8 text-gray-600">
             Insumos para fotógrafos y estudios creativos. Fondos fotográficos personalizados y props para recrear una experiencia innova.
           </p>
-          <div className="hidden md:flex space-x-4 pt-4">
+          <div className="flex space-x-4 pt-4">
             <div className="flex justify-center items-center space-x-4 md:order-2">
               <a href="https://www.instagram.com/innova54.store" className="text-gray-600 hover:text-[#C13584]">
                 <span className="sr-only">Instagram</span>
@@ -66,7 +66,7 @@ export default function Hero() {
             </div>
           </div>
         </div>
-        <div className="relative w-full h-[280px] overflow-hidden rounded-lg">
+        <div className="relative w-full h-[11rem] md:h-[18rem] lg:h-[18rem] my-4 overflow-hidden rounded-lg">
           <PhotographyBackdrop backdrops={backdrops} showPreview={false} />
         </div>
       </div>

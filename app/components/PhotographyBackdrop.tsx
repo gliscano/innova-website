@@ -35,7 +35,7 @@ export default function PhotographyBackdrop({ backdrops, showPreview }: Photogra
         src={'/svg/backdrop-stand.svg'}
         alt={"backdrop-stand"}
         layout="fill"
-        objectFit="cover"
+        objectFit="contain"
         className="object-cover mt-1"
       />
       <div className="absolute inset-0 flex items-center justify-center mx-32 my-1">

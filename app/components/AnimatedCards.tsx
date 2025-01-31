@@ -30,10 +30,10 @@ const cards: Array<cardsProps> = [
     href: '/prices',
   },
   { 
-    title: 'Pasos para fondos a medidas',
-    subtitle: 'Personaliza tus fondos con dimensiones que se ajusten a tus ideas',
+    title: 'Pasos para comprar fondos personalizados',
+    subtitle: 'Fondos con dimensiones que se ajusten a tus ideas',
     animation: '/animations/steps.json',
-    href: 'https://drive.google.com/file/d/1DuDfFYbicBrnVh1gldjAU1ig-ZGC7iHa/view',
+    href: '/custom-backdrops',
   },
 ]
 
