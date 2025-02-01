@@ -2,6 +2,7 @@ import Header from './components/Header'
 import Hero from './components/Hero'
 import AnimatedCards from './components/AnimatedCards'
 import Footer from './components/Footer'
+import ProductCategoryMenu from './components/ProductCategoryMenu'
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
       <main className="flex-grow">
         <Hero />
         <AnimatedCards />
+        <ProductCategoryMenu />
       </main>
       <Footer />
     </div>
