@@ -1,3 +1,8 @@
+"use client"
+
+import { useEffect, useRef } from 'react'
+import lottie from 'lottie-web'
+
 const prices = [
     { width: 2.90, length: 2.0, price: 40396 },
     { width: 2.90, length: 2.5, price: 46370 },
@@ -43,8 +48,21 @@ const prices = [
   ]
   
   export default function PriceList() {
+    const animationRef = useRef<HTMLElement>(null)
+
     const wideBackdrops = prices.filter(p => p.width === 2.90)
     const standardBackdrops = prices.filter(p => p.width === 1.50)
+
+    useEffect(() => {
+      animationRef.current =
+          lottie.loadAnimation({
+            container: document.getElementById('animated-lottie'),
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: '/animations/list.json',
+          })
+    }, [])
   
     return (
       <div className="bg-gray-50">
@@ -53,7 +71,7 @@ const prices = [
             className="absolute inset-y-0 right-1/2 -z-10 -mr-96 w-[200%] origin-top-right skew-x-[-30deg] bg-white shadow-xl shadow-indigo-600/10 ring-1 ring-indigo-50 sm:-mr-80 lg:-mr-96"
             aria-hidden="true"
           />
-          <div className="mx-auto max-w-7xl px-6 py-6 sm:py-6 lg:px-8">
+          <div className="mx-auto max-w-7xl px-6 py-6 sm:py-6 lg:px-8 flex justify-around">
             <div className="mx-auto max-w-2xl lg:mx-0 lg:grid lg:max-w-none lg:gap-x-16 lg:gap-y-6 xl:grid-rows-1 xl:gap-x-8">
               <h1 className="max-w-2xl text-xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:col-span-2">
                 Lista de precios y medidas
@@ -64,6 +82,11 @@ const prices = [
                 </p>
               </div>
             </div>
+            <div
+                ref={animationRef}
+                id='animated-lottie'
+                className="h-36 py-2"
+              ></div>
           </div>
           <div className="absolute inset-x-0 bottom-0 -z-10 h-12 bg-gradient-to-t from-white sm:h-16" />
         </div>
@@ -72,9 +95,6 @@ const prices = [
           {/* Size Guide Section */}
           <div className="mt-8">
             <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center">Guía de Tamaños Recomendados</h3>
-            <p className="text-center text-gray-600 mb-8">
-              Las imágenes pueden variar según el tamaño del fondo y pueden recortarse. ¡Asegúrate de revisar bien las fotos para el tamaño que realmente vas a comprar!
-            </p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {sizeGuides.map((guide, index) => (
                 <div key={index} className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center text-center">
@@ -162,23 +182,13 @@ const prices = [
   
           <div className="mt-16 space-y-6 text-base leading-7 text-gray-600">
             <p>
-              El fondo será ajustado y fabricado según las medidas de pared y piso solicitadas.
+              El diseño será ajustado y fabricado según las medidas de pared y piso solicitadas.
             </p>
             <p>
-              Nuestros fondos fotográficos incluyen pisos si así lo deseas, tenemos 3 propuestas inspiradas en el diseño.
+              Nuestros fondos fotográficos incluyen pisos si así lo deseas y tenemos 3 propuestas inspiradas en el diseño.
             </p>
-            <p>
-              Aunque trabajamos con medidas estándar, sabemos lo crucial que es que tu temática se adapte perfectamente a tus espacios.
-            </p>
-            <p>
-              Por eso, ofrecemos la posibilidad de personalizar nuestros fondos fotográficos a la medida de tus necesidades. ¡Indícanos si necesitas una medida personalizada!
-            </p>
-          </div>
-  
-          <div className="mt-10 text-center">
-            <h3 className="text-2xl font-bold tracking-tight text-gray-900">¿Tienes alguna duda o consulta?</h3>
-            <p className="mt-2 text-lg leading-8 text-gray-600">
-              Escribinos a store@innova54.com
+            <p className='text-lg font-semibold leading-8 text-indigo-600'>
+              Aunque trabajamos con medidas estándar, podemos personalizar nuestros fondos fotográficos a la medida de tus necesidades. ¡Indícanos si necesitas una medida personalizada!
             </p>
           </div>
         </div>

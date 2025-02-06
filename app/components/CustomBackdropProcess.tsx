@@ -3,12 +3,12 @@ import Image from "next/image"
 const steps = [
   {
     title: "Paso 1: Recepción de pedido",
-    description: "Nuestra fecha de cierre son todos los viernes.",
+    description: "Decinos el diseño que te gusta y las medidas. Nuestra fecha de cierre de pedidos son todos los viernes.",
     image: "/images/innova/Clipboardlist.png",
   },
   {
     title: "Paso 2: Diseño y Fabricación",
-    description: "Ajustamos el diseño y el piso a las medidas solicitadas, Luego va a impresión y costura.",
+    description: "Confirmada la seña, ajustamos el diseño a las medidas solicitadas y te enviamos 3 propuestas para el piso. Luego va a impresión y costura.",
     image: "/images/innova/palette.png",
   },
   {
@@ -27,7 +27,7 @@ export default function CustomBackdropProcess() {
             ¿Necesitas un fondo personalizado?
           </h2>
           <p className="mt-2 text-lg leading-8 text-gray-600">
-            Nuestros fondos fotográficos incluyen pisos si así lo deseas, tenemos 3 propuestas inspiradas en el diseño.
+            3 simples pasos para que tengas.
           </p>
         </div>
         <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
@@ -48,7 +48,7 @@ export default function CustomBackdropProcess() {
           </dl>
         </div>
         <div className="mt-16 text-center">
-          <p className="text-base font-semibold leading-7 text-indigo-600">
+          <p className="text-lg font-semibold leading-8 text-indigo-600">
             Entrega estimada, 10 días hábiles después de la fecha de cierre
           </p>
           <p className="mt-4 text-lg leading-8 text-gray-800">
@@ -60,7 +60,7 @@ export default function CustomBackdropProcess() {
           </p>
         </div>
         <div className="mt-10 flex items-center justify-center gap-x-6">
-          <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
+          <a href="/prices" className="text-sm font-semibold leading-6 text-gray-900">
             Ver medidas disponibles
           </a>
           <a

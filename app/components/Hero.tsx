@@ -25,7 +25,7 @@ export default function Hero() {
           }}
         />
       </div>
-      <div className="mx-auto max-w-7xl px-6 pb-12 pt-6 sm:pb-32 lg:flex lg:px-8 lg:py-14">
+      <div className="mx-auto max-w-7xl px-6 pb-12 pt-6 sm:pb-32 lg:flex lg:px-8 lg:py-6">
         <div className="mx-auto max-w-2xl flex-shrink-0 lg:mx-0 lg:max-w-xl lg:pt-4">
           <h1 className="mt-4 pr-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
             Una nueva experiencia en diseño

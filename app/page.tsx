@@ -3,6 +3,8 @@ import Hero from './components/Hero'
 import AnimatedCards from './components/AnimatedCards'
 import Footer from './components/Footer'
 import ProductCategoryMenu from './components/ProductCategoryMenu'
+import PriceList from './components/PriceList'
+import CustomBackdropProcess from './components/CustomBackdropProcess'
 
 export default function Home() {
   return (
@@ -12,6 +14,8 @@ export default function Home() {
         <Hero />
         <AnimatedCards />
         <ProductCategoryMenu />
+        <PriceList />
+        <CustomBackdropProcess />
       </main>
       <Footer />
     </div>
