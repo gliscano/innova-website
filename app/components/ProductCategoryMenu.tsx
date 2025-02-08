@@ -31,16 +31,16 @@ const cards: Array<cardsProps> = [
 export default function ProductCategoryMenu() {
 
   return (
-    <div className="bg-gray-100">
-      <div className="max-w-7xl mx-auto pb-12 px-4 sm:px-6 lg:pb-16 lg:px-8 flex flex-col justify-center">
-        <h1 className='font-bold tracking-tight text-gray-900 sm:text-2xl text-center my-4'>
-          Que quieres ver?
+    <div className="bg-yellow-gold">
+      <div className="max-w-7xl mx-auto py-6 px-8 sm:px-6 lg:py-8 lg:px-8 flex flex-col justify-center">
+        <h1 className='font-bold tracking-tight text-gray-900 sm:text-2xl text-center pb-4'>
+          Que queres ver?
         </h1>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-1 lg:grid-cols-3 flex align-center">
           {cards.map((card, index) => (
             <a
               key={card.title}
-              className="bg-white rounded-xl flex justify-center items-center overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300"
+              className="bg-rose-gold-light rounded-xl flex justify-center items-center overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300"
               href={card.href}
             >
               <Image

@@ -13,8 +13,8 @@ export default function Home() {
       <main className="flex-grow">
         <Hero />
         <AnimatedCards />
-        <ProductCategoryMenu />
         <PriceList />
+        <ProductCategoryMenu />
         <CustomBackdropProcess />
       </main>
       <Footer />

@@ -1,3 +1,7 @@
+"use client"
+
+import { useEffect, useRef } from 'react'
+import lottie from 'lottie-web'
 import Image from "next/image"
 
 const steps = [
@@ -19,16 +23,45 @@ const steps = [
 ]
 
 export default function CustomBackdropProcess() {
+  const animationRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    animationRef.current =
+      lottie.loadAnimation({
+        container: document.getElementById('animated-lottie'),
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        path: '/animations/steps.json',
+      })
+  }, [])
+
   return (
-    <section className="bg-gray-50 py-24 sm:py-32">
+    <section className="bg-gray-50">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            ¿Necesitas un fondo personalizado?
-          </h2>
-          <p className="mt-2 text-lg leading-8 text-gray-600">
-            3 simples pasos para que tengas.
-          </p>
+      <div className="relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20 pt-14">
+          <div
+            className="absolute inset-y-0 right-1/2 -z-10 -mr-96 w-[200%] origin-top-right skew-x-[-30deg] bg-white shadow-xl shadow-indigo-600/10 ring-1 ring-indigo-50 sm:-mr-80 lg:-mr-96"
+            aria-hidden="true"
+          />
+          <div className="mx-auto max-w-7xl px-6 py-6 sm:py-6 lg:px-8 flex justify-around">
+            <div className="mx-auto max-w-2xl lg:mx-0 lg:grid lg:max-w-none lg:gap-x-16 lg:gap-y-6 xl:grid-rows-1 xl:gap-x-8">
+              <h1 className="max-w-2xl text-xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:col-span-2">
+                ¿Necesitas un fondo personalizado?
+              </h1>
+              <div className="mt-6 max-w-xl lg:mt-0 xl:col-end-1">
+                <p className="text-lg leading-8 text-gray-600">
+                  Tenelo en 10 días hábiles. Conocé los pasos...
+                </p>
+              </div>
+            </div>
+            <div
+                ref={animationRef}
+                id='animated-lottie-custom-backdrop'
+                className="h-36 py-2"
+              ></div>
+          </div>
+          <div className="absolute inset-x-0 bottom-0 -z-10 h-12 bg-gradient-to-t from-white sm:h-16" />
         </div>
         <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
           <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3">
@@ -50,13 +83,6 @@ export default function CustomBackdropProcess() {
         <div className="mt-16 text-center">
           <p className="text-lg font-semibold leading-8 text-indigo-600">
             Entrega estimada, 10 días hábiles después de la fecha de cierre
-          </p>
-          <p className="mt-4 text-lg leading-8 text-gray-800">
-            Nuestros fondos fotográficos incluyen pisos inspirados en el diseño. Tenemos 3 propuestas para tí.
-          </p>
-          <p className="mt-6 text-lg leading-8 text-gray-600">
-            Ofrecemos la posibilidad de personalizar nuestros fondos fotográficos a la medida de tus necesidades. Conoce
-            nuestras medidas. 
           </p>
         </div>
         <div className="mt-10 flex items-center justify-center gap-x-6">

@@ -91,7 +91,7 @@ const prices = [
           <div className="absolute inset-x-0 bottom-0 -z-10 h-12 bg-gradient-to-t from-white sm:h-16" />
         </div>
   
-        <div className="mx-auto max-w-7xl px-6 lg:px-8 py-8">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8 py-4">
           {/* Size Guide Section */}
           <div className="mt-8">
             <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center">Guía de Tamaños Recomendados</h3>
@@ -116,43 +116,12 @@ const prices = [
           </div>
   
           {/* Pricing Section */}
-          <div className="mt-16 space-y-8">
-            {/* Wide Backdrops */}
-            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="p-6 bg-rose-50">
-                <h3 className="text-xl font-bold text-gray-900">Fondos Anchos (2.90m)</h3>
-                <p className="mt-1 text-sm text-gray-500">Ideales para grupos y familias</p>
-              </div>
-              <div className="divide-y divide-gray-200">
-                {wideBackdrops.map((item, index) => (
-                  <div key={index} className="flex items-center p-4 hover:bg-gray-50 transition-colors">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-4">
-                        <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium text-gray-900">
-                            {item.width.toFixed(2)}m × {item.length.toFixed(1)}m
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            Área total: {(item.width * item.length).toFixed(1)}m²
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="ml-4">
-                      <div className="text-lg font-semibold text-gray-900">
-                        ${item.price.toLocaleString()}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-  
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-14 mt-16">
             {/* Standard Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="p-6 bg-violet-50">
-                <h3 className="text-xl font-bold text-gray-900">Fondos Estándar (1.50m)</h3>
-                <p className="mt-1 text-sm text-gray-500">Perfectos para retratos individuales y parejas</p>
+              <div className="p-6 bg-yellow-gold-light">
+                <h3 className="text-xl font-bold text-gray-900">Fondos Estándar (Ancho: 1.50m)</h3>
+                <p className="mt-1 text-sm text-yellow-gold-dark">Perfectos para retratos individuales y parejas</p>
               </div>
               <div className="divide-y divide-gray-200">
                 {standardBackdrops.map((item, index) => (
@@ -178,18 +147,37 @@ const prices = [
                 ))}
               </div>
             </div>
-          </div>
-  
-          <div className="mt-16 space-y-6 text-base leading-7 text-gray-600">
-            <p>
-              El diseño será ajustado y fabricado según las medidas de pared y piso solicitadas.
-            </p>
-            <p>
-              Nuestros fondos fotográficos incluyen pisos si así lo deseas y tenemos 3 propuestas inspiradas en el diseño.
-            </p>
-            <p className='text-lg font-semibold leading-8 text-indigo-600'>
-              Aunque trabajamos con medidas estándar, podemos personalizar nuestros fondos fotográficos a la medida de tus necesidades. ¡Indícanos si necesitas una medida personalizada!
-            </p>
+
+            {/* Wide Backdrops */}
+            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+              <div className="p-6 bg-rose-gold">
+                <h3 className="text-xl font-bold text-gray-900">Fondos Grandes (Ancho: 2.90m)</h3>
+                <p className="mt-1 text-sm text-gray-900">Ideales para grupos y familias</p>
+              </div>
+              <div className="divide-y divide-gray-200">
+                {wideBackdrops.map((item, index) => (
+                  <div key={index} className="flex items-center p-4 hover:bg-gray-50 transition-colors">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-4">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-medium text-gray-900">
+                            {item.width.toFixed(2)}m × {item.length.toFixed(1)}m
+                          </p>
+                          <p className="text-sm text-gray-900">
+                            Área total: {(item.width * item.length).toFixed(1)}m²
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="ml-4">
+                      <div className="text-lg font-semibold text-gray-900">
+                        ${item.price.toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>

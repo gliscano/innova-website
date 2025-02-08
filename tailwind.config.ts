@@ -8,7 +8,16 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // You can customize the color palette here
+        'rose-gold': {
+          light: '#F2ECEB',
+          DEFAULT: '#D9A7A7',
+          dark: '#BF8A8A',
+        },
+        'yellow-gold': {
+          light: '#F2C744',
+          DEFAULT: '#D99E32',
+          dark: '#8C5511',
+        }
       },
     },
   },

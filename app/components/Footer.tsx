@@ -6,10 +6,10 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="xl:grid xl:grid-cols-3 xl:gap-8">
           <div className="space-y-8 xl:col-span-1">
-            <p className="text-gray-500 text-base">
-              ¿Tienes alguna duda o consulta?
+            <p className="text-gray-600 text-base">
+              <b>¿Tenes dudas, consultas o recomendaciones?</b>
               <br />
-              Podés escribirnos a nuestros canales, estamos para atenderte
+              Escribirnos a nuestros canales, estamos para atenderte
             </p>
           </div>
           <div className="mt-12 grid grid-cols-2 gap-8 xl:mt-0 xl:col-span-2">
@@ -18,31 +18,59 @@ export default function Footer() {
                 <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">Redes Sociales</h3>
                 <ul role="list" className="mt-4 space-y-4">
                   <li>
-                  <a href="https://www.instagram.com/innova54.store" className="text-gray-600 hover:text-[#C13584] flex items-center">
-                    <span className="sr-only">Instagram</span>
-                    <Image
-                      aria-hidden
-                      src="svg/ig.svg"
-                      alt="instagram icon"
-                      className="mr-2"
-                      width={20}
-                      height={20}
-                    />
-                    Instagram
-                  </a>
+                    <a href="https://www.instagram.com/innova54.store" className="text-gray-600 hover:text-[#C13584] flex items-center">
+                      <span className="sr-only">Instagram</span>
+                      <Image
+                        aria-hidden
+                        src="svg/ig.svg"
+                        alt="instagram icon"
+                        className="mr-2"
+                        width={20}
+                        height={20}
+                      />
+                      Instagram
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://www.facebook.com/innova54.store" className="text-gray-600 hover:text-blue-600 flex items-center">
+                      <span className="sr-only">Facebook</span>
+                      <Image
+                        aria-hidden
+                        src="svg/facebook-icon.svg"
+                        alt="facebook icon"
+                        className="mr-2"
+                        width={20}
+                        height={20}
+                      />
+                      Facebook
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://www.facebook.com/innova54.store" className="text-gray-600 hover:text-blue-600 flex items-center">
+                      <span className="sr-only">Tiktok</span>
+                      <Image
+                        aria-hidden
+                        src="svg/tiktok-icon.svg"
+                        alt="tiktok icon"
+                        className="mr-2"
+                        width={20}
+                        height={20}
+                      />
+                      Tiktok
+                    </a>
                   </li>
                   <li>
                   <a href="https://www.facebook.com/innova54.store" className="text-gray-600 hover:text-blue-600 flex items-center">
-                    <span className="sr-only">Facebook</span>
+                    <span className="sr-only">pinterest</span>
                     <Image
                       aria-hidden
-                      src="svg/facebook-icon.svg"
-                      alt="facebook icon"
+                      src="svg/pinterest-icon.svg"
+                      alt="pinterest icon"
                       className="mr-2"
                       width={20}
                       height={20}
                     />
-                    Facebook
+                    Pinterest
                   </a>
                   </li>
                 </ul>
@@ -83,7 +111,7 @@ export default function Footer() {
         </div>
         <div className="mt-12 border-t border-gray-200 pt-8">
           <p className="text-base text-gray-400 xl:text-center">
-            &copy; 2024 Innova Tech. Todos los derechos reservados.
+            &copy; 2025 Innova Tech. Todos los derechos reservados.
           </p>
         </div>
       </div>
