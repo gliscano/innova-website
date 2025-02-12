@@ -69,7 +69,7 @@ export default function CustomBackdropProcess() {
               <div key={step.title} className="flex flex-col items-center text-center">
                 <dt className="flex flex-col items-center gap-y-4">
                   <div className="relative h-40 w-40">
-                    <Image src={step.image || "/placeholder.svg"} alt={step.title} fill className="object-contain" />
+                    <Image src={step.image} alt={step.title} fill className="object-contain" />
                   </div>
                   <span className="text-lg font-semibold leading-7 text-gray-900">{step.title}</span>
                 </dt>

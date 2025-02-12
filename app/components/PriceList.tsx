@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import lottie from 'lottie-web'
+import Image from 'next/image'
 
 const prices = [
     { width: 2.90, length: 2.0, price: 40396 },
@@ -24,26 +25,26 @@ const prices = [
     {
       title: 'Retratos Individuales',
       size: '1.5m × 2.0m',
-      description: 'Ideal para fotografía de retrato individual, sentado o de pie',
-      image: '/placeholder.svg?height=200&width=150',
+      description: 'Ideal para fotografía de new born, bebes, retrato individual y decoración de tiendas',
+      image: '/images/innova/backdrops-child-size.png',
     },
     {
       title: 'Parejas',
       size: '1.5m × 2.5m',
       description: 'Perfecto para sesiones de pareja o retratos de dos personas',
-      image: '/placeholder.svg?height=200&width=150',
+      image: '/images/innova/backdrops-couples-size.png',
     },
     {
       title: 'Grupos Pequeños',
       size: '2.9m × 3.0m',
-      description: 'Óptimo para familias pequeñas o grupos de 3-4 personas',
-      image: '/placeholder.svg?height=200&width=150',
+      description: 'Óptimo para para familias pequeñas o grupos de 3-4 personas y decoración de eventos',
+      image: '/images/innova/backdrops-small-size.png',
     },
     {
       title: 'Grupos Grandes',
       size: '2.9m × 4.0m',
-      description: 'Recomendado para familias grandes o grupos numerosos',
-      image: '/placeholder.svg?height=200&width=150',
+      description: 'Recomendado para familias grandes o grupos numerosos y decoración de eventos',
+      image: '/images/innova/backdrops-large-size.png',
     },
   ]
   
@@ -97,19 +98,21 @@ const prices = [
             <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center">Guía de Tamaños Recomendados</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {sizeGuides.map((guide, index) => (
-                <div key={index} className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center text-center">
-                  <div className="w-40 h-40 bg-violet-100 rounded-lg mb-4 flex items-center justify-center">
+                <div key={index} className={`${index > 1 ? 'bg-rose-gold' : 'bg-yellow-gold-light'} bg-opacity-50 rounded-xl shadow-sm p-6 flex flex-col items-center text-center`}>
+                  <div className="w-40 h-40 rounded-lg mb-4 flex items-center justify-center">
                     <div className="text-violet-600">
-                      <svg className="w-24 h-24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <rect x="3" y="3" width="18" height="18" rx="2" />
-                        <path d="M12 8v8" />
-                        <path d="M8 12h8" />
-                      </svg>
+                      <Image
+                        src={guide.image}
+                        alt={guide.title}
+                        className="object-contain"
+                        width={200}
+                        height={200}
+                      />
                     </div>
                   </div>
                   <h4 className="font-semibold text-lg mb-2">{guide.title}</h4>
-                  <p className="text-rose-600 font-medium mb-2">{guide.size}</p>
-                  <p className="text-gray-600 text-sm">{guide.description}</p>
+                  <p className="font-semibold text-rose-800 font-medium py-1 px-2 mb-2 bg-white rounded-2xl">{guide.size}</p>
+                  <p className="text-gray-800 text-sm">{guide.description}</p>
                 </div>
               ))}
             </div>
@@ -121,7 +124,7 @@ const prices = [
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
               <div className="p-6 bg-yellow-gold-light">
                 <h3 className="text-xl font-bold text-gray-900">Fondos Estándar (Ancho: 1.50m)</h3>
-                <p className="mt-1 text-sm text-yellow-gold-dark">Perfectos para retratos individuales y parejas</p>
+                <p className="mt-1 text-sm text-yellow-gold-dark">Perfectos para sesiones individuales, parejas y decoración de tiendas</p>
               </div>
               <div className="divide-y divide-gray-200">
                 {standardBackdrops.map((item, index) => (
@@ -152,7 +155,7 @@ const prices = [
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
               <div className="p-6 bg-rose-gold">
                 <h3 className="text-xl font-bold text-gray-900">Fondos Grandes (Ancho: 2.90m)</h3>
-                <p className="mt-1 text-sm text-gray-900">Ideales para grupos y familias</p>
+                <p className="mt-1 text-sm text-gray-900">Ideales para grupos, familias y decoración de eventos</p>
               </div>
               <div className="divide-y divide-gray-200">
                 {wideBackdrops.map((item, index) => (
