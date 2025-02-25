@@ -19,3 +19,30 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Copperplate Light */
+.copperplate-light-font {
+  font-family: "copperplate", serif;
+  font-weight: 300;
+  font-style: normal;}
+
+/* Copperplate Bold */
+.copperplate-bold-font {
+  font-family: "copperplate", serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* Copperplate Cond Light */
+.copperplate-condensed-ligth-font {
+  font-family: "copperplate-condensed", serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+/* Copperplate Cond Bold */
+.copperplate-condensed-bold-font {
+  font-family: "copperplate-condensed", serif;
+  font-weight: 700;
+  font-style: normal;
+}

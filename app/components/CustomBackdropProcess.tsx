@@ -8,31 +8,44 @@ const steps = [
   {
     title: "Paso 1: Recepción de pedido",
     description: "Decinos el diseño que te gusta y las medidas. Nuestra fecha de cierre de pedidos son todos los viernes.",
-    image: "/images/innova/Clipboardlist.png",
+    animation: "/animations/customer-services.json"
   },
   {
     title: "Paso 2: Diseño y Fabricación",
     description: "Confirmada la seña, ajustamos el diseño a las medidas solicitadas y te enviamos 3 propuestas para el piso. Luego va a impresión y costura.",
-    image: "/images/innova/palette.png",
+    animation: "/animations/design.json"
   },
   {
     title: "Paso 3: Envío",
     description: "Listo para envío por encomienda ó entrega presencial en nuestro estudio (previo acuerdo)",
-    image: "/images/innova/truck.png",
+    animation: "/animations/shipping.json"
   },
 ]
 
 export default function CustomBackdropProcess() {
-  const animationRef = useRef<HTMLElement>(null)
+  const animationRef = useRef<React.RefObject<HTMLDivElement>>(null)
+  const animationStepRefs = useRef<HTMLDivElement[]>([])
 
   useEffect(() => {
     animationRef.current =
       lottie.loadAnimation({
-        container: document.getElementById('animated-lottie'),
+        container: document.getElementById('animated-lottie-custom-backdrop'),
         renderer: 'svg',
         loop: true,
         autoplay: true,
         path: '/animations/steps.json',
+      })
+
+      animationStepRefs.current.forEach((ref, index) => {
+        if (ref) {
+          lottie.loadAnimation({
+            container: ref,
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: steps[index].animation,
+          })
+        }
       })
   }, [])
 
@@ -46,7 +59,7 @@ export default function CustomBackdropProcess() {
           />
           <div className="mx-auto max-w-7xl px-6 py-6 sm:py-6 lg:px-8 flex justify-around">
             <div className="mx-auto max-w-2xl lg:mx-0 lg:grid lg:max-w-none lg:gap-x-16 lg:gap-y-6 xl:grid-rows-1 xl:gap-x-8">
-              <h1 className="max-w-2xl text-xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:col-span-2">
+              <h1 className="max-w-2xl text-xl copperplate-bold-font tracking-tight text-gray-900 sm:text-5xl lg:col-span-2">
                 ¿Necesitas un fondo personalizado?
               </h1>
               <div className="mt-6 max-w-xl lg:mt-0 xl:col-end-1">
@@ -65,11 +78,14 @@ export default function CustomBackdropProcess() {
         </div>
         <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
           <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3">
-            {steps.map((step) => (
+            {steps.map((step, index) => (
               <div key={step.title} className="flex flex-col items-center text-center">
                 <dt className="flex flex-col items-center gap-y-4">
                   <div className="relative h-40 w-40">
-                    <Image src={step.image} alt={step.title} fill className="object-contain" />
+                  <div
+                    ref={(el) => ((animationStepRefs.current[index] = el) as typeof  HTMLDivElement)}
+                    className="h-36 px-2"
+                  ></div>
                   </div>
                   <span className="text-lg font-semibold leading-7 text-gray-900">{step.title}</span>
                 </dt>
@@ -80,12 +96,7 @@ export default function CustomBackdropProcess() {
             ))}
           </dl>
         </div>
-        <div className="mt-16 text-center">
-          <p className="text-lg font-semibold leading-8 text-indigo-600">
-            Entrega estimada, 10 días hábiles después de la fecha de cierre
-          </p>
-        </div>
-        <div className="mt-10 flex items-center justify-center gap-x-6">
+        <div className="mt-10 mb-10 flex items-center justify-center gap-x-6">
           <a href="/prices" className="text-sm font-semibold leading-6 text-gray-900">
             Ver medidas disponibles
           </a>

@@ -25,19 +25,19 @@ const prices = [
     {
       title: 'Retratos Individuales',
       size: '1.5m × 2.0m',
-      description: 'Ideal para fotografía de new born, bebes, retrato individual y decoración de tiendas',
+      description: 'Ideal para fotografía de bebes, retrato individual y decoración de tiendas',
       image: '/images/innova/backdrops-child-size.png',
     },
     {
       title: 'Parejas',
       size: '1.5m × 2.5m',
-      description: 'Perfecto para sesiones de pareja o retratos de dos personas',
+      description: 'Perfecto para sesiones de pareja, fotos de pie o retratos de dos personas',
       image: '/images/innova/backdrops-couples-size.png',
     },
     {
       title: 'Grupos Pequeños',
       size: '2.9m × 3.0m',
-      description: 'Óptimo para para familias pequeñas o grupos de 3-4 personas y decoración de eventos',
+      description: 'Recomendado para para familias pequeñas o grupos de 3-4 personas y decoración de eventos',
       image: '/images/innova/backdrops-small-size.png',
     },
     {
@@ -74,7 +74,7 @@ const prices = [
           />
           <div className="mx-auto max-w-7xl px-6 py-6 sm:py-6 lg:px-8 flex justify-around">
             <div className="mx-auto max-w-2xl lg:mx-0 lg:grid lg:max-w-none lg:gap-x-16 lg:gap-y-6 xl:grid-rows-1 xl:gap-x-8">
-              <h1 className="max-w-2xl text-xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:col-span-2">
+              <h1 className="max-w-2xl text-xl copperplate-bold-font tracking-tight text-gray-900 sm:text-5xl lg:col-span-2">
                 Lista de precios y medidas
               </h1>
               <div className="mt-6 max-w-xl lg:mt-0 xl:col-end-1">

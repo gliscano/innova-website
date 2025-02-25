@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import Image from 'next/image'
 
 export default function Header() {
@@ -8,9 +7,9 @@ export default function Header() {
         <a href='/'>
           <Image src="/svg/innova-logo.svg" alt="Innova Logo" width={180} height={43} />
         </a>
-        {/* <a href='/pets'>
-          <Image src="/svg/innpets-logo.svg" alt="Innpets Logo" width={180} height={43} />
-        </a> */}
+        <div>
+          <h4 className='copperplate-condensed-ligth-font'>Innova, Crea y Captura... sin limites y sin reglas!!! </h4>
+        </div>
       </nav>
     </header>
   )

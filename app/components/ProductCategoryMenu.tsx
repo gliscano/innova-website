@@ -13,18 +13,18 @@ type cardsProps = {
 const cards: Array<cardsProps> = [
   { 
     title: 'Set y Fondos de Tela',
-    image: '/images/innova/icon-product-type-01.jpg',
-    href: 'https://store.innova54.com/',
+    image: '/images/innova/icon-product-type-01.png',
+    href: 'https://innova54store.empretienda.com.ar/productos-en-stock/fondos-en-tela',
   },
   { 
     title: 'Fondos para mascotas',
-    image: '/images/innova/icon-product-type-02.jpg',
-    href: 'https://innova54store.empretienda.com.ar/catalogo-de-fondos',
+    image: '/images/innova/icon-product-type-02.png',
+    href: 'https://innova54store.empretienda.com.ar/productos-en-stock/innpets-mascotas',
   },
   { 
     title: 'Pisos y Alfombras',
-    image: '/images/innova/icon-product-type-03.jpg',
-    href: '/prices',
+    image: '/images/innova/icon-product-type-03.png',
+    href: 'https://innova54store.empretienda.com.ar/productos-en-stock/pisos-simil-neoprene',
   }
 ]
 
@@ -40,7 +40,7 @@ export default function ProductCategoryMenu() {
           {cards.map((card, index) => (
             <a
               key={card.title}
-              className="bg-rose-gold-light rounded-xl flex justify-center items-center overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300"
+              className="bg-rose-gold-light rounded-xl p-1 flex justify-center items-center overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300"
               href={card.href}
             >
               <Image
