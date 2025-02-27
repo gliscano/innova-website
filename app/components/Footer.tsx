@@ -104,6 +104,24 @@ export default function Footer() {
                       Whatsapp
                     </a>
                   </li>
+                  <li>
+                    <a
+                      className="text-base text-gray-500 hover:text-gray-900 flex items-center text-left"
+                      href="https://wa.me/5491171142152"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Image
+                        aria-hidden
+                        src="svg/google-maps.svg"
+                        alt="google maps icon"
+                        className="mr-1"
+                        width={30}
+                        height={30}
+                      />
+                      Google Maps
+                    </a>
+                  </li>
                 </ul>
               </div>
             </div>

@@ -52,7 +52,7 @@ export default function CustomBackdropProcess() {
   return (
     <section className="bg-gray-50">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-      <div className="relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20 pt-14">
+      <div className="relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20 pt-6 lg:pt-14">
           <div
             className="absolute inset-y-0 right-1/2 -z-10 -mr-96 w-[200%] origin-top-right skew-x-[-30deg] bg-white shadow-xl shadow-indigo-600/10 ring-1 ring-indigo-50 sm:-mr-80 lg:-mr-96"
             aria-hidden="true"
@@ -76,8 +76,8 @@ export default function CustomBackdropProcess() {
           </div>
           <div className="absolute inset-x-0 bottom-0 -z-10 h-12 bg-gradient-to-t from-white sm:h-16" />
         </div>
-        <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
-          <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3">
+        <div className="flex justify-center mt-12 max-w-2xl lg:mt-24 lg:max-w-none md:mx-auto">
+          <dl className="grid grid-cols-1 gap-x-12 gap-y-16 lg:max-w-none md:grid-cols-3 lg:grid-cols-3">
             {steps.map((step, index) => (
               <div key={step.title} className="flex flex-col items-center text-center">
                 <dt className="flex flex-col items-center gap-y-4">

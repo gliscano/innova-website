@@ -56,7 +56,7 @@ export default function AnimatedCards() {
 
   return (
     <div className="bg-rose-gold">
-      <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-8 lg:px-8">
+      <div className="max-w-7xl mx-auto py-6 lg:py-12 px-4 sm:px-6 lg:py-8 lg:px-8">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-3">
           {cards.map((card, index) => (
             <a
@@ -70,7 +70,7 @@ export default function AnimatedCards() {
               ></div>
               <div className="px-2 py-2 sm:p-6">
                 <h3 className="text-lg font-medium text-gray-900">{card.title}</h3>
-                <h6 className="text-medium font-small text-gray-400">{card.subtitle}</h6>
+                <h6 className="text-medium font-small text-gray-600">{card.subtitle}</h6>
               </div>
             </a>
           ))}

@@ -12,39 +12,32 @@ type PhotographyBackdropProps = {
 
 export default function PhotographyBackdrop({ backdrops, showPreview }: PhotographyBackdropProps) {
   const [currentBackdrop, setCurrentBackdrop] = useState(backdrops[0])
+  const timerToChangeImage = 3000;
 
   useEffect(() => {
     const timer = setInterval(() => {     
       try {
         setCurrentBackdrop((preState) => {
           const nextIndex = (preState.id + 1) % backdrops.length;
-          console.log('nextIndex', nextIndex);
 
           return backdrops[nextIndex]
         })
       } catch (error) {
         setCurrentBackdrop(backdrops[0])
       }
-    }, 2000)
+    }, timerToChangeImage)
     return () => clearInterval(timer)
   }, [])
   
   return (
     <div className="relative w-full h-full overflow-hidden">
-      <Image
-        src={'/svg/backdrop-stand.svg'}
-        alt={"backdrop-stand"}
-        layout="fill"
-        objectFit="contain"
-        className="object-cover mt-1"
-      />
-      <div className="absolute inset-0 flex items-center justify-center mx-32 my-1">
+      <div className="absolute inset-0 flex items-center justify-center my-1">
         <Image
           src={currentBackdrop.image}
           alt={currentBackdrop.name}
-          layout="fill"
-          objectFit="cover"
-          className="transition-opacity duration-500"
+          fill
+          sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+          objectFit="contain"
         />
       </div>
       <div className="absolute inset-0 bg-opacity-5" />
@@ -72,8 +65,8 @@ export default function PhotographyBackdrop({ backdrops, showPreview }: Photogra
         </div>
       )}
       <div className="absolute top-8 left-1/2 transform -translate-x-3/4 text-left">
-        <h1 className="text-4xl font-bold text-white mb-4 opacity-75">...</h1>
-        <p className="text-xl text-gray-200">...</p>
+        <h1 className="text-4xl font-bold text-white mb-4 opacity-75">{currentBackdrop.title}</h1>
+        <p className="text-xl text-gray-200">{currentBackdrop.subtitle}</p>
       </div>
     </div>
   )

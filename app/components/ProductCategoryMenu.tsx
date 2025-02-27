@@ -17,6 +17,11 @@ const cards: Array<cardsProps> = [
     href: 'https://innova54store.empretienda.com.ar/productos-en-stock/fondos-en-tela',
   },
   { 
+    title: 'Set y Fondos Híbridos',
+    image: '/images/innova/icon-product-type-01.png',
+    href: 'https://innova54store.empretienda.com.ar/productos-en-stock/fondos-en-tela',
+  },
+  { 
     title: 'Fondos para mascotas',
     image: '/images/innova/icon-product-type-02.png',
     href: 'https://innova54store.empretienda.com.ar/productos-en-stock/innpets-mascotas',
@@ -36,7 +41,7 @@ export default function ProductCategoryMenu() {
         <h1 className='font-bold tracking-tight text-gray-900 sm:text-2xl text-center pb-4'>
           Que queres ver?
         </h1>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-1 lg:grid-cols-3 flex align-center">
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-4 flex align-center">
           {cards.map((card, index) => (
             <a
               key={card.title}
@@ -50,7 +55,7 @@ export default function ProductCategoryMenu() {
                 height={128}
                 className="object-cover"
               />
-              <div className="px-4 py-2 sm:p-6">
+              <div className="px-2 py-2 sm:p-6">
                 <h3 className="text-lg font-medium text-gray-900">{card.title}</h3>
               </div>
             </a>

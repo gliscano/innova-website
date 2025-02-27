@@ -67,7 +67,7 @@ const prices = [
   
     return (
       <div className="bg-gray-50">
-        <div className="relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20 pt-14">
+        <div className="relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20 pt-6 lg:pt-14">
           <div
             className="absolute inset-y-0 right-1/2 -z-10 -mr-96 w-[200%] origin-top-right skew-x-[-30deg] bg-white shadow-xl shadow-indigo-600/10 ring-1 ring-indigo-50 sm:-mr-80 lg:-mr-96"
             aria-hidden="true"
@@ -75,11 +75,11 @@ const prices = [
           <div className="mx-auto max-w-7xl px-6 py-6 sm:py-6 lg:px-8 flex justify-around">
             <div className="mx-auto max-w-2xl lg:mx-0 lg:grid lg:max-w-none lg:gap-x-16 lg:gap-y-6 xl:grid-rows-1 xl:gap-x-8">
               <h1 className="max-w-2xl text-xl copperplate-bold-font tracking-tight text-gray-900 sm:text-5xl lg:col-span-2">
-                Lista de precios y medidas
+                Lista de medidas y precios
               </h1>
               <div className="mt-6 max-w-xl lg:mt-0 xl:col-end-1">
                 <p className="text-lg leading-8 text-gray-600">
-                  Medidas estándar disponibles y sus precios correspondientes. Encuentra el tamaño perfecto para tus necesidades fotográficas.
+                  Encuentra el tamaño perfecto para tus necesidades. Tenemos medidas estándar y personalizadas!!!
                 </p>
               </div>
             </div>
@@ -95,7 +95,7 @@ const prices = [
         <div className="mx-auto max-w-7xl px-6 lg:px-8 py-4">
           {/* Size Guide Section */}
           <div className="mt-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center">Guía de Tamaños Recomendados</h3>
+            <h3 className="text-2xl copperplate-condensed-bold-font text-gray-900 mb-4 text-center">Guía de Tamaños Recomendados</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {sizeGuides.map((guide, index) => (
                 <div key={index} className={`${index > 1 ? 'bg-rose-gold' : 'bg-yellow-gold-light'} bg-opacity-50 rounded-xl shadow-sm p-6 flex flex-col items-center text-center`}>
@@ -118,13 +118,16 @@ const prices = [
             </div>
           </div>
   
-          {/* Pricing Section */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-14 mt-16">
+          {/* fabric Pricing Section */}
+          <h3 className="text-2xl copperplate-condensed-bold-font text-gray-900 mt-8 lg:mt-16 text-center">
+            Lista de precios - Set y Fondos en Tela
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-14 mt-8">
             {/* Standard Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
               <div className="p-6 bg-yellow-gold-light">
                 <h3 className="text-xl font-bold text-gray-900">Fondos Estándar (Ancho: 1.50m)</h3>
-                <p className="mt-1 text-sm text-yellow-gold-dark">Perfectos para sesiones individuales, parejas y decoración de tiendas</p>
+                <p className="mt-1 text-sm text-yellow-900">Perfectos para sesiones individuales, parejas y decoración de tiendas</p>
               </div>
               <div className="divide-y divide-gray-200">
                 {standardBackdrops.map((item, index) => (
@@ -156,6 +159,74 @@ const prices = [
               <div className="p-6 bg-rose-gold">
                 <h3 className="text-xl font-bold text-gray-900">Fondos Grandes (Ancho: 2.90m)</h3>
                 <p className="mt-1 text-sm text-gray-900">Ideales para grupos, familias y decoración de eventos</p>
+              </div>
+              <div className="divide-y divide-gray-200">
+                {wideBackdrops.map((item, index) => (
+                  <div key={index} className="flex items-center p-4 hover:bg-gray-50 transition-colors">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-4">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-medium text-gray-900">
+                            {item.width.toFixed(2)}m × {item.length.toFixed(1)}m
+                          </p>
+                          <p className="text-sm text-gray-900">
+                            Área total: {(item.width * item.length).toFixed(1)}m²
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="ml-4">
+                      <div className="text-lg font-semibold text-gray-900">
+                        ${item.price.toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* fabric Pricing Section */}
+          <h3 className="text-2xl copperplate-condensed-bold-font text-gray-900 mt-8 text-center">
+            Lista de precios - Productos diseñados por Innova
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-14 mt-8">
+            {/* Standard Backdrops */}
+            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+              <div className="p-6 bg-teal-500">
+                <h3 className="text-xl font-bold text-teal-900">Fondos para Mascotas - InnPets</h3>
+                <p className="mt-1 text-sm text-teal-950">Los mejores diseños para peluditos de la casa</p>
+              </div>
+              <div className="divide-y divide-gray-200">
+                {standardBackdrops.map((item, index) => (
+                  <div key={index} className="flex items-center p-4 hover:bg-gray-50 transition-colors">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-4">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-medium text-gray-900">
+                            {item.width.toFixed(2)}m × {item.length.toFixed(1)}m
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            Área total: {(item.width * item.length).toFixed(1)}m²
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="ml-4">
+                      <div className="text-lg font-semibold text-gray-900">
+                        ${item.price.toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Wide Backdrops */}
+            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+              <div className="p-6 bg-pink-900">
+                <h3 className="text-xl font-bold text-gray-100">Fondos Hibridos (Tela y Piso en Símil de neoprene)</h3>
+                <p className="mt-1 text-sm text-gray-100">Combinamos las mejores texturas para lograr una experiencia superior</p>
               </div>
               <div className="divide-y divide-gray-200">
                 {wideBackdrops.map((item, index) => (

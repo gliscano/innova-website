@@ -7,7 +7,7 @@ export default function Header() {
         <a href='/'>
           <Image src="/svg/innova-logo.svg" alt="Innova Logo" width={180} height={43} />
         </a>
-        <div>
+        <div className='hidden md:block lg:block'>
           <h4 className='copperplate-condensed-ligth-font'>Innova, Crea y Captura... sin limites y sin reglas!!! </h4>
         </div>
       </nav>

@@ -3,13 +3,69 @@ import Carousel from './Carousel'
 import PhotographyBackdrop from './PhotographyBackdrop'
 
 const backdrops = [
-  { id: 0, name: 'Neoprene Backdrop', image: '/images/innova/neoprene.jpg' },
-  { id: 1, name: 'Innpets Backdrop', image: '/images/innpets/Innpets-5.jpg' },
-  { id: 2, name: 'school Backdrop', image: '/images/innova/003.jpg' },
-  { id: 3, name: 'school Backdrop', image: '/images/innova/004.jpg' },
-  { id: 4, name: 'childish Backdrop', image: '/images/innova/005.jpg' },
-  { id: 5, name: 'Mini Backdrop', image: '/images/innova/002.jpg' },
-  { id: 6, name: 'childish Backdrop', image: '/images/innova/006.jpg' },
+  { 
+    id: 0,
+    name: 'autos Backdrop',
+    image: '/images/innova/hero-1.png',
+    title: '',
+    subtitle: ''
+  },
+  { 
+    id: 1,
+    name: 'Alas Backdrop',
+    image: '/images/innova/hero-2.png',
+    title: '',
+    subtitle: ''
+  },
+  { 
+    id: 2,
+    name: 'infantil Backdrop',
+    image: '/images/innova/hero-3.png',
+    title: '',
+    subtitle: ''
+  },
+  { 
+    id: 3,
+    name: 'escolar Backdrop',
+    image: '/images/innova/hero-4.png',
+    title: '',
+    subtitle: ''
+  },
+  { 
+    id: 4,
+    name: 'Grunge Backdrop',
+    image: '/images/innova/hero-5.png',
+    title: '',
+    subtitle: ''
+  },
+  { 
+    id: 5,
+    name: 'escolar infantil Backdrop',
+    image: '/images/innova/hero-6.png',
+    title: '',
+    subtitle: ''
+  },
+  { 
+    id: 6,
+    name: 'escolar Backdrop',
+    image: '/images/innova/hero-7.png',
+    title: '',
+    subtitle: ''
+  },
+  { 
+    id: 7,
+    name: 'infantil Backdrop',
+    image: '/images/innova/hero-8.png',
+    title: '',
+    subtitle: ''
+  },
+  { 
+    id: 8,
+    name: 'paredes Backdrop',
+    image: '/images/innova/hero-9.png',
+    title: '',
+    subtitle: ''
+  },
 ]
 
 export default function Hero() {
@@ -25,7 +81,7 @@ export default function Hero() {
           }}
         />
       </div>
-      <div className="mx-auto max-w-7xl px-6 pb-12 pt-12 sm:pb-32 lg:flex lg:px-8 lg:py-8">
+      <div className="mx-auto max-w-7xl px-6 pb-2 pt-6 lg:pt-12 lg:pb-12 lg:flex lg:px-8 lg:py-8">
         <div className="mx-auto max-w-2xl flex-shrink-0 lg:mx-0 lg:max-w-xl lg:pt-4">
           <h1 className="mt-4 pr-4 text-3xl copperplate-bold-font font-bold text-gray-900 sm:text-5xl">
             Una nueva experiencia en diseño
@@ -66,7 +122,7 @@ export default function Hero() {
             </div>
           </div>
         </div>
-        <div className="relative w-full h-[11rem] md:h-[18rem] lg:h-[18rem] my-4 overflow-hidden rounded-lg">
+        <div className="relative w-full h-[11rem] md:h-[18rem] lg:h-[18rem] my-4 lg:my-4 overflow-hidden rounded-lg">
           <PhotographyBackdrop backdrops={backdrops} showPreview={false} />
         </div>
       </div>
