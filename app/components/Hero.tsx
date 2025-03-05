@@ -87,7 +87,7 @@ export default function Hero() {
             Una nueva experiencia en diseño
           </h1>
           <p className="mt-6 text-lg leading-8 text-gray-600">
-            Insumos para fotógrafos y estudios creativos. Fondos fotográficos personalizados y props para recrear una experiencia innova.
+            Insumos para fotógrafos. Fondos fotográficos personalizados y en alta definición para recrear una experiencia innova-dora.
           </p>
           <div className="flex space-x-4 pt-4">
             <div className="flex justify-center items-center space-x-4 md:order-2">

@@ -60,7 +60,7 @@ export default function Footer() {
                     </a>
                   </li>
                   <li>
-                  <a href="https://www.facebook.com/innova54.store" className="text-gray-600 hover:text-blue-600 flex items-center">
+                  <a href="https://ar.pinterest.com/innova54store/" className="text-gray-600 hover:text-blue-600 flex items-center">
                     <span className="sr-only">pinterest</span>
                     <Image
                       aria-hidden
@@ -107,7 +107,7 @@ export default function Footer() {
                   <li>
                     <a
                       className="text-base text-gray-500 hover:text-gray-900 flex items-center text-left"
-                      href="https://wa.me/5491171142152"
+                      href="https://maps.app.goo.gl/umYECNsdo57obniE6"
                       target="_blank"
                       rel="noopener noreferrer"
                     >

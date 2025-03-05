@@ -27,7 +27,7 @@ const cards: Array<cardsProps> = [
     title: 'Escribir a Whatsapp',
     subtitle: 'Tienes dudas o consultas? Daimary y Jesus te van a ayudar!',
     animation: '/animations/whatsapp.json',
-    href: '/prices',
+    href: 'https://wa.me/5491171142152',
   },
   /* { 
     title: 'Pasos para comprar fondos personalizados',

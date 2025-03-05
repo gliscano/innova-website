@@ -3,24 +3,13 @@
 import { useEffect, useRef } from 'react'
 import lottie from 'lottie-web'
 import Image from 'next/image'
+import {
+  propertiesBackdrops,
+  propertiesHybridBackdrops,
+  propertiesFloor,
+  propertiesInnPets
+} from '../data/pricesData'
 
-const prices = [
-    { width: 2.90, length: 2.0, price: 40396 },
-    { width: 2.90, length: 2.5, price: 46370 },
-    { width: 2.90, length: 3.0, price: 52560 },
-    { width: 2.90, length: 3.5, price: 58754 },
-    { width: 2.90, length: 4.0, price: 64829 },
-    { width: 2.90, length: 4.5, price: 71160 },
-    { width: 2.90, length: 5.0, price: 77372 },
-    { width: 1.50, length: 2.0, price: 24836 },
-    { width: 1.50, length: 2.5, price: 27577 },
-    { width: 1.50, length: 3.0, price: 30672 },
-    { width: 1.50, length: 3.5, price: 33769 },
-    { width: 1.50, length: 4.0, price: 36807 },
-    { width: 1.50, length: 4.5, price: 39972 },
-    { width: 1.50, length: 5.0, price: 43078 },
-  ]
-  
   const sizeGuides = [
     {
       title: 'Retratos Individuales',
@@ -51,8 +40,8 @@ const prices = [
   export default function PriceList() {
     const animationRef = useRef<HTMLElement>(null)
 
-    const wideBackdrops = prices.filter(p => p.width === 2.90)
-    const standardBackdrops = prices.filter(p => p.width === 1.50)
+    const wideBackdrops = propertiesBackdrops.filter(p => p.width === 2.90)
+    const standardBackdrops = propertiesBackdrops.filter(p => p.width === 1.50)
 
     useEffect(() => {
       animationRef.current =
@@ -79,7 +68,7 @@ const prices = [
               </h1>
               <div className="mt-6 max-w-xl lg:mt-0 xl:col-end-1">
                 <p className="text-lg leading-8 text-gray-600">
-                  Encuentra el tamaño perfecto para tus necesidades. Tenemos medidas estándar y personalizadas!!!
+                  Encuentra el tamaño perfecto para tus necesidades. Si precisa una medida personalizada, no dudes en consultar!
                 </p>
               </div>
             </div>
@@ -136,16 +125,16 @@ const prices = [
                       <div className="flex items-center gap-4">
                         <div className="min-w-0 flex-1">
                           <p className="text-sm font-medium text-gray-900">
-                            {item.width.toFixed(2)}m × {item.length.toFixed(1)}m
+                            {`Dimensiones: ${item.width.toFixed(2)}m × ${item.height.toFixed(1)}m`}
                           </p>
                           <p className="text-sm text-gray-500">
-                            Área total: {(item.width * item.length).toFixed(1)}m²
+                            Área total: {(item.width * item.height).toFixed(1)}m²
                           </p>
                         </div>
                       </div>
                     </div>
                     <div className="ml-4">
-                      <div className="text-lg font-semibold text-gray-900">
+                      <div className="font-medium font-semibold text-gray-900">
                         ${item.price.toLocaleString()}
                       </div>
                     </div>
@@ -167,16 +156,16 @@ const prices = [
                       <div className="flex items-center gap-4">
                         <div className="min-w-0 flex-1">
                           <p className="text-sm font-medium text-gray-900">
-                            {item.width.toFixed(2)}m × {item.length.toFixed(1)}m
+                            {`Dimensiones: ${item.width.toFixed(2)}m × ${item.height.toFixed(1)}m`}
                           </p>
-                          <p className="text-sm text-gray-900">
-                            Área total: {(item.width * item.length).toFixed(1)}m²
+                          <p className="text-sm text-gray-500">
+                            Área total: {(item.width * item.height).toFixed(1)}m²
                           </p>
                         </div>
                       </div>
                     </div>
                     <div className="ml-4">
-                      <div className="text-lg font-semibold text-gray-900">
+                      <div className="font-medium font-semibold text-gray-900">
                         ${item.price.toLocaleString()}
                       </div>
                     </div>
@@ -186,28 +175,28 @@ const prices = [
             </div>
           </div>
 
-          {/* fabric Pricing Section */}
+          {/* Innova Pricing Section */}
           <h3 className="text-2xl copperplate-condensed-bold-font text-gray-900 mt-8 text-center">
             Lista de precios - Productos diseñados por Innova
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-14 mt-8">
-            {/* Standard Backdrops */}
+            {/* Hybrid Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="p-6 bg-teal-500">
-                <h3 className="text-xl font-bold text-teal-900">Fondos para Mascotas - InnPets</h3>
-                <p className="mt-1 text-sm text-teal-950">Los mejores diseños para peluditos de la casa</p>
+              <div className="p-6 bg-pink-900">
+                <h3 className="text-xl font-bold text-gray-100">Fondos Hibridos (Tela y Piso en Símil de neoprene)</h3>
+                <p className="mt-1 text-sm text-gray-100">Combinamos las mejores texturas para lograr una experiencia superior.</p>
               </div>
               <div className="divide-y divide-gray-200">
-                {standardBackdrops.map((item, index) => (
+                {propertiesHybridBackdrops.map((item, index) => (
                   <div key={index} className="flex items-center p-4 hover:bg-gray-50 transition-colors">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-4">
                         <div className="min-w-0 flex-1">
                           <p className="text-sm font-medium text-gray-900">
-                            {item.width.toFixed(2)}m × {item.length.toFixed(1)}m
+                            {`Dimensiones: ${item.width.toFixed(2)}m × ${item.height.toFixed(1)}m`}
                           </p>
-                          <p className="text-sm text-gray-500">
-                            Área total: {(item.width * item.length).toFixed(1)}m²
+                          <p className="text-sm text-gray-900">
+                            {`${item.description} / Área total: ${(item.width * item.height).toFixed(1)}m²`}
                           </p>
                         </div>
                       </div>
@@ -221,30 +210,29 @@ const prices = [
                 ))}
               </div>
             </div>
-
-            {/* Wide Backdrops */}
+            {/* InnPets Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="p-6 bg-pink-900">
-                <h3 className="text-xl font-bold text-gray-100">Fondos Hibridos (Tela y Piso en Símil de neoprene)</h3>
-                <p className="mt-1 text-sm text-gray-100">Combinamos las mejores texturas para lograr una experiencia superior</p>
+              <div className="p-6 bg-teal-500">
+                <h3 className="text-xl font-bold text-teal-900">Fondos para Mascotas - InnPets</h3>
+                <p className="mt-1 text-sm text-teal-950">Los mejores diseños para peluditos de la casa</p>
               </div>
               <div className="divide-y divide-gray-200">
-                {wideBackdrops.map((item, index) => (
+                {propertiesInnPets.map((item, index) => (
                   <div key={index} className="flex items-center p-4 hover:bg-gray-50 transition-colors">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-4">
                         <div className="min-w-0 flex-1">
                           <p className="text-sm font-medium text-gray-900">
-                            {item.width.toFixed(2)}m × {item.length.toFixed(1)}m
+                            {`Dimensiones: ${item.width.toFixed(2)}m × ${item.height.toFixed(1)}m`}
                           </p>
-                          <p className="text-sm text-gray-900">
-                            Área total: {(item.width * item.length).toFixed(1)}m²
+                          <p className="text-sm text-gray-500">
+                            Área total: {(item.width * item.height).toFixed(1)}m²
                           </p>
                         </div>
                       </div>
                     </div>
                     <div className="ml-4">
-                      <div className="text-lg font-semibold text-gray-900">
+                      <div className="font-medium font-semibold text-gray-900">
                         ${item.price.toLocaleString()}
                       </div>
                     </div>
