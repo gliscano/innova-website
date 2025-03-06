@@ -18,7 +18,7 @@ const cards: Array<cardsProps> = [
   },
   { 
     title: 'Set y Fondos Híbridos',
-    image: '/images/innova/icon-product-type-01.png',
+    image: '/images/innova/icon-product-type-04.png',
     href: 'https://innova54store.empretienda.com.ar/productos-en-stock/fondos-en-tela',
   },
   { 

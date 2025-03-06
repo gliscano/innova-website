@@ -15,7 +15,7 @@ export default function Footer() {
           <div className="mt-12 grid grid-cols-2 gap-8 xl:mt-0 xl:col-span-2">
             <div className="md:grid md:grid-cols-2 md:gap-8">
               <div>
-                <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">Redes Sociales</h3>
+                <h3 className="text-sm font-semibold text-gray-600 tracking-wider uppercase">Redes Sociales</h3>
                 <ul role="list" className="mt-4 space-y-4">
                   <li>
                     <a href="https://www.instagram.com/innova54.store" className="text-gray-600 hover:text-[#C13584] flex items-center">
@@ -76,7 +76,7 @@ export default function Footer() {
                 </ul>
               </div>
               <div className="mt-12 md:mt-0">
-                <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">Contacto</h3>
+                <h3 className="text-sm font-semibold text-gray-600 tracking-wider uppercase">Contacto</h3>
                 <ul role="list" className="mt-4 space-y-4">
                   <li>
                     <a href="#" className="text-base text-gray-500 hover:text-gray-900 flex items-center">
@@ -128,7 +128,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-12 border-t border-gray-200 pt-8">
-          <p className="text-base text-gray-400 xl:text-center">
+          <p className="text-base text-gray-600 xl:text-center">
             &copy; 2025 Innova Tech. Todos los derechos reservados.
           </p>
         </div>

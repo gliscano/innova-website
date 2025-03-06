@@ -17,7 +17,8 @@ export default function RootLayout({
   return (
     <html lang="es">
       <head>
-      <script async src="https://www.googletagmanager.com/gtag/js?id=G-EZ8J02VNPE"></script>
+      <link rel="dns-prefetch" href="https://www.googletagmanager.com/"></link>
+      <link href="https://www.googletagmanager.com/gtag/js?id=G-EZ8J02VNPE" rel="preload" as="script"></link>
       <script id="google-analytics">
         {
           `
