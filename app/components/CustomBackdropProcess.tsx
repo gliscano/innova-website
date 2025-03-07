@@ -64,7 +64,7 @@ export default function CustomBackdropProcess() {
               </h1>
               <div className="mt-6 max-w-xl lg:mt-0 xl:col-end-1">
                 <p className="text-lg leading-8 text-gray-600">
-                  Tenelo en 10 días hábiles. Conocé los pasos...
+                  Elevá tu creatividad sin límites y tenelo en 10 días hábiles. Conocé los pasos...
                 </p>
               </div>
             </div>
@@ -89,7 +89,7 @@ export default function CustomBackdropProcess() {
                   </div>
                   <span className="text-lg font-semibold leading-7 text-gray-900">{step.title}</span>
                 </dt>
-                <dd className="mt-4 flex flex-auto flex-col text-base leading-7 text-gray-600">
+                <dd className="mt-4 flex flex-auto flex-col text-base leading-7 text-gray-700">
                   <p className="flex-auto">{step.description}</p>
                 </dd>
               </div>

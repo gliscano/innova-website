@@ -84,10 +84,10 @@ export default function Hero() {
       <div className="mx-auto max-w-7xl px-6 pb-2 pt-6 lg:pt-12 lg:pb-12 lg:flex lg:px-8 lg:py-8">
         <div className="mx-auto max-w-2xl flex-shrink-0 lg:mx-0 lg:max-w-xl lg:pt-4">
           <h1 className="mt-4 pr-4 text-3xl copperplate-bold-font font-bold text-gray-900 sm:text-5xl">
-            Una nueva experiencia en diseño
+            Crea y captura con una experiencia superior
           </h1>
           <p className="mt-6 text-lg leading-8 text-gray-600">
-            Insumos para fotógrafos. Fondos fotográficos personalizados y en alta definición para recrear una experiencia innova-dora.
+            Personalización, calidad y detalle en cada insumo fotográfico.
           </p>
           <div className="flex space-x-4 pt-4">
             <div className="flex justify-center items-center space-x-4 md:order-2">

@@ -25,16 +25,10 @@ const cards: Array<cardsProps> = [
   },
   { 
     title: 'Escribir a Whatsapp',
-    subtitle: 'Tienes dudas o consultas? Daimary y Jesus te van a ayudar!',
+    subtitle: 'Tenes dudas o consultas? Daimary y Jesus te van a ayudar!',
     animation: '/animations/whatsapp.json',
     href: 'https://wa.me/5491171142152',
-  },
-  /* { 
-    title: 'Pasos para comprar fondos personalizados',
-    subtitle: 'Fondos con dimensiones que se ajusten a tus ideas',
-    animation: '/animations/steps.json',
-    href: '/custom-backdrops',
-  }, */
+  }
 ]
 
 export default function AnimatedCards() {
