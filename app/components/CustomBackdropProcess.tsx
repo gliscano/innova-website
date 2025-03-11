@@ -63,7 +63,7 @@ export default function CustomBackdropProcess() {
                 ¿Necesitas un fondo personalizado?
               </h1>
               <div className="mt-6 max-w-xl lg:mt-0 xl:col-end-1">
-                <p className="text-lg leading-8 text-gray-600">
+                <p className="text-medium lg:text-lg leading-8 text-gray-600">
                   Elevá tu creatividad sin límites y tenelo en 10 días hábiles. Conocé los pasos...
                 </p>
               </div>

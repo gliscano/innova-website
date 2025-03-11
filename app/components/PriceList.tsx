@@ -67,7 +67,7 @@ import {
                 Lista de medidas y precios
               </h1>
               <div className="mt-6 max-w-xl lg:mt-0 xl:col-end-1">
-                <p className="text-lg leading-8 text-gray-600">
+                <p className="text-medium lg:text-lg leading-8 text-gray-600">
                   Encuentra el tamaño perfecto para tus necesidades. Si precisa una medida personalizada, no dudes en consultar!
                 </p>
               </div>
@@ -218,6 +218,36 @@ import {
               </div>
               <div className="divide-y divide-gray-200">
                 {propertiesInnPets.map((item, index) => (
+                  <div key={index} className="flex items-center p-4 hover:bg-gray-50 transition-colors">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-4">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-medium text-gray-900">
+                            {`Dimensiones: ${item.width.toFixed(2)}m × ${item.height.toFixed(1)}m`}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            Área total: {(item.width * item.height).toFixed(1)}m²
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="ml-4">
+                      <div className="font-medium font-semibold text-gray-900">
+                        ${item.price.toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            {/* floor Backdrops */}
+            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+              <div className="p-6 bg-yellow-700">
+                <h3 className="text-xl font-bold text-white">Pisos y Alfombras</h3>
+                <p className="mt-1 text-sm text-white">Proporciona una superficie suave y flexible </p>
+              </div>
+              <div className="divide-y divide-gray-200">
+                {propertiesFloor.map((item, index) => (
                   <div key={index} className="flex items-center p-4 hover:bg-gray-50 transition-colors">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-4">

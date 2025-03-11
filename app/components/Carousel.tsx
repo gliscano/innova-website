@@ -47,7 +47,7 @@ export default function Carousel() {
           <Image
             src={src}
             alt={`Studio workspace ${index + 1}`}
-            objectFit="contain"
+            className='object-fill'
             fill={true}
           />
         </div>

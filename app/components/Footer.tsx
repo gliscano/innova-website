@@ -46,7 +46,7 @@ export default function Footer() {
                     </a>
                   </li>
                   <li>
-                    <a href="https://www.facebook.com/innova54.store" className="text-gray-600 hover:text-blue-600 flex items-center">
+                    <a href="https://www.tiktok.com/@innova54.store" className="text-gray-600 hover:text-blue-600 flex items-center">
                       <span className="sr-only">Tiktok</span>
                       <Image
                         aria-hidden
@@ -79,7 +79,10 @@ export default function Footer() {
                 <h3 className="text-sm font-semibold text-gray-600 tracking-wider uppercase">Contacto</h3>
                 <ul role="list" className="mt-4 space-y-4">
                   <li>
-                    <a href="#" className="text-base text-gray-500 hover:text-gray-900 flex items-center">
+                    <a
+                      href= "mailto:store@innova54.com"
+                      className="text-base text-gray-500 hover:text-gray-900 flex items-center"
+                    >
                     <svg className="h-6 w-6 mr-1" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                       <path fillRule="evenodd" d="M4 7L10.94 11.3375C11.5885 11.7428 12.4115 11.7428 13.06 11.3375L20 7M5 18H19C20.1046 18 21 17.1046 21 16V8C21 6.89543 20.1046 6 19 6H5C3.89543 6 3 6.89543 3 8V16C3 17.1046 3.89543 18 5 18Z" stroke="#000000" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" clipRule="evenodd"/>
                     </svg>

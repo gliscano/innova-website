@@ -1,7 +1,5 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import lottie from 'lottie-web'
 import Image from 'next/image'
 
 type cardsProps = { 
@@ -19,7 +17,7 @@ const cards: Array<cardsProps> = [
   { 
     title: 'Set y Fondos Híbridos',
     image: '/images/innova/icon-product-type-04.png',
-    href: 'https://innova54store.empretienda.com.ar/productos-en-stock/fondos-en-tela',
+    href: 'https://innova54store.empretienda.com.ar/productos-en-stock/fondos-hibridos',
   },
   { 
     title: 'Fondos para mascotas',

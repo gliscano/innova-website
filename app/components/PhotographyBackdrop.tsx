@@ -37,7 +37,7 @@ export default function PhotographyBackdrop({ backdrops, showPreview }: Photogra
           alt={currentBackdrop.name}
           fill
           sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
-          objectFit="contain"
+          className='object-fill'
         />
       </div>
       <div className="absolute inset-0 bg-opacity-5" />
