@@ -28,7 +28,7 @@ export default function CustomBackdropProcess() {
   useEffect(() => {
     if(animationRef.current) {
         lottie.loadAnimation({
-          container: document.getElementById('animated-lottie-custom-backdrop'),
+          container: document.getElementById('animated-lottie-custom-backdrop') as unknown as any,
           renderer: 'svg',
           loop: true,
           autoplay: true,
@@ -39,7 +39,7 @@ export default function CustomBackdropProcess() {
       animationStepRefs.current.forEach((ref, index) => {
         if (ref) {
           lottie.loadAnimation({
-            container: ref,
+            container: ref as unknown as any,
             renderer: 'svg',
             loop: true,
             autoplay: true,
@@ -83,7 +83,7 @@ export default function CustomBackdropProcess() {
                 <dt className="flex flex-col items-center gap-y-4">
                   <div className="relative h-40 w-40">
                   <div
-                    ref={(el) => ((animationStepRefs.current[index] = el) as unknown)}
+                    ref={(el) => ((animationStepRefs.current[index] = el) as unknown as any)}
                     className="h-36 px-2"
                   ></div>
                   </div>

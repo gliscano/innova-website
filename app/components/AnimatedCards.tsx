@@ -38,7 +38,7 @@ export default function AnimatedCards() {
     animationRefs.current.forEach((ref, index) => {
       if (ref) {
         lottie.loadAnimation({
-          container: ref,
+          container: ref as any,
           renderer: 'svg',
           loop: true,
           autoplay: true,
@@ -59,7 +59,7 @@ export default function AnimatedCards() {
               href={card.href}
             >
               <div
-                ref={(el) => (animationRefs.current[index] = el as unknown)}
+                ref={(el) => (animationRefs.current[index] = el as unknown as any)}
                 className="h-36 px-2"
               ></div>
               <div className="px-2 py-2 sm:p-6">
