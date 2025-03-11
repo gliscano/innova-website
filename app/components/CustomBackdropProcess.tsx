@@ -22,18 +22,19 @@ const steps = [
 ]
 
 export default function CustomBackdropProcess() {
-  const animationRef = useRef<React.RefObject<HTMLDivElement>>(null)
-  const animationStepRefs = useRef<HTMLDivElement[]>([])
+  const animationRef = useRef(null)
+  const animationStepRefs = useRef<unknown[]>([])
 
   useEffect(() => {
-    animationRef.current =
-      lottie.loadAnimation({
-        container: document.getElementById('animated-lottie-custom-backdrop'),
-        renderer: 'svg',
-        loop: true,
-        autoplay: true,
-        path: '/animations/steps.json',
-      })
+    if(animationRef.current) {
+        lottie.loadAnimation({
+          container: document.getElementById('animated-lottie-custom-backdrop'),
+          renderer: 'svg',
+          loop: true,
+          autoplay: true,
+          path: '/animations/steps.json',
+        })
+    }
 
       animationStepRefs.current.forEach((ref, index) => {
         if (ref) {
@@ -82,7 +83,7 @@ export default function CustomBackdropProcess() {
                 <dt className="flex flex-col items-center gap-y-4">
                   <div className="relative h-40 w-40">
                   <div
-                    ref={(el) => ((animationStepRefs.current[index] = el) as typeof  HTMLDivElement)}
+                    ref={(el) => ((animationStepRefs.current[index] = el) as unknown)}
                     className="h-36 px-2"
                   ></div>
                   </div>
