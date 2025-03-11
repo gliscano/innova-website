@@ -24,6 +24,8 @@ export default function PhotographyBackdrop({ backdrops, showPreview }: Photogra
         })
       } catch (error) {
         setCurrentBackdrop(backdrops[0])
+        console.log('PhotographyBackdrop image not found, error: ', error);
+        
       }
     }, timerToChangeImage)
     return () => clearInterval(timer)

@@ -40,7 +40,7 @@ export default function ProductCategoryMenu() {
           Que queres ver?
         </h1>
         <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-4 flex align-center">
-          {cards.map((card, index) => (
+          {cards.map((card) => (
             <a
               key={card.title}
               className="bg-rose-gold-light rounded-xl p-1 flex justify-center items-center overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300"

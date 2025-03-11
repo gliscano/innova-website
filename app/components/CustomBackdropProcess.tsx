@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from 'react'
 import lottie from 'lottie-web'
-import Image from "next/image"
 
 const steps = [
   {

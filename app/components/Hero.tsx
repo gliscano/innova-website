@@ -1,5 +1,4 @@
 import Image from 'next/image'
-import Carousel from './Carousel'
 import PhotographyBackdrop from './PhotographyBackdrop'
 
 const backdrops = [
