@@ -32,7 +32,7 @@ const cards: Array<cardsProps> = [
 ]
 
 export default function AnimatedCards() {
-  const animationRefs = useRef<HTMLDivElement[]>([])
+  const animationRefs = useRef<unknown[]>([])
 
   useEffect(() => {
     animationRefs.current.forEach((ref, index) => {
@@ -59,7 +59,7 @@ export default function AnimatedCards() {
               href={card.href}
             >
               <div
-                ref={(el) => (animationRefs.current[index] = el as HTMLDivElement)}
+                ref={(el) => (animationRefs.current[index] = el as unknown)}
                 className="h-36 px-2"
               ></div>
               <div className="px-2 py-2 sm:p-6">
