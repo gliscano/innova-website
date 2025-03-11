@@ -38,20 +38,22 @@ import {
   ]
   
   export default function PriceList() {
-    const animationRef = useRef<HTMLElement>(null)
+    const animationRef = useRef(null)
 
     const wideBackdrops = propertiesBackdrops.filter(p => p.width === 2.90)
     const standardBackdrops = propertiesBackdrops.filter(p => p.width === 1.50)
 
     useEffect(() => {
-      animationRef.current =
-          lottie.loadAnimation({
-            container: document.getElementById('animated-lottie'),
-            renderer: 'svg',
-            loop: true,
-            autoplay: true,
-            path: '/animations/list.json',
-          })
+      if(animationRef.current) {
+        lottie.loadAnimation({
+          // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+          container: document.getElementById('animated-lottie') as unknown as any,
+          renderer: 'svg',
+          loop: true,
+          autoplay: true,
+          path: '/animations/list.json',
+        })
+      }
     }, [])
   
     return (
