@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link"
 
 export default function Footer() {
   return (
@@ -131,9 +132,14 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-12 border-t border-gray-200 pt-8">
-          <p className="text-base text-gray-600 xl:text-center">
-            &copy; 2025 Innova Tech. Todos los derechos reservados.
-          </p>
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <p className="text-base text-gray-400 copperplate-condensed-ligth-font">&copy; 2025 Innova Tech. Todos los derechos reservados.</p>
+            <div className="mt-4 md:mt-0">
+              <Link href="/terminos-y-condiciones" className="text-sm text-gray-500 hover:text-gray-900 copperplate-condensed-ligth-font">
+                Términos y Condiciones
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </footer>
