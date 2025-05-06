@@ -6,18 +6,18 @@ import lottie from 'lottie-web'
 
 const steps = [
   {
-    title: "Paso 1: Recepción de pedido",
-    description: "Decinos el diseño que te gusta y las medidas. Nuestra fecha de cierre de pedidos son todos los viernes.",
+    title: "Paso 1: Elegí y encargá",
+    description: "Contanos el diseño y las medidas que querés. Cierre de pedidos: todos los viernes.",
     animation: "/animations/customer-services.json"
   },
   {
-    title: "Paso 2: Diseño y Fabricación",
-    description: "Confirmada la seña, ajustamos el diseño a las medidas solicitadas y te enviamos 3 propuestas para el piso. Luego va a impresión y costura.",
+    title: "Paso 2: Producción personalizada",
+    description: "Con la seña confirmada, ajustamos el diseño a tu medida, te enviamos 3 propuestas para el piso, Imprimimos y cosemos.",
     animation: "/animations/design.json"
   },
   {
-    title: "Paso 3: Envío",
-    description: "Listo para envío por encomienda ó entrega presencial en nuestro estudio (previo acuerdo)",
+    title: "Paso 3: Revisión y Envío",
+    description: "Validamos la calidad del fondo y Listo! Retirá en estudio (con cita) o Envío por encomienda (a cargo del cliente)",
     animation: "/animations/shipping.json"
   },
 ]
@@ -65,7 +65,8 @@ export default function CustomBackdropProcess() {
               </h1>
               <div className="mt-6 max-w-xl lg:mt-0 xl:col-end-1">
                 <p className="text-medium lg:text-lg leading-8 text-gray-600">
-                  Elevá tu creatividad sin límites y tenelo en 10 días hábiles. Conocé los pasos...
+                  Elevá tu creatividad sin límites y tenelo en <b>12 días hábiles</b>.<br />
+                  Conocé los pasos...
                 </p>
               </div>
             </div>
