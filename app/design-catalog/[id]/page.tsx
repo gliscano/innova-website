@@ -5,6 +5,17 @@ import Header from "@/app/components/Header"
 import { getCatalogItemByIndex } from "@/app/utils/catalogUtils"
 import { catalogData } from "@/app/data/catalogData"
 import PriceList from "@/app/components/PriceList"
+import { use } from "react"
+
+const ChevronIcon = () => (
+  <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+    <path
+      fillRule="evenodd"
+      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+      clipRule="evenodd"
+    />
+  </svg>
+)
 
 interface ProductPageProps {
   params: {
@@ -17,53 +28,44 @@ export default function ProductPage({ params }: ProductPageProps) {
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Producto no encontrado</h1>
-          <Link
-            href="/"
-            className="bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 transition-colors"
-          >
-            Volver al Catálogo
-          </Link>
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="min-h-[calc(100vh-64px)] bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Producto no encontrado</h1>
+            <Link
+              href="/design-catalog"
+              className="bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 transition-colors"
+            >
+              Volver al Catálogo
+            </Link>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gray-50">
       <Header />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumb */}
         <nav className="flex mb-8" aria-label="Breadcrumb">
           <ol className="copperplate-condensed-ligth-font inline-flex items-center space-x-1 md:space-x-3">
             <li className="inline-flex items-center">
-              <Link href="/" className="text-gray-700 hover:text-blue-600 transition-colors">
+              <Link href="/design-catalog" className="text-gray-700 hover:text-blue-600 transition-colors">
                 Catálogo
               </Link>
             </li>
             <li>
               <div className="flex items-center">
-                <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fillRule="evenodd"
-                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+                <ChevronIcon />
                 <span className="text-gray-500 ml-1 md:ml-2">{product.category}</span>
               </div>
             </li>
             <li>
               <div className="flex items-center">
-                <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fillRule="evenodd"
-                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+                <ChevronIcon />
                 <span className="text-gray-500 ml-1 md:ml-2 truncate">{product.title}</span>
               </div>
             </li>
@@ -119,7 +121,7 @@ export default function ProductPage({ params }: ProductPageProps) {
         </div>
 
         {/* Información detallada */}
-        <div className="bg-white rounded-lg shadow-lg p-8">
+        <div className="bg-white rounded-lg p-8">
           <h2 className="text-2xl copperplate-bold-font font-bold text-gray-900 mb-8">Información del Producto</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

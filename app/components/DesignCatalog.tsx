@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { getAllTags } from "../utils/catalogUtils"
 import { catalogData, synonymsCatalog } from "../data/catalogData"
 import { categories } from "../data/categoriesData"
@@ -37,7 +38,51 @@ interface HybridSearchResult {
 
 type SearchResult = AISearchResult | DirectSearchResult | HybridSearchResult | null
 
+// Componentes SVG reutilizables
+const SearchIcon = () => (
+  <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+  </svg>
+)
+
+const LoadingSpinner = () => (
+  <svg className="animate-spin h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+    <path
+      className="opacity-75"
+      fill="currentColor"
+      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+    ></path>
+  </svg>
+)
+
+const LightningIcon = () => (
+  <svg className="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+  </svg>
+)
+
+const CheckIcon = () => (
+  <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+)
+
+const EyeIcon = () => (
+  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+  </svg>
+)
+
+const WarningIcon = () => (
+  <svg className="h-4 w-4 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.232 15.5c-.77.833.192 2.5 1.732 2.5z" />
+  </svg>
+)
+
 export default function InnovaCatalog() {
+  const router = useRouter()
   const [searchTerm, setSearchTerm] = useState("")
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("Todos")
@@ -398,6 +443,12 @@ export default function InnovaCatalog() {
   const searchResultType = getSearchResultType()
   const remainingAISearches = MAX_AI_SEARCHES_PER_SESSION - aiSearchesUsed
 
+  const handleViewDetails = (e: React.MouseEvent, productId: string | number) => {
+    e.preventDefault()
+    e.stopPropagation()
+    router.push(`/design-catalog/${String(productId)}`)
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -406,30 +457,7 @@ export default function InnovaCatalog() {
           {/* Barra de búsqueda principal */}
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              {isSearching ? (
-                <svg
-                  className="animate-spin h-5 w-5 text-blue-500"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-              ) : (
-                <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              )}
+              {isSearching ? <LoadingSpinner /> : <SearchIcon />}
             </div>
             <input
               type="text"
@@ -448,162 +476,18 @@ export default function InnovaCatalog() {
               <span className={`text-xs pr-3 ${searchTerm.length >= 20 ? "text-red-500" : "text-gray-400"}`}>
                 {searchTerm.length}/25
               </span>
-              {/* Contador de búsquedas IA */}
-              <svg className="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
+              <LightningIcon />
               <span className={`text-xs ${remainingAISearches <= 1 ? "text-red-600" : "text-blue-600"}`}>
                 IA: {remainingAISearches}/5
               </span>
             </div>
           </div>
 
-          {/* Resultados de búsqueda */}
-          {searchResult && debouncedSearchTerm && (
-            <div
-              className={`border rounded-lg p-4 ${
-                searchResultType === "direct"
-                  ? "bg-green-50 border-green-100"
-                  : searchResultType === "hybrid"
-                    ? "bg-yellow-50 border-yellow-100"
-                    : "bg-blue-50 border-blue-100"
-              }`}
-            >
-              <div className="flex items-start gap-2 mb-2">
-                {searchResultType === "direct" ? (
-                  <svg className="h-5 w-5 text-green-600 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                ) : searchResultType === "hybrid" ? (
-                  <svg className="h-5 w-5 text-yellow-600 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                    />
-                  </svg>
-                ) : (
-                  <svg className="h-5 w-5 text-blue-600 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                )}
-                <div
-                  className={`text-sm ${
-                    searchResultType === "direct"
-                      ? "text-green-800"
-                      : searchResultType === "hybrid"
-                        ? "text-yellow-800"
-                        : "text-blue-800"
-                  }`}
-                >
-                  <p className="font-medium">
-                    {searchResultType === "direct"
-                      ? "Coincidencia exacta"
-                      : searchResultType === "hybrid"
-                        ? `Búsqueda inteligente (${Math.round(((searchResult as HybridSearchResult).confidence || 0) * 100)}% confianza)`
-                        : "Búsqueda con IA"}
-                  </p>
-                  <p>
-                    {searchResultType === "direct"
-                      ? "Se encontraron coincidencias exactas en nuestro catálogo"
-                      : searchResultType === "hybrid"
-                        ? "Se encontraron coincidencias usando algoritmos avanzados y sinónimos"
-                        : (searchResult as AISearchResult).explanation}
-                  </p>
-                </div>
-              </div>
-
-              {searchResult.categories.length > 0 && (
-                <div className="mt-2">
-                  <p
-                    className={`text-xs mb-1 ${
-                      searchResultType === "direct"
-                        ? "text-green-700"
-                        : searchResultType === "hybrid"
-                          ? "text-yellow-700"
-                          : "text-blue-700"
-                    }`}
-                  >
-                    Categorías encontradas:
-                  </p>
-                  <div className="flex flex-wrap gap-1">
-                    {searchResult.categories.map((category) => (
-                      <button
-                        key={category}
-                        onClick={() => setSelectedCategory(category)}
-                        className={`px-2 py-1 rounded-full text-xs font-medium transition-colors ${
-                          selectedCategory === category
-                            ? searchResultType === "direct"
-                              ? "bg-green-600 text-white"
-                              : searchResultType === "hybrid"
-                                ? "bg-yellow-600 text-white"
-                                : "bg-blue-600 text-white"
-                            : searchResultType === "direct"
-                              ? "bg-green-100 text-green-800 hover:bg-green-200"
-                              : searchResultType === "hybrid"
-                                ? "bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
-                                : "bg-blue-100 text-blue-800 hover:bg-blue-200"
-                        }`}
-                      >
-                        {category}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {searchResult.tags.length > 0 && (
-                <div className="mt-2">
-                  <p
-                    className={`text-xs mb-1 ${
-                      searchResultType === "direct"
-                        ? "text-green-700"
-                        : searchResultType === "hybrid"
-                          ? "text-yellow-700"
-                          : "text-blue-700"
-                    }`}
-                  >
-                    Tags relacionados:
-                  </p>
-                  <div className="flex flex-wrap gap-1">
-                    {searchResult.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${
-                          searchResultType === "direct"
-                            ? "bg-green-100 text-green-800"
-                            : searchResultType === "hybrid"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-blue-100 text-blue-800"
-                        }`}
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
           {/* Advertencia de cuota IA */}
           {remainingAISearches <= 1 && (
             <div className="bg-red-50 border border-red-100 rounded-lg p-3">
               <div className="flex items-center gap-2">
-                <svg className="h-4 w-4 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.232 15.5c-.77.833.192 2.5 1.732 2.5z"
-                  />
-                </svg>
+                <WarningIcon />
                 <p className="text-sm text-red-800">
                   {remainingAISearches === 0
                     ? "Has agotado tus búsquedas con IA por hoy. Se usará búsqueda inteligente local."
@@ -689,7 +573,7 @@ export default function InnovaCatalog() {
             return (
               <Link
                 key={product.id}  
-                href={`/producto/${product.id}`}
+                href={`/design-catalog/${product.id}`}
                 className="bg-white rounded-lg content-between shadow-md overflow-hidden group hover:shadow-lg transition-all duration-300 block focus:outline-none"
                 tabIndex={0}
               >
@@ -706,50 +590,15 @@ export default function InnovaCatalog() {
                       Destacado
                     </span>
                   )}
-                  {/* Match Indicator */}
-                  {searchResult && matchingTags.length > 0 && (
-                    <span
-                      className={`absolute top-2 right-2 inline-flex items-center px-2 py-1 rounded-md text-xs font-medium text-white ${
-                        searchResultType === "direct"
-                          ? "bg-green-600"
-                          : searchResultType === "hybrid"
-                            ? "bg-yellow-600"
-                            : "bg-blue-600"
-                      }`}
-                    >
-                      <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                      {searchResultType === "direct" ? "Exacto" : searchResultType === "hybrid" ? "Smart" : "IA"}
-                    </span>
-                  )}
                   <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
                     <>
-                      <Link
-                        href={`/design-catalog/${product.id}`}
+                      <button
+                        onClick={(e) => handleViewDetails(e, product.id)}
                         className="opacity-0 group-hover:opacity-100 transition-opacity bg-white bg-opacity-100 text-gray-900 px-4 py-2 rounded-md font-medium hover:bg-gray-100 flex items-center gap-2"
                       >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                          />
-                        </svg>
+                        <EyeIcon />
                         Ver Detalles
-                      </Link>
+                      </button>
                     </>
                   </div>
                 </div>
@@ -779,16 +628,7 @@ export default function InnovaCatalog() {
                                 : "bg-gray-100 text-gray-800"
                             }`}
                           >
-                            {isMatch && (
-                              <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                                />
-                              </svg>
-                            )}
+                            {isMatch && <CheckIcon />}
                             {tag}
                           </span>
                         )
@@ -805,14 +645,7 @@ export default function InnovaCatalog() {
         {filteredProducts.length === 0 && (
           <div className="text-center py-12">
             <div className="text-gray-400 mb-4">
-              <svg className="w-16 h-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
+              <SearchIcon />
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">No se encontraron diseños</h3>
             <p className="text-gray-600 mb-4">Intenta ajustar tus filtros o términos de búsqueda</p>
