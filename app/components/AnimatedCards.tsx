@@ -2,8 +2,7 @@
 
 'use client'
 
-import { useEffect, useRef } from 'react'
-import lottie from 'lottie-web'
+import { useEffect, useRef, useState } from 'react'
 
 type cardsProps = { 
   title: string,
@@ -35,20 +34,37 @@ const cards: Array<cardsProps> = [
 
 export default function AnimatedCards() {
   const animationRefs = useRef<unknown[]>([])
+  const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
-    animationRefs.current.forEach((ref, index) => {
-      if (ref) {
-        lottie.loadAnimation({
-          container: ref as any,
-          renderer: 'svg',
-          loop: true,
-          autoplay: true,
-          path: cards[index].animation,
-        })
-      }
-    })
+    setIsClient(true)
   }, [])
+
+  useEffect(() => {
+    if (!isClient) return
+
+    const loadAnimations = async () => {
+      try {
+        const lottie = (await import('lottie-web')).default
+        
+        animationRefs.current.forEach((ref, index) => {
+          if (ref) {
+            lottie.loadAnimation({
+              container: ref as any,
+              renderer: 'svg',
+              loop: true,
+              autoplay: true,
+              path: cards[index].animation,
+            })
+          }
+        })
+      } catch (error) {
+        console.error('Error loading lottie animations:', error)
+      }
+    }
+
+    loadAnimations()
+  }, [isClient])
 
   return (
     <div className="bg-rose-gold">

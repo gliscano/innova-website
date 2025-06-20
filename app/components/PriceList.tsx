@@ -44,7 +44,7 @@ import {
     const standardBackdrops = propertiesBackdrops.filter(p => p.width === 1.50)
 
     useEffect(() => {
-      if(animationRef.current) {
+      if(typeof document !== 'undefined' && animationRef.current) {
         lottie.loadAnimation({
           // eslint-disable-next-line  @typescript-eslint/no-explicit-any
           container: document.getElementById('animated-lottie') as unknown as any,

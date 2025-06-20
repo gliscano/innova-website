@@ -27,7 +27,7 @@ export default function CustomBackdropProcess() {
   const animationStepRefs = useRef<unknown[]>([])
 
   useEffect(() => {
-    if(animationRef.current) {
+    if(typeof document !== 'undefined' && animationRef.current) {
         lottie.loadAnimation({
           container: document.getElementById('animated-lottie-custom-backdrop') as unknown as any,
           renderer: 'svg',
