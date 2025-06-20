@@ -46,7 +46,7 @@ export default function ProductPage({ params }: ProductPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pb-6">
       <Header />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumb */}
@@ -113,9 +113,15 @@ export default function ProductPage({ params }: ProductPageProps) {
             </div>
 
             <div className="space-y-4">
-              <button className="w-full bg-blue-600 text-white px-6 py-3 rounded-md font-medium hover:bg-blue-700 transition-colors text-lg">
-                Ver Catálogo Completo
-              </button>
+              <Link
+                href="https://innova54store.empretienda.com.ar/productos-en-stock"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full bg-blue-600 text-white px-6 py-3 rounded-md font-medium hover:bg-blue-700 transition-colors text-lg flex items-center justify-center gap-2 group"
+              >
+
+                Ver Catálogo de diseños
+              </Link>
             </div>
           </div>
         </div>
@@ -147,7 +153,18 @@ export default function ProductPage({ params }: ProductPageProps) {
                 </svg>
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900">¿Lo necesitás antes?</h3>
-                  <p className="text-gray-600">Mirá nuestros Fondos en Stock, con entrega inmediata.</p>
+                  <p className="text-gray-600 mb-2">Mirá nuestros Fondos en Stock, con entrega inmediata.</p>
+                  <Link
+                    href="https://innova54store.empretienda.com.ar/productos-en-stock"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group"
+                  >
+                    Ver Fondos en Stock
+                    <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  </Link>
                 </div>
               </div>
 
@@ -166,6 +183,25 @@ export default function ProductPage({ params }: ProductPageProps) {
                     Incluye la personalización del piso si lo deseás, con 3 opciones adaptadas al diseño, sin costo
                     adicional.
                   </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <svg className="h-6 w-6 text-blue-600 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                  />
+                </svg>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">Medidas estándar y Personalizadas</h3>
+                  <ul className="text-gray-600 list-disc ml-4 space-y-1">
+                    <li>Anchos disponibles: 2,90 m y 1,50 m</li>
+                    <li>Largos: desde 1 m hasta 30 m</li>
+                    <li>¿Otra medida? ¡También hacemos fondos personalizados!</li>
+                  </ul>
                 </div>
               </div>
             </div>
@@ -209,31 +245,24 @@ export default function ProductPage({ params }: ProductPageProps) {
                   </ul>
                 </div>
               </div>
-
               <div className="flex items-start gap-3">
-                <svg className="h-6 w-6 text-blue-600 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                <button className="w-full bg-green-400 px-6 py-3 rounded-md font-medium hover:bg-green-700 transition-colors text-lg flex items-center justify-center">
+                  <Image
+                    aria-hidden
+                    src="../svg/whatsapp.svg"
+                    alt="Whatsapp icon"
+                    className="mr-2"
+                    width={20}
+                    height={20}
                   />
-                </svg>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Medidas estándar y Personalizadas</h3>
-                  <ul className="text-gray-600 list-disc ml-4 space-y-1">
-                    <li>Anchos disponibles: 2,90 m y 1,50 m</li>
-                    <li>Largos: desde 1 m hasta 30 m</li>
-                    <li>¿Otra medida? ¡También hacemos fondos personalizados!</li>
-                  </ul>
-                </div>
+                  Quiero comprar / Quiero más info
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
       <PriceList />
-      <Footer />
     </div>
   )
 }

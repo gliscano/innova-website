@@ -120,11 +120,11 @@ export default function Hero() {
               >
                 <Image
                   aria-hidden
-                  src="svg/phone.svg"
+                  src="svg/whatsapp.svg"
                   alt="Whatsapp icon"
                   className="mr-2"
-                  width={16}
-                  height={16}
+                  width={20}
+                  height={20}
                 />
                 Escribir a Whatsapp
               </a>

@@ -1,12 +1,13 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { getAllTags } from "../utils/catalogUtils"
 import { catalogData, synonymsCatalog } from "../data/catalogData"
 import { categories } from "../data/categoriesData"
+import Lottie from "lottie-web"
 
 // Extraer todos los tags únicos del catálogo
 const allTags = getAllTags()
@@ -90,6 +91,21 @@ export default function InnovaCatalog() {
   const [isSearching, setIsSearching] = useState(false)
   const [searchResult, setSearchResult] = useState<SearchResult>(null)
   const [aiSearchesUsed, setAiSearchesUsed] = useState(0)
+
+  const animationRef = useRef(null)
+
+    useEffect(() => {
+      if(animationRef.current) {
+        Lottie.loadAnimation({
+          // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+          container: document.getElementById('animated-lottie') as unknown as any,
+          renderer: 'svg',
+          loop: true,
+          autoplay: true,
+          path: '/animations/catalog.json',
+        })
+      }
+    }, [])
 
   // Cargar contador de búsquedas IA al inicializar
   useEffect(() => {
@@ -452,115 +468,121 @@ export default function InnovaCatalog() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Filtros y búsqueda */}
-        <div className="mb-8 space-y-4">
-          {/* Barra de búsqueda principal */}
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              {isSearching ? <LoadingSpinner /> : <SearchIcon />}
-            </div>
-            <input
-              type="text"
-              placeholder="Buscar diseños (máx. 25 caracteres)..."
-              value={searchTerm}
-              onChange={(e) => {
-                const value = e.target.value
-                if (value.length <= 25) {
-                  setSearchTerm(value)
-                }
-              }}
-              maxLength={25}
-              className="block w-full pl-10 pr-20 py-3 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-lg"
-            />
-            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-              <span className={`text-xs pr-3 ${searchTerm.length >= 20 ? "text-red-500" : "text-gray-400"}`}>
-                {searchTerm.length}/25
-              </span>
-              <LightningIcon />
-              <span className={`text-xs ${remainingAISearches <= 1 ? "text-red-600" : "text-blue-600"}`}>
-                IA: {remainingAISearches}/5
-              </span>
-            </div>
-          </div>
+        <div className="relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20">
+          <div
+            className="absolute inset-y-0 right-1/2 -z-10 -mr-96 w-[200%] origin-top-right skew-x-[-30deg] bg-white shadow-xl shadow-indigo-600/10 ring-1 ring-indigo-50 sm:-mr-80 lg:-mr-96"
+            aria-hidden="true"
+          />
+            {/* Filtros y búsqueda */}
+            <div className="mb-8 space-y-4">
+              {/* Barra de búsqueda principal */}
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  {isSearching ? <LoadingSpinner /> : <SearchIcon />}
+                </div>
+                <input
+                  type="text"
+                  placeholder="Buscar diseños (máx. 25 caracteres)..."
+                  value={searchTerm}
+                  onChange={(e) => {
+                    const value = e.target.value
+                    if (value.length <= 25) {
+                      setSearchTerm(value)
+                    }
+                  }}
+                  maxLength={25}
+                  className="block w-full pl-10 pr-20 py-3 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-lg"
+                />
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <span className={`text-xs pr-3 ${searchTerm.length >= 20 ? "text-red-500" : "text-gray-400"}`}>
+                    {searchTerm.length}/25
+                  </span>
+                  <LightningIcon />
+                  <span className={`text-xs ${remainingAISearches <= 1 ? "text-red-600" : "text-blue-600"}`}>
+                    IA: {remainingAISearches}/5
+                  </span>
+                </div>
+              </div>
 
-          {/* Advertencia de cuota IA */}
-          {remainingAISearches <= 1 && (
-            <div className="bg-red-50 border border-red-100 rounded-lg p-3">
-              <div className="flex items-center gap-2">
-                <WarningIcon />
-                <p className="text-sm text-red-800">
-                  {remainingAISearches === 0
-                    ? "Has agotado tus búsquedas con IA por hoy. Se usará búsqueda inteligente local."
-                    : "Te queda 1 búsqueda con IA para consultas muy complejas."}
-                </p>
+              {/* Advertencia de cuota IA */}
+              {remainingAISearches <= 1 && (
+                <div className="bg-red-50 border border-red-100 rounded-lg p-3">
+                  <div className="flex items-center gap-2">
+                    <WarningIcon />
+                    <p className="text-sm text-red-800">
+                      {remainingAISearches === 0
+                        ? "Has agotado tus búsquedas con IA por hoy. Se usará búsqueda inteligente local."
+                        : "Te queda 1 búsqueda con IA para consultas muy complejas."}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Filtros rápidos */}
+              <div className="flex flex-wrap gap-2">
+                {categories.slice(0, 1).map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                      selectedCategory === category
+                        ? "bg-blue-600 text-white"
+                        : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                    }`}
+                  >
+                    {category}
+                  </button>
+                ))}
+                {categories.slice(1).map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => setSelectedCategory(category === selectedCategory ? "Todos" : category)}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                      selectedCategory === category
+                        ? "bg-blue-600 text-white"
+                        : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                    }`}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+
+              {/* Controles */}
+              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                <div className="flex flex-wrap gap-4 items-center">
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="block w-48 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option value="featured">Destacados</option>
+                    <option value="name">Nombre A-Z</option>
+                  </select>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-600">{filteredProducts.length} diseños encontrados</span>
+                  {searchResultType && (
+                    <span
+                      className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${
+                        searchResultType === "direct"
+                          ? "bg-green-100 text-green-800"
+                          : searchResultType === "hybrid"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-blue-100 text-blue-800"
+                      }`}
+                    >
+                      <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                      {searchResultType === "direct" ? "Exacto" : searchResultType === "hybrid" ? "Inteligente" : "IA"}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
-          )}
-
-          {/* Filtros rápidos */}
-          <div className="flex flex-wrap gap-2">
-            {categories.slice(0, 1).map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  selectedCategory === category
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-            {categories.slice(1).map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category === selectedCategory ? "Todos" : category)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  selectedCategory === category
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
           </div>
-
-          {/* Controles */}
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-            <div className="flex flex-wrap gap-4 items-center">
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="block w-48 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="featured">Destacados</option>
-                <option value="name">Nombre A-Z</option>
-              </select>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">{filteredProducts.length} diseños encontrados</span>
-              {searchResultType && (
-                <span
-                  className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${
-                    searchResultType === "direct"
-                      ? "bg-green-100 text-green-800"
-                      : searchResultType === "hybrid"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : "bg-blue-100 text-blue-800"
-                  }`}
-                >
-                  <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                  {searchResultType === "direct" ? "Exacto" : searchResultType === "hybrid" ? "Inteligente" : "IA"}
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
 
         {/* Grid de productos */}
         <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
