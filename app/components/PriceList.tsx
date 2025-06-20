@@ -117,17 +117,28 @@ import {
             {/* Standard Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
               <div className="p-6 bg-yellow-gold-light">
-                <h3 className="text-xl font-bold text-gray-900">Fondos Estándar (Ancho: 1.50m)</h3>
+                <h3 className="text-xl font-bold text-gray-900">Fondos Pequeños (Ancho: 1.50m)</h3>
                 <p className="mt-1 text-sm text-yellow-900">Perfectos para sesiones individuales, parejas y decoración de tiendas</p>
               </div>
               <div className="divide-y divide-gray-200">
+                <div className="flex items-center py-2 px-4 font-medium text-gray-900 bg-gray-100 hover:bg-gray-100 transition-colors">
+                  <div className="flex-1 min-w-0 w-1/2">
+                    <p>Dimensiones</p>
+                  </div>
+                  <div className="w-1/4 text-center">
+                    <p>Estándar</p>
+                  </div>
+                  <div className="w-1/4 text-center">
+                    <p>Fluo</p>
+                  </div>
+                </div>
                 {standardBackdrops.map((item, index) => (
-                  <div key={index} className="flex items-center p-4 hover:bg-gray-50 transition-colors">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-4">
-                        <div className="min-w-0 flex-1">
+                  <div key={index} className="flex py-2 px-4 hover:bg-gray-50 transition-colors">
+                    <div className="flex-1 min-w-0 w-1/2">
+                      <div className="flex items-left gap-4">
+                        <div className="flex-1">
                           <p className="text-sm font-medium text-gray-900">
-                            {`Dimensiones: ${item.width.toFixed(2)}m × ${item.height.toFixed(1)}m`}
+                            {`${item.width.toFixed(2)}m × ${item.height.toFixed(1)}m`}
                           </p>
                           <p className="text-sm text-gray-500">
                             Área total: {(item.width * item.height).toFixed(1)}m²
@@ -135,11 +146,18 @@ import {
                         </div>
                       </div>
                     </div>
-                    <div className="ml-4">
-                      <div className="font-medium font-semibold text-gray-900">
+                    <div className="w-1/4 text-center">
+                      <p className="font-medium font-semibold text-gray-900 m-1 bg-gray-100 rounded-xl">
                         ${item.price.toLocaleString()}
-                      </div>
+                      </p>
                     </div>
+                    {item.priceFluo && (
+                      <div className="w-1/4 text-center">
+                        <p className="font-medium font-semibold text-gray-900 m-1 bg-green-100 rounded-xl">
+                          ${item.priceFluo?.toLocaleString()}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -152,13 +170,24 @@ import {
                 <p className="mt-1 text-sm text-gray-900">Ideales para grupos, familias y decoración de eventos</p>
               </div>
               <div className="divide-y divide-gray-200">
+                <div className="flex items-center py-2 px-4 font-medium text-gray-900 bg-gray-100 hover:bg-gray-100 transition-colors">
+                  <div className="flex-1 min-w-0 w-1/2">
+                    <p>Dimensiones</p>
+                  </div>
+                  <div className="w-1/4 text-center">
+                    <p>Estándar</p>
+                  </div>
+                  <div className="w-1/4 text-center">
+                    <p>Fluo</p>
+                  </div>
+                </div>
                 {wideBackdrops.map((item, index) => (
-                  <div key={index} className="flex items-center p-4 hover:bg-gray-50 transition-colors">
-                    <div className="flex-1 min-w-0">
+                  <div key={index} className="flex items-center py-2 px-4 hover:bg-gray-50 transition-colors">
+                    <div className="flex-1 min-w-0 w-1/2">
                       <div className="flex items-center gap-4">
                         <div className="min-w-0 flex-1">
                           <p className="text-sm font-medium text-gray-900">
-                            {`Dimensiones: ${item.width.toFixed(2)}m × ${item.height.toFixed(1)}m`}
+                            {`${item.width.toFixed(2)}m × ${item.height.toFixed(1)}m`}
                           </p>
                           <p className="text-sm text-gray-500">
                             Área total: {(item.width * item.height).toFixed(1)}m²
@@ -166,11 +195,18 @@ import {
                         </div>
                       </div>
                     </div>
-                    <div className="ml-4">
-                      <div className="font-medium font-semibold text-gray-900">
+                    <div className="w-1/4 text-center">
+                      <p className="font-medium font-semibold text-gray-900 m-1 bg-gray-100 rounded-xl">
                         ${item.price.toLocaleString()}
-                      </div>
+                      </p>
                     </div>
+                    {item.priceFluo && (
+                      <div className="w-1/4 text-center">
+                        <p className="font-medium font-semibold text-gray-900 m-1 bg-green-100 rounded-xl">
+                          ${item.priceFluo?.toLocaleString()}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
