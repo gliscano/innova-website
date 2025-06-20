@@ -8,21 +8,21 @@ type propertiesProductsType = {
 }
 
 const propertiesBackdrops: Array<propertiesProductsType> = [
-  { id: "S1520", width: 1.50, height: 2.0, price: 27704, priceFluo: 44785 },
-  { id: "S1525", width: 1.50, height: 2.5, price: 30813, priceFluo: 49895 },
-  { id: "S1530", width: 1.50, height: 3.0, price: 34311, priceFluo: 55196 },
-  { id: "S1535", width: 1.50, height: 3.5, price: 37868, priceFluo: 60498 },
-  { id: "S1540", width: 1.50, height: 4.0, price: 41415, priceFluo: 65699 },
-  { id: "S1545", width: 1.50, height: 4.5, price: 44801, priceFluo: 71121 },
-  { id: "S1550", width: 1.50, height: 5.0, price: 48171, priceFluo: 76437 },
-  { id: "S2920", width: 2.90, height: 2.0, price: 45151, priceFluo: 80946 },
-  { id: "S2925", width: 2.90, height: 2.5, price: 54945, priceFluo: 85096 },
-  { id: "S2930", width: 2.90, height: 3.0, price: 61711, priceFluo: 91140 },
-  { id: "S2935", width: 2.90, height: 3.5, price: 68480, priceFluo: 94491 },
-  { id: "S2940", width: 2.90, height: 4.0, price: 75114, priceFluo: 108560 },
-  { id: "S2945", width: 2.90, height: 4.5, price: 99434, priceFluo: 127548 },
-  { id: "S2950", width: 2.90, height: 5.0, price: 107665, priceFluo: 138186 },
-  { id: "S2960", width: 2.90, height: 6.0, price: 136713, priceFluo: 186008 }
+  { id: "S1520", width: 1.50, height: 2.0, price: 27704, priceFluo: 38786 },
+  { id: "S1525", width: 1.50, height: 2.5, price: 30813, priceFluo: 43138 },
+  { id: "S1530", width: 1.50, height: 3.0, price: 34311, priceFluo: 48036 },
+  { id: "S1535", width: 1.50, height: 3.5, price: 37868, priceFluo: 53015 },
+  { id: "S1540", width: 1.50, height: 4.0, price: 41415, priceFluo: 57981 },
+  { id: "S1545", width: 1.50, height: 4.5, price: 44801, priceFluo: 62721 },
+  { id: "S1550", width: 1.50, height: 5.0, price: 48171, priceFluo: 67364 },
+  { id: "S2920", width: 2.90, height: 2.0, price: 45151, priceFluo: 63211 },
+  { id: "S2925", width: 2.90, height: 2.5, price: 54945, priceFluo: 76922 },
+  { id: "S2930", width: 2.90, height: 3.0, price: 61711, priceFluo: 86395 },
+  { id: "S2935", width: 2.90, height: 3.5, price: 68480, priceFluo: 95872 },
+  { id: "S2940", width: 2.90, height: 4.0, price: 75114, priceFluo: 105159 },
+  { id: "S2945", width: 2.90, height: 4.5, price: 99434, priceFluo: 139208 },
+  { id: "S2950", width: 2.90, height: 5.0, price: 107665, priceFluo: 150731 },
+  { id: "S2960", width: 2.90, height: 6.0, price: 136713, priceFluo: 191398 }
 ];
 
 const propertiesHybridBackdrops: Array<propertiesProductsType> = [
