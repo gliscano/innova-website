@@ -12,7 +12,7 @@ type PhotographyBackdropProps = {
 
 export default function PhotographyBackdrop({ backdrops, showPreview }: PhotographyBackdropProps) {
   const [currentBackdrop, setCurrentBackdrop] = useState(backdrops[0])
-  const timerToChangeImage = 3000;
+  const timerToChangeImage = 2000;
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {

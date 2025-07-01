@@ -4,67 +4,81 @@ import PhotographyBackdrop from './PhotographyBackdrop'
 const backdrops = [
   { 
     id: 0,
+    name: 'Navidad Backdrop',
+    image: '/images/innova/hero-09.png',
+    title: '',
+    subtitle: ''
+  },
+  { 
+    id: 1,
+    name: 'Navidad Backdrop',
+    image: '/images/innova/hero-11.png',
+    title: '',
+    subtitle: ''
+  },
+  { 
+    id: 2,
+    name: 'Navidad Backdrop',
+    image: '/images/innova/hero-10.png',
+    title: '',
+    subtitle: ''
+  },
+  { 
+    id: 3,
     name: 'autos Backdrop',
     image: '/images/innova/hero-1.png',
     title: '',
     subtitle: ''
   },
   { 
-    id: 1,
+    id: 4,
     name: 'Alas Backdrop',
     image: '/images/innova/hero-2.png',
     title: '',
     subtitle: ''
   },
   { 
-    id: 2,
+    id: 5,
     name: 'infantil Backdrop',
     image: '/images/innova/hero-3.png',
     title: '',
     subtitle: ''
   },
   { 
-    id: 3,
+    id: 6,
     name: 'escolar Backdrop',
     image: '/images/innova/hero-4.png',
     title: '',
     subtitle: ''
   },
   { 
-    id: 4,
+    id: 7,
     name: 'Grunge Backdrop',
     image: '/images/innova/hero-5.png',
     title: '',
     subtitle: ''
   },
   { 
-    id: 5,
+    id: 8,
     name: 'escolar infantil Backdrop',
     image: '/images/innova/hero-6.png',
     title: '',
     subtitle: ''
   },
   { 
-    id: 6,
+    id: 9,
     name: 'escolar Backdrop',
     image: '/images/innova/hero-7.png',
     title: '',
     subtitle: ''
   },
   { 
-    id: 7,
+    id: 10,
     name: 'infantil Backdrop',
     image: '/images/innova/hero-8.png',
     title: '',
     subtitle: ''
-  },
-  { 
-    id: 8,
-    name: 'paredes Backdrop',
-    image: '/images/innova/hero-9.png',
-    title: '',
-    subtitle: ''
-  },
+  }
 ]
 
 export default function Hero() {
@@ -82,12 +96,27 @@ export default function Hero() {
       </div>
       <div className="mx-auto max-w-7xl px-6 pb-2 pt-6 lg:pt-12 lg:pb-12 lg:flex lg:px-8 lg:py-8">
         <div className="mx-auto max-w-2xl flex-shrink-0 lg:mx-0 lg:max-w-xl lg:pt-4">
-          <h1 className="mt-4 pr-4 text-3xl copperplate-bold-font font-bold text-gray-900 sm:text-5xl">
-            Crea y captura con una experiencia superior
+          <h1 className="mt-4 pr-4 text-3xl copperplate-bold-font font-bold text-red-800 sm:text-5xl">
+            <a
+              href="/navidad"
+              target="_self"
+              rel="noopener noreferrer"
+            >
+              Ingresa al Lanzamiento de la Navidad 2025
+            </a>
           </h1>
           <p className="mt-6 text-lg leading-8 text-gray-600">
-            Personalización, calidad y detalle en cada insumo fotográfico.
+            Los diseños serán producidos en una única edición
           </p>
+          <span className="mt-4 pr-4 text-lg copperplate-bold-font font-bold text-red-800 sm:text-lg">
+            <a
+              href="/navidad"
+              target="_self"
+              rel="noopener noreferrer"
+            >
+              Quiero más info!
+            </a>
+          </span>
           <div className="flex space-x-4 pt-4">
             <div className="flex justify-center items-center space-x-4 md:order-2">
               <a
