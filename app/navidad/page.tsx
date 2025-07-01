@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Image from "next/image"
+import Link from "next/link"
 
 export default function InnovaNavidad() {
   const [currentSlide, setCurrentSlide] = useState(0)
@@ -69,9 +70,9 @@ export default function InnovaNavidad() {
           </div>
 
           <nav className="hidden md:flex space-x-8">
-            <a href="/" className="text-white/80 hover:text-white transition-colors">
+            <Link href="/" className="text-white/80 hover:text-white transition-colors">
               Inicio
-            </a>
+            </Link>
             <a href="https://store.innova54.com/" className="text-white/80 hover:text-white transition-colors">
               Ir a la tienda
             </a>
