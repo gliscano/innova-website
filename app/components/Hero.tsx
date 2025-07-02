@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import PhotographyBackdrop from './PhotographyBackdrop'
 
 const backdrops = [
