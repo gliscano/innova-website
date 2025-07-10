@@ -37,10 +37,6 @@ export default function AnimatedCards() {
   const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
-    setIsClient(true)
-  }, [])
-
-  useEffect(() => {
     if (!isClient) return
 
     const loadAnimations = async () => {
@@ -65,6 +61,10 @@ export default function AnimatedCards() {
 
     loadAnimations()
   }, [isClient])
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   return (
     <div className="bg-rose-gold">

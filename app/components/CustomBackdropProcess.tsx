@@ -1,8 +1,7 @@
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 "use client"
 
-import { useEffect, useRef } from 'react'
-import lottie from 'lottie-web'
+import { useEffect, useRef, useState } from 'react'
 
 const steps = [
   {
@@ -25,30 +24,40 @@ const steps = [
 export default function CustomBackdropProcess() {
   const animationRef = useRef(null)
   const animationStepRefs = useRef<unknown[]>([])
+  const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
-    if(typeof document !== 'undefined' && animationRef.current) {
+    setIsClient(true)
+  }, [])
+
+  useEffect(() => {
+    if (!isClient) return
+
+    if (typeof document !== 'undefined' && animationRef.current) {
+      import('lottie-web').then((lottieModule) => {
+        const lottie = lottieModule.default;
         lottie.loadAnimation({
-          container: document.getElementById('animated-lottie-custom-backdrop') as unknown as any,
+          container: document.getElementById('animated-lottie-custom-backdrop') as any,
           renderer: 'svg',
           loop: true,
           autoplay: true,
           path: '/animations/steps.json',
-        })
+        });
 
         animationStepRefs.current.forEach((ref, index) => {
           if (ref) {
             lottie.loadAnimation({
-              container: ref as unknown as any,
+              container: ref as any,
               renderer: 'svg',
               loop: true,
               autoplay: true,
               path: steps[index].animation,
-            })
+            });
           }
-        })
+        });
+      });
     }
-  }, [])
+  }, [isClient])
 
   return (
     <section className="bg-gray-50">

@@ -1,7 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from 'react'
-import lottie from 'lottie-web'
+import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import {
   propertiesBackdrops,
@@ -39,21 +38,30 @@ import {
   
   export default function PriceList() {
     const animationRef = useRef(null)
+    
+    const [isClient, setIsClient] = useState(false)
 
-    const wideBackdrops = propertiesBackdrops.filter(p => p.width === 2.90)
-    const standardBackdrops = propertiesBackdrops.filter(p => p.width === 1.50)
+    const wideBackdrops = useRef(propertiesBackdrops.filter(p => p.width === 2.90))
+    const standardBackdrops = useRef(propertiesBackdrops.filter(p => p.width === 1.50))
 
     useEffect(() => {
-      if(typeof document !== 'undefined' && animationRef.current) {
-        lottie.loadAnimation({
-          // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-          container: document.getElementById('animated-lottie') as unknown as any,
-          renderer: 'svg',
-          loop: true,
-          autoplay: true,
-          path: '/animations/list.json',
-        })
+      if (typeof document !== 'undefined' && animationRef.current) {
+        import('lottie-web').then((lottieModule) => {
+          const lottie = lottieModule.default;
+          lottie.loadAnimation({
+            // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+            container: document.getElementById('animated-lottie') as any,
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: '/animations/list.json',
+          });
+        });
       }
+    }, [isClient]);
+
+    useEffect(() => {
+      setIsClient(true)
     }, [])
   
     return (
@@ -132,7 +140,7 @@ import {
                     <p>Fluo</p>
                   </div>
                 </div>
-                {standardBackdrops.map((item, index) => (
+                {standardBackdrops.current.map((item, index) => (
                   <div key={index} className="flex py-2 px-4 hover:bg-gray-50 transition-colors">
                     <div className="flex-1 min-w-0 w-1/2">
                       <div className="flex items-left gap-4">
@@ -181,7 +189,7 @@ import {
                     <p>Fluo</p>
                   </div>
                 </div>
-                {wideBackdrops.map((item, index) => (
+                {wideBackdrops.current.map((item, index) => (
                   <div key={index} className="flex items-center py-2 px-4 hover:bg-gray-50 transition-colors">
                     <div className="flex-1 min-w-0 w-1/2">
                       <div className="flex items-center gap-4">
