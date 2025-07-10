@@ -35,19 +35,19 @@ export default function CustomBackdropProcess() {
           autoplay: true,
           path: '/animations/steps.json',
         })
-    }
 
-      animationStepRefs.current.forEach((ref, index) => {
-        if (ref) {
-          lottie.loadAnimation({
-            container: ref as unknown as any,
-            renderer: 'svg',
-            loop: true,
-            autoplay: true,
-            path: steps[index].animation,
-          })
-        }
-      })
+        animationStepRefs.current.forEach((ref, index) => {
+          if (ref) {
+            lottie.loadAnimation({
+              container: ref as unknown as any,
+              renderer: 'svg',
+              loop: true,
+              autoplay: true,
+              path: steps[index].animation,
+            })
+          }
+        })
+    }
   }, [])
 
   return (

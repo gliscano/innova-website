@@ -14,7 +14,6 @@ export default function PhotographyBackdrop({ backdrops, showPreview }: Photogra
   const [currentBackdrop, setCurrentBackdrop] = useState(backdrops[0])
   const timerToChangeImage = 2000;
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const timer = setInterval(() => {     
       try {
@@ -30,7 +29,7 @@ export default function PhotographyBackdrop({ backdrops, showPreview }: Photogra
       }
     }, timerToChangeImage)
     return () => clearInterval(timer)
-  }, [])
+  }, [backdrops])
   
   return (
     <div className="relative w-full h-full overflow-hidden">

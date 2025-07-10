@@ -83,7 +83,7 @@ export default function InnovaNavidad() {
       {/* Carrusel Principal */}
       <div className="relative h-screen">
         <div className="absolute inset-0">
-          <img
+          <Image
             src={slides[currentSlide].image}
             alt={`Navidad ${currentSlide + 1}`}
             className="w-full h-full object-cover"
