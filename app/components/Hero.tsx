@@ -101,11 +101,13 @@ export default function Hero() {
               target="_self"
               rel="noopener noreferrer"
             >
-              Ingresa al Lanzamiento de la Navidad 2025
+              Navidad Exclusiva 2025
             </a>
           </h1>
-          <p className="mt-2 mb-6 text-lg leading-8 text-gray-600">
+          <p className="mt-2 mb-6 text-lg leading-8 text-red-700">
             Los diseños serán producidos en una única edición
+            <br/>
+            <span className='hidden md:block lg:block'>Propuesta única • Solo 1 vez • Solo en Innova</span>
           </p>
           <span className="mt-8 pr-4inline-flex items-center justify-center bg-red-800/90 hover:bg-red-700 text-white px-6 py-3 font-semibold rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105 backdrop-blur-sm">
             <a

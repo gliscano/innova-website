@@ -1,7 +1,7 @@
 import './globals.css'
 import './fonts.css'
 import { Inter } from 'next/font/google'
-import { GoogleAnalytics } from '@next/third-parties/google'
+import Script from 'next/script'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -17,16 +17,26 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
+      <head>
+      <Script async src="https://www.googletagmanager.com/gtag/js?id=G-EZ8J02VNPE"></Script>
+      <Script id='google-analytics'>
+        {
+        `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-EZ8J02VNPE');
+        `
+        }
+      </Script>
+      </head>
       <body
         className={inter.className}
          cz-shortcut-listen="true"
       >
         {children}
       </body>
-      {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID &&
-        process.env.NODE_ENV === "production" && (
-          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
-        )}
     </html>
   );
 }

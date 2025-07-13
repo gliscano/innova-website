@@ -45,9 +45,17 @@ const propertiesInnPets: Array<propertiesProductsType> = [
   { id: "SP1528", width: 1.5, height: 2.80, price: 66071 },
 ];
 
+const propertiesRooms: Array<propertiesProductsType> = [  
+  { id: "R4440-CP", width: 4.4, height: 4.0, price: 164928 },
+  { id: "R4425-SP", width: 4.4, height: 2.50, price: 128836 },
+  { id: "R5450-CP", width: 5.4, height: 5.0, price: 251292 },
+  { id: "R5425-SP", width: 5.4, height: 2.50, price: 161143 },
+];
+
 export {
   propertiesBackdrops,
   propertiesFloor,
   propertiesHybridBackdrops,
-  propertiesInnPets
+  propertiesInnPets,
+  propertiesRooms
 }

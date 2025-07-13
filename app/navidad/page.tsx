@@ -59,14 +59,16 @@ export default function InnovaNavidad() {
       <header className="absolute top-0 left-0 right-0 z-50 p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <Image
-              src="/images/innova/logo-navidad.png"
-              alt="Innova Logo"
-              width={185}
-              height={45}
-              className="w-auto"
-              priority
-            />
+            <Link href='/'>
+              <Image
+                src="/images/innova/logo-navidad.png"
+                alt="Innova Logo"
+                width={185}
+                height={45}
+                className="w-auto"
+                priority
+              />
+            </Link>
           </div>
 
           <nav className="hidden md:flex space-x-8">
@@ -87,6 +89,9 @@ export default function InnovaNavidad() {
             src={slides[currentSlide].image}
             alt={`Navidad ${currentSlide + 1}`}
             className="w-full h-full object-cover"
+            width={0}
+            height={0}
+            sizes="100vw"
           />
           <div className="absolute inset-0 bg-black/20" />
         </div>
