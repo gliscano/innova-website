@@ -1,12 +1,13 @@
 import './globals.css'
 import './fonts.css'
 import { Inter } from 'next/font/google'
+import Script from 'next/script'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'Innova - Insumos para fotógrafos y estudios creativos',
-  description: 'Fondos fotográficos personalizados y props para recrear una experiencia innova.',
+  title: 'Innova - Backdrops e Insumos de fotografía',
+  description: 'Fondos fotográficos (backdrops) y props para crear una experiencia de otro nivel',
 }
 
 export default function RootLayout({
@@ -17,21 +18,25 @@ export default function RootLayout({
   return (
     <html lang="es">
       <head>
-      <link rel="dns-prefetch" href="https://www.googletagmanager.com/"></link>
-      <link href="https://www.googletagmanager.com/gtag/js?id=G-EZ8J02VNPE" rel="preload" as="script"></link>
-      <script id="google-analytics">
+      <Script async src="https://www.googletagmanager.com/gtag/js?id=G-EZ8J02VNPE"></Script>
+      <Script id='google-analytics'>
         {
-          `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
+        `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
 
-            gtag('config', 'G-EZ8J02VNPE');
-          `
+          gtag('config', 'G-EZ8J02VNPE');
+        `
         }
-      </script>
+      </Script>
       </head>
-      <body className={inter.className}>{children}</body>
+      <body
+        className={inter.className}
+         cz-shortcut-listen="true"
+      >
+        {children}
+      </body>
     </html>
   );
 }

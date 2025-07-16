@@ -6,6 +6,7 @@ import ProductCategoryMenu from './components/ProductCategoryMenu'
 import PriceList from './components/PriceList'
 import CustomBackdropProcess from './components/CustomBackdropProcess'
 import DesignCatalog from './components/DesignCatalog'
+import HeroProps from './components/HeroProps'
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
       <Header />
       <main className="flex-grow">
         <Hero />
+        <HeroProps />
         <AnimatedCards />
         <DesignCatalog />
         <PriceList />

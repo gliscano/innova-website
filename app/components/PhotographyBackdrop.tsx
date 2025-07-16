@@ -12,9 +12,8 @@ type PhotographyBackdropProps = {
 
 export default function PhotographyBackdrop({ backdrops, showPreview }: PhotographyBackdropProps) {
   const [currentBackdrop, setCurrentBackdrop] = useState(backdrops[0])
-  const timerToChangeImage = 3000;
+  const timerToChangeImage = 2000;
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const timer = setInterval(() => {     
       try {
@@ -30,7 +29,7 @@ export default function PhotographyBackdrop({ backdrops, showPreview }: Photogra
       }
     }, timerToChangeImage)
     return () => clearInterval(timer)
-  }, [])
+  }, [backdrops])
   
   return (
     <div className="relative w-full h-full overflow-hidden">
@@ -38,9 +37,10 @@ export default function PhotographyBackdrop({ backdrops, showPreview }: Photogra
         <Image
           src={currentBackdrop.image}
           alt={currentBackdrop.name}
-          fill
-          sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
-          className='object-fill'
+          className="w-full h-full object-cover"
+          width={0}
+          height={0}
+          sizes="100vw"
         />
       </div>
       <div className="absolute inset-0 bg-opacity-5" />

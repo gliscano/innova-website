@@ -94,3 +94,8 @@
     @apply border-border;}
   body {
     @apply bg-background text-foreground;}}
+
+.gradient-light-colors-props {
+  background: #C19D83;
+  background: linear-gradient(0deg, rgba(193, 157, 131, 1) 0%, rgba(248, 222, 199, 1) 50%, rgba(223, 168, 137, 1) 100%);
+}

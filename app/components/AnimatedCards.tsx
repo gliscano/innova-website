@@ -2,8 +2,7 @@
 
 'use client'
 
-import { useEffect, useRef } from 'react'
-import lottie from 'lottie-web'
+import { useEffect, useRef, useState } from 'react'
 
 type cardsProps = { 
   title: string,
@@ -35,23 +34,40 @@ const cards: Array<cardsProps> = [
 
 export default function AnimatedCards() {
   const animationRefs = useRef<unknown[]>([])
+  const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
-    animationRefs.current.forEach((ref, index) => {
-      if (ref) {
-        lottie.loadAnimation({
-          container: ref as any,
-          renderer: 'svg',
-          loop: true,
-          autoplay: true,
-          path: cards[index].animation,
+    if (!isClient) return
+
+    const loadAnimations = async () => {
+      try {
+        const lottie = (await import('lottie-web')).default
+        
+        animationRefs.current.forEach((ref, index) => {
+          if (ref) {
+            lottie.loadAnimation({
+              container: ref as any,
+              renderer: 'svg',
+              loop: true,
+              autoplay: true,
+              path: cards[index].animation,
+            })
+          }
         })
+      } catch (error) {
+        console.error('Error loading lottie animations:', error)
       }
-    })
+    }
+
+    loadAnimations()
+  }, [isClient])
+
+  useEffect(() => {
+    setIsClient(true)
   }, [])
 
   return (
-    <div className="bg-rose-gold">
+    <div className="bg-gray-300">
       <div className="max-w-7xl mx-auto py-6 lg:py-12 px-4 sm:px-6 lg:py-8 lg:px-8">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-3">
           {cards.map((card, index) => (
