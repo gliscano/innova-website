@@ -84,11 +84,6 @@ export default function ProductPage({ params }: ProductPageProps) {
                 height={420}
                 className="w-full rounded-lg"
               />
-              {product.featured && (
-                <span className="absolute top-4 left-4 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-orange-500 text-white">
-                  Destacado
-                </span>
-              )}
             </div>
           </div>
 
@@ -98,6 +93,11 @@ export default function ProductPage({ params }: ProductPageProps) {
               <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200 mb-4">
                 {product.category}
               </span>
+              {product.featured && (
+                <span className="inline-flex items-center mx-3 px-3 py-1 rounded-full text-sm font-medium bg-gray-700 text-white">
+                  Destacado
+                </span>
+              )}
               <h1 className="text-3xl copperplate-bold-font font-bold text-gray-900 mb-4">{product.title}</h1>
               <p className="text-lg text-gray-600 mb-4">{product.description}</p>
               <div className="flex flex-wrap gap-2">
@@ -198,9 +198,9 @@ export default function ProductPage({ params }: ProductPageProps) {
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900">Medidas estándar y Personalizadas</h3>
                   <ul className="text-gray-600 list-disc ml-4 space-y-1">
-                    <li>Anchos disponibles: 2,90 m y 1,50 m</li>
-                    <li>Largos: desde 1 m hasta 30 m</li>
-                    <li>¿Otra medida? ¡También hacemos fondos personalizados!</li>
+                    <li>Ancho a partir de 0.75 m</li>
+                    <li>Largo a partir de 1 m</li>
+                    <li>¡También hacemos fondos personalizados!</li>
                   </ul>
                 </div>
               </div>
@@ -217,12 +217,10 @@ export default function ProductPage({ params }: ProductPageProps) {
                   />
                 </svg>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">¿Cómo comprar?</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">¿Cómo compras? Super fácil</h3>
                   <ol className="text-gray-600 list-decimal ml-4 space-y-1">
-                    <li>Elegí un diseño del catálogo</li>
-                    <li>Ve a Productos y Fondos personalizados</li>
-                    <li>Seleccioná la medida y realizá tu compra</li>
-                    <li>Escribenos para definir el diseño y las opciones de piso</li>
+                    <li>Elegí un diseño del catálogo o envíanos una referencia</li>
+                    <li>Escríbenos para definir el diseño y las opciones de piso</li>
                   </ol>
                 </div>
               </div>

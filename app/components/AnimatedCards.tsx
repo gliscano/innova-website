@@ -69,20 +69,20 @@ export default function AnimatedCards() {
   return (
     <div className="bg-gray-300">
       <div className="max-w-7xl mx-auto py-6 lg:py-12 px-4 sm:px-6 lg:py-8 lg:px-8">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-3">
+        <div className="grid grid-cols-3 gap-4">
           {cards.map((card, index) => (
             <a
               key={card.title}
-              className="bg-white overflow-hidden shadow rounded-lg cursor-pointer hover:shadow-lg transition-shadow duration-300 flex align-center"
+              className="bg-white overflow-hidden shadow rounded-lg cursor-pointer hover:shadow-lg transition-shadow duration-300 flex flex-col md:flex-row lg:flex-row align-center"
               href={card.href}
             >
               <div
                 ref={(el) => (animationRefs.current[index] = el as unknown as any)}
-                className="h-36 px-2"
+                className="h-24 md:h-36 lg:h-36 px-2"
               ></div>
               <div className="px-2 py-2 sm:p-6">
-                <h3 className="text-lg font-medium text-gray-900">{card.title}</h3>
-                <h6 className="text-medium font-small text-gray-600">{card.subtitle}</h6>
+                <h3 className="text-small sm:text-lg font-medium text-gray-900">{card.title}</h3>
+                <h6 className="text-medium font-small text-gray-600 hidden md:block lg:block'">{card.subtitle}</h6>
               </div>
             </a>
           ))}

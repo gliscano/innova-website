@@ -74,9 +74,9 @@ import {
           />
           <div className="mx-auto max-w-7xl px-6 py-6 sm:py-6 lg:px-8 flex justify-around">
             <div className="mx-auto max-w-2xl lg:mx-0 lg:grid lg:max-w-none lg:gap-x-16 lg:gap-y-6 xl:grid-rows-1 xl:gap-x-8">
-              <h1 className="max-w-2xl text-xl copperplate-bold-font tracking-tight text-gray-900 sm:text-5xl lg:col-span-2">
+              <h2 className="max-w-2xl text-xl copperplate-bold-font tracking-tight text-gray-900 sm:text-5xl lg:col-span-2">
                 Lista de medidas y precios
-              </h1>
+              </h2>
               <div className="mt-6 max-w-xl lg:mt-0 xl:col-end-1">
                 <p className="text-medium lg:text-lg leading-8 text-gray-600">
                   Encuentra el tamaño perfecto para tus necesidades. Si precisa una medida personalizada, no dudes en consultar!

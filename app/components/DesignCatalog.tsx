@@ -585,7 +585,7 @@ export default function InnovaCatalog() {
           </div>
 
         {/* Grid de productos */}
-        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid gap-6 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredProducts.map((product) => {
             const matchingTags =
               searchResult?.tags.filter((tag) =>
@@ -605,12 +605,16 @@ export default function InnovaCatalog() {
                     alt={product.title}
                     width={400}
                     height={300}
-                    className="w-full h-48 object-contain group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-24 object-contain group-hover:scale-105 transition-transform duration-300"
                   />
                   {product.featured && (
-                    <span className="absolute top-2 left-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-500 text-white">
-                      Destacado
-                    </span>
+                    <Image
+                      src="/icons/star_featured_icon.png"
+                      alt="Producto destacado"
+                      width={40}
+                      height={40}
+                      className="absolute bottom-2 right-2 inline-flex items-center px-2.5"
+                    />
                   )}
                   <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
                     <>
