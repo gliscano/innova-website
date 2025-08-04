@@ -92,20 +92,14 @@ export default function InnovaCatalog() {
   const [searchResult, setSearchResult] = useState<SearchResult>(null)
   const [aiSearchesUsed, setAiSearchesUsed] = useState(0)
 
-  const animationRef = useRef(null)
-
-    useEffect(() => {
-      if(animationRef.current) {
-        Lottie.loadAnimation({
-          // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-          container: document.getElementById('animated-lottie') as unknown as any,
-          renderer: 'svg',
-          loop: true,
-          autoplay: true,
-          path: '/animations/catalog.json',
-        })
-      }
-    }, [])
+  // Función para normalizar acentos y caracteres especiales
+  const normalizeText = (text: string): string => {
+    return text
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "") // Elimina diacríticos (acentos)
+      .trim()
+  }
 
   // Cargar contador de búsquedas IA al inicializar
   useEffect(() => {
@@ -123,15 +117,17 @@ export default function InnovaCatalog() {
     }
   }, [])
 
-  // Función para calcular similitud entre strings (algoritmo de Levenshtein simplificado)
+  // Función para calcular similitud entre strings
   const calculateSimilarity = (str1: string, str2: string): number => {
-    const longer = str1.length > str2.length ? str1 : str2
-    const shorter = str1.length > str2.length ? str2 : str1
-
-    if (longer.length === 0) return 1.0
-
-    const editDistance = levenshteinDistance(longer, shorter)
-    return (longer.length - editDistance) / longer.length
+    const normalizedStr1 = normalizeText(str1)
+    const normalizedStr2 = normalizeText(str2)
+    
+    if (normalizedStr1 === normalizedStr2) return 1.0
+    
+    const distance = levenshteinDistance(normalizedStr1, normalizedStr2)
+    const maxLength = Math.max(normalizedStr1.length, normalizedStr2.length)
+    
+    return maxLength === 0 ? 1.0 : (maxLength - distance) / maxLength
   }
 
   const levenshteinDistance = (str1: string, str2: string): number => {
@@ -160,19 +156,22 @@ export default function InnovaCatalog() {
 
   // Función avanzada para encontrar sinónimos y palabras relacionadas
   const findRelatedTerms = (searchTerm: string): string[] => {
-    const normalizedSearch = searchTerm.toLowerCase().trim()
+    const normalizedSearch = normalizeText(searchTerm)
     const relatedTerms: string[] = []
 
     // Buscar sinónimos directos
     Object.entries(synonymsCatalog).forEach(([key, values]) => {
-      if (values.includes(normalizedSearch) || key.includes(normalizedSearch)) {
+      const normalizedKey = normalizeText(key)
+      const normalizedValues = values.map(value => normalizeText(value))
+      
+      if (normalizedValues.includes(normalizedSearch) || normalizedKey.includes(normalizedSearch)) {
         relatedTerms.push(key, ...values)
       }
     })
 
     // Buscar términos similares usando fuzzy matching
     allTags.forEach((tag) => {
-      const similarity = calculateSimilarity(normalizedSearch, tag)
+      const similarity = calculateSimilarity(normalizedSearch, normalizeText(tag))
       if (similarity > 0.7 && similarity < 1.0) {
         // Similitud alta pero no exacta
         relatedTerms.push(tag)
@@ -180,7 +179,7 @@ export default function InnovaCatalog() {
     })
 
     categories.slice(1).forEach((category) => {
-      const similarity = calculateSimilarity(normalizedSearch, category.toLowerCase())
+      const similarity = calculateSimilarity(normalizedSearch, normalizeText(category.toLowerCase()))
       if (similarity > 0.7 && similarity < 1.0) {
         relatedTerms.push(category.toLowerCase())
       }
@@ -193,7 +192,7 @@ export default function InnovaCatalog() {
   const checkAdvancedMatches = (searchTerm: string): DirectSearchResult | HybridSearchResult | null => {
     if (!searchTerm || searchTerm.length < 2) return null
 
-    const normalizedSearch = searchTerm.toLowerCase().trim()
+    const normalizedSearch = normalizeText(searchTerm)
     const matchedCategories: string[] = []
     const matchedTags: string[] = []
     let confidence = 0
@@ -201,7 +200,7 @@ export default function InnovaCatalog() {
 
     // 1. Coincidencias exactas (máxima confianza)
     categories.slice(1).forEach((category) => {
-      if (category.toLowerCase() === normalizedSearch || category.toLowerCase().includes(normalizedSearch)) {
+      if (normalizeText(category.toLowerCase()) === normalizedSearch || normalizeText(category.toLowerCase()).includes(normalizedSearch)) {
         matchedCategories.push(category)
         confidence = Math.max(confidence, 1.0)
         isDirectMatch = true
@@ -209,7 +208,7 @@ export default function InnovaCatalog() {
     })
 
     allTags.forEach((tag) => {
-      if (tag === normalizedSearch || tag.includes(normalizedSearch)) {
+      if (normalizeText(tag) === normalizedSearch || normalizeText(tag).includes(normalizedSearch)) {
         matchedTags.push(tag)
         confidence = Math.max(confidence, 1.0)
         isDirectMatch = true
@@ -219,15 +218,15 @@ export default function InnovaCatalog() {
     // 2. Coincidencias en títulos y descripciones (alta confianza)
     catalogData.forEach((product) => {
       if (
-        product.title.toLowerCase().includes(normalizedSearch) ||
-        product.description.toLowerCase().includes(normalizedSearch)
+        normalizeText(product.title.toLowerCase()).includes(normalizedSearch) ||
+        normalizeText(product.description.toLowerCase()).includes(normalizedSearch)
       ) {
         if (!matchedCategories.includes(product.category)) {
           matchedCategories.push(product.category)
         }
         product.tags.forEach((tag) => {
-          if (!matchedTags.includes(tag.toLowerCase())) {
-            matchedTags.push(tag.toLowerCase())
+          if (!matchedTags.includes(normalizeText(tag.toLowerCase()))) {
+            matchedTags.push(normalizeText(tag.toLowerCase()))
           }
         })
         confidence = Math.max(confidence, 0.9)
@@ -241,7 +240,7 @@ export default function InnovaCatalog() {
       relatedTerms.forEach((term) => {
         // Buscar categorías relacionadas
         categories.slice(1).forEach((category) => {
-          if (category.toLowerCase().includes(term) || term.includes(category.toLowerCase())) {
+          if (normalizeText(category.toLowerCase()).includes(normalizeText(term)) || normalizeText(term).includes(normalizeText(category.toLowerCase()))) {
             if (!matchedCategories.includes(category)) {
               matchedCategories.push(category)
               confidence = Math.max(confidence, 0.8)
@@ -251,7 +250,7 @@ export default function InnovaCatalog() {
 
         // Buscar tags relacionados
         allTags.forEach((tag) => {
-          if (tag.includes(term) || term.includes(tag)) {
+          if (normalizeText(tag).includes(normalizeText(term)) || normalizeText(term).includes(normalizeText(tag))) {
             if (!matchedTags.includes(tag)) {
               matchedTags.push(tag)
               confidence = Math.max(confidence, 0.8)
@@ -264,7 +263,7 @@ export default function InnovaCatalog() {
     // 4. Fuzzy matching para coincidencias aproximadas (confianza media)
     if (matchedCategories.length === 0 && matchedTags.length === 0) {
       categories.slice(1).forEach((category) => {
-        const similarity = calculateSimilarity(normalizedSearch, category.toLowerCase())
+        const similarity = calculateSimilarity(normalizedSearch, normalizeText(category.toLowerCase()))
         if (similarity > 0.75) {
           matchedCategories.push(category)
           confidence = Math.max(confidence, similarity * 0.7)
@@ -272,7 +271,7 @@ export default function InnovaCatalog() {
       })
 
       allTags.forEach((tag) => {
-        const similarity = calculateSimilarity(normalizedSearch, tag)
+        const similarity = calculateSimilarity(normalizedSearch, normalizeText(tag))
         if (similarity > 0.75) {
           matchedTags.push(tag)
           confidence = Math.max(confidence, similarity * 0.7)
@@ -389,7 +388,7 @@ export default function InnovaCatalog() {
           (searchResult.categories.includes(product.category) && selectedCategory === "Todos")
 
         const matchesTags =
-          searchResult.tags.length === 0 || product.tags.some((tag) => searchResult.tags.includes(tag.toLowerCase()))
+          searchResult.tags.length === 0 || product.tags.some((tag) => searchResult.tags.includes(normalizeText(tag.toLowerCase())))
 
         return matchesCategory && matchesTags
       })
@@ -401,8 +400,8 @@ export default function InnovaCatalog() {
           if (a.category !== selectedCategory && b.category === selectedCategory) return 1
         }
 
-        const aTagMatches = a.tags.filter((tag) => searchResult.tags.includes(tag.toLowerCase())).length
-        const bTagMatches = b.tags.filter((tag) => searchResult.tags.includes(tag.toLowerCase())).length
+        const aTagMatches = a.tags.filter((tag) => searchResult.tags.includes(normalizeText(tag.toLowerCase()))).length
+        const bTagMatches = b.tags.filter((tag) => searchResult.tags.includes(normalizeText(tag.toLowerCase()))).length
 
         if (aTagMatches !== bTagMatches) {
           return bTagMatches - aTagMatches
@@ -418,9 +417,9 @@ export default function InnovaCatalog() {
       const filtered = catalogData.filter((product) => {
         const matchesSearch =
           !debouncedSearchTerm ||
-          product.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
-          product.description.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
-          product.tags.some((tag) => tag.toLowerCase().includes(debouncedSearchTerm.toLowerCase()))
+          normalizeText(product.title.toLowerCase()).includes(normalizeText(debouncedSearchTerm.toLowerCase())) ||
+          normalizeText(product.description.toLowerCase()).includes(normalizeText(debouncedSearchTerm.toLowerCase())) ||
+          product.tags.some((tag) => normalizeText(tag.toLowerCase()).includes(normalizeText(debouncedSearchTerm.toLowerCase())))
 
         const matchesCategory = selectedCategory === "Todos" || product.category === selectedCategory
 
@@ -469,127 +468,110 @@ export default function InnovaCatalog() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20">
-          <div
-            className="absolute inset-y-0 right-1/2 -z-10 -mr-96 w-[200%] origin-top-right skew-x-[-30deg] bg-white shadow-xl shadow-indigo-600/10 ring-1 ring-indigo-50 sm:-mr-80 lg:-mr-96"
-            aria-hidden="true"
-          />
-            {/* Filtros y búsqueda */}
-            <div className="mb-8 space-y-4">
-              {/* Barra de búsqueda principal */}
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  {isSearching ? <LoadingSpinner /> : <SearchIcon />}
-                </div>
-                <input
-                  type="text"
-                  placeholder="Buscar diseños (máx. 25 caracteres)..."
-                  value={searchTerm}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    if (value.length <= 25) {
-                      setSearchTerm(value)
-                    }
-                  }}
-                  maxLength={25}
-                  className="block w-full pl-10 pr-20 py-3 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-lg"
-                />
-                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                  <span className={`text-xs pr-3 ${searchTerm.length >= 20 ? "text-red-500" : "text-gray-400"}`}>
-                    {searchTerm.length}/25
-                  </span>
-                  <LightningIcon />
-                  <span className={`text-xs ${remainingAISearches <= 1 ? "text-red-600" : "text-blue-600"}`}>
-                    IA: {remainingAISearches}/5
-                  </span>
-                </div>
+          {/* Filtros y búsqueda */}
+          <div className="mb-8 space-y-4">
+            {/* Barra de búsqueda principal */}
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                {isSearching ? <LoadingSpinner /> : <SearchIcon />}
               </div>
-
-              {/* Advertencia de cuota IA */}
-              {remainingAISearches <= 1 && (
-                <div className="bg-red-50 border border-red-100 rounded-lg p-3">
-                  <div className="flex items-center gap-2">
-                    <WarningIcon />
-                    <p className="text-sm text-red-800">
-                      {remainingAISearches === 0
-                        ? "Has agotado tus búsquedas con IA por hoy. Se usará búsqueda inteligente local."
-                        : "Te queda 1 búsqueda con IA para consultas muy complejas."}
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Filtros rápidos */}
-              <div className="flex flex-wrap gap-2">
-                {categories.slice(0, 1).map((category) => (
-                  <button
-                    key={category}
-                    onClick={() => setSelectedCategory(category)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                      selectedCategory === category
-                        ? "bg-blue-600 text-white"
-                        : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-                    }`}
-                  >
-                    {category}
-                  </button>
-                ))}
-                {categories.slice(1).map((category) => (
-                  <button
-                    key={category}
-                    onClick={() => setSelectedCategory(category === selectedCategory ? "Todos" : category)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                      selectedCategory === category
-                        ? "bg-blue-600 text-white"
-                        : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-                    }`}
-                  >
-                    {category}
-                  </button>
-                ))}
+              <input
+                type="text"
+                placeholder="Buscar diseños"
+                value={searchTerm}
+                onChange={(e) => {
+                  const value = e.target.value
+                  if (value.length <= 25) {
+                    setSearchTerm(value)
+                  }
+                }}
+                maxLength={25}
+                className="block w-full pl-10 pr-20 py-3 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-lg"
+              />
+              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                <span className={`text-xs pr-3 ${searchTerm.length >= 20 ? "text-red-500" : "text-gray-400"}`}>
+                  {searchTerm.length}/25
+                </span>
+                <LightningIcon />
+                <span className={`text-xs ${remainingAISearches <= 1 ? "text-red-600" : "text-blue-600"}`}>
+                  IA: {remainingAISearches}/5
+                </span>
               </div>
+            </div>
 
-              {/* Controles */}
-              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-                <div className="flex flex-wrap gap-4 items-center">
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="block w-48 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  >
-                    <option value="featured">Destacados</option>
-                    <option value="name">Nombre A-Z</option>
-                  </select>
-                </div>
-
+            {/* Advertencia de cuota IA */}
+            {remainingAISearches <= 1 && (
+              <div className="bg-red-50 border border-red-100 rounded-lg p-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-600">{filteredProducts.length} diseños encontrados</span>
-                  {searchResultType && (
-                    <span
-                      className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${
-                        searchResultType === "direct"
-                          ? "bg-green-100 text-green-800"
-                          : searchResultType === "hybrid"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : "bg-blue-100 text-blue-800"
-                      }`}
-                    >
-                      <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                      </svg>
-                      {searchResultType === "direct" ? "Exacto" : searchResultType === "hybrid" ? "Inteligente" : "IA"}
-                    </span>
-                  )}
+                  <WarningIcon />
+                  <p className="text-sm text-red-800">
+                    {remainingAISearches === 0
+                      ? "Has agotado tus búsquedas con IA por hoy. Se usará búsqueda inteligente local."
+                      : "Te queda 1 búsqueda con IA para consultas muy complejas."}
+                  </p>
                 </div>
+              </div>
+            )}
+
+            {/* Filtros rápidos */}
+            <div className="flex flex-wrap gap-2">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category === selectedCategory ? "Todos" : category)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                    selectedCategory === category
+                      ? "bg-blue-600 text-white"
+                      : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+
+            {/* Controles */}
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+              <div className="flex flex-wrap gap-4 items-center">
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="block w-48 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="featured">Destacados</option>
+                  <option value="name">Nombre A-Z</option>
+                </select>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600">{filteredProducts.length} diseños encontrados</span>
+                {searchResultType && (
+                  <span
+                    className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${
+                      searchResultType === "direct"
+                        ? "bg-green-100 text-green-800"
+                        : searchResultType === "hybrid"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : "bg-blue-100 text-blue-800"
+                    }`}
+                  >
+                    <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    {searchResultType === "direct" ? "Exacto" : searchResultType === "hybrid" ? "Inteligente" : "IA"}
+                  </span>
+                )}
               </div>
             </div>
           </div>
+        </div>
 
         {/* Grid de productos */}
-        <div className="grid gap-6 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid gap-2 grid-cols-2 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
           {filteredProducts.map((product) => {
             const matchingTags =
               searchResult?.tags.filter((tag) =>
-                product.tags.some((productTag) => productTag.toLowerCase() === tag.toLowerCase()),
+                product.tags.some((productTag) => normalizeText(productTag.toLowerCase()) === normalizeText(tag.toLowerCase())),
               ) || []
 
             return (
@@ -605,15 +587,15 @@ export default function InnovaCatalog() {
                     alt={product.title}
                     width={400}
                     height={300}
-                    className="w-full h-24 object-contain group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-24 object-contain group-hover:scale-105 transition-transform duration-300 mt-1"
                   />
                   {product.featured && (
                     <Image
                       src="/icons/star_featured_icon.png"
                       alt="Producto destacado"
-                      width={40}
-                      height={40}
-                      className="absolute bottom-2 right-2 inline-flex items-center px-2.5"
+                      width={24}
+                      height={24}
+                      className="absolute top-0 right-2 p-0.5 inline-flex items-center bg-white shadow-md rounded-3xl"
                     />
                   )}
                   <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
@@ -632,14 +614,14 @@ export default function InnovaCatalog() {
                 <div className="px-4 pb-4">
                   <div className="space-y-2">
                     <div className="flex items-start justify-between">
-                      <h3 className="font-semibold text-lg line-clamp-2 group-hover:text-blue-600 transition-colors">
+                      <h3 className="mt-2 font-semibold text-sm sm:text-medium line-clamp-2 group-hover:text-blue-600 transition-colors">
                         {product.title}
                       </h3>
                     </div>
                     <p className="text-gray-600 text-sm line-clamp-2">{product.description}</p>
                     <div className="flex flex-wrap gap-1">
                       {product.tags.slice(0, 2).map((tag) => {
-                        const isMatch = searchResult?.tags.includes(tag.toLowerCase())
+                        const isMatch = searchResult?.tags.includes(normalizeText(tag.toLowerCase()))
 
                         return (
                           <span
@@ -667,19 +649,31 @@ export default function InnovaCatalog() {
           })}
         </div>
 
-        {/* Estado vacío */}
+        {/* Diseño no encontrado */}
         {filteredProducts.length === 0 && (
-          <div className="text-center py-12">
-            <div className="text-gray-400 mb-4">
+          <div className="flex flex-col items-center justify-center text-center py-12">
+            <div className="text-gray-400 mb-2 flex">
               <SearchIcon />
+              <h3 className="text-lg font-medium text-gray-900 px-2">No se encontraron diseños</h3>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No se encontraron diseños</h3>
-            <p className="text-gray-600 mb-4">Intenta ajustar tus filtros o términos de búsqueda</p>
+            <p className="text-gray-600 mb-6">Intenta ajustar tus filtros o términos de búsqueda</p>
+
             <button
               onClick={clearFilters}
               className="bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded-md font-medium hover:bg-gray-50 transition-colors"
             >
               Limpiar Filtros
+            </button>
+            <button className="flex flex-row bg-green-200 mt-2 px-4 py-2 rounded-md font-medium hover:bg-green-700 transition-colors">
+              <Image
+                aria-hidden
+                src="../svg/whatsapp.svg"
+                alt="Whatsapp icon"
+                className="mr-2"
+                width={20}
+                height={20}
+              />
+              Prefiero consultar
             </button>
           </div>
         )}
