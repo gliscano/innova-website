@@ -458,10 +458,10 @@ export default function InnovaCatalog() {
   const searchResultType = getSearchResultType()
   const remainingAISearches = MAX_AI_SEARCHES_PER_SESSION - aiSearchesUsed
 
-  const handleViewDetails = (e: React.MouseEvent, productId: string | number) => {
+  const handleViewDetails = (e: React.MouseEvent, category: string) => {
     e.preventDefault()
     e.stopPropagation()
-    router.push(`/design-catalog/${String(productId)}`)
+    router.push(`/design-catalog/${encodeURIComponent(category)}`)
   }
 
   return (
@@ -576,8 +576,8 @@ export default function InnovaCatalog() {
 
             return (
               <Link
-                key={product.id}  
-                href={`/design-catalog/${product.id}`}
+                key={product.id}
+                href={`/design-catalog/${encodeURIComponent(product.category)}`}
                 className="bg-white rounded-lg content-between shadow-md overflow-hidden group hover:shadow-lg transition-all duration-300 block focus:outline-none"
                 tabIndex={0}
               >
@@ -601,7 +601,7 @@ export default function InnovaCatalog() {
                   <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
                     <>
                       <button
-                        onClick={(e) => handleViewDetails(e, product.id)}
+                        onClick={(e) => handleViewDetails(e, product.category)}
                         className="opacity-0 group-hover:opacity-100 transition-opacity bg-white bg-opacity-100 text-gray-900 px-4 py-2 rounded-md font-medium hover:bg-gray-100 flex items-center gap-2"
                       >
                         <EyeIcon />

@@ -1,10 +1,9 @@
 import type { CatalogItem } from "../data/catalogData"
 import { catalogData } from "../data/catalogData"
 
-// Busca un producto por índice en catalogData
-export function getCatalogItemByIndex(index: number) {
-  if (index < 0 || index >= catalogData.length) return null
-  return catalogData[index] as CatalogItem
+// Busca el primer producto por categoría en catalogData
+export function getCatalogItemByCategory(category: string) {
+  return catalogData.find((item) => item.category === category) as CatalogItem | undefined
 }
 
 export function getAllTags() {

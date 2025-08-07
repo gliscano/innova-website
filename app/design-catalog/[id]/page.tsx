@@ -1,11 +1,12 @@
+'use client'
+
+import React from "react"
 import Image from "next/image"
 import Link from "next/link"
 import Footer from "@/app/components/Footer"
 import Header from "@/app/components/Header"
-import { getCatalogItemByIndex } from "@/app/utils/catalogUtils"
-import { catalogData } from "@/app/data/catalogData"
+import { getCatalogItemByCategory } from "@/app/utils/catalogUtils"
 import PriceList from "@/app/components/PriceList"
-import { use } from "react"
 
 const ChevronIcon = () => (
   <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
@@ -18,13 +19,12 @@ const ChevronIcon = () => (
 )
 
 interface ProductPageProps {
-  params: {
-    id: string
-  }
+  params: Promise<{ [id: string]: string }>
 }
 
 export default function ProductPage({ params }: ProductPageProps) {
-  const product = getCatalogItemByIndex(Number.parseInt(params.id))
+  const id = React.use(params).id
+  const product = getCatalogItemByCategory(decodeURIComponent(id))
 
   if (!product) {
     return (
@@ -32,7 +32,7 @@ export default function ProductPage({ params }: ProductPageProps) {
         <Header />
         <div className="min-h-[calc(100vh-64px)] bg-gray-50 flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Producto no encontrado</h1>
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Categoría no encontrada</h1>
             <Link
               href="/design-catalog"
               className="bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 transition-colors"
@@ -88,19 +88,11 @@ export default function ProductPage({ params }: ProductPageProps) {
           </div>
 
           {/* Información del producto */}
-          <div className="space-y-6">
+          <div className="space-y-3">
             <div>
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200 mb-4">
-                {product.category}
-              </span>
-              {product.featured && (
-                <span className="inline-flex items-center mx-3 px-3 py-1 rounded-full text-sm font-medium bg-gray-700 text-white">
-                  Destacado
-                </span>
-              )}
-              <h1 className="text-3xl copperplate-bold-font font-bold text-gray-900 mb-4">{product.title}</h1>
+              <h1 className="text-2xl copperplate-bold-font font-bold text-gray-900 mb-2">{product.title}</h1>
               <p className="text-lg text-gray-600 mb-4">{product.description}</p>
-              <div className="flex flex-wrap gap-2">
+              <div className="hidden sm:flex flex-wrap gap-2">
                 {product.tags.map((tag) => (
                   <span
                     key={tag}
@@ -127,8 +119,8 @@ export default function ProductPage({ params }: ProductPageProps) {
         </div>
 
         {/* Información detallada */}
-        <div className="bg-white rounded-lg p-8">
-          <h2 className="text-2xl copperplate-bold-font font-bold text-gray-900 mb-8">Información del Producto</h2>
+        <div className="bg-white rounded-lg p-4">
+          <h3 className="text-xl copperplate-bold-font font-bold text-gray-900 mb-3">Información del Producto</h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-6">
@@ -142,7 +134,7 @@ export default function ProductPage({ params }: ProductPageProps) {
                   />
                 </svg>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Tiempo de entrega</h3>
+                  <h3 className="text-md font-semibold text-gray-900">Tiempo de entrega</h3>
                   <p className="text-gray-600">12 días hábiles</p>
                 </div>
               </div>
@@ -152,7 +144,7 @@ export default function ProductPage({ params }: ProductPageProps) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">¿Lo necesitás antes?</h3>
+                  <h3 className="text-md font-semibold text-gray-900">¿Lo necesitás antes?</h3>
                   <p className="text-gray-600 mb-2">Mirá nuestros Fondos en Stock, con entrega inmediata.</p>
                   <Link
                     href="https://innova54store.empretienda.com.ar/productos-en-stock"
@@ -178,7 +170,7 @@ export default function ProductPage({ params }: ProductPageProps) {
                   />
                 </svg>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Personalización incluida</h3>
+                  <h3 className="text-md font-semibold text-gray-900">Personalización incluida</h3>
                   <p className="text-gray-600">
                     Incluye la personalización del piso si lo deseás, con 3 opciones adaptadas al diseño, sin costo
                     adicional.
@@ -196,7 +188,7 @@ export default function ProductPage({ params }: ProductPageProps) {
                   />
                 </svg>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Medidas estándar y Personalizadas</h3>
+                  <h3 className="text-md font-semibold text-gray-900">Medidas estándar y Personalizadas</h3>
                   <ul className="text-gray-600 list-disc ml-4 space-y-1">
                     <li>Ancho a partir de 0.75 m</li>
                     <li>Largo a partir de 1 m</li>
@@ -217,7 +209,7 @@ export default function ProductPage({ params }: ProductPageProps) {
                   />
                 </svg>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">¿Cómo compras? Super fácil</h3>
+                  <h3 className="text-md font-semibold text-gray-900">¿Cómo compras? Super fácil</h3>
                   <ol className="text-gray-600 list-decimal ml-4 space-y-1">
                     <li>Elegí un diseño del catálogo o envíanos una referencia</li>
                     <li>Escríbenos para definir el diseño y las opciones de piso</li>
@@ -235,7 +227,7 @@ export default function ProductPage({ params }: ProductPageProps) {
                   />
                 </svg>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Materiales Premium</h3>
+                  <h3 className="text-md font-semibold text-gray-900">Materiales Premium</h3>
                   <ul className="text-gray-600 list-disc ml-4 space-y-1">
                     <li>Tela lavable, plegable y antiarrugas</li>
                     <li>Cero rebote de luz</li>
@@ -244,7 +236,7 @@ export default function ProductPage({ params }: ProductPageProps) {
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <button className="w-full bg-green-400 px-6 py-3 rounded-md font-medium hover:bg-green-700 transition-colors text-lg flex items-center justify-center">
+                <button className="w-full bg-green-400 px-6 py-3 rounded-md hover:bg-green-700 transition-colors text-sm sm:text-lg flex items-center justify-center">
                   <Image
                     aria-hidden
                     src="../svg/whatsapp.svg"

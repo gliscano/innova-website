@@ -19,16 +19,16 @@ const cards: Array<cardsProps> = [
     href: 'https://store.innova54.com/',
   },
   { 
-    title: 'Catálogo de diseños',
-    subtitle: 'Mira nuestra colección exclusiva... Son unas bellezas!',
-    animation: '/animations/catalog.json',
-    href: 'https://innova54store.empretienda.com.ar/catalogo-de-fondos',
-  },
-  { 
     title: 'Escribir a Whatsapp',
     subtitle: 'Tenes dudas o consultas? Daimary y Jesus te van a ayudar!',
     animation: '/animations/whatsapp.json',
     href: 'https://wa.me/5491171142152',
+  },
+  {
+    title: 'Ver medidas y precios',
+    subtitle: 'Encuentra el tamaño perfecto para tus necesidades!',
+    animation: '/animations/list.json', 
+    href: '/prices',
   }
 ]
 
@@ -80,9 +80,9 @@ export default function AnimatedCards() {
                 ref={(el) => (animationRefs.current[index] = el as unknown as any)}
                 className="h-24 md:h-36 lg:h-36 px-2"
               ></div>
-              <div className="px-2 py-2 sm:p-6">
-                <h3 className="text-small sm:text-lg font-medium text-gray-900">{card.title}</h3>
-                <h6 className="text-medium font-small text-gray-600 hidden md:block lg:block'">{card.subtitle}</h6>
+              <div className="px-2 py-2 sm:p-6 text-center">
+                <h4 className="text-xs sm:text-sm text-gray-900">{card.title}</h4>
+                <p className="text-xs sm:text-sm text-gray-600 hidden md:block lg:block'">{card.subtitle}</p>
               </div>
             </a>
           ))}
