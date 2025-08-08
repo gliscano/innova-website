@@ -9,6 +9,7 @@ export interface CatalogItem {
   recommendedUse?: string[]
   isFluo: boolean
   isRealistic: boolean
+  catalogURL: string | null
 }
 
 export const catalogData: CatalogItem[] = [
@@ -22,7 +23,8 @@ export const catalogData: CatalogItem[] = [
     recommendedUse: ["fotografía infantil", "sesiones navideñas", "decoración de sets"],
     featured: true,
     isFluo: false,
-    isRealistic: true
+    isRealistic: true,
+    catalogURL: null,
   },
   {
     id: 2,
@@ -35,6 +37,7 @@ export const catalogData: CatalogItem[] = [
     featured: true,
     isFluo: false,
     isRealistic: false,
+    catalogURL: 'https://drive.google.com/drive/folders/1AYmS4rSABYnKHbmNPb1-AY4QiwCWRvBz?usp=drive_link',
   },
   {
     id: 3,
@@ -47,6 +50,7 @@ export const catalogData: CatalogItem[] = [
     isFluo: false,
     isRealistic: false,
     featured: false,
+    catalogURL: 'https://drive.google.com/drive/folders/15bvoQ543-SItZy-Mi3czM_6PrvsiJlqg?usp=drive_link',
   },  
   {
     id: 4,
@@ -59,6 +63,7 @@ export const catalogData: CatalogItem[] = [
     recommendedUse: ["maternidad", "moda", "eventos elegantes", "decoración editorial"],
     isFluo: false,
     isRealistic: true,
+    catalogURL: 'https://drive.google.com/drive/folders/1g6HOIhr-lXn286WC3N_SHDMEd8wdWOqC?usp=drive_link',
   },
   {
     id: 5,
@@ -70,7 +75,8 @@ export const catalogData: CatalogItem[] = [
     featured: false,
     recommendedUse: ["fotografía escolar", "sesiones de fin de curso", "niños en edad preescolar"],
     isFluo: false,
-    isRealistic: false
+    isRealistic: false,
+    catalogURL: 'https://drive.google.com/drive/folders/1dCkalbEg7wGnk-Sdxmt_XbuDEF_g3Ijg?usp=drive_link',
   },
   {
     id: 6,
@@ -83,6 +89,7 @@ export const catalogData: CatalogItem[] = [
     recommendedUse: ["maternidad", "bodas", "familia", "decoración de eventos"],
     isFluo: false,
     isRealistic: true,
+    catalogURL: 'https://drive.google.com/drive/folders/184-swsSxDNZQF3-5PlIgArWZSr0itAZE?usp=drive_link',
   },
   {
     id: 7,
@@ -95,6 +102,7 @@ export const catalogData: CatalogItem[] = [
     recommendedUse: ["revelaciones de género", "baby shower", "eventos familiares"],
     isFluo: false,
     isRealistic: true,
+    catalogURL: 'https://drive.google.com/drive/folders/11DjAtLREjyHEoUDBNurQdVvoOQnV-BhU?usp=drive_link',
   },
   {
     id: 8,
@@ -107,6 +115,7 @@ export const catalogData: CatalogItem[] = [
     isFluo: false,
     isRealistic: true,
     featured: false,
+    catalogURL: 'https://drive.google.com/drive/folders/1-TelLIKsOgI2UQ0l9KQCzUIkTOEZlEX1?usp=drive_link',
   },
   {
     id: 9,
@@ -119,6 +128,7 @@ export const catalogData: CatalogItem[] = [
     recommendedUse: ["Sesiones de mascotas"],
     isFluo: false,
     isRealistic: false,
+    catalogURL: 'https://drive.google.com/drive/folders/17yw9AGQKfZI1-ftXZN2cDhstU9p_-41f?usp=drive_link',
   },
   {
     id: 10,
@@ -131,6 +141,7 @@ export const catalogData: CatalogItem[] = [
     recommendedUse: ["adolescentes", "temas urbanos", "estilo libre"],
     isFluo: true,
     isRealistic: true,
+    catalogURL: 'https://drive.google.com/drive/folders/18WcF2FWzdKEvKl6k5MuteW1OZ6DjBNCE?usp=drive_link',
   },
   {
     id: 11,
@@ -143,6 +154,7 @@ export const catalogData: CatalogItem[] = [
     recommendedUse: ["fotos maternidad", "bodas", "infantil", "exteriores simulados"],
     isFluo: true,
     isRealistic: true,
+    catalogURL: 'https://drive.google.com/drive/folders/18WcF2FWzdKEvKl6k5MuteW1OZ6DjBNCE?usp=drive_link',
   },
   {
     id: 12,
@@ -155,6 +167,7 @@ export const catalogData: CatalogItem[] = [
     recommendedUse: ["eventos", "adolescentes", "fiestas de 15", "shows"],
     isFluo: true,
     isRealistic: true,
+    catalogURL: 'https://drive.google.com/drive/folders/1s7Ckt3QSG83X_NoydXGH3UNeFxXlu1k1?usp=drive_link',
   },
   {
     id: 13,
@@ -167,6 +180,7 @@ export const catalogData: CatalogItem[] = [
     recommendedUse: ["eventos", "adolescentes", "fiestas de 15", "shows"],
     isFluo: false,
     isRealistic: true,
+    catalogURL: 'https://drive.google.com/drive/folders/18WcF2FWzdKEvKl6k5MuteW1OZ6DjBNCE?usp=drive_link',
   },
   {
     id: 14,
@@ -179,6 +193,7 @@ export const catalogData: CatalogItem[] = [
     recommendedUse: ["bailarines", "eventos", "fiestas", "book artístico"],
     isFluo: true,
     isRealistic: false,
+    catalogURL: 'https://drive.google.com/drive/folders/1GzIG9_Z5d2dv_ZhakeoMLoYl2hfDJiWp?usp=drive_link',
   },
   {
     id: 15,
@@ -191,6 +206,7 @@ export const catalogData: CatalogItem[] = [
     recommendedUse: ["fotografía newborn"],
     isFluo: false,
     isRealistic: true,
+    catalogURL: 'https://drive.google.com/drive/folders/14tSZfKfmTyjfxr_sKSCQuFSCy3YjRn7-?usp=drive_link',
   },
   {
     id: 16,
@@ -203,6 +219,7 @@ export const catalogData: CatalogItem[] = [
     recommendedUse: ["fotografía infantil", "temáticas halloween", "decoración de temporada"],
     isFluo: false,
     isRealistic: true,
+    catalogURL: 'https://drive.google.com/drive/folders/1aTs5HE5Ntz3L2W8ZfWfKKY9LRpRe2Yf4?usp=drive_link',
   },
   {
     id: 17,
@@ -215,6 +232,7 @@ export const catalogData: CatalogItem[] = [
     recommendedUse: ["15 años", "fotografía de moda", "eventos con brillo", "backstage"],
     isFluo: true,
     isRealistic: false,
+    catalogURL: 'https://drive.google.com/drive/folders/1s9I5rRzYuJWgI_4c0X90Gq7m3jP7oPQp?usp=drive_link',
   },
   {
     id: 18,
@@ -223,10 +241,11 @@ export const catalogData: CatalogItem[] = [
     image: "/images/innova/catalog/15.webp",
     description: "Fondos Religioso con estilo clásico y solemne",
     tags: ["iglesia", "bautismo", "comunión", "cruz", "espiritual", "religioso", "interior blanco", "mármol", "sagrado"],
-    featured: false,
+    featured: true,
     recommendedUse: ["bautismo", "comuniones", "eventos religiosos", "fotografía espiritual"],
     isFluo: false,
     isRealistic: true,
+    catalogURL: 'https://drive.google.com/drive/folders/1l6qlc12q9GD7nmDWeMgeQ2hmvIW8Miew?usp=drive_link',
   },
   {
     id: 19,
@@ -239,6 +258,7 @@ export const catalogData: CatalogItem[] = [
     recommendedUse: ["sesiones artísticas", "maternidad", "moda creativa", "cuentos"],
     isFluo: false,
     isRealistic: true,
+    catalogURL: null,
   },
   {
     id: 20 ,
@@ -251,6 +271,7 @@ export const catalogData: CatalogItem[] = [
     recommendedUse: ["newborn", "fotografía infantil", "temáticas nocturnas", "baby shower", "sesiones artísticas", "maternidad"],
     isFluo: false,
     isRealistic: false,
+    catalogURL: 'https://drive.google.com/drive/folders/1-iBcyRZS4JJYwYU_W-qZjhDP3Sb5odpV?usp=drive_link',
   },
   {
     id: 21 ,
@@ -263,6 +284,7 @@ export const catalogData: CatalogItem[] = [
     recommendedUse: ["moda", "eventos", "retrato formal", "producciones de lujo"],
     isFluo: false,
     isRealistic: true,
+    catalogURL: 'https://drive.google.com/drive/folders/1XusDGIj86ajh2EvZ4PB2pPeMlUdhssI5?usp=drive_link',
   },
   {
     id: 22,
@@ -275,11 +297,12 @@ export const catalogData: CatalogItem[] = [
     recommendedUse: ["cumpleaños", "sesiones infantiles", "fiestas temáticas"],
     isFluo: false,
     isRealistic: true,
+    catalogURL: 'https://drive.google.com/drive/folders/1osmLIBrxqrTrZt7r3_Mf4o_8WkGSQsFp?usp=drive_link',
   },
   {
     id: 23,
-    title: "Catálogo texturas abstracto",
-    category: "texturas abstracto",
+    title: "Catálogo texturas abstractas",
+    category: "texturas abstracas con colores",
     image: "/images/innova/catalog/21.webp",
     description: "Fondos ideales para cumpleaños, sesiones infantiles y fiestas temáticas",
     tags: ["azul", "tierra", "verde", "modelaje", "retrato", "pinceladas", "artístico", "oscuro", "pintado a mano", "gradient", "artisticos"],
@@ -287,6 +310,7 @@ export const catalogData: CatalogItem[] = [
     recommendedUse: ["retratos artísticos", "fotografía creativa"],
     isFluo: false,
     isRealistic: false,
+    catalogURL: 'https://drive.google.com/drive/folders/1zrZhNzLLLZ0aeknh1yjK9WbyDQXmDBNV?usp=drive_link',
   },
   {
     id: 24,
@@ -299,6 +323,7 @@ export const catalogData: CatalogItem[] = [
     recommendedUse: ["cumpleaños", "sesiones infantiles", "fiestas temáticas"],
     isFluo: false,
     isRealistic: true,
+    catalogURL: 'https://drive.google.com/drive/folders/1G6CTxlWy4K4z-L_DF8cwwkduRV5BjaQf?usp=drive_link',
   },
   {
     id: 25,
@@ -311,6 +336,7 @@ export const catalogData: CatalogItem[] = [
     recommendedUse: ["retratos elegantes y sesiones familiares"],
     isFluo: false,
     isRealistic: true,
+    catalogURL: 'https://drive.google.com/drive/folders/1zj_OTy9tCqEWzAEfmBEM3z71K3GCZS_X?usp=drive_link',
   },
   {
     id: 26,
@@ -323,6 +349,7 @@ export const catalogData: CatalogItem[] = [
     recommendedUse: ["Sesiones al aire libre", "temáticas de cuento"],
     isFluo: false,
     isRealistic: true,
+    catalogURL: 'https://drive.google.com/drive/folders/1XcudDiAiuyXvxuL0sUXpwB38uw6MhywN?usp=drive_link',
   },
   {
     id: 27,
@@ -335,6 +362,7 @@ export const catalogData: CatalogItem[] = [
     recommendedUse: ["empresariales", "corporativas"],
     isFluo: false,
     isRealistic: true,
+    catalogURL: 'https://drive.google.com/drive/folders/1i1cW1FMjskFwIAVmUgp02FvpsKFUjUS7?usp=drive_link',
   },
   {
     id: 28,
@@ -347,7 +375,22 @@ export const catalogData: CatalogItem[] = [
     recommendedUse: ["Pisos", "newborn"],
     isFluo: false,
     isRealistic: true,
+    catalogURL: 'https://drive.google.com/drive/folders/1vAJSLSSEsvf0EulI8B7jn722l7Y9eEes?usp=drive_link',
   },
+  {
+    id: 29,
+    title: "Catálogo fondos Coloridos",
+    category: "coloridos",
+    image: "/images/innova/catalog/3.webp",
+    description: "Fondos ideales para cumpleaños con temáticas coloridas y sesiones infantiles",
+    tags: ["globos", "fiesta", "cumpleaños", "colores", "carnaval", "sombrillas", "serpentina", "fondo alegre", "celebración", "infantil", "rosa", "violeta", "naranja"],
+    featured: false,
+    recommendedUse: ["cumpleaños", "sesiones infantiles", "fiestas temáticas"],
+    isFluo: false,
+    isRealistic: true,
+    catalogURL: 'https://drive.google.com/drive/folders/1lmwQoXwkc3cRyfuHTJ6_TnA8EaGd0w97?usp=drive_link',
+  },
+  
 ]
 
 // Sistema de sinónimos y palabras relacionadas
@@ -377,5 +420,38 @@ export const synonymsCatalog: Record<string, string[]> = {
   Ventanal: ["luz natural", "interior", "elegante", "espacios amplios", "fondo blanco", "iluminado", "pared con ventanas", "clásico", "clasico"],
   Castillo: ["torres", "medieval", "mágico", "magico", "cuento", "real", "histórico", "historico", "muralla", "fantasía", "fantasia", "estructura antigua", "europeo"],
   "Living - Corporativo": ["empresa", "oficina", "negocios", "espacio moderno", "trabajo", "co-working", "sofá", "sofa", "decorado", "planta", "profesional"],
-  Pisos: ["superficie", "madera", "textura", "base", "fondo", "debajo", "chic", "detalle", "horizontal", "moderno"]
+  Pisos: ["superficie", "madera", "textura", "base", "fondo", "debajo", "chic", "detalle", "horizontal", "moderno"],
+  Coloridos: ["aire", "colorido", "flotante", "globitos"],
 };
+
+export const categories: string[] = [
+  "Todos",
+  "Navidad",
+  "Infantiles",
+  "Pascuas",
+  "Boho",
+  "Escolar",
+  "Fachadas",
+  "Baby Shower",
+  "Escaleras",
+  "InnPets",
+  "Urbano",
+  "Estaciones del año",
+  "Fluo - Neon",
+  "Bosque",
+  "Bosque",
+  "Newborn",
+  "halloween",
+  "Glitter",
+  "Comunión y Bautismo",
+  "Comunión y Bautismo",
+  "Lunas y Estrellas",
+  "Paredes",
+  "Globos",
+  "texturas abstracto",
+  "Hojas",
+  "Ventanal",
+  "Castillo",
+  "Living - Corporativo",
+  "Pisos",
+];

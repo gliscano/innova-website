@@ -5,9 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { getAllTags } from "../utils/catalogUtils"
-import { catalogData, synonymsCatalog } from "../data/catalogData"
-import { categories } from "../data/categoriesData"
-import Lottie from "lottie-web"
+import { catalogData, categories, synonymsCatalog } from "../data/catalogData"
 
 // Extraer todos los tags únicos del catálogo
 const allTags = getAllTags()
