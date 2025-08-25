@@ -7,6 +7,8 @@ import Footer from "@/app/components/Footer"
 import Header from "@/app/components/Header"
 import { getCatalogItemByCategory } from "@/app/utils/catalogUtils"
 import PriceList from "@/app/components/PriceList"
+import Gallery from "@/app/components/gallery/Gallery"
+import { CatalogItem } from "@/app/data/catalogData"
 
 const ChevronIcon = () => (
   <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
@@ -24,7 +26,14 @@ interface ProductPageProps {
 
 export default function ProductPage({ params }: ProductPageProps) {
   const id = React.use(params).id
-  const product = getCatalogItemByCategory(decodeURIComponent(id))
+  const product: CatalogItem | undefined = getCatalogItemByCategory(decodeURIComponent(id))
+
+  const getUrlLink = (url: string | null) => {
+    if (typeof url === 'string') {
+      return url
+    }
+    return '#catalog'
+  }
 
   if (!product) {
     return (
@@ -43,6 +52,16 @@ export default function ProductPage({ params }: ProductPageProps) {
         </div>
       </div>
     )
+  }
+
+  const handleCatalogLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (typeof product.catalogURL !== 'string') {
+      event.preventDefault()
+      const section = document.getElementById('catalog')
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    }
   }
 
   return (
@@ -106,7 +125,8 @@ export default function ProductPage({ params }: ProductPageProps) {
 
             <div className="space-y-4">
               <Link
-                href="https://innova54store.empretienda.com.ar/productos-en-stock"
+                href={getUrlLink(product.catalogURL)}
+                onClick={handleCatalogLinkClick}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full bg-blue-600 text-white px-6 py-3 rounded-md font-medium hover:bg-blue-700 transition-colors text-lg flex items-center justify-center gap-2 group"
@@ -252,6 +272,18 @@ export default function ProductPage({ params }: ProductPageProps) {
           </div>
         </div>
       </div>
+      {
+        !product.catalogURL && (
+          <section id="catalog" className="min-h-screen flex flex-col">
+            <div className="flex-grow">
+              <Gallery
+                searchTerm={product.category}
+                tags={product.tags}
+                itemsPerPage={100}
+              />
+            </div>
+        </section>
+      )}
       <PriceList />
     </div>
   )

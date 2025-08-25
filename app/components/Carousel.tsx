@@ -15,9 +15,9 @@ export default function Carousel() {
   const [currentIndex, setCurrentIndex] = useState(0)
 
   useEffect(()=> {
-    console.log('currentIndex', currentIndex);
-    
-
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('carousel index', currentIndex)
+    }
   }, [currentIndex])
 
   useEffect(() => {
