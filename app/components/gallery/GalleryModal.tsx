@@ -5,7 +5,15 @@ import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { GalleryModalProps } from '../../types/gallery'
 
-export default function GalleryModal({ isOpen, onClose, images, initialIndex }: GalleryModalProps) {
+export default function GalleryModal({
+  isOpen,
+  onClose,
+  images,
+  initialIndex,
+  goToNext,
+  goToPrevious,
+  goToImage,
+}: GalleryModalProps) {
   const modalRef = useRef<HTMLDivElement>(null)
 
   // Cerrar modal al hacer clic fuera
@@ -45,10 +53,10 @@ export default function GalleryModal({ isOpen, onClose, images, initialIndex }: 
           <div className="flex items-center justify-between text-white mb-4">
             <div className="flex items-center space-x-4">
               <h2 className="text-lg font-medium">
-                Imagen {initialIndex + 1} de {images.length}
+                {currentImage.display_name}
               </h2>
               <span className="text-sm text-gray-300">
-                {currentImage.width} × {currentImage.height}
+                Imagen {initialIndex + 1} de {images.length}
               </span>
             </div>
             
@@ -67,12 +75,7 @@ export default function GalleryModal({ isOpen, onClose, images, initialIndex }: 
           <div className="flex-1 relative flex items-center justify-center">
             {/* Botón anterior */}
             <button
-              onClick={() => {
-                const prevIndex = initialIndex === 0 ? images.length - 1 : initialIndex - 1
-                // Aquí necesitarías actualizar el índice en el componente padre
-                // Por ahora solo cerramos y reabrimos
-                onClose()
-              }}
+              onClick={() => goToPrevious()}
               className="absolute left-4 top-1/2 transform -translate-y-1/2 p-3 bg-black bg-opacity-50 hover:bg-opacity-70 text-white rounded-full transition-all duration-200 hover:scale-110 z-10"
               aria-label="Imagen anterior"
             >
@@ -102,12 +105,7 @@ export default function GalleryModal({ isOpen, onClose, images, initialIndex }: 
 
             {/* Botón siguiente */}
             <button
-              onClick={() => {
-                const nextIndex = (initialIndex + 1) % images.length
-                // Aquí necesitarías actualizar el índice en el componente padre
-                // Por ahora solo cerramos y reabrimos
-                onClose()
-              }}
+              onClick={() => goToNext()}
               className="absolute right-4 top-1/2 transform -translate-y-1/2 p-3 bg-black bg-opacity-50 hover:bg-opacity-70 text-white rounded-full transition-all duration-200 hover:scale-110 z-10"
               aria-label="Imagen siguiente"
             >
@@ -122,11 +120,7 @@ export default function GalleryModal({ isOpen, onClose, images, initialIndex }: 
             {images.map((_, index) => (
               <button
                 key={index}
-                onClick={() => {
-                  // Aquí necesitarías actualizar el índice en el componente padre
-                  // Por ahora solo cerramos y reabrimos
-                  onClose()
-                }}
+                onClick={() => goToImage(index)}
                 className={`w-3 h-3 rounded-full transition-colors ${
                   index === initialIndex
                     ? 'bg-white'
@@ -135,13 +129,6 @@ export default function GalleryModal({ isOpen, onClose, images, initialIndex }: 
                 aria-label={`Ir a imagen ${index + 1}`}
               />
             ))}
-          </div>
-
-          {/* Indicadores de navegación */}
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white text-sm">
-            <p className="text-center">
-              Usa las flechas del teclado para navegar o ESC para cerrar
-            </p>
           </div>
         </div>
       </motion.div>

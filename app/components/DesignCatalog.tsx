@@ -5,15 +5,13 @@ import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { getAllTags } from "../utils/catalogUtils"
-import { catalogData, categories, synonymsCatalog } from "../data/catalogData"
+import { catalogData, synonymsCatalog } from "../data/catalogData"
 
 // Extraer todos los tags únicos del catálogo
 const allTags = getAllTags()
 
 // Constantes para el sistema de cuotas
 const MAX_AI_SEARCHES_PER_SESSION = 5
-const AI_QUOTA_KEY = "innova_ai_searches_count"
-const AI_QUOTA_DATE_KEY = "innova_ai_searches_date"
 
 interface AISearchResult {
   categories: string[]
@@ -89,6 +87,35 @@ export default function InnovaCatalog() {
   const [isSearching, setIsSearching] = useState(false)
   const [searchResult, setSearchResult] = useState<SearchResult>(null)
   const [aiSearchesUsed, setAiSearchesUsed] = useState(0)
+  const categoryScrollRef = useRef<HTMLDivElement>(null)
+
+  const scrollCategories = (direction: "left" | "right") => {
+    const container = categoryScrollRef.current
+    if (!container) return
+    const amount = Math.floor(container.clientWidth * 0.8)
+    container.scrollBy({ left: direction === "left" ? -amount : amount, behavior: "smooth" })
+  }
+
+  // Construir categorías a partir de catalogData y ordenar por featured (true primero)
+  const categoriesFromData = useMemo(() => {
+    const categoryToHasFeatured = new Map<string, boolean>()
+    catalogData.forEach((product) => {
+      const previous = categoryToHasFeatured.get(product.category) || false
+      categoryToHasFeatured.set(product.category, previous || !!product.featured)
+    })
+
+    const sorted = Array.from(categoryToHasFeatured.entries())
+      .sort((a, b) => {
+        // featured true primero
+        const byFeatured = Number(b[1]) - Number(a[1])
+        if (byFeatured !== 0) return byFeatured
+        // secundario: orden alfabético
+        return a[0].localeCompare(b[0])
+      })
+      .map(([name]) => name)
+
+    return ["Todos", ...sorted]
+  }, [])
 
   // Función para normalizar acentos y caracteres especiales
   const normalizeText = (text: string): string => {
@@ -98,22 +125,6 @@ export default function InnovaCatalog() {
       .replace(/[\u0300-\u036f]/g, "") // Elimina diacríticos (acentos)
       .trim()
   }
-
-  // Cargar contador de búsquedas IA al inicializar
-  useEffect(() => {
-    const today = new Date().toDateString()
-    const savedDate = localStorage.getItem(AI_QUOTA_DATE_KEY)
-    const savedCount = localStorage.getItem(AI_QUOTA_KEY)
-
-    if (savedDate === today && savedCount) {
-      setAiSearchesUsed(Number.parseInt(savedCount))
-    } else {
-      // Nuevo día, resetear contador
-      localStorage.setItem(AI_QUOTA_DATE_KEY, today)
-      localStorage.setItem(AI_QUOTA_KEY, "0")
-      setAiSearchesUsed(0)
-    }
-  }, [])
 
   // Función para calcular similitud entre strings
   const calculateSimilarity = (str1: string, str2: string): number => {
@@ -176,7 +187,7 @@ export default function InnovaCatalog() {
       }
     })
 
-    categories.slice(1).forEach((category) => {
+    categoriesFromData.slice(1).forEach((category) => {
       const similarity = calculateSimilarity(normalizedSearch, normalizeText(category.toLowerCase()))
       if (similarity > 0.7 && similarity < 1.0) {
         relatedTerms.push(category.toLowerCase())
@@ -197,7 +208,7 @@ export default function InnovaCatalog() {
     let isDirectMatch = false
 
     // 1. Coincidencias exactas (máxima confianza)
-    categories.slice(1).forEach((category) => {
+    categoriesFromData.slice(1).forEach((category) => {
       if (normalizeText(category.toLowerCase()) === normalizedSearch || normalizeText(category.toLowerCase()).includes(normalizedSearch)) {
         matchedCategories.push(category)
         confidence = Math.max(confidence, 1.0)
@@ -237,7 +248,7 @@ export default function InnovaCatalog() {
     if (relatedTerms.length > 0) {
       relatedTerms.forEach((term) => {
         // Buscar categorías relacionadas
-        categories.slice(1).forEach((category) => {
+        categoriesFromData.slice(1).forEach((category) => {
           if (normalizeText(category.toLowerCase()).includes(normalizeText(term)) || normalizeText(term).includes(normalizeText(category.toLowerCase()))) {
             if (!matchedCategories.includes(category)) {
               matchedCategories.push(category)
@@ -260,7 +271,7 @@ export default function InnovaCatalog() {
 
     // 4. Fuzzy matching para coincidencias aproximadas (confianza media)
     if (matchedCategories.length === 0 && matchedTags.length === 0) {
-      categories.slice(1).forEach((category) => {
+      categoriesFromData.slice(1).forEach((category) => {
         const similarity = calculateSimilarity(normalizedSearch, normalizeText(category.toLowerCase()))
         if (similarity > 0.75) {
           matchedCategories.push(category)
@@ -288,28 +299,6 @@ export default function InnovaCatalog() {
     }
 
     return null
-  }
-
-  // Función para determinar si se debe usar IA (casos extremadamente complejos)
-  const shouldUseAI = (searchTerm: string, hybridResult: DirectSearchResult | HybridSearchResult | null): boolean => {
-    // No usar IA si se alcanzó la cuota
-    if (aiSearchesUsed >= MAX_AI_SEARCHES_PER_SESSION) {
-      return false
-    }
-
-    // No usar IA si hay coincidencias híbridas con alta confianza
-    if (hybridResult && hybridResult.confidence > 0.7) {
-      return false
-    }
-
-    // Usar IA solo para casos complejos:
-    // 1. Búsquedas largas (más de 10 caracteres)
-    // 2. Sin coincidencias híbridas o con baja confianza
-    // 3. Términos que parecen ser consultas complejas (contienen múltiples palabras)
-    const words = searchTerm.trim().split(/\s+/)
-    const isComplexQuery = words.length > 1 && searchTerm.length > 10
-
-    return isComplexQuery && (!hybridResult || hybridResult.confidence < 0.5)
   }
 
   // Debounce search term
@@ -341,30 +330,8 @@ export default function InnovaCatalog() {
           return
         }
 
-        // Solo usar IA para casos extremadamente complejos
-        if (shouldUseAI(debouncedSearchTerm, hybridMatches)) {
-          const response = await fetch("/api/search", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ searchTerm: debouncedSearchTerm }),
-          })
+        setSearchResult(null)
 
-          if (!response.ok) {
-            throw new Error("Error en la búsqueda")
-          }
-
-          const data = await response.json()
-          setSearchResult(data)
-
-          // Incrementar contador de búsquedas IA
-          const newCount = aiSearchesUsed + 1
-          setAiSearchesUsed(newCount)
-          localStorage.setItem(AI_QUOTA_KEY, newCount.toString())
-        } else {
-          setSearchResult(null)
-        }
       } catch (error) {
         console.error("Error searching:", error)
         setSearchResult(null)
@@ -511,21 +478,48 @@ export default function InnovaCatalog() {
               </div>
             )}
 
-            {/* Filtros rápidos */}
-            <div className="flex flex-wrap gap-2">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category === selectedCategory ? "Todos" : category)}
-                  className={`px-4 py-2 rounded-full text-xs transition-colors ${
-                    selectedCategory === category
-                      ? "bg-blue-600 text-white"
-                      : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
+            {/* Filtros rápidos - Carrusel */}
+            <div className="relative">
+              <button
+                type="button"
+                aria-label="Desplazar categorías a la izquierda"
+                onClick={() => scrollCategories("left")}
+                className="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 items-center justify-center h-8 w-8 rounded-full bg-white border border-gray-300 shadow hover:bg-gray-50"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-4 h-4">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+
+              <div
+                ref={categoryScrollRef}
+                className="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory px-8 py-2 sm:mx-10 sm:overflow-x-hidden"
+              >
+                {categoriesFromData.map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => setSelectedCategory(category === selectedCategory ? "Todos" : category)}
+                    className={`flex-none snap-start px-4 py-2 rounded-full text-xs transition-colors ${
+                      selectedCategory === category
+                        ? "bg-blue-600 text-white"
+                        : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                    }`}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                aria-label="Desplazar categorías a la derecha"
+                onClick={() => scrollCategories("right")}
+                className="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 items-center justify-center h-8 w-8 rounded-full bg-white border border-gray-300 shadow hover:bg-gray-50"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-4 h-4">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
             </div>
 
             {/* Controles */}
@@ -654,25 +648,27 @@ export default function InnovaCatalog() {
               <SearchIcon />
               <h3 className="text-lg font-medium text-gray-900 px-2">No se encontraron diseños</h3>
             </div>
-            <p className="text-gray-600 mb-6">Intenta ajustar tus filtros o términos de búsqueda</p>
+            <p className="text-gray-600 mb-6">Intenta una búsqueda más general</p>
+            <div className="flex flex-row items-center justify-center text-center gap-2">
+              <button
+                onClick={clearFilters}
+                className="bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded-md font-medium hover:bg-gray-50 transition-colors"
+              >
+                Ver todos los diseños
+              </button>
+              <button className="flex flex-row bg-green-200 mt-2 px-4 py-2 rounded-md font-medium hover:bg-green-700 transition-colors">
+                <Image
+                  aria-hidden
+                  src="../svg/whatsapp.svg"
+                  alt="Whatsapp icon"
+                  className="mr-2"
+                  width={20}
+                  height={20}
+                />
+                Prefiero consultar
+              </button>
 
-            <button
-              onClick={clearFilters}
-              className="bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded-md font-medium hover:bg-gray-50 transition-colors"
-            >
-              Limpiar Filtros
-            </button>
-            <button className="flex flex-row bg-green-200 mt-2 px-4 py-2 rounded-md font-medium hover:bg-green-700 transition-colors">
-              <Image
-                aria-hidden
-                src="../svg/whatsapp.svg"
-                alt="Whatsapp icon"
-                className="mr-2"
-                width={20}
-                height={20}
-              />
-              Prefiero consultar
-            </button>
+            </div>
           </div>
         )}
       </div>

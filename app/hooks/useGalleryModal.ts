@@ -25,13 +25,13 @@ export function useGalleryModal(images: GalleryImage[]): UseGalleryModalReturn {
     setIsOpen(true)
     
     // Trackear apertura del modal en Google Analytics
-    if (typeof window !== 'undefined' && window.gtag) {
+    /* if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('event', 'gallery_modal_open', {
         event_category: 'gallery',
         event_label: `image_${index}`,
         value: index,
       })
-    }
+    } */
   }, [])
 
   const closeModal = useCallback(() => {
@@ -39,11 +39,11 @@ export function useGalleryModal(images: GalleryImage[]): UseGalleryModalReturn {
     
     // Trackear cierre del modal en Google Analytics
     if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'gallery_modal_close', {
+      /* window.gtag('event', 'gallery_modal_close', {
         event_category: 'gallery',
         event_label: `image_${currentIndex}`,
         value: currentIndex,
-      })
+      }) */
     }
   }, [currentIndex])
 
@@ -54,13 +54,13 @@ export function useGalleryModal(images: GalleryImage[]): UseGalleryModalReturn {
     setCurrentIndex(nextIndex)
     
     // Trackear navegación en Google Analytics
-    if (typeof window !== 'undefined' && window.gtag) {
+    /* if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('event', 'gallery_navigation', {
         event_category: 'gallery',
         event_label: 'next',
         value: nextIndex,
       })
-    }
+    } */
   }, [currentIndex, images.length])
 
   const goToPrevious = useCallback(() => {
@@ -70,13 +70,13 @@ export function useGalleryModal(images: GalleryImage[]): UseGalleryModalReturn {
     setCurrentIndex(prevIndex)
     
     // Trackear navegación en Google Analytics
-    if (typeof window !== 'undefined' && window.gtag) {
+    /* if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('event', 'gallery_navigation', {
         event_category: 'gallery',
         event_label: 'previous',
         value: prevIndex,
       })
-    }
+    } */
   }, [currentIndex, images.length])
 
   const goToImage = useCallback((index: number) => {
@@ -84,13 +84,13 @@ export function useGalleryModal(images: GalleryImage[]): UseGalleryModalReturn {
       setCurrentIndex(index)
       
       // Trackear navegación directa en Google Analytics
-      if (typeof window !== 'undefined' && window.gtag) {
+      /* if (typeof window !== 'undefined' && window.gtag) {
         window.gtag('event', 'gallery_navigation', {
           event_category: 'gallery',
           event_label: 'direct',
           value: index,
         })
-      }
+      } */
     }
   }, [images.length])
 

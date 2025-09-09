@@ -141,6 +141,9 @@ export default function Gallery(props: GalleryProps) {
             onClose={handleModalClose}
             images={images}
             initialIndex={modalIndex}
+            goToNext={goToNext}
+            goToPrevious={goToPrevious}
+            goToImage={goToImage}
           />
         )}
       </div>

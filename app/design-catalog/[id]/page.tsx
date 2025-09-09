@@ -64,6 +64,14 @@ export default function ProductPage({ params }: ProductPageProps) {
     }
   }
 
+  const handlePricesLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault()
+    const section = document.getElementById('prices')
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 pb-6">
       <Header />
@@ -255,8 +263,8 @@ export default function ProductPage({ params }: ProductPageProps) {
                   </ul>
                 </div>
               </div>
-              <div className="flex items-start gap-3">
-                <button className="w-full bg-green-400 px-6 py-3 rounded-md hover:bg-green-700 transition-colors text-sm sm:text-lg flex items-center justify-center">
+              <div className="flex items-start flex-col gap-3">
+                <button className="w-full bg-green-400 px-6 py-3 rounded-md hover:bg-green-700 transition-colors font-medium sm:text-lg flex items-center justify-center">
                   <Image
                     aria-hidden
                     src="../svg/whatsapp.svg"
@@ -265,13 +273,23 @@ export default function ProductPage({ params }: ProductPageProps) {
                     width={20}
                     height={20}
                   />
-                  Quiero comprar / Quiero más info
+                  Quiero comprar o consultar
                 </button>
+                <Link
+                  href="#prices"
+                  onClick={handlePricesLinkClick}
+                  target="_self"
+                  rel="noopener noreferrer"
+                  className="w-full px-6 py-3 rounded-md font-medium hover:bg-gray-200 transition-colors text-lg flex items-center justify-center gap-2 group"
+                >
+
+                  Ver medidas y precios
+                </Link>
+              </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
       {
         !product.catalogURL && (
           <section id="catalog" className="min-h-screen flex flex-col">

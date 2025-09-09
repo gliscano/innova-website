@@ -66,7 +66,7 @@ import {
     }, [])
   
     return (
-      <div className="bg-gray-50">
+      <section className="bg-gray-50" id="prices">
         <div className="relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20 pt-6 lg:pt-14">
           <div
             className="absolute inset-y-0 right-1/2 -z-10 -mr-96 w-[200%] origin-top-right skew-x-[-30deg] bg-white shadow-xl shadow-indigo-600/10 ring-1 ring-indigo-50 sm:-mr-80 lg:-mr-96"
@@ -113,7 +113,7 @@ import {
                     <p>Estándar</p>
                   </div>
                   <div className="w-1/4 text-center">
-                    <p>Fluo</p>
+                    <p>Efecto Neon</p>
                   </div>
                 </div>
                 {standardBackdrops.current.map((item, index) => (
@@ -131,13 +131,13 @@ import {
                       </div>
                     </div>
                     <div className="w-1/4 text-center">
-                      <p className="font-medium font-semibold text-gray-900 m-1 bg-gray-100 rounded-xl">
+                      <p className="font-medium text-gray-900 m-1 bg-gray-100 rounded-xl">
                         ${item.price.toLocaleString()}
                       </p>
                     </div>
                     {item.priceFluo && (
                       <div className="w-1/4 text-center">
-                        <p className="font-medium font-semibold text-gray-900 m-1 bg-green-100 rounded-xl">
+                        <p className="font-medium text-gray-900 m-1 bg-green-100 rounded-xl">
                           ${item.priceFluo?.toLocaleString()}
                         </p>
                       </div>
@@ -162,7 +162,7 @@ import {
                     <p>Estándar</p>
                   </div>
                   <div className="w-1/4 text-center">
-                    <p>Fluo</p>
+                    <p>Efecto Neon</p>
                   </div>
                 </div>
                 {wideBackdrops.current.map((item, index) => (
@@ -348,6 +348,6 @@ import {
             </div>
           </div>
         </div>
-      </div>
+      </section>
     )
   }

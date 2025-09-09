@@ -31,9 +31,12 @@ export interface GallerySearchResponse {
 
 export interface GalleryModalProps {
   isOpen: boolean
-  onClose: () => void
   images: GalleryImage[]
   initialIndex: number
+  onClose: () => void
+  goToNext: () => void
+  goToPrevious: () => void
+  goToImage: (index: number) => void
 }
 
 export interface GalleryItemProps {

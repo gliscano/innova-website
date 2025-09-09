@@ -84,21 +84,13 @@ function buildExpression(params: { searchTerm?: string; tags?: string[]; folder?
   if (searchTerm && searchTerm.trim().length > 0) {
     const term = searchTerm.trim()
     // Envolver en comillas para tratarlo como frase y evitar operadores
-    expression += ` AND "${term}"`
+    expression += ` AND "${term}" folder:${folder}*`
   }
 
   if (tags && tags.length > 0) {
     const tagQuery = tags.map((tag) => `tags:${tag}`).join(' OR ')
     expression += ` AND (${tagQuery})`
   }
-
-  if (folder && folder.trim().length > 0) {
-    expression += ` AND folder:${folder}*`
-  }
-
-  /* if (collection && collection.trim().length > 0) {
-    expression += ` AND context.custom.collection:${collection}`
-  } */
 
   return expression
 }
