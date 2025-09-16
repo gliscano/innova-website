@@ -68,7 +68,7 @@ export default function AnimatedCards() {
 
   return (
     <div className="bg-gray-300">
-      <div className="max-w-7xl mx-auto py-6 lg:py-12 px-4 sm:px-6 lg:py-8 lg:px-8">
+      <div className="max-w-7xl mx-auto py-3 px-3">
         <div className="grid grid-cols-3 gap-4">
           {cards.map((card, index) => (
             <a
