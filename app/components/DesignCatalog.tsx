@@ -442,7 +442,7 @@ export default function InnovaCatalog() {
               </div>
               <input
                 type="text"
-                placeholder="Buscar diseños"
+                placeholder="Buscar catálogo de diseños"
                 value={searchTerm}
                 onChange={(e) => {
                   const value = e.target.value

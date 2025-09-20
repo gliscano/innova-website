@@ -15,7 +15,7 @@ export interface CatalogItem {
 export const catalogData: CatalogItem[] = [
   {
     id: 1,
-    title: "Catálogo de Navidad",
+    title: "Catálogo Navidad",
     category: "Navidad",
     image: "/images/innova/catalog/1.webp",
     description: "Diseños especiales para celebrar esta Navidad 2025",
@@ -28,7 +28,7 @@ export const catalogData: CatalogItem[] = [
   },
   {
     id: 2,
-    title: "Catálogo de Infantiles",
+    title: "Catálogo Infantiles",
     category: "Infantiles",
     image: "/images/innova/catalog/25.webp",
     description: "Diseños divertidos y coloridos para fotografía infantil",
@@ -41,7 +41,7 @@ export const catalogData: CatalogItem[] = [
   },
   {
     id: 3,
-    title: "Catálogo de Pascuas",
+    title: "Catálogo Pascuas",
     category: "Pascuas",
     image: "/images/innova/catalog/20.webp",
     description: "Diseños especiales para celebrar la Pascua con estilo",
@@ -54,7 +54,7 @@ export const catalogData: CatalogItem[] = [
   },  
   {
     id: 4,
-    title: "Catálogo de Boho",
+    title: "Catálogo Boho",
     category: "Boho",
     image: "/images/innova/catalog/16.webp",
     description: "Estilo bohemio elegante, sofisticado y atemporal para sesiones únicas",
@@ -80,7 +80,7 @@ export const catalogData: CatalogItem[] = [
   },
   {
     id: 6,
-    title: "Catálogo de Fachadas",
+    title: "Catálogo Fachadas",
     category: "Fachadas",
     image: "/images/innova/catalog/14.webp",
     description: "Fondos arquitectónicos y urbanos",
@@ -106,7 +106,7 @@ export const catalogData: CatalogItem[] = [
   },
   {
     id: 8,
-    title: "Catálogo de Escaleras",
+    title: "Catálogo Escaleras",
     category: "Escaleras",
     image: "/images/innova/catalog/24.webp",
     description: "Fondos con escaleras elegantes para composiciones dinámicas",
@@ -119,7 +119,7 @@ export const catalogData: CatalogItem[] = [
   },
   {
     id: 9,
-    title: "Catálogo de Fondos para Mascotas",
+    title: "Catálogo para Mascotas",
     category: "InnPets",
     image: "/images/innova/catalog/28.webp",
     description: "Fondos especializados para fotografía de mascotas",
@@ -262,7 +262,7 @@ export const catalogData: CatalogItem[] = [
   },
   {
     id: 20 ,
-    title: "Catálogo de Lunas y Estrellas",
+    title: "Catálogo Lunas y Estrellas",
     category: "Lunas y Estrellas",
     image: "/images/innova/catalog/18.webp",
     description: "Fondos Dulce y mágico",
@@ -275,7 +275,7 @@ export const catalogData: CatalogItem[] = [
   },
   {
     id: 21 ,
-    title: "Catálogo de Paredes",
+    title: "Catálogo Paredes",
     category: "Paredes",
     image: "/images/innova/catalog/19.webp",
     description: "Fondos Elegantes, clásicos y Rústicos",
@@ -327,7 +327,7 @@ export const catalogData: CatalogItem[] = [
   },
   {
     id: 25,
-    title: "Catálogo de Ventanal",
+    title: "Catálogo Ventanal",
     category: "Ventanal",
     image: "/images/innova/catalog/23.webp",
     description: "Fondos minimalistas con ventanales",
@@ -340,7 +340,7 @@ export const catalogData: CatalogItem[] = [
   },
   {
     id: 26,
-    title: "Catálogo de Castillo",
+    title: "Catálogo Castillo",
     category: "Castillo",
     image: "/images/innova/catalog/26.webp",
     description: "Fondos realistas de Castillos para Sesiones temáticas",
@@ -353,7 +353,7 @@ export const catalogData: CatalogItem[] = [
   },
   {
     id: 27,
-    title: "Catálogo de Living - Corporativo",
+    title: "Catálogo Living - Corporativo",
     category: "Living - Corporativo",
     image: "/images/innova/catalog/27.webp",
     description: "Fondos empresariales y corporativos",
@@ -366,7 +366,7 @@ export const catalogData: CatalogItem[] = [
   },
   {
     id: 28,
-    title: "Catálogo de Pisos",
+    title: "Catálogo Pisos",
     category: "Pisos",
     image: "/images/innova/catalog/29.webp",
     description: "Pisos en simil de neoprene",

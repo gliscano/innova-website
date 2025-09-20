@@ -80,6 +80,8 @@ export function useGalleryImages(props: GalleryProps): UseGalleryImagesReturn {
       setNextCursor(data.nextCursor || null)
       setHasMore(data.hasMore)
       setTotalCount(data.totalCount)
+      setIsLoading(false)
+      isLoadingMoreRef.current = false
 
       // Trackear en Google Analytics
       /* if (typeof window !== 'undefined' && window.gtag) {
@@ -97,8 +99,6 @@ export function useGalleryImages(props: GalleryProps): UseGalleryImagesReturn {
       
       console.error('Error buscando imágenes:', err)
       setError('Error al cargar las imágenes. Intenta de nuevo.')
-      
-    } finally {
       setIsLoading(false)
       isLoadingMoreRef.current = false
     }
@@ -115,7 +115,6 @@ export function useGalleryImages(props: GalleryProps): UseGalleryImagesReturn {
       }
       return
     }
-      
     
     isLoadingMoreRef.current = true
     searchImages(true)

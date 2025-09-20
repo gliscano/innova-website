@@ -46,6 +46,9 @@ export default function GalleryGrid({
     }
   }, [])
 
+  console.log(">>> isLoading", isLoading)
+  console.log(">>> images.length", images.length)
+
   if (images.length === 0 && !isLoading) {
     return (
       <div className="text-center py-12">

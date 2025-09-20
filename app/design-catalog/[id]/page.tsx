@@ -87,12 +87,6 @@ export default function ProductPage({ params }: ProductPageProps) {
             <li>
               <div className="flex items-center">
                 <ChevronIcon />
-                <span className="text-gray-500 ml-1 md:ml-2">{product.category}</span>
-              </div>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <ChevronIcon />
                 <span className="text-gray-500 ml-1 md:ml-2 truncate">{product.title}</span>
               </div>
             </li>
