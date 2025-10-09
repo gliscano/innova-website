@@ -10,32 +10,33 @@ type NavItemProps = {
 const navItems: Array<NavItemProps> = [
   { 
     title: 'Whatsapp',
-    subtitle: 'Consultas',
-    icon: '/svg/whatsapp.svg',
+    subtitle: 'Consultar',
+    icon: '/icons/whatsapp.png',
     href: 'https://wa.me/5491171142152',
   },
   {
     title: 'Precios',
-    subtitle: ' y Medidas',
-    icon: '/svg/list-icon.svg', 
+    subtitle: 'y Medidas',
+    icon: '/icons/price-tag.png', 
     href: '/prices',
   },
   { 
-    title: 'Stock',
-    subtitle: 'Fondos',
-    icon: '/svg/gallery-icon.svg',
+    title: 'Comprar',
+    subtitle: 'Fondos en Stock',
+    icon: '/icons/gallery.png',
     href: 'https://store.innova54.com/',
   },
   { 
-    title: 'Newborn',
-    subtitle: 'Línea',
-    icon: '/svg/star_featured_icon.svg',
+    title: 'Props y Newborn',
+    subtitle: 'Colección',
+    icon: '/icons/rocking-horse.png',
     href: 'https://store.innova54.com/',
   },
+  
   { 
-    title: 'Props',
-    subtitle: 'Decoraciones',
-    icon: '/svg/palette.svg',
+    title: 'Preguntas',
+    subtitle: 'Frecuentes',
+    icon: '/icons/question.png',
     href: 'https://store.innova54.com/',
   },
 ]
@@ -43,7 +44,7 @@ const navItems: Array<NavItemProps> = [
 export default function AnimatedCards() {
   return (
     <div className="bg-gray-100 border-b border-gray-200">
-      <div className="w-full">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <nav className="flex items-center justify-around py-3 px-4">
           {navItems.map((item) => (
             <a

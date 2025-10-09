@@ -1,6 +1,6 @@
 import Header from '../components/Header'
 import Footer from '../components/Footer'
-import DesignCatalog from '../components/DesignCatalog'
+import DesignCatalog from '../components/gallery/DesignCatalog'
 
 export default function DesignCatalogPage() {
   return (

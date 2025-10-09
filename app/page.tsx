@@ -5,7 +5,7 @@ import Footer from './components/Footer'
 import ProductCategoryMenu from './components/ProductCategoryMenu'
 import PriceList from './components/PriceList'
 import CustomBackdropProcess from './components/CustomBackdropProcess'
-import DesignCatalog from './components/DesignCatalog'
+import DesignCatalog from './components/gallery/DesignCatalog'
 import HeroProps from './components/HeroProps'
 
 export default function Home() {
