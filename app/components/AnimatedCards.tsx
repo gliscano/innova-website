@@ -32,20 +32,13 @@ const navItems: Array<NavItemProps> = [
     icon: '/icons/rocking-horse.png',
     href: 'https://store.innova54.com/',
   },
-  
-  { 
-    title: 'Preguntas',
-    subtitle: 'Frecuentes',
-    icon: '/icons/question.png',
-    href: 'https://store.innova54.com/',
-  },
 ]
 
 export default function AnimatedCards() {
   return (
     <div className="bg-gray-100 border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <nav className="flex items-center justify-around py-3 px-4">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+        <nav className="flex items-center justify-around py-2 px-4">
           {navItems.map((item) => (
             <a
               key={item.title}

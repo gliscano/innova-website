@@ -1,31 +1,11 @@
 import { useState, useEffect, useMemo, useRef } from "react"
-import { getAllTags } from "../utils/catalogUtils"
 import { catalogData, synonymsCatalog } from "../data/catalogData"
 
-// Constantes para el sistema de cuotas
-const MAX_AI_SEARCHES_PER_SESSION = 5
-
-interface AISearchResult {
+interface SearchMatch {
   categories: string[]
   tags: string[]
-  explanation: string
+  type: "exact" | "synonym"
 }
-
-interface DirectSearchResult {
-  categories: string[]
-  tags: string[]
-  type: "direct"
-  confidence: number
-}
-
-interface HybridSearchResult {
-  categories: string[]
-  tags: string[]
-  type: "hybrid"
-  confidence: number
-}
-
-type SearchResult = AISearchResult | DirectSearchResult | HybridSearchResult | null
 
 export const useProductSearch = () => {
   const [searchTerm, setSearchTerm] = useState("")
@@ -33,14 +13,13 @@ export const useProductSearch = () => {
   const [selectedCategory, setSelectedCategory] = useState("Todos")
   const [sortBy, setSortBy] = useState("featured")
   const [isSearching, setIsSearching] = useState(false)
-  const [searchResult, setSearchResult] = useState<SearchResult>(null)
-  const [aiSearchesUsed, setAiSearchesUsed] = useState(0)
+  const [searchResult, setSearchResult] = useState<SearchMatch | null>(null)
   
   // Cache para normalización de texto
   const normalizationCache = useRef(new Map<string, string>())
   
-  // Extraer todos los tags únicos del catálogo
-  const allTags = getAllTags()
+  // Cache para sinónimos procesados
+  const synonymCache = useRef(new Map<string, string[]>())
   
   // Construir categorías a partir de catalogData y ordenar por featured (true primero)
   const categoriesFromData = useMemo(() => {
@@ -63,7 +42,7 @@ export const useProductSearch = () => {
     return ["Todos", ...sorted]
   }, [])
 
-  // Función para normalizar acentos y caracteres especiales con cache
+  // Función optimizada para normalizar texto (solo acentos)
   const normalizeText = (text: string): string => {
     const cacheKey = text
     if (normalizationCache.current.has(cacheKey)) {
@@ -80,47 +59,15 @@ export const useProductSearch = () => {
     return normalized
   }
 
-  // Función para calcular similitud entre strings
-  const calculateSimilarity = (str1: string, str2: string): number => {
-    const normalizedStr1 = normalizeText(str1)
-    const normalizedStr2 = normalizeText(str2)
-    
-    if (normalizedStr1 === normalizedStr2) return 1.0
-    
-    const distance = levenshteinDistance(normalizedStr1, normalizedStr2)
-    const maxLength = Math.max(normalizedStr1.length, normalizedStr2.length)
-    
-    return maxLength === 0 ? 1.0 : (maxLength - distance) / maxLength
-  }
-
-  const levenshteinDistance = (str1: string, str2: string): number => {
-    const matrix = []
-
-    for (let i = 0; i <= str2.length; i++) {
-      matrix[i] = [i]
+  // Función optimizada para encontrar sinónimos
+  const findSynonyms = (searchTerm: string): string[] => {
+    const cacheKey = searchTerm
+    if (synonymCache.current.has(cacheKey)) {
+      return synonymCache.current.get(cacheKey)!
     }
 
-    for (let j = 0; j <= str1.length; j++) {
-      matrix[0][j] = j
-    }
-
-    for (let i = 1; i <= str2.length; i++) {
-      for (let j = 1; j <= str1.length; j++) {
-        if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
-          matrix[i][j] = matrix[i - 1][j - 1]
-        } else {
-          matrix[i][j] = Math.min(matrix[i - 1][j - 1] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j] + 1)
-        }
-      }
-    }
-
-    return matrix[str2.length][str1.length]
-  }
-
-  // Función avanzada para encontrar sinónimos y palabras relacionadas
-  const findRelatedTerms = (searchTerm: string): string[] => {
     const normalizedSearch = normalizeText(searchTerm)
-    const relatedTerms: string[] = []
+    const synonyms: string[] = []
 
     // Buscar sinónimos directos
     Object.entries(synonymsCatalog).forEach(([key, values]) => {
@@ -128,154 +75,117 @@ export const useProductSearch = () => {
       const normalizedValues = values.map(value => normalizeText(value))
       
       if (normalizedValues.includes(normalizedSearch) || normalizedKey.includes(normalizedSearch)) {
-        relatedTerms.push(key, ...values)
+        synonyms.push(key, ...values)
       }
     })
 
-    // Buscar términos similares usando fuzzy matching en tags
-    allTags.forEach((tag) => {
-      const similarity = calculateSimilarity(normalizedSearch, normalizeText(tag))
-      if (similarity > 0.7 && similarity < 1.0) {
-        // Similitud alta pero no exacta
-        relatedTerms.push(tag)
-      }
-    })
-
-    // Buscar términos similares en categorías
-    categoriesFromData.slice(1).forEach((category) => {
-      const similarity = calculateSimilarity(normalizedSearch, normalizeText(category.toLowerCase()))
-      if (similarity > 0.7 && similarity < 1.0) {
-        relatedTerms.push(category.toLowerCase())
-      }
-    })
-
-    // Buscar términos similares en recommendedUse de todos los productos
-    catalogData.forEach((product) => {
-      product.recommendedUse?.forEach((use) => {
-        const similarity = calculateSimilarity(normalizedSearch, normalizeText(use.toLowerCase()))
-        if (similarity > 0.7 && similarity < 1.0) {
-          relatedTerms.push(use.toLowerCase())
-        }
-      })
-    })
-
-    return Array.from(new Set(relatedTerms))
+    const result = Array.from(new Set(synonyms))
+    synonymCache.current.set(cacheKey, result)
+    return result
   }
 
-  // Función híbrida avanzada para coincidencias
-  const checkAdvancedMatches = (searchTerm: string): DirectSearchResult | HybridSearchResult | null => {
+  // Función simplificada para búsquedas exactas
+  const performExactSearch = (searchTerm: string): SearchMatch | null => {
     if (!searchTerm || searchTerm.length < 2) return null
 
     const normalizedSearch = normalizeText(searchTerm)
-    const matchedCategories: string[] = []
-    const matchedTags: string[] = []
-    let confidence = 0
-    let isDirectMatch = false
+    const matchedCategories = new Set<string>()
+    const matchedTags = new Set<string>()
+    let searchType: "exact" | "synonym" = "exact"
 
-    // 1. Coincidencias exactas (máxima confianza)
-    categoriesFromData.slice(1).forEach((category) => {
-      if (normalizeText(category.toLowerCase()) === normalizedSearch || normalizeText(category.toLowerCase()).includes(normalizedSearch)) {
-        matchedCategories.push(category)
-        confidence = Math.max(confidence, 1.0)
-        isDirectMatch = true
-      }
-    })
-
-    allTags.forEach((tag) => {
-      if (normalizeText(tag) === normalizedSearch || normalizeText(tag).includes(normalizedSearch)) {
-        matchedTags.push(tag)
-        confidence = Math.max(confidence, 1.0)
-        isDirectMatch = true
-      }
-    })
-
-    // 2. Coincidencias en títulos, descripciones y recommendedUse (alta confianza)
+    // 1. Búsqueda exacta en todas las propiedades
     catalogData.forEach((product) => {
-      const titleMatch = normalizeText(product.title.toLowerCase()).includes(normalizedSearch)
-      const descriptionMatch = normalizeText(product.description.toLowerCase()).includes(normalizedSearch)
-      const recommendedUseMatch = product.recommendedUse?.some(use => 
-        normalizeText(use.toLowerCase()).includes(normalizedSearch)
-      ) || false
-
-      if (titleMatch || descriptionMatch || recommendedUseMatch) {
-        if (!matchedCategories.includes(product.category)) {
-          matchedCategories.push(product.category)
-        }
-        product.tags.forEach((tag) => {
-          if (!matchedTags.includes(normalizeText(tag.toLowerCase()))) {
-            matchedTags.push(normalizeText(tag.toLowerCase()))
-          }
-        })
-        confidence = Math.max(confidence, 0.9)
-        isDirectMatch = true
+      // Buscar en título
+      if (normalizeText(product.title).includes(normalizedSearch)) {
+        matchedCategories.add(product.category)
+        product.tags.forEach(tag => matchedTags.add(tag))
       }
+
+      // Buscar en categoría
+      if (normalizeText(product.category).includes(normalizedSearch)) {
+        matchedCategories.add(product.category)
+        product.tags.forEach(tag => matchedTags.add(tag))
+      }
+
+      // Buscar en descripción
+      if (normalizeText(product.description).includes(normalizedSearch)) {
+        matchedCategories.add(product.category)
+        product.tags.forEach(tag => matchedTags.add(tag))
+      }
+
+      // Buscar en tags
+      product.tags.forEach((tag) => {
+        if (normalizeText(tag).includes(normalizedSearch)) {
+          matchedCategories.add(product.category)
+          matchedTags.add(tag)
+        }
+      })
+
+      // Buscar en recommendedUse
+      product.recommendedUse?.forEach((use) => {
+        if (normalizeText(use).includes(normalizedSearch)) {
+          matchedCategories.add(product.category)
+          product.tags.forEach(tag => matchedTags.add(tag))
+        }
+      })
     })
 
-    // 3. Búsqueda con sinónimos (confianza media-alta)
-    const relatedTerms = findRelatedTerms(normalizedSearch)
-    if (relatedTerms.length > 0) {
-      relatedTerms.forEach((term) => {
-        // Buscar categorías relacionadas
-        categoriesFromData.slice(1).forEach((category) => {
-          if (normalizeText(category.toLowerCase()).includes(normalizeText(term)) || normalizeText(term).includes(normalizeText(category.toLowerCase()))) {
-            if (!matchedCategories.includes(category)) {
-              matchedCategories.push(category)
-              confidence = Math.max(confidence, 0.8)
-            }
-          }
-        })
-
-        // Buscar tags relacionados
-        allTags.forEach((tag) => {
-          if (normalizeText(tag).includes(normalizeText(term)) || normalizeText(term).includes(normalizeText(tag))) {
-            if (!matchedTags.includes(tag)) {
-              matchedTags.push(tag)
-              confidence = Math.max(confidence, 0.8)
-            }
-          }
-        })
-
-        // Buscar productos con recommendedUse relacionado
+    // 2. Si no hay coincidencias exactas, buscar sinónimos
+    if (matchedCategories.size === 0 && matchedTags.size === 0) {
+      const synonyms = findSynonyms(searchTerm)
+      
+      synonyms.forEach((synonym) => {
+        const normalizedSynonym = normalizeText(synonym)
+        
         catalogData.forEach((product) => {
-          const hasMatchingRecommendedUse = product.recommendedUse?.some(use => 
-            normalizeText(use.toLowerCase()).includes(normalizeText(term)) || 
-            normalizeText(term).includes(normalizeText(use.toLowerCase()))
-          )
-          
-          if (hasMatchingRecommendedUse && !matchedCategories.includes(product.category)) {
-            matchedCategories.push(product.category)
-            confidence = Math.max(confidence, 0.8)
+          // Buscar sinónimo en título
+          if (normalizeText(product.title).includes(normalizedSynonym)) {
+            matchedCategories.add(product.category)
+            product.tags.forEach(tag => matchedTags.add(tag))
+            searchType = "synonym"
           }
+
+          // Buscar sinónimo en categoría
+          if (normalizeText(product.category).includes(normalizedSynonym)) {
+            matchedCategories.add(product.category)
+            product.tags.forEach(tag => matchedTags.add(tag))
+            searchType = "synonym"
+          }
+
+          // Buscar sinónimo en descripción
+          if (normalizeText(product.description).includes(normalizedSynonym)) {
+            matchedCategories.add(product.category)
+            product.tags.forEach(tag => matchedTags.add(tag))
+            searchType = "synonym"
+          }
+
+          // Buscar sinónimo en tags
+          product.tags.forEach((tag) => {
+            if (normalizeText(tag).includes(normalizedSynonym)) {
+              matchedCategories.add(product.category)
+              matchedTags.add(tag)
+              searchType = "synonym"
+            }
+          })
+
+          // Buscar sinónimo en recommendedUse
+          product.recommendedUse?.forEach((use) => {
+            if (normalizeText(use).includes(normalizedSynonym)) {
+              matchedCategories.add(product.category)
+              product.tags.forEach(tag => matchedTags.add(tag))
+              searchType = "synonym"
+            }
+          })
         })
-      })
-    }
-
-    // 4. Fuzzy matching para coincidencias aproximadas (confianza media)
-    if (matchedCategories.length === 0 && matchedTags.length === 0) {
-      categoriesFromData.slice(1).forEach((category) => {
-        const similarity = calculateSimilarity(normalizedSearch, normalizeText(category.toLowerCase()))
-        if (similarity > 0.75) {
-          matchedCategories.push(category)
-          confidence = Math.max(confidence, similarity * 0.7)
-        }
-      })
-
-      allTags.forEach((tag) => {
-        const similarity = calculateSimilarity(normalizedSearch, normalizeText(tag))
-        if (similarity > 0.75) {
-          matchedTags.push(tag)
-          confidence = Math.max(confidence, similarity * 0.7)
-        }
       })
     }
 
     // Retornar resultado si se encontraron coincidencias
-    if (matchedCategories.length > 0 || matchedTags.length > 0) {
+    if (matchedCategories.size > 0 || matchedTags.size > 0) {
       return {
-        categories: matchedCategories,
-        tags: matchedTags,
-        type: isDirectMatch && confidence >= 0.9 ? "direct" : "hybrid",
-        confidence,
+        categories: Array.from(matchedCategories),
+        tags: Array.from(matchedTags),
+        type: searchType,
       }
     }
 
@@ -291,28 +201,20 @@ export const useProductSearch = () => {
     return () => clearTimeout(timer)
   }, [searchTerm])
 
-  // Lógica de búsqueda principal
+  // Lógica de búsqueda principal simplificada
   useEffect(() => {
-    const performSearch = async () => {
+    const performSearch = () => {
       if (!debouncedSearchTerm || debouncedSearchTerm.length < 2) {
         setSearchResult(null)
+        setIsSearching(false)
         return
       }
 
       setIsSearching(true)
 
       try {
-        // Primero, intentar coincidencias híbridas avanzadas
-        const hybridMatches = checkAdvancedMatches(debouncedSearchTerm)
-
-        if (hybridMatches) {
-          setSearchResult(hybridMatches)
-          setIsSearching(false)
-          return
-        }
-
-        setSearchResult(null)
-
+        const searchMatches = performExactSearch(debouncedSearchTerm)
+        setSearchResult(searchMatches)
       } catch (error) {
         console.error("Error searching:", error)
         setSearchResult(null)
@@ -322,59 +224,34 @@ export const useProductSearch = () => {
     }
 
     performSearch()
-  }, [debouncedSearchTerm, aiSearchesUsed])
+  }, [debouncedSearchTerm])
 
   const filteredProducts = useMemo(() => {
-    // Si tenemos resultados de búsqueda, usarlos para filtrar
+    let filtered = catalogData
+
+    // Aplicar filtro de categoría
+    if (selectedCategory !== "Todos") {
+      filtered = filtered.filter(product => product.category === selectedCategory)
+    }
+
+    // Aplicar búsqueda si hay término de búsqueda
     if (searchResult && (searchResult.categories.length > 0 || searchResult.tags.length > 0)) {
-      const filtered = catalogData.filter((product) => {
-        const matchesCategory =
-          selectedCategory === "Todos" ||
-          selectedCategory === product.category ||
-          (searchResult.categories.includes(product.category) && selectedCategory === "Todos")
-
-        const matchesTags =
-          searchResult.tags.length === 0 || product.tags.some((tag) => searchResult.tags.includes(normalizeText(tag.toLowerCase())))
-
-        return matchesCategory && matchesTags
-      })
-
-      // Ordenar por relevancia
-      return filtered.sort((a, b) => {
-        if (selectedCategory !== "Todos") {
-          if (a.category === selectedCategory && b.category !== selectedCategory) return -1
-          if (a.category !== selectedCategory && b.category === selectedCategory) return 1
+      filtered = filtered.filter((product) => {
+        // Si el producto está en las categorías encontradas
+        if (searchResult.categories.includes(product.category)) {
+          return true
         }
-
-        const aTagMatches = a.tags.filter((tag) => searchResult.tags.includes(normalizeText(tag.toLowerCase()))).length
-        const bTagMatches = b.tags.filter((tag) => searchResult.tags.includes(normalizeText(tag.toLowerCase()))).length
-
-        if (aTagMatches !== bTagMatches) {
-          return bTagMatches - aTagMatches
-        }
-
-        if (a.featured && !b.featured) return -1
-        if (!a.featured && b.featured) return 1
-
-        return a.title.localeCompare(b.title)
-      })
-    } else {
-      // Búsqueda tradicional
-      const filtered = catalogData.filter((product) => {
-        const normalizedSearchTerm = normalizeText(debouncedSearchTerm.toLowerCase())
         
-        const matchesSearch =
-          !debouncedSearchTerm ||
-          normalizeText(product.title.toLowerCase()).includes(normalizedSearchTerm) ||
-          normalizeText(product.description.toLowerCase()).includes(normalizedSearchTerm) ||
-          product.tags.some((tag) => normalizeText(tag.toLowerCase()).includes(normalizedSearchTerm)) ||
-          product.recommendedUse?.some((use) => normalizeText(use.toLowerCase()).includes(normalizedSearchTerm))
+        // Si el producto tiene tags que coinciden
+        if (product.tags.some(tag => searchResult.tags.includes(normalizeText(tag)))) {
+          return true
+        }
 
-        const matchesCategory = selectedCategory === "Todos" || product.category === selectedCategory
-
-        return matchesSearch && matchesCategory
+        return false
       })
+    }
 
+    // Aplicar ordenamiento
       switch (sortBy) {
         case "name":
           filtered.sort((a, b) => a.title.localeCompare(b.title))
@@ -386,26 +263,13 @@ export const useProductSearch = () => {
       }
 
       return filtered
-    }
-  }, [debouncedSearchTerm, selectedCategory, sortBy, searchResult])
+  }, [selectedCategory, sortBy, searchResult])
 
   const clearFilters = () => {
     setSearchTerm("")
     setSelectedCategory("Todos")
     setSearchResult(null)
   }
-
-  // Determinar el tipo de resultado para mostrar
-  const getSearchResultType = () => {
-    if (!searchResult) return null
-    if ("type" in searchResult) {
-      return searchResult.type === "direct" ? "direct" : "hybrid"
-    }
-    return "ai"
-  }
-
-  const searchResultType = getSearchResultType()
-  const remainingAISearches = MAX_AI_SEARCHES_PER_SESSION - aiSearchesUsed
 
   return {
     // Estados
@@ -417,8 +281,7 @@ export const useProductSearch = () => {
     setSortBy,
     isSearching,
     searchResult,
-    searchResultType,
-    remainingAISearches,
+    searchResultType: searchResult?.type || null,
     categoriesFromData,
     filteredProducts,
     

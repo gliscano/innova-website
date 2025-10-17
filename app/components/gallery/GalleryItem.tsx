@@ -9,10 +9,6 @@ export default function GalleryItem({ image, onClick, index }: GalleryItemProps)
   const [isInView, setIsInView] = useState(false)
   const imgRef = useRef<HTMLDivElement>(null)
 
-  if (process.env.NODE_ENV !== 'production') {
-    console.log('gallery item loaded', image?.id || 'unknown')
-  }
-
   // Intersection Observer para lazy loading
   useEffect(() => {
     const observer = new IntersectionObserver(

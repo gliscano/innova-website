@@ -77,30 +77,30 @@ import {
               <h2 className="max-w-2xl text-xl copperplate-bold-font tracking-tight text-gray-900 sm:text-5xl lg:col-span-2">
                 Lista de medidas y precios
               </h2>
-              <div className="mt-6 max-w-xl lg:mt-0 xl:col-end-1">
+              <div className="mt-2 max-w-xl lg:mt-0 xl:col-end-1">
                 <p className="text-medium lg:text-lg leading-8 text-gray-600">
-                  Encuentra el tamaño perfecto para tus necesidades. Si precisa una medida personalizada, no dudes en consultar!
+                  Encuentra el tamaño perfecto. Si precisa otra medida, escribenos!
                 </p>
               </div>
             </div>
             <div
-                ref={animationRef}
-                id='animated-lottie'
-                className="h-36 py-2"
-              ></div>
+              ref={animationRef}
+              id='animated-lottie'
+              className="h-24 p-2"
+            ></div>
           </div>
           <div className="absolute inset-x-0 bottom-0 -z-10 h-12 bg-gradient-to-t from-white sm:h-16" />
         </div>
   
         <div className="mx-auto max-w-7xl px-6 lg:px-8 py-4">  
           {/* fabric Pricing Section */}
-          <h3 className="text-2xl copperplate-condensed-bold-font text-gray-900 mt-6 lg:mt-8 text-center">
-            Lista de precios - Set y Fondos en Tela
+          <h3 className="text-2xl copperplate-condensed-bold-font text-gray-900 lg:mt-8 text-center">
+            Set y Fondos en Tela
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-14 mt-8">
             {/* Standard Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="p-6 bg-yellow-gold-light">
+              <div className="p-3 bg-yellow-gold-light">
                 <h3 className="text-xl font-bold text-gray-900">Fondos Pequeños (Ancho: 1.50m)</h3>
                 <p className="mt-1 text-sm text-yellow-900">Perfectos para sesiones individuales, parejas y decoración de tiendas</p>
               </div>
@@ -149,7 +149,7 @@ import {
 
             {/* Wide Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="p-6 bg-rose-gold">
+              <div className="p-3 bg-rose-gold">
                 <h3 className="text-xl font-bold text-gray-900">Fondos Grandes (Ancho: 2.90m)</h3>
                 <p className="mt-1 text-sm text-gray-900">Ideales para grupos, familias y decoración de eventos</p>
               </div>
@@ -199,12 +199,12 @@ import {
 
           {/* Innova Pricing Section */}
           <h3 className="text-2xl copperplate-condensed-bold-font text-gray-900 mt-8 text-center">
-            Lista de precios - Productos diseñados por Innova
+            Productos diseñados por Innova
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-14 mt-8">
             {/* Hybrid Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="p-6 bg-pink-900">
+              <div className="p-3 bg-pink-900">
                 <h3 className="text-xl font-bold text-gray-100">Fondos Hibridos (Tela y Piso en Símil de neoprene)</h3>
                 <p className="mt-1 text-sm text-gray-100">Combinamos las mejores texturas para lograr una experiencia superior.</p>
               </div>
@@ -234,7 +234,7 @@ import {
             </div>
             {/* InnPets Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="p-6 bg-teal-500">
+              <div className="p-3 bg-teal-500">
                 <h3 className="text-xl font-bold text-teal-900">Fondos para Mascotas - InnPets</h3>
                 <p className="mt-1 text-sm text-teal-950">Los mejores diseños para peluditos de la casa</p>
               </div>
@@ -264,7 +264,7 @@ import {
             </div>
             {/* floor Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="p-6 bg-yellow-700">
+              <div className="p-3 bg-yellow-700">
                 <h3 className="text-xl font-bold text-white">Pisos y Alfombras</h3>
                 <p className="mt-1 text-sm text-white">Proporciona una superficie suave y flexible </p>
               </div>
@@ -294,7 +294,7 @@ import {
             </div>
              {/* Fluo Backdrops */}
              <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="p-6 bg-red-800">
+              <div className="p-3 bg-red-800">
                 <h3 className="text-xl font-bold text-white">Fondos Room</h3>
                 <p className="mt-1 text-sm text-white">Vive una sesión con perspectivas diferentes  </p>
               </div>
@@ -326,7 +326,7 @@ import {
           {/* Size Guide Section */}
           <div className="mt-8 mb-8">
             <h3 className="text-2xl copperplate-condensed-bold-font text-gray-900 mb-4 text-center">Guía de Tamaños Recomendados</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
               {sizeGuides.map((guide, index) => (
                 <div key={index} className={`${index > 1 ? 'bg-rose-gold' : 'bg-yellow-gold-light'} bg-opacity-50 rounded-xl shadow-sm p-6 flex flex-col items-center text-center`}>
                   <div className="w-40 h-40 rounded-lg mb-4 flex items-center justify-center">

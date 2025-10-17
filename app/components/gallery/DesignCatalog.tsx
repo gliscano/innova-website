@@ -11,8 +11,7 @@ import {
   LoadingSpinner, 
   LightningIcon, 
   CheckIcon, 
-  EyeIcon, 
-  WarningIcon 
+  EyeIcon
 } from "../icons"
 
 
@@ -30,7 +29,6 @@ export default function InnovaCatalog() {
     isSearching,
     searchResult,
     searchResultType,
-    remainingAISearches,
     categoriesFromData,
     filteredProducts,
     clearFilters,
@@ -52,12 +50,12 @@ export default function InnovaCatalog() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
         <div className="relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20">
           {/* Filtros y búsqueda */}
           <div className="mb-8 space-y-4">
             {/* Ayuda para búsqueda */}
-            <div id="search-help" className="rounded-lg p-2">
+            <div id="search-help" className="hidden lg: rounded-lg p-2">
               <div className="flex items-center gap-2">
                 <p className="text-sm text-blue-800">
                   Busca por categoría, tipo de fotografía, ocasión o estilo. Ejemplos: "navidad", "infantil", "maternidad", "eventos"
@@ -97,28 +95,8 @@ export default function InnovaCatalog() {
                   {searchTerm.length}/25
                 </span>
                 <LightningIcon />
-                <span 
-                  className={`text-xs ${remainingAISearches <= 1 ? "text-red-600" : "text-blue-600"}`}
-                  aria-label={`Búsquedas con IA disponibles: ${remainingAISearches} de 5`}
-                >
-                  IA: {remainingAISearches}/5
-                </span>
               </div>
             </div>
-
-            {/* Advertencia de cuota IA */}
-            {remainingAISearches <= 1 && (
-              <div className="bg-red-50 border border-red-100 rounded-lg p-3">
-                <div className="flex items-center gap-2">
-                  <WarningIcon />
-                  <p className="text-sm text-red-800">
-                    {remainingAISearches === 0
-                      ? "Has agotado tus búsquedas con IA por hoy. Se usará búsqueda inteligente local."
-                      : "Te queda 1 búsqueda con IA para consultas muy complejas."}
-                  </p>
-                </div>
-              </div>
-            )}
 
             {/* Filtros rápidos - Carrusel */}
             <div className="relative">
@@ -216,17 +194,15 @@ export default function InnovaCatalog() {
                 {searchResultType && (
                   <span
                     className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${
-                      searchResultType === "direct"
+                      searchResultType === "exact"
                         ? "bg-green-100 text-green-800"
-                        : searchResultType === "hybrid"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : "bg-blue-100 text-blue-800"
+                        : "bg-yellow-100 text-yellow-800"
                     }`}
                   >
                     <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
-                    {searchResultType === "direct" ? "Exacto" : searchResultType === "hybrid" ? "Inteligente" : "IA"}
+                    {searchResultType === "exact" ? "Exacto" : "Sinónimo"}
                   </span>
                 )}
               </div>
@@ -308,11 +284,9 @@ export default function InnovaCatalog() {
                             key={tag}
                             className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${
                               isMatch
-                                ? searchResultType === "direct"
+                                ? searchResultType === "exact"
                                   ? "bg-green-100 text-green-800 border border-green-200"
-                                  : searchResultType === "hybrid"
-                                    ? "bg-yellow-100 text-yellow-800 border border-yellow-200"
-                                    : "bg-blue-100 text-blue-800 border border-blue-200"
+                                  : "bg-yellow-100 text-yellow-800 border border-yellow-200"
                                 : "bg-gray-100 text-gray-800"
                             }`}
                           >

@@ -75,20 +75,13 @@ export default function ProductPage({ params }: ProductPageProps) {
   return (
     <div className="min-h-screen bg-gray-50 pb-6">
       <Header />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Breadcrumb */}
-        <nav className="flex mb-8" aria-label="Breadcrumb">
-          <ol className="copperplate-condensed-ligth-font inline-flex items-center space-x-1 md:space-x-3">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-2">
+        <nav className="flex mb-2" aria-label="Breadcrumb">
+          <ol className="inline-flex items-center space-x-1 md:space-x-3">
             <li className="inline-flex items-center">
-              <Link href="/design-catalog" className="text-gray-700 hover:text-blue-600 transition-colors">
-                Catálogo
+              <Link href="/" className="text-gray-700 hover:text-blue-600 transition-colors">
+                Volver a pantalla principal
               </Link>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <ChevronIcon />
-                <span className="text-gray-500 ml-1 md:ml-2 truncate">{product.title}</span>
-              </div>
             </li>
           </ol>
         </nav>

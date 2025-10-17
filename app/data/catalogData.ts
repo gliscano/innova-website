@@ -32,7 +32,7 @@ export const catalogData: CatalogItem[] = [
     category: "Infantiles",
     image: "/images/innova/catalog/25.webp",
     description: "Diseños divertidos y coloridos para fotografía infantil",
-    tags: ["niños", "infantil", "colorido", "nubes", "estrellas", "cielo", "muñeco", "colores", "fotografía infantil", "fiestas"],
+    tags: ["niños", "nene", "nena", "infantil", "peluches", "oso", "mickey", "minie", "superheroes", "heroes", "globos", "princesas", "castillos", "cards", "auto", "rayo", "rayo mcqueen", "colorido", "nubes", "estrellas", "cielo", "muñeco", "colores", "fotografía infantil", "fiestas"],
     recommendedUse: ["fotografía infantil temática y fiestas"],
     featured: true,
     isFluo: false,
@@ -128,7 +128,7 @@ export const catalogData: CatalogItem[] = [
     recommendedUse: ["Sesiones de mascotas"],
     isFluo: false,
     isRealistic: false,
-    catalogURL: 'https://drive.google.com/drive/folders/17yw9AGQKfZI1-ftXZN2cDhstU9p_-41f?usp=drive_link',
+    catalogURL: null,
   },
   {
     id: 10,

@@ -36,10 +36,10 @@ export default function ProductCategoryMenu() {
   return (
     <div className="bg-yellow-gold">
       <div className="max-w-7xl mx-auto py-6 px-8 sm:px-6 lg:py-8 lg:px-8 flex flex-col justify-center">
-        <h1 className='font-bold tracking-tight text-gray-900 sm:text-2xl text-center pb-4'>
-          Que queres ver?
+        <h1 className='copperplate-bold-font text-gray-900 sm:text-2xl text-center pb-4'>
+          Productos en Stock para entrega inmediata!
         </h1>
-        <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-4 flex align-center">
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-2 lg:grid-cols-4 flex align-center">
           {cards.map((card) => (
             <a
               key={card.title}
@@ -54,7 +54,7 @@ export default function ProductCategoryMenu() {
                 className="object-cover"
               />
               <div className="px-2 py-2 sm:p-6">
-                <h3 className="text-lg font-medium text-gray-900">{card.title}</h3>
+                <h3 className="text-sm lg:text-lg text-gray-900">{card.title}</h3>
               </div>
             </a>
           ))}
