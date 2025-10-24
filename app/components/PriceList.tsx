@@ -77,7 +77,7 @@ import {
               <h1 className="max-w-2xl text-xl copperplate-bold-font tracking-tight text-gray-900 sm:text-5xl lg:col-span-2">
                 Lista de medidas y precios
               </h1>
-              <div className="mt-6 max-w-xl lg:mt-0 xl:col-end-1">
+              <div className="mt-3 max-w-xl lg:mt-0 xl:col-end-1">
                 <p className="text-medium lg:text-lg leading-8 text-gray-600">
                   Encuentra el tamaño perfecto para tus necesidades. Si precisa una medida personalizada, no dudes en consultar!
                 </p>
@@ -94,14 +94,14 @@ import {
   
         <div className="mx-auto max-w-7xl px-6 lg:px-8 py-4">  
           {/* fabric Pricing Section */}
-          <h3 className="text-2xl copperplate-condensed-bold-font text-gray-900 mt-6 lg:mt-8 text-center">
-            Lista de precios - Set y Fondos en Tela
+          <h3 className="text-2xl copperplate-condensed-bold-font text-gray-900 mt-3 lg:mt-8 text-center">
+            Set y Fondos en Tela
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-14 mt-8">
             {/* Standard Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
               <div className="p-6 bg-yellow-gold-light">
-                <h3 className="text-xl font-bold text-gray-900">Fondos Pequeños (Ancho: 1.50m)</h3>
+                <h3 className="text-md font-bold text-gray-900">Fondos Pequeños (Ancho: 1.50m)</h3>
                 <p className="mt-1 text-sm text-yellow-900">Perfectos para sesiones individuales, parejas y decoración de tiendas</p>
               </div>
               <div className="divide-y divide-gray-200">
@@ -113,7 +113,7 @@ import {
                     <p>Estándar</p>
                   </div>
                   <div className="w-1/4 text-center">
-                    <p>Fluo</p>
+                    <p>Efecto Neón</p>
                   </div>
                 </div>
                 {standardBackdrops.current.map((item, index) => (
@@ -132,13 +132,13 @@ import {
                     </div>
                     <div className="w-1/4 text-center">
                       <p className="font-medium font-semibold text-gray-900 m-1 bg-gray-100 rounded-xl">
-                        ${item.price.toLocaleString()}
+                        ${item.price.toLocaleString("es-AR")}
                       </p>
                     </div>
                     {item.priceFluo && (
                       <div className="w-1/4 text-center">
                         <p className="font-medium font-semibold text-gray-900 m-1 bg-green-100 rounded-xl">
-                          ${item.priceFluo?.toLocaleString()}
+                          ${item.priceFluo?.toLocaleString("es-AR")}
                         </p>
                       </div>
                     )}
@@ -150,7 +150,7 @@ import {
             {/* Wide Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
               <div className="p-6 bg-rose-gold">
-                <h3 className="text-xl font-bold text-gray-900">Fondos Grandes (Ancho: 2.90m)</h3>
+                <h3 className="text-md font-bold text-gray-900">Fondos Grandes (Ancho: 2.90m)</h3>
                 <p className="mt-1 text-sm text-gray-900">Ideales para grupos, familias y decoración de eventos</p>
               </div>
               <div className="divide-y divide-gray-200">
@@ -162,7 +162,7 @@ import {
                     <p>Estándar</p>
                   </div>
                   <div className="w-1/4 text-center">
-                    <p>Fluo</p>
+                    <p>Efecto Neón</p>
                   </div>
                 </div>
                 {wideBackdrops.current.map((item, index) => (
@@ -181,13 +181,13 @@ import {
                     </div>
                     <div className="w-1/4 text-center">
                       <p className="font-medium font-semibold text-gray-900 m-1 bg-gray-100 rounded-xl">
-                        ${item.price.toLocaleString()}
+                        ${item.price.toLocaleString("es-AR")}
                       </p>
                     </div>
                     {item.priceFluo && (
                       <div className="w-1/4 text-center">
                         <p className="font-medium font-semibold text-gray-900 m-1 bg-green-100 rounded-xl">
-                          ${item.priceFluo?.toLocaleString()}
+                          ${item.priceFluo?.toLocaleString("es-AR")}
                         </p>
                       </div>
                     )}
@@ -199,13 +199,13 @@ import {
 
           {/* Innova Pricing Section */}
           <h3 className="text-2xl copperplate-condensed-bold-font text-gray-900 mt-8 text-center">
-            Lista de precios - Productos diseñados por Innova
+            Productos creados por Innova
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-14 mt-8">
             {/* Hybrid Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
               <div className="p-6 bg-pink-900">
-                <h3 className="text-xl font-bold text-gray-100">Fondos Hibridos (Tela y Piso en Símil de neoprene)</h3>
+                <h3 className="text-md font-bold text-gray-100">Fondos Hibridos (Tela y Piso en Símil de neoprene)</h3>
                 <p className="mt-1 text-sm text-gray-100">Combinamos las mejores texturas para lograr una experiencia superior.</p>
               </div>
               <div className="divide-y divide-gray-200">
@@ -225,7 +225,7 @@ import {
                     </div>
                     <div className="ml-4">
                       <div className="text-lg font-semibold text-gray-900">
-                        ${item.price.toLocaleString()}
+                        ${item.price.toLocaleString("es-AR")}
                       </div>
                     </div>
                   </div>
@@ -235,7 +235,7 @@ import {
             {/* InnPets Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
               <div className="p-6 bg-teal-500">
-                <h3 className="text-xl font-bold text-teal-900">Fondos para Mascotas - InnPets</h3>
+                <h3 className="text-md font-bold text-teal-900">Fondos para Mascotas - InnPets</h3>
                 <p className="mt-1 text-sm text-teal-950">Los mejores diseños para peluditos de la casa</p>
               </div>
               <div className="divide-y divide-gray-200">
@@ -255,7 +255,7 @@ import {
                     </div>
                     <div className="ml-4">
                       <div className="font-medium font-semibold text-gray-900">
-                        ${item.price.toLocaleString()}
+                        ${item.price.toLocaleString("es-AR")}
                       </div>
                     </div>
                   </div>
@@ -265,7 +265,7 @@ import {
             {/* floor Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
               <div className="p-6 bg-yellow-700">
-                <h3 className="text-xl font-bold text-white">Pisos y Alfombras</h3>
+                <h3 className="text-md font-bold text-white">Pisos y Alfombras</h3>
                 <p className="mt-1 text-sm text-white">Proporciona una superficie suave y flexible </p>
               </div>
               <div className="divide-y divide-gray-200">
@@ -285,7 +285,7 @@ import {
                     </div>
                     <div className="ml-4">
                       <div className="font-medium font-semibold text-gray-900">
-                        ${item.price.toLocaleString()}
+                        ${item.price.toLocaleString("es-AR")}
                       </div>
                     </div>
                   </div>
@@ -295,7 +295,7 @@ import {
              {/* Fluo Backdrops */}
              <div className="bg-white rounded-xl shadow-sm overflow-hidden">
               <div className="p-6 bg-red-800">
-                <h3 className="text-xl font-bold text-white">Fondos Room</h3>
+                <h3 className="text-md font-bold text-white">Fondos Room</h3>
                 <p className="mt-1 text-sm text-white">Vive una sesión con perspectivas diferentes  </p>
               </div>
               <div className="divide-y divide-gray-200">
@@ -315,7 +315,7 @@ import {
                     </div>
                     <div className="ml-4">
                       <div className="font-medium font-semibold text-gray-900">
-                        ${item.price.toLocaleString()}
+                        ${item.price.toLocaleString("es-AR")}
                       </div>
                     </div>
                   </div>

@@ -78,7 +78,7 @@ export default function AnimatedCards() {
             >
               <div
                 ref={(el) => (animationRefs.current[index] = el as unknown as any)}
-                className="h-36 px-2"
+                className="h-36 px-2 max-w-28"
               ></div>
               <div className="px-2 py-2 sm:p-6">
                 <h3 className="text-lg font-medium text-gray-900">{card.title}</h3>
