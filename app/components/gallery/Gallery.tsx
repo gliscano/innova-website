@@ -38,11 +38,6 @@ export default function Gallery(props: GalleryProps) {
     closeModal()
   }
 
-  if (process.env.NODE_ENV !== 'production') {
-    // Debug solo en desarrollo
-    console.log('gallery images count', images.length)
-  }
-
   // Mostrar skeleton durante la carga inicial
   if (isLoading && images.length === 0) {
     return (

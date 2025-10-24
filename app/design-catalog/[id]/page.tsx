@@ -43,7 +43,7 @@ export default function ProductPage({ params }: ProductPageProps) {
           <div className="text-center">
             <h1 className="text-2xl font-bold text-gray-900 mb-4">Categoría no encontrada</h1>
             <Link
-              href="/design-catalog"
+              href="/"
               className="bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 transition-colors"
             >
               Volver al Catálogo
@@ -79,8 +79,16 @@ export default function ProductPage({ params }: ProductPageProps) {
         <nav className="flex mb-2" aria-label="Breadcrumb">
           <ol className="inline-flex items-center space-x-1 md:space-x-3">
             <li className="inline-flex items-center">
-              <Link href="/" className="text-gray-700 hover:text-blue-600 transition-colors">
-                Volver a pantalla principal
+              <Link href="/" className="text-gray-700 hover:text-blue-600 transition-colors flex">
+              <Image
+                aria-hidden
+                src="../svg/left.svg"
+                alt="left icon"
+                className="mr-2"
+                width={25}
+                height={25}
+              />
+              volver
               </Link>
             </li>
           </ol>

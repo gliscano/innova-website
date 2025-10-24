@@ -77,7 +77,7 @@ export default function Footer() {
                 </ul>
               </div>
               <div className="mt-6 md:mt-0">
-                <h3 className="text-sm font-semibold text-sm text-gray-600 tracking-wider uppercase">Contacto</h3>
+                <h3 className="text-sm font-semibold text-gray-600 tracking-wider uppercase">Contacto</h3>
                 <ul role="list" className="mt-4 space-y-4">
                   <li>
                     <a

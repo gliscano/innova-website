@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from "react"
-import { catalogData, synonymsCatalog } from "../data/catalogData"
+import { catalogData } from "../data/catalogData"
 
 interface SearchMatch {
   categories: string[]
@@ -59,31 +59,6 @@ export const useProductSearch = () => {
     return normalized
   }
 
-  // Función optimizada para encontrar sinónimos
-  const findSynonyms = (searchTerm: string): string[] => {
-    const cacheKey = searchTerm
-    if (synonymCache.current.has(cacheKey)) {
-      return synonymCache.current.get(cacheKey)!
-    }
-
-    const normalizedSearch = normalizeText(searchTerm)
-    const synonyms: string[] = []
-
-    // Buscar sinónimos directos
-    Object.entries(synonymsCatalog).forEach(([key, values]) => {
-      const normalizedKey = normalizeText(key)
-      const normalizedValues = values.map(value => normalizeText(value))
-      
-      if (normalizedValues.includes(normalizedSearch) || normalizedKey.includes(normalizedSearch)) {
-        synonyms.push(key, ...values)
-      }
-    })
-
-    const result = Array.from(new Set(synonyms))
-    synonymCache.current.set(cacheKey, result)
-    return result
-  }
-
   // Función simplificada para búsquedas exactas
   const performExactSearch = (searchTerm: string): SearchMatch | null => {
     if (!searchTerm || searchTerm.length < 2) return null
@@ -129,56 +104,6 @@ export const useProductSearch = () => {
         }
       })
     })
-
-    // 2. Si no hay coincidencias exactas, buscar sinónimos
-    if (matchedCategories.size === 0 && matchedTags.size === 0) {
-      const synonyms = findSynonyms(searchTerm)
-      
-      synonyms.forEach((synonym) => {
-        const normalizedSynonym = normalizeText(synonym)
-        
-        catalogData.forEach((product) => {
-          // Buscar sinónimo en título
-          if (normalizeText(product.title).includes(normalizedSynonym)) {
-            matchedCategories.add(product.category)
-            product.tags.forEach(tag => matchedTags.add(tag))
-            searchType = "synonym"
-          }
-
-          // Buscar sinónimo en categoría
-          if (normalizeText(product.category).includes(normalizedSynonym)) {
-            matchedCategories.add(product.category)
-            product.tags.forEach(tag => matchedTags.add(tag))
-            searchType = "synonym"
-          }
-
-          // Buscar sinónimo en descripción
-          if (normalizeText(product.description).includes(normalizedSynonym)) {
-            matchedCategories.add(product.category)
-            product.tags.forEach(tag => matchedTags.add(tag))
-            searchType = "synonym"
-          }
-
-          // Buscar sinónimo en tags
-          product.tags.forEach((tag) => {
-            if (normalizeText(tag).includes(normalizedSynonym)) {
-              matchedCategories.add(product.category)
-              matchedTags.add(tag)
-              searchType = "synonym"
-            }
-          })
-
-          // Buscar sinónimo en recommendedUse
-          product.recommendedUse?.forEach((use) => {
-            if (normalizeText(use).includes(normalizedSynonym)) {
-              matchedCategories.add(product.category)
-              product.tags.forEach(tag => matchedTags.add(tag))
-              searchType = "synonym"
-            }
-          })
-        })
-      })
-    }
 
     // Retornar resultado si se encontraron coincidencias
     if (matchedCategories.size > 0 || matchedTags.size > 0) {
