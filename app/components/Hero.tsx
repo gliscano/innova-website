@@ -105,32 +105,7 @@ export default function Hero() {
   return (
     <div className="relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20">
       <div className="mx-auto max-w-7xl">
-        {/* <div className="mx-auto max-w-2xl flex-shrink-0 lg:mx-0 lg:max-w-xl lg:pt-4">
-          <h1 className="mt-4 pr-4 text-3xl copperplate-bold-font font-bold text-red-800 sm:text-5xl">
-            <a
-              href="/navidad"
-              target="_self"
-              rel="noopener noreferrer"
-            >
-              Navidad Exclusiva 2025
-            </a>
-          </h1>
-          <p className="mt-2 mb-6 text-lg leading-8 text-red-700">
-            Los diseños serán producidos en una única edición
-            <br/>
-            <span className='hidden md:block lg:block'>Propuesta única • Solo 1 vez • Solo en Innova</span>
-          </p>
-          <span className="mt-8 pr-4inline-flex items-center justify-center bg-red-800/90 hover:bg-red-700 text-white px-6 py-3 font-semibold rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105 backdrop-blur-sm">
-            <a
-              href="/navidad"
-              target="_self"
-              rel="noopener noreferrer"
-            >
-              Quiero más info!
-            </a>
-          </span>
-        </div> */}
-        <div className="relative w-full h-[12rem] overflow-hidden rounded-lg">
+        <div className="relative w-full h-[12rem] overflow-hidden">
           <PhotographyBackdrop backdrops={backdrops} showPreview={false} />
         </div>
       </div>

@@ -49,7 +49,7 @@ export default function InnovaCatalog() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen christmas-background bg-opacity-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
         <div className="relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20">
           {/* Filtros y búsqueda */}
@@ -142,10 +142,10 @@ export default function InnovaCatalog() {
                         setSelectedCategory(categoriesFromData[prevIndex])
                       }
                     }}
-                    className={`flex-none snap-start px-4 py-2 rounded-full text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    className={`flex-none snap-start px-4 py-2 rounded-full text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 ${
                       selectedCategory === category
-                        ? "bg-blue-600 text-white"
-                        : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                        ? "bg-red-700 text-white"
+                        : "bg-white text-gray-900 border border-gray-300 hover:bg-gray-50"
                     }`}
                   >
                     {category}
@@ -173,9 +173,10 @@ export default function InnovaCatalog() {
 
             {/* Controles */}
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-              <div className="flex flex-wrap gap-4 items-center">
-                <label htmlFor="sort-select" className="sr-only">
-                  Ordenar productos por
+              <div className="flex flex-wrap flex-row gap-4 items-center">
+                <span className="text-sm text-black">{filteredProducts.length} Catálogos</span>
+                <label htmlFor="sort-select" className="text-sm text-gray-900">
+                  Ordenar:
                 </label>
                 <select
                   id="sort-select"
@@ -190,7 +191,6 @@ export default function InnovaCatalog() {
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-600">{filteredProducts.length} diseños encontrados</span>
                 {searchResultType && (
                   <span
                     className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${

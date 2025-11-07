@@ -35,7 +35,7 @@ export default function PhotographyBackdrop({ backdrops, showPreview }: Photogra
   
   return (
     <div className="relative w-full h-full overflow-hidden">
-      <div className="absolute inset-0 flex items-center justify-center my-1">
+      <div className="absolute inset-0 flex items-center justify-center">
         <Image
           src={currentBackdrop.image}
           alt={currentBackdrop.name}

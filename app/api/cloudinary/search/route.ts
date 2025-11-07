@@ -87,10 +87,10 @@ function buildExpression(params: { searchTerm?: string; tags?: string[]; folder?
     expression += ` AND "${term}" folder:${folder}*`
   }
 
-  if (tags && tags.length > 0) {
+  /* if (tags && tags.length > 0) {
     const tagQuery = tags.map((tag) => `tags:${tag}`).join(' OR ')
     expression += ` AND (${tagQuery})`
-  }
+  } */
 
   return expression
 }

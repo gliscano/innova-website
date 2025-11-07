@@ -38,69 +38,31 @@ import {
   ]
   
   export default function PriceList() {
-    const animationRef = useRef(null)
-    
-    const [isClient, setIsClient] = useState(false)
-
     const wideBackdrops = useRef(propertiesBackdrops.filter(p => p.width === 2.90))
     const standardBackdrops = useRef(propertiesBackdrops.filter(p => p.width === 1.50))
-
-    useEffect(() => {
-      if (typeof document !== 'undefined' && animationRef.current) {
-        import('lottie-web').then((lottieModule) => {
-          const lottie = lottieModule.default;
-          lottie.loadAnimation({
-            // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-            container: document.getElementById('animated-lottie') as any,
-            renderer: 'svg',
-            loop: true,
-            autoplay: true,
-            path: '/animations/list.json',
-          });
-        });
-      }
-    }, [isClient]);
-
-    useEffect(() => {
-      setIsClient(true)
-    }, [])
   
     return (
-      <section className="bg-gray-50" id="prices">
-        <div className="relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20 pt-6 lg:pt-14">
-          <div
-            className="absolute inset-y-0 right-1/2 -z-10 -mr-96 w-[200%] origin-top-right skew-x-[-30deg] bg-white shadow-xl shadow-indigo-600/10 ring-1 ring-indigo-50 sm:-mr-80 lg:-mr-96"
-            aria-hidden="true"
-          />
+      <section className="bg-gray-50 bg-opacity-70" id="prices">
+        <div className="relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20">
           <div className="mx-auto max-w-7xl px-6 py-6 sm:py-6 lg:px-8 flex justify-around">
             <div className="mx-auto max-w-2xl lg:mx-0 lg:grid lg:max-w-none lg:gap-x-16 lg:gap-y-6 xl:grid-rows-1 xl:gap-x-8">
-              <h2 className="max-w-2xl text-xl copperplate-bold-font tracking-tight text-gray-900 sm:text-5xl lg:col-span-2">
+              <h2 className="max-w-2xl text-2xl copperplate-bold-font tracking-tight text-gray-900 sm:text-5xl lg:col-span-2">
                 Lista de medidas y precios
               </h2>
-              <div className="mt-2 max-w-xl lg:mt-0 xl:col-end-1">
-                <p className="text-medium lg:text-lg leading-8 text-gray-600">
-                  Encuentra el tamaño perfecto. Si precisa otra medida, escribenos!
-                </p>
-              </div>
             </div>
-            <div
-              ref={animationRef}
-              id='animated-lottie'
-              className="h-24 p-2"
-            ></div>
           </div>
           <div className="absolute inset-x-0 bottom-0 -z-10 h-12 bg-gradient-to-t from-white sm:h-16" />
         </div>
   
         <div className="mx-auto max-w-7xl px-6 lg:px-8 py-4">  
           {/* fabric Pricing Section */}
-          <h3 className="text-2xl copperplate-condensed-bold-font text-gray-900 lg:mt-8 text-center">
+          <h3 className="text-2xl copperplate-condensed-bold-font text-gray-900 lg:mt-4 text-center">
             Set y Fondos en Tela
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-14 mt-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-14">
             {/* Standard Backdrops */}
-            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="p-3 bg-yellow-gold-light">
+            <div className=" mt-4 bg-white bg-op rounded-xl shadow-sm overflow-hidden">
+              <div className="p-3 gradient-gold-colors">
                 <h3 className="text-xl font-bold text-gray-900">Fondos Pequeños (Ancho: 1.50m)</h3>
                 <p className="mt-1 text-sm text-yellow-900">Perfectos para sesiones individuales, parejas y decoración de tiendas</p>
               </div>
@@ -149,7 +111,7 @@ import {
 
             {/* Wide Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="p-3 bg-rose-gold">
+              <div className="p-3 gradient-rose-gold-colors">
                 <h3 className="text-xl font-bold text-gray-900">Fondos Grandes (Ancho: 2.90m)</h3>
                 <p className="mt-1 text-sm text-gray-900">Ideales para grupos, familias y decoración de eventos</p>
               </div>
@@ -197,11 +159,7 @@ import {
             </div>
           </div>
 
-          {/* Innova Pricing Section */}
-          <h3 className="text-2xl copperplate-condensed-bold-font text-gray-900 mt-8 text-center">
-            Productos diseñados por Innova
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-14 mt-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-14 mt-4">
             {/* Hybrid Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
               <div className="p-3 bg-pink-900">
@@ -324,7 +282,7 @@ import {
             </div>
           </div>
           {/* Size Guide Section */}
-          <div className="mt-8 mb-8">
+          <div className="mt-4 mb-8">
             <h3 className="text-2xl copperplate-condensed-bold-font text-gray-900 mb-4 text-center">Guía de Tamaños Recomendados</h3>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
               {sizeGuides.map((guide, index) => (

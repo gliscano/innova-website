@@ -32,7 +32,7 @@ export const catalogData: CatalogItem[] = [
     category: "Infantiles",
     image: "/images/innova/catalog/25.webp",
     description: "Diseños divertidos y coloridos para fotografía infantil",
-    tags: ["niños", "ninos", "nene", "nena", "niñas", "ninas", "infantil", "peluches", "oso", "mickey", "minie", "superheroes", "heroes", "globos", "princesas", "castillos", "cards", "auto", "rayo", "rayo mcqueen", "colorido", "nubes", "estrellas", "cielo", "muñeco", "colores", "fotografía infantil", "fiestas", "peques", "infancia", "dibujos", "divertido", "juguetes", "caricatura", "personajes", "fantasía", "fantasia", "dulzura"],
+    tags: ["niños", "ninos", "nene", "nena", "niñas", "ninas", "infantil", "peluches", "oso", "mickey", "minie", "superheroes", "heroes", "globos", "princesas", "castillos", "cards", "auto", "rayo", "rayo mcqueen", "colorido", "nubes", "estrellas", "cielo", "muñeco", "colores", "fotografía infantil", "fiestas", "peques", "infancia", "dibujos", "divertido", "juguetes", "caricatura", "personajes", "fantasía", "fantasia", "dulzura", "kpop", "k pop", "guerreras k pop", "guerreras"],
     recommendedUse: ["fotografía infantil temática y fiestas"],
     featured: true,
     isFluo: false,

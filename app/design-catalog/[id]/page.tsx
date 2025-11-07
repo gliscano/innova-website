@@ -44,7 +44,7 @@ export default function ProductPage({ params }: ProductPageProps) {
             <h1 className="text-2xl font-bold text-gray-900 mb-4">Categoría no encontrada</h1>
             <Link
               href="/"
-              className="bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 transition-colors"
+              className="gradient-orange-colors text-white px-4 py-2 rounded-md font-medium transition-colors"
             >
               Volver al Catálogo
             </Link>
@@ -73,13 +73,13 @@ export default function ProductPage({ params }: ProductPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-6">
+    <div className="min-h-screen bg-gray-50 bg-opacity-40 pb-6">
       <Header />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-2">
         <nav className="flex mb-2" aria-label="Breadcrumb">
           <ol className="inline-flex items-center space-x-1 md:space-x-3">
             <li className="inline-flex items-center">
-              <Link href="/" className="text-gray-700 hover:text-blue-600 transition-colors flex">
+              <Link href="/" className="text-gray-700 flex">
               <Image
                 aria-hidden
                 src="../svg/left.svg"
@@ -132,7 +132,7 @@ export default function ProductPage({ params }: ProductPageProps) {
                 onClick={handleCatalogLinkClick}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full bg-blue-600 text-white px-6 py-3 rounded-md font-medium hover:bg-blue-700 transition-colors text-lg flex items-center justify-center gap-2 group"
+                className="w-full gradient-orange-colors text-black px-6 py-3 rounded-md shadow-md font-medium text-lg flex items-center justify-center gap-2 group"
               >
 
                 Ver Catálogo de diseños
@@ -259,7 +259,7 @@ export default function ProductPage({ params }: ProductPageProps) {
                 </div>
               </div>
               <div className="flex items-start flex-col gap-3">
-                <button className="w-full bg-green-400 px-6 py-3 rounded-md hover:bg-green-700 transition-colors font-medium sm:text-lg flex items-center justify-center">
+                <button className="w-full gradient-green-colors px-6 py-3 rounded-md   font-medium sm:text-lg flex items-center justify-center">
                   <Image
                     aria-hidden
                     src="../svg/whatsapp.svg"

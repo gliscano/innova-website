@@ -2,13 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #292929;
-    --foreground: #ededed;
-  }
-} */
+body {
+  /* Custom gradient - Download PNG */
+  background-image: url('/images/background.webp') !important;
+  background-size: cover;
+  background: #d8bcfd;
+}
 
+.christmas-background {
+  /* Fallback: */
+  background: linear-gradient(92deg, #7bd97b, #a8e6a1, #e8f0b3, #f7b3b3, #e38a8a);
+}
+
+.navbar-background {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url('/images/navbar_background.webp') !important;
+  background-size: cover;
+  background-position: center;
+  background-repeat: repeat, no-repeat;
+  background: #f4f4f4;
+}
+hero-front {
+  background-image: url('/images/hero_front.webp') !important;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
 /* Copperplate Light */
 .copperplate-light-font {
   font-family: "copperplate", serif;
@@ -98,4 +116,24 @@
 .gradient-light-colors-props {
   background: #C19D83;
   background: linear-gradient(0deg, rgba(193, 157, 131, 1) 0%, rgba(248, 222, 199, 1) 50%, rgba(223, 168, 137, 1) 100%);
+}
+
+.gradient-gold-colors {
+  background-image: linear-gradient(to right bottom, #f2e3b6, #f2dfa6, #f2db96, #f2d786, #f2d375, #f1ce6c, #efca63, #eec55a, #eabf57, #e7b854, #e3b252, #dfac4f);
+  background-color: #F2CD5E;
+}
+
+.gradient-rose-gold-colors {
+  background-image: linear-gradient(to right, #f2cbbd, #eebfb1, #e9b3a5, #e5a79a, #e09b90, #db9389, #d68b81, #d1837a, #cb7d72, #c5776b, #be7263, #b86c5c);
+  background-color: #D98B84;
+}
+
+.gradient-orange-colors {
+  background-image: linear-gradient(to right top, #ff7a6a, #ff8965, #ff9862, #ffa661, #fdb563, #fcb966, #fbbe69, #fac26c, #fcbe6e, #fdb970, #feb572, #ffb175);
+  background-color: #FFB175;
+}
+
+.gradient-green-colors {
+  background-image: linear-gradient(to right bottom, #a0d94a, #a3de4b, #a6e24d, #aae74e, #adec50, #aae84e, #a6e34d, #a3df4b, #98d046, #8ec241, #83b43c, #79a637);
+  background-color: #365902;
 }
