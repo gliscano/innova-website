@@ -4,9 +4,7 @@
 
 body {
   /* Custom gradient - Download PNG */
-  background-image: url('/images/background.webp') !important;
-  background-size: cover;
-  background: #d8bcfd;
+  background: linear-gradient(91deg, rgb(79.2% 72.2% 58.8%), rgb(100% 100% 100%), rgb(87.1% 86.3% 85.5%), rgb(79.2% 72.2% 58.8%))
 }
 
 .christmas-background {

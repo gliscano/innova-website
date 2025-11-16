@@ -25,26 +25,17 @@ export function useGalleryModal(images: GalleryImage[]): UseGalleryModalReturn {
     setIsOpen(true)
     
     // Trackear apertura del modal en Google Analytics
-    /* if (typeof window !== 'undefined' && window.gtag) {
+    if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('event', 'gallery_modal_open', {
-        event_category: 'gallery',
-        event_label: `image_${index}`,
-        value: index,
+        event_category: 'gallery_modal_open',
+        event_label: 'openImageModal',
+        value: currentImage.display_name || 'unknown',
       })
-    } */
+    }
   }, [])
 
   const closeModal = useCallback(() => {
     setIsOpen(false)
-    
-    // Trackear cierre del modal en Google Analytics
-    if (typeof window !== 'undefined' && window.gtag) {
-      /* window.gtag('event', 'gallery_modal_close', {
-        event_category: 'gallery',
-        event_label: `image_${currentIndex}`,
-        value: currentIndex,
-      }) */
-    }
   }, [currentIndex])
 
   const goToNext = useCallback(() => {
@@ -52,15 +43,6 @@ export function useGalleryModal(images: GalleryImage[]): UseGalleryModalReturn {
     
     const nextIndex = (currentIndex + 1) % images.length
     setCurrentIndex(nextIndex)
-    
-    // Trackear navegación en Google Analytics
-    /* if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'gallery_navigation', {
-        event_category: 'gallery',
-        event_label: 'next',
-        value: nextIndex,
-      })
-    } */
   }, [currentIndex, images.length])
 
   const goToPrevious = useCallback(() => {
@@ -68,29 +50,11 @@ export function useGalleryModal(images: GalleryImage[]): UseGalleryModalReturn {
     
     const prevIndex = currentIndex === 0 ? images.length - 1 : currentIndex - 1
     setCurrentIndex(prevIndex)
-    
-    // Trackear navegación en Google Analytics
-    /* if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'gallery_navigation', {
-        event_category: 'gallery',
-        event_label: 'previous',
-        value: prevIndex,
-      })
-    } */
   }, [currentIndex, images.length])
 
   const goToImage = useCallback((index: number) => {
     if (index >= 0 && index < images.length) {
       setCurrentIndex(index)
-      
-      // Trackear navegación directa en Google Analytics
-      /* if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', 'gallery_navigation', {
-          event_category: 'gallery',
-          event_label: 'direct',
-          value: index,
-        })
-      } */
     }
   }, [images.length])
 

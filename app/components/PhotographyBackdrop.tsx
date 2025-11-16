@@ -11,39 +11,55 @@ type PhotographyBackdropProps = {
 }
 
 export default function PhotographyBackdrop({ backdrops, showPreview }: PhotographyBackdropProps) {
-  const [currentBackdrop, setCurrentBackdrop] = useState(backdrops[0])
+  const [currentBackdropId, setCurrentBackdropId] = useState(backdrops[0]?.id || 0)
   const timerToChangeImage = 2000;
+
+  // Precargar todas las imágenes al montar el componente
+  useEffect(() => {
+    backdrops.forEach((backdrop) => {
+      const img = new window.Image()
+      img.src = backdrop.image
+    })
+  }, [backdrops])
 
   useEffect(() => {
     const timer = setInterval(() => {     
       try {
-        setCurrentBackdrop((preState) => {
-          const nextIndex = (preState.id + 1) % backdrops.length;
-
-          return backdrops[nextIndex]
+        setCurrentBackdropId((prevId) => {
+          const currentIndex = backdrops.findIndex(b => b.id === prevId)
+          const nextIndex = (currentIndex + 1) % backdrops.length
+          return backdrops[nextIndex].id
         })
       } catch (error) {
-        setCurrentBackdrop(backdrops[0])
-        if (process.env.NODE_ENV !== 'production') {
-          console.log('PhotographyBackdrop image not found', error)
-        }
-        
+        setCurrentBackdropId(backdrops[0]?.id || 0)        
       }
     }, timerToChangeImage)
     return () => clearInterval(timer)
   }, [backdrops])
   
+  const currentBackdrop = backdrops.find(b => b.id === currentBackdropId) || backdrops[0]
+  
   return (
     <div className="relative w-full h-full overflow-hidden">
       <div className="absolute inset-0 flex items-center justify-center">
-        <Image
-          src={currentBackdrop.image}
-          alt={currentBackdrop.name}
-          className="w-full h-full object-cover"
-          width={0}
-          height={0}
-          sizes="100vw"
-        />
+        {backdrops.map((backdrop) => (
+          <div
+            key={backdrop.id}
+            className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${
+              currentBackdropId === backdrop.id ? 'opacity-100' : 'opacity-0 pointer-events-none'
+            }`}
+          >
+            <Image
+              src={backdrop.image}
+              alt={backdrop.name}
+              className="w-full h-full object-contain"
+              width={0}
+              height={0}
+              sizes="100vw"
+              priority={backdrop.id === backdrops[0]?.id}
+            />
+          </div>
+        ))}
       </div>
       <div className="absolute inset-0 bg-opacity-5" />
       <div className="absolute inset-x-0 bottom-0 h-32" />
@@ -53,9 +69,9 @@ export default function PhotographyBackdrop({ backdrops, showPreview }: Photogra
           {backdrops.map((backdrop) => (
             <button
               key={backdrop.id}
-              onClick={() => setCurrentBackdrop(backdrop)}
+              onClick={() => setCurrentBackdropId(backdrop.id)}
               className={`w-16 h-16 rounded-full border-4 ${
-                currentBackdrop.id === backdrop.id ? 'border-white' : 'border-gray-400'
+                currentBackdropId === backdrop.id ? 'border-white' : 'border-gray-400'
               } overflow-hidden focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
             >
               <Image
@@ -63,7 +79,7 @@ export default function PhotographyBackdrop({ backdrops, showPreview }: Photogra
                 alt={backdrop.name}
                 width={64}
                 height={64}
-                className="object-cover"
+                className="object-contain"
               />
             </button>
           ))}

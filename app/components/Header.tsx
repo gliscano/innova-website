@@ -4,7 +4,7 @@ import Link from 'next/link'
 export default function Header() {
   return (
     <header className="header-innova shadow-sm navbar-background">
-      <div className="max-w-7xl mx-auto my-2 py-2 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto py-2 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         <Link href='/'>
           <Image src="/svg/innova-logo.svg" alt="Innova Logo" width={128} height={25} />
         </Link>

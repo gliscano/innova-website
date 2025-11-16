@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       new URL('https://res.cloudinary.com/innova54/**')
     ]
-  }
+  },
 };
 
 export default nextConfig;

@@ -6,7 +6,7 @@ declare global {
       config?: {
         event_category?: string
         event_label?: string
-        value?: number
+        value?: number | string
         description?: string
         fatal?: boolean
         [key: string]: any

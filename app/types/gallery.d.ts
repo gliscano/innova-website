@@ -37,6 +37,7 @@ export interface GalleryModalProps {
   goToNext: () => void
   goToPrevious: () => void
   goToImage: (index: number) => void
+  category?: string
 }
 
 export interface GalleryItemProps {

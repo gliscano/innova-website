@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import Image from 'next/image'
+import Link from 'next/link'
+import { CldImage } from 'next-cloudinary'
 import { motion, AnimatePresence } from 'framer-motion'
 import { GalleryModalProps } from '../../types/gallery'
 
@@ -13,6 +14,7 @@ export default function GalleryModal({
   goToNext,
   goToPrevious,
   goToImage,
+  category,
 }: GalleryModalProps) {
   const modalRef = useRef<HTMLDivElement>(null)
 
@@ -93,13 +95,15 @@ export default function GalleryModal({
               transition={{ duration: 0.3 }}
               className="relative w-full h-full flex items-center justify-center"
             >
-              <Image
-                src={currentImage.url}
+              <CldImage
+                src={currentImage.id}
                 alt={`Imagen ${initialIndex + 1}`}
                 fill
                 className="object-contain"
                 sizes="100vw"
                 priority
+                format="auto"
+                quality="auto"
               />
             </motion.div>
 
@@ -129,6 +133,19 @@ export default function GalleryModal({
                 aria-label={`Ir a imagen ${index + 1}`}
               />
             ))}
+          </div>
+
+          {/* Footer con botón de acción */}
+          <div className="mt-6 flex items-center justify-center pb-4">
+            <Link
+              href={`https://wa.me/5491171142152?text=${encodeURIComponent(`Hola, Quiero comprar o consultar sobre\nCategoría: ${category || 'diseño'}\nDiseño: ${currentImage.display_name}\nVer imagen: ${currentImage.url}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-3 bg-white text-black font-medium rounded-lg hover:bg-gray-100 transition-colors duration-200 hover:scale-105 transform"
+              aria-label="Solicitar información o comprar"
+            >
+              Solicitar información / Comprar
+            </Link>
           </div>
         </div>
       </motion.div>

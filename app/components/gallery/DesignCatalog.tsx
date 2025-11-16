@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -9,15 +9,15 @@ import { ProductGridSkeleton } from "./ProductSkeleton"
 import { 
   SearchIcon, 
   LoadingSpinner, 
-  LightningIcon, 
-  CheckIcon, 
-  EyeIcon
+  LightningIcon
 } from "../icons"
 
 
 export default function InnovaCatalog() {
   const router = useRouter()
-  const categoryScrollRef = useRef<HTMLDivElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [categorySearchTerm, setCategorySearchTerm] = useState("")
   
   const {
     searchTerm,
@@ -35,154 +35,150 @@ export default function InnovaCatalog() {
     normalizeText
   } = useProductSearch()
 
-  const scrollCategories = (direction: "left" | "right") => {
-    const container = categoryScrollRef.current
-    if (!container) return
-    const amount = Math.floor(container.clientWidth * 0.8)
-    container.scrollBy({ left: direction === "left" ? -amount : amount, behavior: "smooth" })
-  }
-
   const handleViewDetails = (e: React.MouseEvent, category: string) => {
     e.preventDefault()
     e.stopPropagation()
     router.push(`/design-catalog/${encodeURIComponent(category)}`)
   }
 
+  // Filtrar categorías basado en el término de búsqueda
+  const filteredCategories = categoriesFromData.filter((category) =>
+    normalizeText(category.toLowerCase()).includes(normalizeText(categorySearchTerm.toLowerCase()))
+  )
+  
+  // Agregar "Todos" al inicio si coincide con la búsqueda o si no hay término de búsqueda
+  const allCategoriesList = categorySearchTerm === "" || normalizeText("todos").includes(normalizeText(categorySearchTerm.toLowerCase()))
+    ? ["Todos", ...filteredCategories]
+    : filteredCategories
+
+  // Cerrar dropdown al hacer clic fuera
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false)
+        setCategorySearchTerm("")
+      }
+    }
+
+    if (isDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [isDropdownOpen])
+
+  const handleCategorySelect = (category: string) => {
+    setSelectedCategory(category)
+    if (category === "Todos") {
+      setSearchTerm("")
+    } else {
+      setSearchTerm(category)
+    }
+    setIsDropdownOpen(false)
+    setCategorySearchTerm("")
+  }
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    if (value.length <= 25) {
+      setSearchTerm(value)
+      setCategorySearchTerm(value)
+    }
+  }
+
   return (
     <div className="min-h-screen christmas-background bg-opacity-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-        <div className="relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20">
+        <h2 className="py-2 text-2xl copperplate-bold-font tracking-tight text-gray-900 sm:text-4xl lg:col-span-2">
+          Catálogo de Diseños
+        </h2>
+        <div className="max-h-72 relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20">
           {/* Filtros y búsqueda */}
-          <div className="mb-8 space-y-4">
-            {/* Ayuda para búsqueda */}
-            <div id="search-help" className="hidden lg: rounded-lg p-2">
-              <div className="flex items-center gap-2">
-                <p className="text-sm text-blue-800">
-                  Busca por categoría, tipo de fotografía, ocasión o estilo. Ejemplos: "navidad", "infantil", "maternidad", "eventos"
-                </p>
-              </div>
-            </div>
-            {/* Barra de búsqueda principal */}
-            <div className="relative">
+          <div className={`mb-4 space-y-4 ${isDropdownOpen ? 'h-72' : ''}`}>
+            {/* Dropdown de búsqueda combinado */}
+            <div className="relative" ref={dropdownRef}>
               <label htmlFor="catalog-search" className="sr-only">
                 Buscar en el catálogo de diseños fotográficos
               </label>
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                {isSearching ? <LoadingSpinner /> : <SearchIcon />}
-              </div>
-              <input
-                id="catalog-search"
-                type="text"
-                placeholder="Buscar catálogo de diseños"
-                value={searchTerm}
-                onChange={(e) => {
-                  const value = e.target.value
-                  if (value.length <= 25) {
-                    setSearchTerm(value)
-                  }
-                }}
-                maxLength={25}
-                aria-describedby="search-help search-counter"
-                aria-label="Buscar en el catálogo de diseños fotográficos"
-                className="block w-full pl-10 pr-20 py-3 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-lg"
-              />
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <span 
-                  id="search-counter"
-                  className={`text-xs pr-3 ${searchTerm.length >= 20 ? "text-red-500" : "text-gray-400"}`}
-                  aria-label={`${searchTerm.length} de 25 caracteres utilizados`}
+              
+              {/* Barra de búsqueda con botón */}
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <input
+                    id="catalog-search"
+                    type="text"
+                    placeholder="Buscar Catálogo..."
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    maxLength={25}
+                    aria-describedby="search-category-designs"
+                    aria-label="Buscar en el catálogo de diseños fotográficos"
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-lg"
+                  />
+                </div>
+                
+                <button
+                  type="button"
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="px-4 py-3 border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  aria-expanded={isDropdownOpen}
+                  aria-haspopup="listbox"
+                  aria-label="Mostrar categorías"
                 >
-                  {searchTerm.length}/25
-                </span>
-                <LightningIcon />
-              </div>
-            </div>
-
-            {/* Filtros rápidos - Carrusel */}
-            <div className="relative">
-              <button
-                type="button"
-                aria-label="Desplazar categorías a la izquierda"
-                onClick={() => scrollCategories("left")}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    scrollCategories("left")
-                  }
-                }}
-                className="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 items-center justify-center h-8 w-8 rounded-full bg-white border border-gray-300 shadow hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-4 h-4">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-
-              <div
-                ref={categoryScrollRef}
-                role="tablist"
-                aria-label="Filtros de categorías"
-                className="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory px-8 py-2 sm:mx-10 sm:overflow-x-hidden"
-              >
-                {categoriesFromData.map((category, index) => (
-                  <button
-                    key={category}
-                    role="tab"
-                    aria-selected={selectedCategory === category}
-                    aria-controls={`category-${category.toLowerCase().replace(/\s+/g, '-')}`}
-                    tabIndex={selectedCategory === category ? 0 : -1}
-                    onClick={() => setSelectedCategory(category === selectedCategory ? "Todos" : category)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'ArrowRight') {
-                        e.preventDefault()
-                        const nextIndex = (index + 1) % categoriesFromData.length
-                        setSelectedCategory(categoriesFromData[nextIndex])
-                      } else if (e.key === 'ArrowLeft') {
-                        e.preventDefault()
-                        const prevIndex = index === 0 ? categoriesFromData.length - 1 : index - 1
-                        setSelectedCategory(categoriesFromData[prevIndex])
-                      }
-                    }}
-                    className={`flex-none snap-start px-4 py-2 rounded-full text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 ${
-                      selectedCategory === category
-                        ? "bg-red-700 text-white"
-                        : "bg-white text-gray-900 border border-gray-300 hover:bg-gray-50"
-                    }`}
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    className={`w-5 h-5 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
                   >
-                    {category}
-                  </button>
-                ))}
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
               </div>
 
-              <button
-                type="button"
-                aria-label="Desplazar categorías a la derecha"
-                onClick={() => scrollCategories("right")}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    scrollCategories("right")
-                  }
-                }}
-                className="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 items-center justify-center h-8 w-8 rounded-full bg-white border border-gray-300 shadow hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-4 h-4">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
+              {/* Dropdown de categorías */}
+              {isDropdownOpen && (
+                <div className="absolute z-50 mt-1 w-full max-h-64 bg-white border border-gray-300 rounded-md shadow-lg overflow-hidden">
+                  {/* Lista de categorías scrollable */}
+                  <div className="overflow-y-auto max-h-56" role="listbox" aria-label="Categorías disponibles">
+                    {allCategoriesList.length > 0 ? (
+                      allCategoriesList.map((category) => (
+                        <button
+                          key={category}
+                          role="option"
+                          aria-selected={selectedCategory === category}
+                          onClick={() => handleCategorySelect(category)}
+                          className={`w-full text-left px-4 py-3 flex items-center hover:bg-purple-50 focus:outline-none focus:bg-purple-50 transition-colors ${
+                            selectedCategory === category ? "bg-purple-100" : ""
+                          }`}
+                        >
+                          <span className="text-sm text-gray-900">{category}</span>
+                        </button>
+                      ))
+                    ) : (
+                      <div className="px-4 py-3 text-sm text-gray-500 text-center">
+                        No se encontraron categorías
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Controles */}
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
               <div className="flex flex-wrap flex-row gap-4 items-center">
-                <span className="text-sm text-black">{filteredProducts.length} Catálogos</span>
-                <label htmlFor="sort-select" className="text-sm text-gray-900">
-                  Ordenar:
-                </label>
+                <span className="text-sm text-black">
+                  {`${filteredProducts.length} Catálogo${filteredProducts.length > 1 ? "s" : ""} | Ordenar por:`}
+                </span>
                 <select
                   id="sort-select"
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  aria-label="Ordenar productos por criterio"
+                          aria-label="Ordenar productos por criterio" 
                   className="block w-48 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option value="featured">Destacados</option>
@@ -217,15 +213,9 @@ export default function InnovaCatalog() {
           <div 
             role="grid"
             aria-label={`Catálogo de diseños fotográficos. ${filteredProducts.length} productos encontrados`}
-            className="grid gap-2 grid-cols-2 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4"
+            className="px-2 grid gap-3 grid-cols-2 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4"
           >
-            {filteredProducts.map((product, index) => {
-            const matchingTags =
-              searchResult?.tags.filter((tag) =>
-                product.tags.some((productTag) => normalizeText(productTag.toLowerCase()) === normalizeText(tag.toLowerCase())),
-              ) || []
-
-            return (
+            {filteredProducts.map((product, index) => (
               <Link
                 key={product.id}
                 href={`/design-catalog/${encodeURIComponent(product.category)}`}
@@ -242,7 +232,7 @@ export default function InnovaCatalog() {
                     alt={product.title}
                     width={400}
                     height={300}
-                    className="w-full h-24 object-contain group-hover:scale-105 transition-transform duration-300 mt-1"
+                    className="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   {product.featured && (
                     <Image
@@ -250,57 +240,33 @@ export default function InnovaCatalog() {
                       alt="Producto destacado"
                       width={24}
                       height={24}
-                      className="absolute top-0 right-2 p-0.5 inline-flex items-center bg-white shadow-md rounded-3xl"
+                      className="absolute top-2 right-2 p-0.5 inline-flex items-center bg-white shadow-md rounded-3xl"
                     />
                   )}
-                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
-                    <>
-                      <button
-                        onClick={(e) => handleViewDetails(e, product.category)}
-                        aria-label={`Ver detalles del catálogo ${product.title}`}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity bg-white bg-opacity-100 text-gray-900 px-4 py-2 rounded-md font-medium hover:bg-gray-100 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        <EyeIcon />
-                        Ver Detalles
-                      </button>
-                    </>
-                  </div>
                 </div>
 
-                <div className="px-4 pb-4">
-                  <div className="space-y-2">
-                    <div className="flex items-start justify-between">
-                      <h3 className="mt-2 font-semibold text-sm sm:text-medium line-clamp-2 group-hover:text-blue-600 transition-colors">
-                        {product.title}
-                      </h3>
-                    </div>
-                    <p className="text-gray-600 text-sm line-clamp-2">{product.description}</p>
-                    <div className="flex flex-wrap gap-1">
-                      {product.tags.slice(0, 2).map((tag) => {
-                        const isMatch = searchResult?.tags.includes(normalizeText(tag.toLowerCase()))
-
-                        return (
-                          <span
-                            key={tag}
-                            className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${
-                              isMatch
-                                ? searchResultType === "exact"
-                                  ? "bg-green-100 text-green-800 border border-green-200"
-                                  : "bg-yellow-100 text-yellow-800 border border-yellow-200"
-                                : "bg-gray-100 text-gray-800"
-                            }`}
-                          >
-                            {isMatch && <CheckIcon />}
-                            {tag}
-                          </span>
-                        )
-                      })}
-                    </div>
+                <div className="h-36 flex flex-col items-stretch justify-between px-4 pb-4">
+                  <div className="items-start justify-between">
+                    <h3 className="mt-2 font-semibold text-sm sm:text-medium line-clamp-2 group-hover:text-blue-600 transition-colors">
+                      {product.title}
+                    </h3>
                   </div>
+                  <p className="text-gray-600 text-sm line-clamp-2">{product.description}</p>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      handleViewDetails(e, product.category)
+                    }}
+                    aria-label={`Abrir catálogo ${product.title}`}
+                    className="w-full mt-3 gradient-orange-colors text-black px-4 py-2 rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    Catálogo
+                  </button>
                 </div>
               </Link>
             )
-          })}
+          )}
           </div>
         )}
 

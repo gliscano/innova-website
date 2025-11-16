@@ -44,9 +44,9 @@ export default function Gallery(props: GalleryProps) {
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
-            <h1 className="text-3xl copperplate-bold-font font-bold text-gray-900 mb-2">
+            <h2 className="text-2xl copperplate-bold-font font-bold text-gray-900 mb-2">
               Galería de Diseños
-            </h1>
+            </h2>
             <p className="text-gray-600">
               Cargando diseños...
             </p>
@@ -139,6 +139,7 @@ export default function Gallery(props: GalleryProps) {
             goToNext={goToNext}
             goToPrevious={goToPrevious}
             goToImage={goToImage}
+            category={props.searchTerm}
           />
         )}
       </div>

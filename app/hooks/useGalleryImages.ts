@@ -43,10 +43,10 @@ export function useGalleryImages(props: GalleryProps): UseGalleryImagesReturn {
       if (props.folder) params.set('folder', props.folder)
       if (props.collection) params.set('collection', props.collection)
       if (props.itemsPerPage) params.set('maxResults', String(props.itemsPerPage))
-      if (props.tags && props.tags.length > 0) {
+      /* if (props.tags && props.tags.length > 0) {
         // múltiple: repetir param o usar coma. Usamos repetido para mejor cacheabilidad
         props.tags.forEach(tag => params.append('tags', tag))
-      }
+      } */
       if (isLoadMore && nextCursor) params.set('nextCursor', nextCursor)
 
       const url = `/api/cloudinary/search?${params.toString()}`
@@ -84,13 +84,13 @@ export function useGalleryImages(props: GalleryProps): UseGalleryImagesReturn {
       isLoadingMoreRef.current = false
 
       // Trackear en Google Analytics
-      /* if (typeof window !== 'undefined' && window.gtag) {
+      if (typeof window !== 'undefined' && window.gtag) {
         window.gtag('event', 'gallery_search', {
           event_category: 'gallery',
           event_label: props.searchTerm || 'general',
           value: data.images.length,
         })
-      } */
+      }
 
     } catch (err) {
       if (err instanceof Error && err.name === 'AbortError') {

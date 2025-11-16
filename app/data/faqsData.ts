@@ -48,23 +48,23 @@ export const faqCategories: FaqCategory[] = [
         answer:
           "Sí, a todo el país con **Andreani, OCA, Correo Argentino y Vía Cargo**.",
       },
-      {
-        id: "shippingWorld",
-        question: "¿Hacen envíos internacionales?",
-        answer:
-          "Sí, enviamos a **Paraguay** vía terrestre y pronto a **EE.UU.** con **DHL**.",
-      },
     ],
   },
   {
-    id: "productos",
-    title: "Productos",
+    id: "products",
+    title: "Fondos y Pisos",
     items: [
       {
         id: "standar_fluo",
         question: "¿Cuál es la diferencia entre fondo estándar y fluo?",
         answer:
           "Los **fondos Fluo** usan tintas fluorescentes que brillan con **luz negra o luces de colores**, creando un efecto neón único. Los **estándar** mantienen tonos naturales, ideales para retratos clásicos.",
+      },
+      {
+        id: "floor",
+        question: "¿Fabrican fondos de piso?",
+        answer:
+          "Sí, fabricamos fondos de piso en material de simil de neoprene, diferentes medidas y diseños.",
       },
       {
         id: "materiales",
@@ -82,7 +82,7 @@ export const faqCategories: FaqCategory[] = [
   },
   {
     id: "pagos",
-    title: "Pagos y facturación",
+    title: "Pagos",
     items: [
       {
         id: "wayToPay",

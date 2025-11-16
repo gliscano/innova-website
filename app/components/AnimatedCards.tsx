@@ -14,6 +14,13 @@ const navItems: Array<NavItemProps> = [
     icon: '/icons/whatsapp.png',
     href: 'https://wa.me/5491171142152',
   },
+  { 
+    title: 'Comprar',
+    subtitle: 'Productos en Stock',
+    icon: '/icons/gallery.png',
+    href: 'https://store.innova54.com/',
+  },
+  
   {
     title: 'Precios',
     subtitle: 'y Medidas',
@@ -21,14 +28,8 @@ const navItems: Array<NavItemProps> = [
     href: '/prices',
   },
   { 
-    title: 'Comprar',
-    subtitle: 'Fondos en Stock',
-    icon: '/icons/gallery.png',
-    href: 'https://store.innova54.com/',
-  },
-  { 
-    title: 'Props y Newborn',
-    subtitle: 'Colección',
+    title: 'Preguntas',
+    subtitle: 'Frecuentes',
     icon: '/icons/rocking-horse.png',
     href: 'https://store.innova54.com/',
   },

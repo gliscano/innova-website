@@ -39,7 +39,7 @@ export const useProductSearch = () => {
       })
       .map(([name]) => name)
 
-    return ["Todos", ...sorted]
+    return [...sorted]
   }, [])
 
   // Función optimizada para normalizar texto (solo acentos)
@@ -177,6 +177,27 @@ export const useProductSearch = () => {
     }
 
     // Aplicar ordenamiento
+    if (debouncedSearchTerm && debouncedSearchTerm.length >= 2) {
+      const normalizedSearch = normalizeText(debouncedSearchTerm)
+      filtered.sort((a, b) => {
+        const aExactCategory = normalizeText(a.category) === normalizedSearch
+        const bExactCategory = normalizeText(b.category) === normalizedSearch
+
+        // Priorizar coincidencia exacta en category
+        if (aExactCategory !== bExactCategory) {
+          return bExactCategory ? 1 : -1
+        }
+
+        // Secundario: criterio seleccionado
+        switch (sortBy) {
+          case "name":
+            return a.title.localeCompare(b.title)
+          case "featured":
+          default:
+            return (b.featured ? 1 : 0) - (a.featured ? 1 : 0)
+        }
+      })
+    } else {
       switch (sortBy) {
         case "name":
           filtered.sort((a, b) => a.title.localeCompare(b.title))
@@ -186,9 +207,10 @@ export const useProductSearch = () => {
           filtered.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0))
           break
       }
+    }
 
       return filtered
-  }, [selectedCategory, sortBy, searchResult])
+  }, [selectedCategory, sortBy, searchResult, debouncedSearchTerm])
 
   const clearFilters = () => {
     setSearchTerm("")

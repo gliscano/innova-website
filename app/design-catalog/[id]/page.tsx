@@ -64,22 +64,14 @@ export default function ProductPage({ params }: ProductPageProps) {
     }
   }
 
-  const handlePricesLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    event.preventDefault()
-    const section = document.getElementById('prices')
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }
-  }
-
   return (
     <div className="min-h-screen bg-gray-50 bg-opacity-40 pb-6">
       <Header />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-2">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-2">
         <nav className="flex mb-2" aria-label="Breadcrumb">
           <ol className="inline-flex items-center space-x-1 md:space-x-3">
             <li className="inline-flex items-center">
-              <Link href="/" className="text-gray-700 flex">
+              <Link href="/" className="text-gray-800 flex">
               <Image
                 aria-hidden
                 src="../svg/left.svg"
@@ -95,26 +87,13 @@ export default function ProductPage({ params }: ProductPageProps) {
         </nav>
 
         {/* Contenido principal */}
-        <div className="grid lg:grid-cols-2 gap-8 mb-6">
-          {/* Imagen del producto */}
-          <div className="space-y-1">
-            <div className="relative">
-              <Image
-                src={product.image}
-                alt={product.title}
-                width={800}
-                height={420}
-                className="w-full rounded-lg"
-              />
-            </div>
-          </div>
-
+        <div id="header-content" className="mb-6">
           {/* Información del producto */}
           <div className="space-y-3">
             <div>
-              <h1 className="text-2xl copperplate-bold-font font-bold text-gray-900 mb-2">{product.title}</h1>
-              <p className="text-lg text-gray-600 mb-4">{product.description}</p>
-              <div className="hidden sm:flex flex-wrap gap-2">
+              <h1 className="text-3xl copperplate-bold-font font-bold text-gray-900 mb-2">Catálogo de {product.title}</h1>
+              <p className="text-lg text-gray-800 mb-4">{product.description}</p>
+              <div className="hidden lg:flex flex-wrap gap-2">
                 {product.tags.map((tag) => (
                   <span
                     key={tag}
@@ -126,23 +105,53 @@ export default function ProductPage({ params }: ProductPageProps) {
               </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="grid grid-cols-3 gap-2 text-center text-sm font-medium">
               <Link
                 href={getUrlLink(product.catalogURL)}
                 onClick={handleCatalogLinkClick}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full gradient-orange-colors text-black px-6 py-3 rounded-md shadow-md font-medium text-lg flex items-center justify-center gap-2 group"
+                className="w-full gradient-orange-colors text-black px-1 py-3 rounded-md shadow-md flex items-center justify-center gap-2 group"
+              >
+                Galería de Diseños
+              </Link>
+              <Link
+                href="#information"
+                target="_self"
+                rel="noopener noreferrer"
+                className="w-full gradient-green-colors text-black px-1 py-3 rounded-md shadow-md flex items-center justify-center gap-2 group"
               >
 
-                Ver Catálogo de diseños
+                Información y Comprar
+              </Link>
+              <Link
+                href="#prices"
+                target="_self"
+                rel="noopener noreferrer"
+                className="w-full gradient-rose-gold-colors text-black px-1 py-3 rounded-md shadow-md flex items-center justify-center gap-2 group"
+              >
+
+                Precios y Medidas
               </Link>
             </div>
           </div>
         </div>
 
+        {/* Galería de imágenes */}
+        {
+          !product.catalogURL && (
+            <section id="catalog" className="min-h-screen flex flex-col">
+              <div className="flex-grow">
+                <Gallery
+                  searchTerm={product.category}
+                  tags={product.tags}
+                  itemsPerPage={100}
+                />
+              </div>
+          </section>
+        )}
         {/* Información detallada */}
-        <div className="bg-white rounded-lg p-4">
+        <div id="information" className="bg-white rounded-lg p-4">
           <h3 className="text-xl copperplate-bold-font font-bold text-gray-900 mb-3">Información del Producto</h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -259,7 +268,12 @@ export default function ProductPage({ params }: ProductPageProps) {
                 </div>
               </div>
               <div className="flex items-start flex-col gap-3">
-                <button className="w-full gradient-green-colors px-6 py-3 rounded-md   font-medium sm:text-lg flex items-center justify-center">
+                <Link
+                  href={`https://wa.me/5491171142152?text=${encodeURIComponent(`Hola, estoy interesado en la categoría: ${id}. Quiero comprar o consultar.`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full gradient-green-colors px-6 py-3 rounded-md font-medium sm:text-lg flex items-center justify-center"
+                >
                   <Image
                     aria-hidden
                     src="../svg/whatsapp.svg"
@@ -269,34 +283,12 @@ export default function ProductPage({ params }: ProductPageProps) {
                     height={20}
                   />
                   Quiero comprar o consultar
-                </button>
-                <Link
-                  href="#prices"
-                  onClick={handlePricesLinkClick}
-                  target="_self"
-                  rel="noopener noreferrer"
-                  className="w-full px-6 py-3 rounded-md font-medium hover:bg-gray-200 transition-colors text-lg flex items-center justify-center gap-2 group"
-                >
-
-                  Ver medidas y precios
                 </Link>
-              </div>
               </div>
             </div>
           </div>
         </div>
-      {
-        !product.catalogURL && (
-          <section id="catalog" className="min-h-screen flex flex-col">
-            <div className="flex-grow">
-              <Gallery
-                searchTerm={product.category}
-                tags={product.tags}
-                itemsPerPage={100}
-              />
-            </div>
-        </section>
-      )}
+      </div>
       <PriceList />
     </div>
   )

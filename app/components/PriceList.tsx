@@ -46,7 +46,7 @@ import {
         <div className="relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20">
           <div className="mx-auto max-w-7xl px-6 py-6 sm:py-6 lg:px-8 flex justify-around">
             <div className="mx-auto max-w-2xl lg:mx-0 lg:grid lg:max-w-none lg:gap-x-16 lg:gap-y-6 xl:grid-rows-1 xl:gap-x-8">
-              <h2 className="max-w-2xl text-2xl copperplate-bold-font tracking-tight text-gray-900 sm:text-5xl lg:col-span-2">
+              <h2 className="max-w-2xl text-2xl copperplate-bold-font tracking-tight text-gray-900 sm:text-4xl lg:col-span-2">
                 Lista de medidas y precios
               </h2>
             </div>

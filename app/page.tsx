@@ -5,10 +5,8 @@ import Footer from './components/Footer'
 import FAQ from './components/FAQ'
 import ProductCategoryMenu from './components/ProductCategoryMenu'
 import PriceList from './components/PriceList'
-import CustomBackdropProcess from './components/CustomBackdropProcess'
 import DesignCatalog from './components/gallery/DesignCatalog'
 import HeroProps from './components/HeroProps'
-import HeroAboutUs from './components/HeroAboutUs'
 
 export default function Home() {
   return (
@@ -21,7 +19,6 @@ export default function Home() {
         <PriceList />
         <HeroProps />
         <ProductCategoryMenu />
-        <CustomBackdropProcess />
         <FAQ />
       </main>
       <Footer />
