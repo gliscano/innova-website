@@ -19,9 +19,9 @@ export const faqCategories: FaqCategory[] = [
     items: [
       {
         id: "innova",
-        question: "¿Qué es Innova Backdrops?",
+        question: "¿Qué es Innova?",
         answer:
-          "**Innova Backdrops** es un estudio creativo especializado en el diseño y fabricación de fondos fotográficos, props e insumos visuales para fotógrafos, creadores de contenido y decoradores.",
+          "En **Innova Backdrops** nos dedicamos al diseño y fabricación de fondos fotográficos (backdrops), props e insumos para fotógrafos, productores y decoradores de eventos.",
       },
       {
         id: "prices",
