@@ -1,0 +1,153 @@
+'use client'
+
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { GalleryImage, GallerySearchResponse, GalleryProps } from '../types/gallery'
+
+interface UseGalleryImagesReturn {
+  images: GalleryImage[]
+  isLoading: boolean
+  error: string | null
+  hasMore: boolean
+  totalCount: number
+  loadMore: () => void
+  refresh: () => void
+}
+
+export function useGalleryImages(props: GalleryProps): UseGalleryImagesReturn {
+  const [images, setImages] = useState<GalleryImage[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [hasMore, setHasMore] = useState(true)
+  const [totalCount, setTotalCount] = useState(0)
+  const [nextCursor, setNextCursor] = useState<string | null>(null)
+  
+  const abortControllerRef = useRef<AbortController | null>(null)
+  const isLoadingMoreRef = useRef(false)
+  const propsRef = useRef(props)
+  
+  // Mantener props actualizados en ref para evitar dependencias circulares
+  useEffect(() => {
+    propsRef.current = props
+  }, [props])
+
+  const searchImages = useCallback(async (isLoadMore = false) => {
+    if (isLoadingMoreRef.current) return
+
+    try {
+      setIsLoading(true)
+      setError(null)
+
+      // Cancelar petición anterior si existe
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+      }
+
+      abortControllerRef.current = new AbortController()
+
+      const currentProps = propsRef.current
+      const params = new URLSearchParams()
+      if (currentProps.searchTerm) params.set('searchTerm', currentProps.searchTerm)
+      if (currentProps.folder) params.set('folder', currentProps.folder)
+      if (currentProps.itemsPerPage) params.set('maxResults', String(currentProps.itemsPerPage))
+      if (isLoadMore && nextCursor) params.set('nextCursor', nextCursor)
+
+      const url = `/api/cloudinary/search?${params.toString()}`
+
+      const response = await fetch(url, {
+        method: 'GET',
+        signal: abortControllerRef.current.signal,
+
+      })
+
+      if (!response.ok) {
+        throw new Error('Error en la búsqueda')
+      }
+
+      const data: GallerySearchResponse = await response.json()
+
+      if (data.error) {
+        throw new Error(data.error)
+      }
+
+      if (isLoadMore) {
+        setImages(prev => [...prev, ...data.images])
+      } else {
+        setImages(data.images)
+      }
+
+      setNextCursor(data.nextCursor || null)
+      setHasMore(data.hasMore)
+      setTotalCount(data.totalCount)
+      setIsLoading(false)
+      isLoadingMoreRef.current = false
+
+      // Trackear en Google Analytics
+      if (typeof window !== 'undefined' && window.gtag) {
+        window.gtag('event', 'gallery_search', {
+          event_category: 'gallery',
+          event_label: currentProps.searchTerm || 'general',
+          value: data.images.length,
+        })
+      }
+
+    } catch (err) {
+      if (err instanceof Error && err.name === 'AbortError') {
+        return // Petición cancelada
+      }
+
+      setError('Error al cargar las imágenes. Intenta de nuevo.')
+      setIsLoading(false)
+      isLoadingMoreRef.current = false
+    }
+  }, [nextCursor])
+
+  const loadMore = useCallback(() => {
+    if (isLoading || !hasMore || isLoadingMoreRef.current)
+    {
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('gallery loadMore skipped')
+      }
+      return
+    }
+    
+    isLoadingMoreRef.current = true
+    searchImages(true)
+  }, [isLoading, hasMore, searchImages])
+
+  const refresh = useCallback(() => {
+    setImages([])
+    setNextCursor(null)
+    setHasMore(true)
+    setError(null)
+    searchImages(false)
+  }, [searchImages])
+
+  // Búsqueda inicial y cuando cambien los parámetros
+  useEffect(() => {
+    setImages([])
+    setNextCursor(null)
+    setHasMore(true)
+    setError(null)
+    searchImages(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.searchTerm, props.folder, props.itemsPerPage])
+
+  // Cleanup al desmontar
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+      }
+    }
+  }, [])
+
+  return {
+    images,
+    isLoading,
+    error,
+    hasMore,
+    totalCount,
+    loadMore,
+    refresh,
+  }
+}

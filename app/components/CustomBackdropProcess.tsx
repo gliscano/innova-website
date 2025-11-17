@@ -2,6 +2,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 
 const steps = [
   {
@@ -60,7 +61,7 @@ export default function CustomBackdropProcess() {
   }, [isClient])
 
   return (
-    <section className="bg-gray-50">
+    <section className="bg-gray-50 pb-2">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
       <div className="relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20 pt-6 lg:pt-14">
           <div
@@ -69,9 +70,9 @@ export default function CustomBackdropProcess() {
           />
           <div className="mx-auto max-w-7xl px-6 py-6 sm:py-6 lg:px-8 flex justify-around">
             <div className="mx-auto max-w-2xl lg:mx-0 lg:grid lg:max-w-none lg:gap-x-16 lg:gap-y-6 xl:grid-rows-1 xl:gap-x-8">
-              <h1 className="max-w-2xl text-xl copperplate-bold-font tracking-tight text-gray-900 sm:text-5xl lg:col-span-2">
+              <h2 className="max-w-2xl text-xl copperplate-bold-font tracking-tight text-gray-900 sm:text-5xl lg:col-span-2">
                 ¿Necesitas un fondo personalizado?
-              </h1>
+              </h2>
               <div className="mt-6 max-w-xl lg:mt-0 xl:col-end-1">
                 <p className="text-medium lg:text-lg leading-8 text-gray-600">
                   Elevá tu creatividad sin límites y tenelo en <b>12 días hábiles</b>.<br />
@@ -108,15 +109,17 @@ export default function CustomBackdropProcess() {
           </dl>
         </div>
         <div className="mt-10 mb-10 flex items-center justify-center gap-x-6">
-          <a href="/prices" className="text-sm font-semibold leading-6 text-gray-900">
-            Ver medidas disponibles
-          </a>
-          <a
-            href="https://wa.me/5491171142152"
-            className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            Solicitar fondo personalizado
-          </a>
+          <button className="bg-green-400 px-6 py-3 rounded-md font-medium hover:bg-green-700 transition-colors text-lg flex items-center justify-center">
+            <Image
+              aria-hidden
+              src="svg/whatsapp.svg"
+              alt="Whatsapp icon"
+              className="mr-2"
+              width={20}
+              height={20}
+            />
+            Quiero un fondo personalizado
+          </button>
         </div>
       </div>
     </section>

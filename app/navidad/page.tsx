@@ -3,8 +3,10 @@
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 export default function InnovaNavidad() {
+  const router = useRouter()
   const [currentSlide, setCurrentSlide] = useState(0)
 
 
@@ -153,7 +155,7 @@ export default function InnovaNavidad() {
             {/* Botones de acción principales */}
             <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
               <button
-                onClick={() => window.open("https://drive.google.com/drive/folders/1MVQMUS5hrYVv--SfBZtchrz5Ev9HlGX5?usp=sharing", "_self")}
+                onClick={() => router.push("/design-catalog/Navidad")}
                 className="inline-flex items-center justify-center bg-red-600/90 hover:bg-red-700 text-white px-6 py-3 font-semibold rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105 backdrop-blur-sm"
               >
                 Ver Catálogo

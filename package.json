@@ -10,10 +10,15 @@
   },
   "dependencies": {
     "@next/third-parties": "^15.3.5",
+    "cloudinary": "^2.7.0",
+    "framer-motion": "^12.23.12",
     "lottie-web": "^5.12.2",
     "next": "^15.3.5",
+    "next-cloudinary": "^6.17.4",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "tailwind-merge": "^3.3.0",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@types/node": "^20",
