@@ -6,11 +6,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useProductSearch } from "../../hooks/useProductSearch"
 import { ProductGridSkeleton } from "./ProductSkeleton"
-import { 
-  SearchIcon, 
-  LoadingSpinner, 
-  LightningIcon
-} from "../icons"
+import { SearchIcon } from "../icons"
 
 
 export default function InnovaCatalog() {
@@ -27,7 +23,6 @@ export default function InnovaCatalog() {
     sortBy,
     setSortBy,
     isSearching,
-    searchResult,
     searchResultType,
     categoriesFromData,
     filteredProducts,

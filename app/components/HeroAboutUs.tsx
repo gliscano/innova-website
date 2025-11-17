@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function HeroAboutUs() {
   return (
@@ -16,9 +17,11 @@ export default function HeroAboutUs() {
         className="max-w-3xl"
       >
         <div className="flex justify-center">
-          <img 
+          <Image 
             src="/svg/magic.svg" 
             alt="Magic emoji"
+            width={24}
+            height={24}
             className="size-6 mr-2"
           />
           <h1 className="text-2xl font-bold text-gray-900 mb-4 leading-tight">

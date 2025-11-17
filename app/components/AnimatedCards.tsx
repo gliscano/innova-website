@@ -1,5 +1,7 @@
 'use client'
 
+import Image from 'next/image'
+
 type NavItemProps = { 
   title: string,
   subtitle: string,
@@ -31,7 +33,7 @@ const navItems: Array<NavItemProps> = [
     title: 'Preguntas',
     subtitle: 'Frecuentes',
     icon: '/icons/rocking-horse.png',
-    href: 'https://store.innova54.com/',
+    href: '/preguntas-frecuentes',
   },
 ]
 
@@ -49,9 +51,11 @@ export default function AnimatedCards() {
               rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
             >
               <div className="w-6 h-6 mb-1 flex items-center justify-center">
-                <img 
+                <Image 
                   src={item.icon} 
                   alt={item.title}
+                  width={20}
+                  height={20}
                   className="w-5 h-5 group-hover:scale-110 transition-transform duration-200"
                 />
               </div>

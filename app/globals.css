@@ -12,6 +12,12 @@ body {
   background: linear-gradient(92deg, #7bd97b, #a8e6a1, #e8f0b3, #f7b3b3, #e38a8a);
 }
 
+.header-innova {
+  position: relative;
+  width: 100%;
+  z-index: 50;
+}
+
 .navbar-background {
   background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url('/images/navbar_background.webp') !important;
   background-size: cover;

@@ -111,8 +111,8 @@ async function runSearch(params: { searchTerm?: string; folder?: string; nextCur
         }
       }
     }
-  } catch (e) {
-    // Ignorar y hacer fallback
+  } catch (error) {
+    console.error('Error en búsqueda de Cloudinary (GET):', error)
   }
 
   // 2) Fallback a Admin API si no hay datos válidos desde CDN
@@ -134,8 +134,8 @@ async function runSearch(params: { searchTerm?: string; folder?: string; nextCur
     createdAt: img.created_at,
     tags: img.tags || [],
     folder: img.folder,
-    display_name: (img as any).display_name,
-    aspect_ratio: (img as any).aspect_ratio,
+    display_name: (img as CloudinaryImage).display_name,
+    aspect_ratio: (img as CloudinaryImage).aspect_ratio,
     collection: img.context?.custom?.collection,
   }))
 
@@ -183,6 +183,7 @@ export async function POST(request: NextRequest) {
 
     return await runSearch({ searchTerm, folder, nextCursor, maxResults })
   } catch (error) {
+    console.error('Error en búsqueda de Cloudinary (POST):', error)
     return NextResponse.json(
       {
         error: 'Error al buscar imágenes',
@@ -233,6 +234,7 @@ export async function GET(request: NextRequest) {
 
     return await runSearch({ searchTerm, folder, nextCursor, maxResults, ttlSeconds })
   } catch (error) {
+    console.error('Error en búsqueda de Cloudinary (GET):', error)
     return NextResponse.json(
       {
         error: 'Error al buscar imágenes',

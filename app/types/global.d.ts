@@ -9,7 +9,7 @@ declare global {
         value?: number | string
         description?: string
         fatal?: boolean
-        [key: string]: any
+        [key: string]: unknown
       }
     ) => void
   }
