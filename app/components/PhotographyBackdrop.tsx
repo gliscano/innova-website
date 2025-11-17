@@ -31,6 +31,7 @@ export default function PhotographyBackdrop({ backdrops, showPreview }: Photogra
           return backdrops[nextIndex].id
         })
       } catch (error) {
+        console.error('Error en cambio de backdrop:', error)
         setCurrentBackdropId(backdrops[0]?.id || 0)        
       }
     }, timerToChangeImage)

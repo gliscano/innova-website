@@ -90,10 +90,6 @@ export default function FAQ({
     return categories.find((c) => c.id === activeCategoryId) || categories[0];
   }, [categories, activeCategoryId]);
 
-  const expandedItem: FaqItem | undefined = useMemo(() => {
-    return activeCategory?.items.find((i) => i.id === expandedItemId);
-  }, [activeCategory, expandedItemId]);
-
   return (
     <section className="relative w-full">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:py-16 lg:py-24">

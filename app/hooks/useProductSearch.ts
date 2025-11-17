@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from "react"
+import { useState, useEffect, useMemo, useRef, useCallback } from "react"
 import { catalogData } from "../data/catalogData"
 
 interface SearchMatch {
@@ -40,7 +40,7 @@ export const useProductSearch = () => {
   }, [])
 
   // Función optimizada para normalizar texto (solo acentos)
-  const normalizeText = (text: string): string => {
+  const normalizeText = useCallback((text: string): string => {
     const cacheKey = text
     if (normalizationCache.current.has(cacheKey)) {
       return normalizationCache.current.get(cacheKey)!
@@ -54,10 +54,10 @@ export const useProductSearch = () => {
     
     normalizationCache.current.set(cacheKey, normalized)
     return normalized
-  }
+  }, [])
 
   // Función simplificada para búsquedas exactas
-  const performExactSearch = (searchTerm: string): SearchMatch | null => {
+  const performExactSearch = useCallback((searchTerm: string): SearchMatch | null => {
     if (!searchTerm || searchTerm.length < 2) return null
 
     const normalizedSearch = normalizeText(searchTerm)
@@ -111,7 +111,7 @@ export const useProductSearch = () => {
     }
 
     return null
-  }
+  }, [normalizeText])
 
   // Debounce search term
   useEffect(() => {
@@ -145,7 +145,7 @@ export const useProductSearch = () => {
     }
 
     performSearch()
-  }, [debouncedSearchTerm])
+  }, [debouncedSearchTerm, performExactSearch])
 
   const filteredProducts = useMemo(() => {
     let filtered = catalogData
@@ -206,7 +206,7 @@ export const useProductSearch = () => {
     }
 
       return filtered
-  }, [selectedCategory, sortBy, searchResult, debouncedSearchTerm])
+  }, [selectedCategory, sortBy, searchResult, debouncedSearchTerm, normalizeText])
 
   const clearFilters = () => {
     setSearchTerm("")
