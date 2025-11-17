@@ -25,18 +25,18 @@ export function useGalleryModal(images: GalleryImage[]): UseGalleryModalReturn {
     setIsOpen(true)
     
     // Trackear apertura del modal en Google Analytics
-    if (typeof window !== 'undefined' && window.gtag) {
+    if (typeof window !== 'undefined' && window.gtag && images[index]) {
       window.gtag('event', 'gallery_modal_open', {
         event_category: 'gallery_modal_open',
         event_label: 'openImageModal',
-        value: currentImage.display_name || 'unknown',
+        value: images[index].display_name || 'unknown',
       })
     }
-  }, [])
+  }, [images])
 
   const closeModal = useCallback(() => {
     setIsOpen(false)
-  }, [currentIndex])
+  }, [])
 
   const goToNext = useCallback(() => {
     if (images.length === 0) return

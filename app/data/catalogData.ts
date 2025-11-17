@@ -237,7 +237,7 @@ export const catalogData: CatalogItem[] = [
   {
     id: 18,
     title: "Comunión y Bautismo",
-    category: "Comunion",
+    category: "Bautismo",
     image: "/images/innova/catalog/15.webp",
     description: "Solemnidad y gracia para momentos sagrados",
     tags: ["iglesia", "bautismo", "comunión", "cruz", "espiritual", "religioso", "interior blanco", "mármol", "sagrado", "niño", "nino", "niña", "nina", "blanco", "vela", "ángel", "angel", "fe", "celebración", "celebracion", "sacramentos"],

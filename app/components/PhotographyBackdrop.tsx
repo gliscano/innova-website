@@ -56,7 +56,7 @@ export default function PhotographyBackdrop({ backdrops, showPreview }: Photogra
               width={0}
               height={0}
               sizes="100vw"
-              priority={backdrop.id === backdrops[0]?.id}
+              priority={true}
             />
           </div>
         ))}

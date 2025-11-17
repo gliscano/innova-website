@@ -3,9 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 interface SearchParams {
   searchTerm?: string
-  tags?: string[]
   folder?: string
-  collection?: string
   nextCursor?: string
   maxResults?: number
 }
@@ -35,7 +33,6 @@ interface CloudinaryResponse {
 }
 
 // Validaciones y sanitización básica para evitar inyección en expresiones de Cloudinary
-const TAG_REGEX = /^[A-Za-z0-9._-]{1,64}$/
 const FOLDER_REGEX = /^[A-Za-z0-9_\/-]{1,200}$/
 const SEARCH_TERM_REGEX = /^[A-Za-z0-9 _.-]{1,100}$/
 const CURSOR_REGEX = /^[A-Za-z0-9_.-]{1,512}$/
@@ -55,16 +52,6 @@ function sanitizeFolder(value?: string): string | undefined {
   return trimmed
 }
 
-function sanitizeTags(values?: string[]): string[] | undefined {
-  if (!values) return undefined
-  const sanitized = values
-    .filter((v): v is string => typeof v === 'string')
-    .map((v) => v.trim())
-    .filter(Boolean)
-    .filter((v) => TAG_REGEX.test(v))
-  return sanitized.length > 0 ? Array.from(new Set(sanitized)) : undefined
-}
-
 function sanitizeCursor(value?: string): string | undefined {
   if (!value) return undefined
   const trimmed = value.trim()
@@ -77,28 +64,31 @@ function sanitizeMaxResults(value?: number): number {
   return Math.min(100, Math.max(1, Math.floor(num)))
 }
 
-function buildExpression(params: { searchTerm?: string; tags?: string[]; folder?: string; collection?: string }) {
-  const { searchTerm, tags, folder, collection } = params
+function buildExpression(params: { searchTerm?: string; folder?: string }) {
+  const { searchTerm, folder } = params
   let expression = 'resource_type:image'
 
   if (searchTerm && searchTerm.trim().length > 0) {
     const term = searchTerm.trim()
     // Envolver en comillas para tratarlo como frase y evitar operadores
-    expression += ` AND "${term}" folder:${folder}*`
+    expression += ` AND "${term}"`
+    
+    // Agregar filtro de folder solo si está presente y sanitizado
+    if (folder) {
+      expression += ` AND folder:${folder}*`
+    }
+  } else if (folder) {
+    // Si solo hay folder sin searchTerm
+    expression += ` AND folder:${folder}*`
   }
-
-  /* if (tags && tags.length > 0) {
-    const tagQuery = tags.map((tag) => `tags:${tag}`).join(' OR ')
-    expression += ` AND (${tagQuery})`
-  } */
 
   return expression
 }
 
-async function runSearch(params: { searchTerm?: string; tags?: string[]; folder?: string; collection?: string; nextCursor?: string; maxResults?: number; ttlSeconds?: number }) {
-  const { searchTerm, tags, folder, collection, nextCursor, maxResults = 20, ttlSeconds } = params
+async function runSearch(params: { searchTerm?: string; folder?: string; nextCursor?: string; maxResults?: number; ttlSeconds?: number }) {
+  const { searchTerm, folder, nextCursor, maxResults = 20, ttlSeconds } = params
 
-  const expression = buildExpression({ searchTerm, tags, folder, collection })
+  const expression = buildExpression({ searchTerm, folder })
 
   let search = cloudinary.search.expression(expression).max_results(maxResults).sort_by('created_at', 'desc')
   if (nextCursor) {
@@ -181,20 +171,18 @@ export async function POST(request: NextRequest) {
 
     const searchTerm = sanitizeSearchTerm(raw.searchTerm)
     const folder = sanitizeFolder(raw.folder)
-    const tags = sanitizeTags(raw.tags)
     const nextCursor = sanitizeCursor(raw.nextCursor)
     const maxResults = sanitizeMaxResults(raw.maxResults)
 
-    if ((raw.searchTerm && !searchTerm) || (raw.folder && !folder) || (raw.tags && !tags) || (raw.nextCursor && !nextCursor)) {
+    if ((raw.searchTerm && !searchTerm) || (raw.folder && !folder) || (raw.nextCursor && !nextCursor)) {
       return NextResponse.json(
         { error: 'Parámetros inválidos' },
         { status: 400 },
       )
     }
 
-    return await runSearch({ searchTerm, tags, folder, collection: raw.collection, nextCursor, maxResults })
+    return await runSearch({ searchTerm, folder, nextCursor, maxResults })
   } catch (error) {
-    console.error('Error en búsqueda de Cloudinary:', error)
     return NextResponse.json(
       {
         error: 'Error al buscar imágenes',
@@ -226,34 +214,25 @@ export async function GET(request: NextRequest) {
 
     const searchTermRaw = sp.get('searchTerm') || undefined
     const folderRaw = sp.get('folder') || undefined
-    const collection = sp.get('collection') || undefined
     const nextCursorRaw = sp.get('nextCursor') || undefined
     const maxResultsParam = sp.get('maxResults')
     const maxResults = maxResultsParam ? sanitizeMaxResults(Number(maxResultsParam)) : 20
     const ttlParam = sp.get('ttl')
     const ttlSeconds = ttlParam ? Math.max(10, Math.min(3600, Number(ttlParam))) : 60
 
-    // Soportar múltiples formatos de tags: ?tags=a&tags=b o ?tags=a,b
-    let tags: string[] | undefined = undefined
-    const tagsMulti = sp.getAll('tags')
-    if (tagsMulti && tagsMulti.length > 0) {
-      tags = sanitizeTags(tagsMulti.flatMap((t) => t.split(',')))
-    }
-
     const searchTerm = sanitizeSearchTerm(searchTermRaw)
     const folder = sanitizeFolder(folderRaw)
     const nextCursor = sanitizeCursor(nextCursorRaw)
 
-    if ((searchTermRaw && !searchTerm) || (folderRaw && !folder) || (tagsMulti.length > 0 && !tags) || (nextCursorRaw && !nextCursor)) {
+    if ((searchTermRaw && !searchTerm) || (folderRaw && !folder) || (nextCursorRaw && !nextCursor)) {
       return NextResponse.json(
         { error: 'Parámetros inválidos' },
         { status: 400 },
       )
     }
 
-    return await runSearch({ searchTerm, tags, folder, collection, nextCursor, maxResults, ttlSeconds })
+    return await runSearch({ searchTerm, folder, nextCursor, maxResults, ttlSeconds })
   } catch (error) {
-    console.error('Error en búsqueda de Cloudinary (GET):', error)
     return NextResponse.json(
       {
         error: 'Error al buscar imágenes',

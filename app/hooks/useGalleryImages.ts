@@ -23,6 +23,12 @@ export function useGalleryImages(props: GalleryProps): UseGalleryImagesReturn {
   
   const abortControllerRef = useRef<AbortController | null>(null)
   const isLoadingMoreRef = useRef(false)
+  const propsRef = useRef(props)
+  
+  // Mantener props actualizados en ref para evitar dependencias circulares
+  useEffect(() => {
+    propsRef.current = props
+  }, [props])
 
   const searchImages = useCallback(async (isLoadMore = false) => {
     if (isLoadingMoreRef.current) return
@@ -38,15 +44,11 @@ export function useGalleryImages(props: GalleryProps): UseGalleryImagesReturn {
 
       abortControllerRef.current = new AbortController()
 
+      const currentProps = propsRef.current
       const params = new URLSearchParams()
-      if (props.searchTerm) params.set('searchTerm', props.searchTerm)
-      if (props.folder) params.set('folder', props.folder)
-      if (props.collection) params.set('collection', props.collection)
-      if (props.itemsPerPage) params.set('maxResults', String(props.itemsPerPage))
-      /* if (props.tags && props.tags.length > 0) {
-        // múltiple: repetir param o usar coma. Usamos repetido para mejor cacheabilidad
-        props.tags.forEach(tag => params.append('tags', tag))
-      } */
+      if (currentProps.searchTerm) params.set('searchTerm', currentProps.searchTerm)
+      if (currentProps.folder) params.set('folder', currentProps.folder)
+      if (currentProps.itemsPerPage) params.set('maxResults', String(currentProps.itemsPerPage))
       if (isLoadMore && nextCursor) params.set('nextCursor', nextCursor)
 
       const url = `/api/cloudinary/search?${params.toString()}`
@@ -54,12 +56,8 @@ export function useGalleryImages(props: GalleryProps): UseGalleryImagesReturn {
       const response = await fetch(url, {
         method: 'GET',
         signal: abortControllerRef.current.signal,
-        // Dejar que el runtime maneje el cache del GET; SWR puede usarse aparte si se desea
-      })
 
-      if (process.env.NODE_ENV !== 'production') {
-        console.log('gallery search response status', response.status)
-      }
+      })
 
       if (!response.ok) {
         throw new Error('Error en la búsqueda')
@@ -87,7 +85,7 @@ export function useGalleryImages(props: GalleryProps): UseGalleryImagesReturn {
       if (typeof window !== 'undefined' && window.gtag) {
         window.gtag('event', 'gallery_search', {
           event_category: 'gallery',
-          event_label: props.searchTerm || 'general',
+          event_label: currentProps.searchTerm || 'general',
           value: data.images.length,
         })
       }
@@ -96,18 +94,14 @@ export function useGalleryImages(props: GalleryProps): UseGalleryImagesReturn {
       if (err instanceof Error && err.name === 'AbortError') {
         return // Petición cancelada
       }
-      
-      console.error('Error buscando imágenes:', err)
+
       setError('Error al cargar las imágenes. Intenta de nuevo.')
       setIsLoading(false)
       isLoadingMoreRef.current = false
     }
-  }, [props, nextCursor])
+  }, [nextCursor])
 
   const loadMore = useCallback(() => {
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('gallery loadMore')
-    }
     if (isLoading || !hasMore || isLoadingMoreRef.current)
     {
       if (process.env.NODE_ENV !== 'production') {
@@ -130,8 +124,13 @@ export function useGalleryImages(props: GalleryProps): UseGalleryImagesReturn {
 
   // Búsqueda inicial y cuando cambien los parámetros
   useEffect(() => {
-    refresh()
-  }, [props.searchTerm, props.tags?.join(','), props.folder, props.collection])
+    setImages([])
+    setNextCursor(null)
+    setHasMore(true)
+    setError(null)
+    searchImages(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.searchTerm, props.folder, props.itemsPerPage])
 
   // Cleanup al desmontar
   useEffect(() => {

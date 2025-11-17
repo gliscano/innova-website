@@ -14,12 +14,6 @@ const images = [
 export default function Carousel() {
   const [currentIndex, setCurrentIndex] = useState(0)
 
-  useEffect(()=> {
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('carousel index', currentIndex)
-    }
-  }, [currentIndex])
-
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length)

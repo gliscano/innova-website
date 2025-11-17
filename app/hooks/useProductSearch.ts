@@ -4,7 +4,7 @@ import { catalogData } from "../data/catalogData"
 interface SearchMatch {
   categories: string[]
   tags: string[]
-  type: "exact" | "synonym"
+  type: "exact"
 }
 
 export const useProductSearch = () => {
@@ -17,9 +17,6 @@ export const useProductSearch = () => {
   
   // Cache para normalización de texto
   const normalizationCache = useRef(new Map<string, string>())
-  
-  // Cache para sinónimos procesados
-  const synonymCache = useRef(new Map<string, string[]>())
   
   // Construir categorías a partir de catalogData y ordenar por featured (true primero)
   const categoriesFromData = useMemo(() => {
@@ -66,9 +63,8 @@ export const useProductSearch = () => {
     const normalizedSearch = normalizeText(searchTerm)
     const matchedCategories = new Set<string>()
     const matchedTags = new Set<string>()
-    let searchType: "exact" | "synonym" = "exact"
 
-    // 1. Búsqueda exacta en todas las propiedades
+    // Búsqueda exacta en todas las propiedades
     catalogData.forEach((product) => {
       // Buscar en título
       if (normalizeText(product.title).includes(normalizedSearch)) {
@@ -110,7 +106,7 @@ export const useProductSearch = () => {
       return {
         categories: Array.from(matchedCategories),
         tags: Array.from(matchedTags),
-        type: searchType,
+        type: "exact" as const,
       }
     }
 
