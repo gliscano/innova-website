@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import type { FaqCategory, FaqItem } from "@/app/data/faqsData";
+import type { FaqCategory } from "@/app/data/faqsData";
 import { faqCategories } from "@/app/data/faqsData";
 
 type Props = {
