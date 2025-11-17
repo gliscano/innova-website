@@ -143,13 +143,13 @@ import {
                     </div>
                     <div className="w-1/4 text-center">
                       <p className="font-medium font-semibold text-gray-900 m-1 bg-gray-100 rounded-xl">
-                        ${item.price.toLocaleString()}
+                        ${item.price.toLocaleString("es-AR")}
                       </p>
                     </div>
                     {item.priceFluo && (
                       <div className="w-1/4 text-center">
                         <p className="font-medium font-semibold text-gray-900 m-1 bg-green-100 rounded-xl">
-                          ${item.priceFluo?.toLocaleString()}
+                          ${item.priceFluo?.toLocaleString("es-AR")}
                         </p>
                       </div>
                     )}
@@ -183,7 +183,7 @@ import {
                     </div>
                     <div className="ml-4">
                       <div className="text-lg font-semibold text-gray-900">
-                        ${item.price.toLocaleString()}
+                        ${item.price.toLocaleString("es-AR")}
                       </div>
                     </div>
                   </div>
@@ -213,7 +213,7 @@ import {
                     </div>
                     <div className="ml-4">
                       <div className="font-medium font-semibold text-gray-900">
-                        ${item.price.toLocaleString()}
+                        ${item.price.toLocaleString("es-AR")}
                       </div>
                     </div>
                   </div>
@@ -243,7 +243,7 @@ import {
                     </div>
                     <div className="ml-4">
                       <div className="font-medium font-semibold text-gray-900">
-                        ${item.price.toLocaleString()}
+                        ${item.price.toLocaleString("es-AR")}
                       </div>
                     </div>
                   </div>
@@ -273,7 +273,7 @@ import {
                     </div>
                     <div className="ml-4">
                       <div className="font-medium font-semibold text-gray-900">
-                        ${item.price.toLocaleString()}
+                        ${item.price.toLocaleString("es-AR")}
                       </div>
                     </div>
                   </div>
