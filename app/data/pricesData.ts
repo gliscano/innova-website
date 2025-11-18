@@ -51,10 +51,10 @@ const propertiesInnPets: Array<propertiesProductsType> = [
 ];
 
 const propertiesRooms: Array<propertiesProductsType> = [  
-  { id: "R4440-CP", width: 4.4, height: 4.0, price: 174132 },
   { id: "R4440-SP", width: 4.4, height: 2.50, price: 139331 },
-  { id: "R5450-CP", width: 5.4, height: 5.0, price: 262228 },
   { id: "R5450-SP", width: 5.4, height: 5.0, price: 169170 },
+  { id: "R4440-CP", width: 4.4, height: 4.0, price: 174132 },
+  { id: "R5450-CP", width: 5.4, height: 5.0, price: 262228 },
 ];
 
 export {
