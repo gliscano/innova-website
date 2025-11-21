@@ -7,6 +7,7 @@ import { GalleryItemProps } from '../../types/gallery'
 export default function GalleryItem({ image, onClick, index }: GalleryItemProps) {
   const [isLoaded, setIsLoaded] = useState(false)
   const [isInView, setIsInView] = useState(false)
+  const [hasError, setHasError] = useState(false)
   const imgRef = useRef<HTMLDivElement>(null)
 
   // Intersection Observer para lazy loading
@@ -33,6 +34,12 @@ export default function GalleryItem({ image, onClick, index }: GalleryItemProps)
 
   const handleImageLoad = () => {
     setIsLoaded(true)
+    setHasError(false)
+  }
+
+  const handleImageError = () => {
+    setHasError(true)
+    setIsLoaded(false)
   }
 
   const handleClick = () => {
@@ -63,7 +70,7 @@ export default function GalleryItem({ image, onClick, index }: GalleryItemProps)
     >
       {/* Contenedor de imagen con aspect ratio */}
       <div className="aspect-square relative overflow-hidden bg-gray-100">
-        {isInView && (
+        {isInView && !hasError && (
           <CldImage
             src={image.id}
             alt={`Imagen ${index + 1}`}
@@ -72,14 +79,24 @@ export default function GalleryItem({ image, onClick, index }: GalleryItemProps)
               }`}
             sizes="(max-width: 768px) 50vw, 25vw"
             onLoad={handleImageLoad}
+            onError={handleImageError}
             priority={index < 8} // Prioridad para las primeras 8 imágenes
             format="auto"
             quality="auto"
           />
         )}
 
+        {/* Mensaje de error cuando la imagen no existe */}
+        {hasError && (
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-200">
+            <div className="text-center px-4">
+              <p className="text-sm text-gray-500">Imagen no disponible</p>
+            </div>
+          </div>
+        )}
+
         {/* Skeleton mientras carga */}
-        {!isLoaded && isInView && (
+        {!isLoaded && !hasError && isInView && (
           <div className="absolute inset-0 bg-gray-200 animate-pulse" />
         )}
 

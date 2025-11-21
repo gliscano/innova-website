@@ -133,6 +133,7 @@ export default function ProductPage({ params }: ProductPageProps) {
               <div className="flex-grow">
                 <Gallery
                   searchTerm={product.category}
+                  folder={product.category}
                   tags={product.tags}
                   itemsPerPage={100}
                 />

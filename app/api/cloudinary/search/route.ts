@@ -72,14 +72,11 @@ function buildExpression(params: { searchTerm?: string; folder?: string }) {
     const term = searchTerm.trim()
     // Envolver en comillas para tratarlo como frase y evitar operadores
     expression += ` AND "${term}"`
-    
-    // Agregar filtro de folder solo si está presente y sanitizado
-    if (folder) {
-      expression += ` AND folder:${folder}*`
-    }
-  } else if (folder) {
-    // Si solo hay folder sin searchTerm
-    expression += ` AND folder:${folder}*`
+  }
+
+  // Agregar filtro de folder solo si está presente y sanitizado
+  if (folder) {
+    expression += ` OR folder:${folder}*`
   }
 
   return expression
@@ -87,7 +84,6 @@ function buildExpression(params: { searchTerm?: string; folder?: string }) {
 
 async function runSearch(params: { searchTerm?: string; folder?: string; nextCursor?: string; maxResults?: number; ttlSeconds?: number }) {
   const { searchTerm, folder, nextCursor, maxResults = 20, ttlSeconds } = params
-
   const expression = buildExpression({ searchTerm, folder })
 
   let search = cloudinary.search.expression(expression).max_results(maxResults).sort_by('created_at', 'desc')
@@ -100,7 +96,7 @@ async function runSearch(params: { searchTerm?: string; folder?: string; nextCur
   let data: CloudinaryResponse | null = null
   try {
     const url = search.to_url(ttl, nextCursor)
-    const res = await fetch(url, { cache: 'force-cache' })
+    const res = await fetch(url, { cache: 'no-store' })
     if (res.ok) {
       const json = await res.json().catch(() => null)
       if (json && Array.isArray(json.resources)) {
@@ -148,7 +144,7 @@ async function runSearch(params: { searchTerm?: string; folder?: string; nextCur
     },
     {
       headers: {
-        'Cache-Control': 'public, max-age=0, s-maxage=60, stale-while-revalidate=300',
+        'Cache-Control': 'public, max-age=86400, s-maxage=86400, stale-while-revalidate=3600',
       },
     },
   )
@@ -225,6 +221,7 @@ export async function GET(request: NextRequest) {
     const folder = sanitizeFolder(folderRaw)
     const nextCursor = sanitizeCursor(nextCursorRaw)
 
+   
     if ((searchTermRaw && !searchTerm) || (folderRaw && !folder) || (nextCursorRaw && !nextCursor)) {
       return NextResponse.json(
         { error: 'Parámetros inválidos' },

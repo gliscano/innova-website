@@ -158,12 +158,10 @@ export const useProductSearch = () => {
     // Aplicar búsqueda si hay término de búsqueda
     if (searchResult && (searchResult.categories.length > 0 || searchResult.tags.length > 0)) {
       filtered = filtered.filter((product) => {
-        // Si el producto está en las categorías encontradas
         if (searchResult.categories.includes(product.category)) {
           return true
         }
         
-        // Si el producto tiene tags que coinciden
         if (product.tags.some(tag => searchResult.tags.includes(normalizeText(tag)))) {
           return true
         }

@@ -56,7 +56,7 @@ export function useGalleryImages(props: GalleryProps): UseGalleryImagesReturn {
       const response = await fetch(url, {
         method: 'GET',
         signal: abortControllerRef.current.signal,
-
+        cache: 'default',
       })
 
       if (!response.ok) {
@@ -85,8 +85,8 @@ export function useGalleryImages(props: GalleryProps): UseGalleryImagesReturn {
       if (typeof window !== 'undefined' && window.gtag) {
         window.gtag('event', 'gallery_search', {
           event_category: 'gallery',
-          event_label: currentProps.searchTerm || 'general',
-          value: data.images.length,
+          event_label: 'gallery_search',
+          value: currentProps.searchTerm,
         })
       }
 
@@ -102,14 +102,10 @@ export function useGalleryImages(props: GalleryProps): UseGalleryImagesReturn {
   }, [nextCursor])
 
   const loadMore = useCallback(() => {
-    if (isLoading || !hasMore || isLoadingMoreRef.current)
-    {
-      if (process.env.NODE_ENV !== 'production') {
-        console.log('gallery loadMore skipped')
-      }
+    if (isLoading || !hasMore || isLoadingMoreRef.current){
       return
     }
-    
+
     isLoadingMoreRef.current = true
     searchImages(true)
   }, [isLoading, hasMore, searchImages])
