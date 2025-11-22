@@ -91,13 +91,13 @@ import {
                     </div>
                     <div className="w-1/4 text-center">
                       <p className="font-medium text-gray-900 m-1 bg-gray-100 rounded-xl">
-                        ${item.price.toLocaleString()}
+                        ${item.price.toLocaleString("es-AR")}
                       </p>
                     </div>
                     {item.priceFluo && (
                       <div className="w-1/4 text-center">
                         <p className="font-medium text-gray-900 m-1 bg-green-100 rounded-xl">
-                          ${item.priceFluo?.toLocaleString()}
+                          ${item.priceFluo?.toLocaleString("es-AR")}
                         </p>
                       </div>
                     )}
