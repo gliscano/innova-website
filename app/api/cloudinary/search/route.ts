@@ -19,6 +19,7 @@ interface CloudinaryImage {
   folder?: string
   display_name: string
   aspect_ratio: number
+  bytes?: number
   context?: {
     custom?: {
       collection?: string
@@ -121,19 +122,22 @@ async function runSearch(params: { searchTerm?: string; folder?: string; nextCur
     }
   }
 
-  const transformedImages = (data.resources || []).map((img) => ({
-    id: img.public_id,
-    url: img.secure_url,
-    width: img.width,
-    height: img.height,
-    format: img.format,
-    createdAt: img.created_at,
-    tags: img.tags || [],
-    folder: img.folder,
-    display_name: (img as CloudinaryImage).display_name,
-    aspect_ratio: (img as CloudinaryImage).aspect_ratio,
-    collection: img.context?.custom?.collection,
-  }))
+  const transformedImages = (data.resources || [])
+    .map((img) => ({
+      id: img.public_id,
+      url: img.secure_url,
+      width: img.width,
+      height: img.height,
+      format: img.format,
+      createdAt: img.created_at,
+      tags: img.tags || [],
+      folder: img.folder,
+      display_name: (img as CloudinaryImage).display_name,
+      aspect_ratio: (img as CloudinaryImage).aspect_ratio,
+      collection: img.context?.custom?.collection,
+      bytes: (img as CloudinaryImage).bytes || 0,
+    }))
+    .sort((a, b) => a.bytes - b.bytes)
 
   return NextResponse.json(
     {

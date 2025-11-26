@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { CldImage } from 'next-cloudinary'
 import { GalleryItemProps } from '../../types/gallery'
 
@@ -9,40 +9,62 @@ export default function GalleryItem({ image, onClick, index }: GalleryItemProps)
   const [isInView, setIsInView] = useState(false)
   const [hasError, setHasError] = useState(false)
   const imgRef = useRef<HTMLDivElement>(null)
+  const observerRef = useRef<IntersectionObserver | null>(null)
+  const hasStartedLoadingRef = useRef(false)
 
   // Intersection Observer para lazy loading
   useEffect(() => {
-    const observer = new IntersectionObserver(
+    // Evitar crear múltiples observers
+    if (hasStartedLoadingRef.current || isInView) {
+      return
+    }
+
+    // Limpiar observer anterior si existe
+    if (observerRef.current) {
+      observerRef.current.disconnect()
+      observerRef.current = null
+    }
+
+    observerRef.current = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting && !hasStartedLoadingRef.current) {
+          hasStartedLoadingRef.current = true
           setIsInView(true)
-          observer.disconnect()
+          if (observerRef.current) {
+            observerRef.current.disconnect()
+            observerRef.current = null
+          }
         }
       },
       {
-        rootMargin: '50px', // Cargar cuando esté a 50px de entrar en viewport
-        threshold: 0.1,
+        rootMargin: '100px', // Cargar cuando esté a 100px de entrar en viewport
+        threshold: 0.01, // Cargar tan pronto como sea visible
       }
     )
 
-    if (imgRef.current) {
-      observer.observe(imgRef.current)
+    if (imgRef.current && observerRef.current) {
+      observerRef.current.observe(imgRef.current)
     }
 
-    return () => observer.disconnect()
-  }, [])
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect()
+        observerRef.current = null
+      }
+    }
+  }, [isInView])
 
-  const handleImageLoad = () => {
+  const handleImageLoad = useCallback(() => {
     setIsLoaded(true)
     setHasError(false)
-  }
+  }, [])
 
-  const handleImageError = () => {
+  const handleImageError = useCallback(() => {
     setHasError(true)
     setIsLoaded(false)
-  }
+  }, [])
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     // Trackear clic en imagen en Google Analytics
     if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('event', 'gallery_image_click', {
@@ -52,7 +74,7 @@ export default function GalleryItem({ image, onClick, index }: GalleryItemProps)
       })
     }
     onClick()
-  }
+  }, [image.display_name, onClick])
 
   return (
     <div
@@ -77,12 +99,13 @@ export default function GalleryItem({ image, onClick, index }: GalleryItemProps)
             fill
             className={`object-cover transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'
               }`}
-            sizes="(max-width: 768px) 50vw, 25vw"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            crop="fill"
+            format="auto"
+            quality="auto:good"
             onLoad={handleImageLoad}
             onError={handleImageError}
             priority={index < 8} // Prioridad para las primeras 8 imágenes
-            format="auto"
-            quality="auto"
           />
         )}
 

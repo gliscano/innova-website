@@ -113,10 +113,11 @@ export default function GalleryModal({
                   alt={`Imagen ${initialIndex + 1}`}
                   fill
                   className="object-contain"
-                  sizes="100vw"
-                  priority
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 80vw"
+                  crop="limit"
                   format="auto"
-                  quality="auto"
+                  quality="auto:best"
+                  priority
                   onError={handleImageError}
                 />
               ) : (

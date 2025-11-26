@@ -14,13 +14,24 @@ export default function PhotographyBackdrop({ backdrops, showPreview }: Photogra
   const [currentBackdropId, setCurrentBackdropId] = useState(backdrops[0]?.id || 0)
   const timerToChangeImage = 2000;
 
-  // Precargar todas las imágenes al montar el componente
+  // Precargar solo la imagen actual y la siguiente (precarga condicional)
   useEffect(() => {
-    backdrops.forEach((backdrop) => {
+    const currentIndex = backdrops.findIndex(b => b.id === currentBackdropId)
+    if (currentIndex === -1) return
+    
+    const nextIndex = (currentIndex + 1) % backdrops.length
+    
+    // Precargar solo la actual y la siguiente
+    const imagesToPreload = [
+      backdrops[currentIndex],
+      backdrops[nextIndex]
+    ].filter(Boolean)
+    
+    imagesToPreload.forEach((backdrop) => {
       const img = new window.Image()
       img.src = backdrop.image
     })
-  }, [backdrops])
+  }, [currentBackdropId, backdrops])
 
   useEffect(() => {
     const timer = setInterval(() => {     

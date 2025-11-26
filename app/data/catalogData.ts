@@ -185,7 +185,7 @@ export const catalogData: CatalogItem[] = [
   {
     id: 14,
     title: "Disco - Recitales",
-    category: "Disco",
+    category: "Boliche",
     image: "/images/innova/catalog/9.webp",
     description: "Luces que transforman cada momento en espectáculo",
     tags: ["escenario", "luces", "show", "baile", "discoteca", "teatro", "evento", "fiesta", "colores", "boliche", "bailarines", "fiestas", "book artístico", "Humo", "Niebla", "Pista de baile", "Bola de espejos", "Túnel de luces", "Retro"],
