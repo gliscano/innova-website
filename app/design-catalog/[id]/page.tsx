@@ -8,6 +8,7 @@ import { getCatalogItemByCategory } from "@/app/utils/catalogUtils"
 import PriceList from "@/app/components/PriceList"
 import Gallery from "@/app/components/gallery/Gallery"
 import { CatalogItem } from "@/app/data/catalogData"
+import WhatsAppDropdown from "@/app/components/WhatsAppDropdown"
 
 interface ProductPageProps {
   params: Promise<{ [id: string]: string }>
@@ -258,22 +259,11 @@ export default function ProductPage({ params }: ProductPageProps) {
                 </div>
               </div>
               <div className="flex items-start flex-col gap-3">
-                <Link
-                  href={`https://wa.me/5491171142152?text=${encodeURIComponent(`Hola, estoy interesado en la categoría: ${id}. Quiero comprar o consultar.`)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full gradient-green-colors px-6 py-3 rounded-md font-medium sm:text-lg flex items-center justify-center"
-                >
-                  <Image
-                    aria-hidden
-                    src="../svg/whatsapp.svg"
-                    alt="Whatsapp icon"
-                    className="mr-2"
-                    width={20}
-                    height={20}
-                  />
-                  Quiero comprar o consultar
-                </Link>
+                <WhatsAppDropdown
+                  message={`Hola, estoy interesado en el catálogo de diseño: ${product?.title || decodeURIComponent(id)}.\nQuiero comprar o consultar sobre esta categoría.\n¿Podrían ayudarme con más información?`}
+                  buttonText="Quiero comprar o consultar"
+                  className="w-full gradient-green-colors text-black px-2 py-1 rounded-md font-medium sm:text-lg flex items-center justify-center gap-2"
+                />
               </div>
             </div>
           </div>

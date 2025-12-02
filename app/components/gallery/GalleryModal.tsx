@@ -1,10 +1,10 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import Link from 'next/link'
 import { CldImage } from 'next-cloudinary'
 import { motion, AnimatePresence } from 'framer-motion'
 import { GalleryModalProps } from '../../types/gallery'
+import WhatsAppDropdown from '../WhatsAppDropdown'
 
 export default function GalleryModal({
   isOpen,
@@ -161,15 +161,11 @@ export default function GalleryModal({
 
           {/* Footer con botón de acción */}
           <div className="mt-6 flex items-center justify-center pb-4">
-            <Link
-              href={`https://wa.me/5491171142152?text=${encodeURIComponent(`Hola, Quiero comprar o consultar sobre\nCategoría: ${category || 'diseño'}\nDiseño: ${currentImage.display_name}\nVer imagen: ${currentImage.url}`)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-6 py-3 bg-white text-black font-medium rounded-lg hover:bg-gray-100 transition-colors duration-200 hover:scale-105 transform"
-              aria-label="Solicitar información o comprar"
-            >
-              Solicitar información / Comprar
-            </Link>
+            <WhatsAppDropdown
+              buttonText="Quiero comprar o consultar"
+              message={`Hola, Quiero comprar o consultar sobre\nCategoría: ${category || 'diseño'}\nDiseño: ${currentImage.display_name}\nVer imagen: ${currentImage.url}`}
+              className="px-2 py-1 bg-white text-black font-medium rounded-lg hover:bg-gray-100 transition-colors duration-200 hover:scale-105 transform flex items-center gap-2"
+            />
           </div>
         </div>
       </motion.div>
