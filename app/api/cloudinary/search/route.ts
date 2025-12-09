@@ -82,8 +82,6 @@ async function runSearch(params: { searchTerm?: string; folder?: string; nextCur
   const { searchTerm, folder, nextCursor, maxResults = 20, ttlSeconds } = params
   const expression = buildExpression({ searchTerm, folder })
 
-  console.log('expression', expression)
-
   let search = cloudinary.search.expression(expression).max_results(maxResults).sort_by('created_at', 'desc')
   if (nextCursor) {
     search = search.next_cursor(nextCursor)
