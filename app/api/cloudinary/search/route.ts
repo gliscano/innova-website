@@ -66,18 +66,13 @@ function sanitizeMaxResults(value?: number): number {
 }
 
 function buildExpression(params: { searchTerm?: string; folder?: string }) {
-  const { searchTerm, folder } = params
+  const { folder } = params
   let expression = 'resource_type:image'
 
-  if (searchTerm && searchTerm.trim().length > 0) {
-    const term = searchTerm.trim()
-    // Envolver en comillas para tratarlo como frase y evitar operadores
-    expression += ` AND "${term}"`
-  }
-
-  // Agregar filtro de folder solo si está presente y sanitizado
+  // Si hay folder, filtrar primero por carpeta exacta
   if (folder) {
-    expression += ` OR folder:${folder}*`
+    // Usar coincidencia exacta de carpeta (sin asterisco para evitar subcarpetas)
+    expression += ` AND folder:${folder}`
   }
 
   return expression
@@ -86,6 +81,8 @@ function buildExpression(params: { searchTerm?: string; folder?: string }) {
 async function runSearch(params: { searchTerm?: string; folder?: string; nextCursor?: string; maxResults?: number; ttlSeconds?: number }) {
   const { searchTerm, folder, nextCursor, maxResults = 20, ttlSeconds } = params
   const expression = buildExpression({ searchTerm, folder })
+
+  console.log('expression', expression)
 
   let search = cloudinary.search.expression(expression).max_results(maxResults).sort_by('created_at', 'desc')
   if (nextCursor) {
@@ -97,7 +94,7 @@ async function runSearch(params: { searchTerm?: string; folder?: string; nextCur
   let data: CloudinaryResponse | null = null
   try {
     const url = search.to_url(ttl, nextCursor)
-    const res = await fetch(url, { cache: 'no-store' })
+    const res = await fetch(url, { cache: 'default' })
     if (res.ok) {
       const json = await res.json().catch(() => null)
       if (json && Array.isArray(json.resources)) {
@@ -122,7 +119,7 @@ async function runSearch(params: { searchTerm?: string; folder?: string; nextCur
     }
   }
 
-  const transformedImages = (data.resources || [])
+  let transformedImages = (data.resources || [])
     .map((img) => ({
       id: img.public_id,
       url: img.secure_url,
@@ -137,7 +134,6 @@ async function runSearch(params: { searchTerm?: string; folder?: string; nextCur
       collection: img.context?.custom?.collection,
       bytes: (img as CloudinaryImage).bytes || 0,
     }))
-    .sort((a, b) => a.bytes - b.bytes)
 
   return NextResponse.json(
     {

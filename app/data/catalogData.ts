@@ -331,7 +331,7 @@ export const catalogData: CatalogItem[] = [
     category: "Ventana",
     image: "/images/innova/catalog/23.webp",
     description: "Luz natural que ilumina la belleza de lo simple",
-    tags:  ["ventanas", "paredes blancas", "interior", "madera", "arquitectura", "lujo", "espaciosos", "minimalista", "blancos", "elegantes", "familiares", "luz natural", "espacios amplios", "fondo blanco", "iluminado", "pared con ventanas", "clásico", "clasico", "ventana con flores", "flores", "cortinas", "rosa", "blanco", "cielo"],
+    tags:  ["ventanas", "interior", "madera", "arquitectura", "lujo", "espaciosos", "minimalista", "blancos", "elegantes", "familiares", "luz natural", "espacios amplios", "fondo blanco", "iluminado", "pared con ventanas", "clásico", "clasico", "ventana con flores", "flores", "cortinas", "rosa", "blanco", "cielo"],
     featured: false,
     recommendedUse: ["retratos elegantes y sesiones familiares"],
     isFluo: false,
