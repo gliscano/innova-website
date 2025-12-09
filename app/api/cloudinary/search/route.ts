@@ -117,7 +117,7 @@ async function runSearch(params: { searchTerm?: string; folder?: string; nextCur
     }
   }
 
-  let transformedImages = (data.resources || [])
+  const transformedImages = (data.resources || [])
     .map((img) => ({
       id: img.public_id,
       url: img.secure_url,
