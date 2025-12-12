@@ -2,7 +2,7 @@ declare global {
   interface Window {
     gtag: (
       command: 'event' | 'config' | 'set' | 'js',
-      targetId: string,
+      targetIdOrEventName: string,
       config?: {
         event_category?: string
         event_label?: string

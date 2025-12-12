@@ -67,7 +67,7 @@ export default function GalleryGrid({
   return (
     <div className="space-y-6">
       {/* Grid de imágenes */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {images.map((image, index) => {
           const isLast = index === images.length - 1
           
