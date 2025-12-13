@@ -80,8 +80,8 @@ export const catalogData: CatalogItem[] = [
   },
   {
     id: 6,
-    title: "Fachadas",
-    category: "Fachadas",
+    title: "Fachada",
+    category: "Fachada",
     image: "/images/innova/catalog/14.webp",
     description: "Arquitectura que cuenta historias únicas",
     tags: ["rústico", "rustico", "vintage", "boho", "madera", "decoración", "puertas", "velas", "seco", "campestre", "arquitectura", "urbano", "fachadas", "entrada", "ventana", "casa", "pared exterior", "hogar", "construcción", "construccion", "decorado"],

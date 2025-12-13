@@ -57,7 +57,7 @@ export default function GalleryItem({ image, onClick, index }: GalleryItemProps)
             gravity="auto"
             format="auto"
             quality="auto"
-            sizes="(max-width: 768px) 50vw, 25vw"
+            sizes="(max-width: 639px) 50vw, 25vw"
             priority={isPriority}
             loading={isPriority ? 'eager' : 'lazy'}
             onLoad={handleImageLoad}
