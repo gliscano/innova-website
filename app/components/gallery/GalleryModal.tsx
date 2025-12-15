@@ -111,12 +111,13 @@ export default function GalleryModal({
                 <CldImage
                   src={currentImage.id}
                   alt={`Imagen ${initialIndex + 1}`}
-                  fill
-                  className="object-contain"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 80vw"
+                  width={1600}
+                  height={1200}
+                  className="object-contain max-w-full max-h-full"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1280px) 90vw, 80vw"
                   crop="limit"
                   format="auto"
-                  quality="auto:best"
+                  quality="auto:good"
                   priority
                   onError={handleImageError}
                 />

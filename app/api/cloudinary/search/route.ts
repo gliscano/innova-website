@@ -108,7 +108,7 @@ async function runSearch(params: { searchTerm?: string; folder?: string; nextCur
   }
 
   // 2) Fallback a Admin API si no hay datos válidos desde CDN
-  if (!data || (data && data.resources.length === 0) ) {
+  if (!data || (data && data.resources.length === 0)) {
     const searchResult = await search.execute()
     data = {
       resources: searchResult.resources || [],
@@ -219,7 +219,7 @@ export async function GET(request: NextRequest) {
     const folder = sanitizeFolder(folderRaw)
     const nextCursor = sanitizeCursor(nextCursorRaw)
 
-   
+
     if ((searchTermRaw && !searchTerm) || (folderRaw && !folder) || (nextCursorRaw && !nextCursor)) {
       return NextResponse.json(
         { error: 'Parámetros inválidos' },
