@@ -61,10 +61,10 @@ export default function GalleryModal({
       >
         <div
           ref={modalRef}
-          className="relative w-full h-full max-w-7xl max-h-full flex flex-col"
+          className="relative w-full h-full max-w-7xl flex flex-col overflow-hidden"
         >
           {/* Header con información */}
-          <div className="flex items-center justify-between text-white mb-4">
+          <div className="flex items-center justify-between text-white mb-4 flex-shrink-0">
             <div className="flex items-center space-x-4">
               <h2 className="text-lg font-medium">
                 {currentImage.display_name}
@@ -86,7 +86,7 @@ export default function GalleryModal({
           </div>
 
           {/* Contenedor principal de la imagen */}
-          <div className="flex-1 relative flex items-center justify-center">
+          <div className="flex-1 relative flex items-center justify-center min-h-0 overflow-hidden">
             {/* Botón anterior */}
             <button
               onClick={() => goToPrevious()}
@@ -105,7 +105,7 @@ export default function GalleryModal({
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ duration: 0.3 }}
-              className="relative w-full h-full flex items-center justify-center"
+              className="relative w-full h-full flex items-center justify-center p-4"
             >
               {!hasError ? (
                 <CldImage
@@ -113,7 +113,7 @@ export default function GalleryModal({
                   alt={`Imagen ${initialIndex + 1}`}
                   width={1600}
                   height={1200}
-                  className="object-contain max-w-full max-h-full"
+                  className="object-contain w-auto h-auto max-w-full max-h-full"
                   sizes="(max-width: 768px) 100vw, (max-width: 1280px) 90vw, 80vw"
                   crop="limit"
                   format="auto"
@@ -145,7 +145,7 @@ export default function GalleryModal({
           </div>
 
           {/* Footer con navegación */}
-          <div className="mt-4 flex items-center justify-center space-x-2">
+          <div className="mt-4 flex items-center justify-center space-x-2 flex-shrink-0">
             {images.map((_, index) => (
               <button
                 key={index}
@@ -161,7 +161,7 @@ export default function GalleryModal({
           </div>
 
           {/* Footer con botón de acción */}
-          <div className="mt-6 flex items-center justify-center pb-4">
+          <div className="mt-6 flex items-center justify-center pb-4 flex-shrink-0">
             <WhatsAppDropdown
               buttonText="Quiero comprar o consultar"
               message={`Hola, Quiero comprar o consultar sobre\nCategoría: ${category || 'diseño'}\nDiseño: ${currentImage.display_name}\nVer imagen: ${currentImage.url}`}
