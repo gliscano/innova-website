@@ -55,7 +55,7 @@ export default function GalleryItem({ image, onClick, index }: GalleryItemProps)
             alt={`Imagen ${index + 1}`}
             crop="fill"
             gravity="auto"
-            format="auto"
+            format="webp"
             quality="auto"
             sizes="(max-width: 639px) 50vw, 25vw"
             priority={isPriority}

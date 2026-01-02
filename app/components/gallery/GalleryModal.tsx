@@ -116,7 +116,7 @@ export default function GalleryModal({
                   className="object-contain w-auto h-auto max-w-full max-h-full"
                   sizes="(max-width: 768px) 100vw, (max-width: 1280px) 90vw, 80vw"
                   crop="limit"
-                  format="auto"
+                  format="webp"
                   quality="auto:good"
                   priority
                   onError={handleImageError}
