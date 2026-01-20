@@ -3,22 +3,20 @@ import PhotographyBackdrop from './PhotographyBackdrop'
 const backdrops = [
   { 
     id: 0,
-    name: 'Navidad Backdrop',
-    image: '/images/innova/banners-navidad-desktop.jpg',
+    name: 'Pascuas Backdrop',
+    image: '/images/innova/background-pascuas.jpg',
     title: '',
     subtitle: ''
-  },
-  { 
+  },{ 
     id: 1,
-    name: 'Navidad Backdrop',
-    image: '/images/innova/banner_linea-newborn.jpg',
+    name: 'Romantico Backdrop',
+    image: '/images/innova/background-romantico.jpg',
     title: '',
     subtitle: ''
-  },
-  { 
+  },{ 
     id: 2,
-    name: 'Navidad Backdrop',
-    image: '/images/innova/banner_navidad_arbol.jpg',
+    name: 'Professional Backdrop',
+    image: '/images/innova/background-profesional.jpg',
     title: '',
     subtitle: ''
   },
@@ -26,9 +24,9 @@ const backdrops = [
 
 export default function Hero() {
   return (
-    <div className="relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20">
-      <div className="mx-auto max-w-7xl">
-        <div className="relative w-full h-[9.2rem] lg:h-[25rem] overflow-hidden">
+    <div className="relative isolate overflow-hidden">
+      <div className="mx-auto">
+        <div className="relative w-full h-[10.2rem] lg:h-[21rem] overflow-hidden">
           <PhotographyBackdrop backdrops={backdrops} showPreview={false} />
         </div>
       </div>

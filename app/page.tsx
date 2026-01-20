@@ -7,13 +7,15 @@ import ProductCategoryMenu from './components/ProductCategoryMenu'
 import PriceList from './components/PriceList'
 import DesignCatalog from './components/gallery/DesignCatalog'
 import HeroProps from './components/HeroProps'
+import { HeroGallery } from './components/hero/HeroGallery'
 
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-grow">
-        <Hero />
+        {/* <Hero /> */}
+        <HeroGallery />
         <AnimatedCards />
         <DesignCatalog />
         <PriceList />

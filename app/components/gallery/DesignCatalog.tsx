@@ -17,15 +17,15 @@ export default function InnovaCatalog() {
   
   const {
     searchTerm,
-    setSearchTerm,
     selectedCategory,
-    setSelectedCategory,
     sortBy,
-    setSortBy,
     isSearching,
     searchResultType,
     categoriesFromData,
     filteredProducts,
+    setSearchTerm,
+    setSelectedCategory,
+    setSortBy,
     clearFilters,
     normalizeText
   } = useProductSearch()
@@ -84,7 +84,7 @@ export default function InnovaCatalog() {
   }
 
   return (
-    <div className="min-h-screen christmas-background bg-opacity-50">
+    <div className="min-h-screen bg-opacity-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
         <h2 className="py-2 text-2xl copperplate-bold-font tracking-tight text-gray-900 sm:text-4xl lg:col-span-2">
           Catálogo de Diseños

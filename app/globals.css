@@ -4,18 +4,14 @@
 
 body {
   /* Custom gradient - Download PNG */
-  background: linear-gradient(91deg, rgb(79.2% 72.2% 58.8%), rgb(100% 100% 100%), rgb(87.1% 86.3% 85.5%), rgb(79.2% 72.2% 58.8%))
-}
-
-.christmas-background {
-  /* Fallback: */
-  background: linear-gradient(92deg, #7bd97b, #a8e6a1, #e8f0b3, #f7b3b3, #e38a8a);
+  background: linear-gradient(91deg, #cab896, #ffffff, #dedcda, #cab896)
 }
 
 .header-innova {
   position: relative;
   width: 100%;
   z-index: 50;
+  background-color: #dedcda;
 }
 
 .navbar-background {
@@ -134,10 +130,14 @@ hero-front {
 
 .gradient-orange-colors {
   background-image: linear-gradient(to right top, #ff7a6a, #ff8965, #ff9862, #ffa661, #fdb563, #fcb966, #fbbe69, #fac26c, #fcbe6e, #fdb970, #feb572, #ffb175);
-  background-color: #FFB175;
+  background-color: #ffb175;
 }
 
 .gradient-green-colors {
   background-image: linear-gradient(to right bottom, #a0d94a, #a3de4b, #a6e24d, #aae74e, #adec50, #aae84e, #a6e34d, #a3df4b, #98d046, #8ec241, #83b43c, #79a637);
   background-color: #365902;
+}
+
+.gradient-brown-colors {
+  background-color: #dedcda;
 }

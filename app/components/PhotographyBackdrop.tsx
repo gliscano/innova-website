@@ -12,7 +12,7 @@ type PhotographyBackdropProps = {
 
 export default function PhotographyBackdrop({ backdrops, showPreview }: PhotographyBackdropProps) {
   const [currentBackdropId, setCurrentBackdropId] = useState(backdrops[0]?.id || 0)
-  const timerToChangeImage = 2000;
+  const timerToChangeImage = 4000;
 
   // Precargar solo la imagen actual y la siguiente (precarga condicional)
   useEffect(() => {
@@ -64,11 +64,10 @@ export default function PhotographyBackdrop({ backdrops, showPreview }: Photogra
             <Image
               src={backdrop.image}
               alt={backdrop.name}
-              className="w-full h-full object-contain"
+              className="w-full h-full object-cover"
               width={0}
               height={0}
               sizes="100vw"
-              priority={true}
             />
           </div>
         ))}
@@ -97,10 +96,12 @@ export default function PhotographyBackdrop({ backdrops, showPreview }: Photogra
           ))}
         </div>
       )}
+      {currentBackdrop.title && (
       <div className="absolute top-8 left-1/2 transform -translate-x-3/4 text-left">
-        <h1 className="text-4xl font-bold text-white mb-4 opacity-75">{currentBackdrop.title}</h1>
-        <p className="text-xl text-gray-200">{currentBackdrop.subtitle}</p>
-      </div>
+          <h1 className="text-4xl font-bold text-white mb-4 opacity-75">{currentBackdrop.title}</h1>
+          <p className="text-xl text-gray-200">{currentBackdrop.subtitle}</p>
+        </div>
+      )}
     </div>
   )
 }
