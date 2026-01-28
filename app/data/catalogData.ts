@@ -80,7 +80,7 @@ export const catalogData: CatalogItem[] = [
   },
   {
     id: 7,
-    title: "Gender Reveal y Baby Shower",
+    title: "Baby Shower",
     category: "BabyShower",
     image: "/images/innova/catalog/10.webp",
     description: "Celebra la llegada de la vida con magia y ternura",

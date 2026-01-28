@@ -86,9 +86,16 @@ export default function InnovaCatalog() {
   return (
     <div className="min-h-screen bg-opacity-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-        <h2 className="py-2 text-2xl copperplate-bold-font tracking-tight text-gray-900 sm:text-4xl lg:col-span-2">
+        <div className="mt-6 catalog-eyebrow">
+          Diseños pensados para transformar cualquier espacio.
+        </div>
+        <h2 className="py-2 text-xl copperplate-bold-font catalog-title sm:text-4xl lg:col-span-2">
           Catálogo de Diseños
         </h2>
+        <div className="mb-24 catalog-eyebrow">
+          Elegí un diseño y hacelo parte de tu próxima historia.
+        </div>
+        <div className="catalog-divider" />
         <div className="max-h-72 relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20">
           {/* Filtros y búsqueda */}
           <div className={`mb-4 space-y-4 ${isDropdownOpen ? 'h-72' : ''}`}>
@@ -167,7 +174,7 @@ export default function InnovaCatalog() {
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
               <div className="flex flex-wrap flex-row gap-4 items-center">
                 <span className="text-sm text-black">
-                  {`${filteredProducts.length} Catálogo${filteredProducts.length > 1 ? "s" : ""} | Ordenar por:`}
+                  {`🔍 Descubrí ${filteredProducts.length} Catálogo${filteredProducts.length > 1 ? "s" : ""} listos para usar | Ordenar por:`}
                 </span>
                 <select
                   id="sort-select"
@@ -208,7 +215,7 @@ export default function InnovaCatalog() {
           <div 
             role="grid"
             aria-label={`Catálogo de diseños fotográficos. ${filteredProducts.length} productos encontrados`}
-            className="px-2 grid gap-3 grid-cols-2 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4"
+            className="mt-8 px-2 grid gap-3 grid-cols-2 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4"
           >
             {filteredProducts.map((product, index) => (
               <Link
@@ -256,7 +263,7 @@ export default function InnovaCatalog() {
                     aria-label={`Abrir catálogo ${product.title}`}
                     className="w-full mt-3 gradient-orange-colors text-black px-4 py-2 rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
-                    Catálogo
+                    Ver diseños
                   </button>
                 </div>
               </Link>
