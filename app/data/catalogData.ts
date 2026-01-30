@@ -29,7 +29,7 @@ export const catalogData: CatalogItem[] = [
   {
     id: 33,
     title: "San Valentín",
-    category: "SanValentin",
+    category: "san_valentin",
     image: "/images/innova/catalog/33.webp",
     description: "Amor en cada detalle que ilumina el corazón",
     tags: ["san valentin", "amor", "regalo", "regalos", "corazón", "corazones", "rosas", "rosas rojas", "rosas blancas", "rosas rosadas", "rosas rojas", "rosas blancas", "rosas rosadas", "rosas rojas", "rosas blancas", "rosas rosadas"],

@@ -127,7 +127,7 @@ export function HeroGallery() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="flex gap-8 mt-12 pt-8 border-t border-[#cab896]/40"
+                className="flex gap-8 mt-6 pt-4 border-t border-[#cab896]/40"
               >
                 {content.stats.map((stat, index) => (
                   <div key={index}>
@@ -142,7 +142,7 @@ export function HeroGallery() {
           {/* Right Gallery Grid with Animated Images */}
           <div className="grid grid-cols-3 gap-3 lg:gap-4">
             {/* Column 1 */}
-            <div className="flex flex-col gap-3 lg:gap-4 pt-16">
+            <div className="flex flex-col gap-3 lg:gap-4 pt-12">
               {column1.map((image, index) => (
                 <GalleryCard
                   key={image.src}
@@ -164,7 +164,7 @@ export function HeroGallery() {
             </div>
 
             {/* Column 3 */}
-            <div className="flex flex-col gap-3 lg:gap-4 pt-24">
+            <div className="flex flex-col gap-3 lg:gap-4 pt-16">
               {column3.map((image, index) => (
                 <GalleryCard
                   key={image.src}
