@@ -108,7 +108,7 @@ import {
 
             {/* Wide Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="p-3 gradient-yellow-gold-colors">
+              <div className="p-3 gradient-gold-colors">
                 <h3 className="text-xl font-bold text-gray-900">Fondos Grandes (Ancho: 2.90m)</h3>
                 <p className="mt-1 text-sm text-yellow-900">Ideales para grupos, familias y decoración de eventos</p>
               </div>
