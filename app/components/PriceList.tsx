@@ -156,7 +156,7 @@ import {
             </div>
             {/* Room Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="p-3 bg-red-800">
+              <div className="p-3 gradient-rose-gold-colors">
                 <h3 className="text-xl font-bold text-white">Fondos Room</h3>
                 <p className="mt-1 text-sm text-white">Vive una sesión con perspectivas diferentes  </p>
               </div>
@@ -186,7 +186,7 @@ import {
             </div>
             {/* InnPets Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="p-3 gradient-brown-colors">
+              <div className="p-3 gradient-rose-gold-colors">
                 <h3 className="text-xl font-bold text-gray-900">Fondos para Mascotas - InnPets</h3>
                 <p className="mt-1 text-sm text-gray-900">Los mejores diseños para peluditos de la casa</p>
               </div>
@@ -216,7 +216,7 @@ import {
             </div>
             {/* Hybrid Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="p-3 gradient-brown-colors">
+              <div className="p-3 gradient-rose-gold-colors">
                 <h3 className="text-xl font-bold text-gray-900">Fondos Hibridos (Tela y Piso en Símil de neoprene)</h3>
                 <p className="mt-1 text-sm text-gray-900">Combinamos las mejores texturas para lograr una experiencia superior.</p>
               </div>
@@ -246,7 +246,7 @@ import {
             </div>
             {/* floor Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="p-3 gradient-brown-colors">
+              <div className="p-3 gradient-rose-gold-colors">
                 <h3 className="text-xl font-bold text-gray-900">Pisos y Alfombras</h3>
                 <p className="mt-1 text-sm text-gray-900">Proporciona una superficie suave y flexible </p>
               </div>
