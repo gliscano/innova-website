@@ -96,7 +96,7 @@ import {
                     </div>
                     {item.priceFluo && (
                       <div className="w-1/4 text-center">
-                        <p className="font-semibold m-1 text-teal-700 rounded-xl">
+                        <p className="font-medium m-1 text-teal-700 rounded-xl">
                           ${item.priceFluo?.toLocaleString("es-AR")}
                         </p>
                       </div>
@@ -108,9 +108,9 @@ import {
 
             {/* Wide Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="p-3 gradient-rose-gold-colors">
+              <div className="p-3 gradient-yellow-gold-colors">
                 <h3 className="text-xl font-bold text-gray-900">Fondos Grandes (Ancho: 2.90m)</h3>
-                <p className="mt-1 text-sm text-gray-900">Ideales para grupos, familias y decoración de eventos</p>
+                <p className="mt-1 text-sm text-yellow-900">Ideales para grupos, familias y decoración de eventos</p>
               </div>
               <div className="divide-y divide-gray-200">
                 <div className="flex items-center py-2 px-4 font-medium text-gray-900 bg-gray-100 hover:bg-gray-100 transition-colors">
@@ -145,7 +145,7 @@ import {
                     </div>
                     {item.priceFluo && (
                       <div className="w-1/4 text-center">
-                        <p className="font-semibold m-1 text-teal-700 rounded-xl">
+                        <p className="font-medium m-1 text-teal-700 rounded-xl">
                           ${item.priceFluo?.toLocaleString("es-AR")}
                         </p>
                       </div>
@@ -176,7 +176,7 @@ import {
                       </div>
                     </div>
                     <div className="ml-4">
-                      <div className="font-semibold text-gray-900">
+                      <div className="font-medium text-gray-900">
                         ${item.price.toLocaleString("es-AR")}
                       </div>
                     </div>
@@ -206,7 +206,7 @@ import {
                       </div>
                     </div>
                     <div className="ml-4">
-                      <div className="font-semibold text-gray-900">
+                      <div className="font-medium text-gray-900">
                         ${item.price.toLocaleString("es-AR")}
                       </div>
                     </div>
@@ -236,7 +236,7 @@ import {
                       </div>
                     </div>
                     <div className="ml-4">
-                      <div className="text-lg font-semibold text-gray-900">
+                      <div className="text-lg font-medium text-gray-900">
                         ${item.price.toLocaleString("es-AR")}
                       </div>
                     </div>
@@ -266,7 +266,7 @@ import {
                       </div>
                     </div>
                     <div className="ml-4">
-                      <div className="font-semibold text-gray-900">
+                      <div className="font-medium text-gray-900">
                         ${item.price.toLocaleString("es-AR")}
                       </div>
                     </div>
