@@ -43,7 +43,7 @@ body {
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
   width: calc(100% - 32px);
-  margin: -40px 16px 0 16px;
+  margin: -25px 16px 0 16px;
   position: relative;
   z-index: 2;
 }
@@ -57,7 +57,7 @@ hero-front {
 
 /* ********** Catalogo de diseños ********** */
 .catalog-eyebrow {
-  font-size: 14px;
+  font-size: 12px;
   letter-spacing: .10em;
   text-transform: uppercase;
   color: rgb(80, 60, 40);

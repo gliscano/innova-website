@@ -84,7 +84,7 @@ export default function InnovaCatalog() {
   }
 
   return (
-    <div className="min-h-screen bg-opacity-50">
+    <section id="catalog" className="min-h-screen bg-opacity-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
         <div className="mt-6 catalog-eyebrow">
           Diseños pensados para transformar cualquier espacio.
@@ -174,7 +174,7 @@ export default function InnovaCatalog() {
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
               <div className="flex flex-wrap flex-row gap-4 items-center">
                 <span className="text-sm text-black">
-                  {`🔍 Descubrí ${filteredProducts.length} Catálogo${filteredProducts.length > 1 ? "s" : ""} listos para usar | Ordenar por:`}
+                  🔍 Descubrí <span className="font-bold">{filteredProducts.length}</span> Catálogo{filteredProducts.length > 1 ? "s" : ""} listos para usar | Ordenar por:
                 </span>
                 <select
                   id="sort-select"
@@ -311,6 +311,6 @@ export default function InnovaCatalog() {
           </div>
         )}
       </div>
-    </div>
+    </section>
   )
 }

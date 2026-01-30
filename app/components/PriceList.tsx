@@ -14,25 +14,25 @@ import {
     {
       title: 'Retratos Individuales',
       size: '1.5m × 2.0m',
-      description: 'Ideal para fotografía de bebes, retrato individual y decoración de tiendas',
+      description: 'Ideal para fotografía de bebés, retratos individuales y decoración de espacios pequeños',
       image: '/images/innova/child-size.png',
     },
     {
       title: 'Parejas',
-      size: '1.5m × 2.5m',
-      description: 'Perfecto para sesiones de pareja, fotos de pie o retratos de dos personas',
+      size: '2.0m × 2.5m',
+      description: 'Perfecto para sesiones de pareja, fotos de pie o retratos de dos personas con encuadres de cuerpo completo',
       image: '/images/innova/backdrops-couples-size.png',
     },
     {
       title: 'Grupos Pequeños',
       size: '2.9m × 3.0m',
-      description: 'Recomendado para para familias pequeñas o grupos de 3-4 personas y decoración de eventos',
+      description: 'Recomendado para familias pequeñas o grupos de 3-4 personas, con mayor profundidad de escena',
       image: '/images/innova/backdrops-small-size.png',
     },
     {
       title: 'Grupos Grandes',
-      size: '2.9m × 4.0m',
-      description: 'Recomendado para familias grandes o grupos numerosos y decoración de eventos',
+      size: '2.9m × 5.0m',
+      description: 'Recomendado para familias grandes o grupos numerosos y decoración de eventos permitiendo encuadres amplios y mayor separación del fondo',
       image: '/images/innova/backdrops-large-size.png',
     },
   ]
@@ -69,10 +69,10 @@ import {
                     <p>Dimensiones</p>
                   </div>
                   <div className="w-1/4 text-center">
-                    <p>Estándar</p>
+                    <p>Color Vivo HD</p>
                   </div>
                   <div className="w-1/4 text-center">
-                    <p>Efecto Neon</p>
+                    <p>Neon (Fluo)</p>
                   </div>
                 </div>
                 {standardBackdrops.current.map((item, index) => (
@@ -90,13 +90,13 @@ import {
                       </div>
                     </div>
                     <div className="w-1/4 text-center">
-                      <p className="font-medium text-gray-900 m-1 bg-gray-100 rounded-xl">
+                      <p className="font-medium text-blue-700 m-1 rounded-xl">
                         ${item.price.toLocaleString("es-AR")}
                       </p>
                     </div>
                     {item.priceFluo && (
                       <div className="w-1/4 text-center">
-                        <p className="font-medium text-gray-900 m-1 bg-green-100 rounded-xl">
+                        <p className="font-semibold m-1 text-teal-700 rounded-xl">
                           ${item.priceFluo?.toLocaleString("es-AR")}
                         </p>
                       </div>
@@ -118,10 +118,10 @@ import {
                     <p>Dimensiones</p>
                   </div>
                   <div className="w-1/4 text-center">
-                    <p>Estándar</p>
+                    <p>Color Vivo HD</p>
                   </div>
                   <div className="w-1/4 text-center">
-                    <p>Efecto Neon</p>
+                    <p>Neon (Fluo)</p>
                   </div>
                 </div>
                 {wideBackdrops.current.map((item, index) => (
@@ -139,13 +139,13 @@ import {
                       </div>
                     </div>
                     <div className="w-1/4 text-center">
-                      <p className="font-medium text-gray-900 m-1 bg-gray-100 rounded-xl">
+                      <p className="font-medium text-blue-700 m-1 rounded-xl">
                         ${item.price.toLocaleString("es-AR")}
                       </p>
                     </div>
                     {item.priceFluo && (
                       <div className="w-1/4 text-center">
-                        <p className="font-semibold text-gray-900 m-1 bg-green-100 rounded-xl">
+                        <p className="font-semibold m-1 text-teal-700 rounded-xl">
                           ${item.priceFluo?.toLocaleString("es-AR")}
                         </p>
                       </div>
@@ -186,9 +186,9 @@ import {
             </div>
             {/* InnPets Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="p-3 bg-teal-500">
-                <h3 className="text-xl font-bold text-teal-900">Fondos para Mascotas - InnPets</h3>
-                <p className="mt-1 text-sm text-teal-950">Los mejores diseños para peluditos de la casa</p>
+              <div className="p-3 gradient-brown-colors">
+                <h3 className="text-xl font-bold text-gray-900">Fondos para Mascotas - InnPets</h3>
+                <p className="mt-1 text-sm text-gray-900">Los mejores diseños para peluditos de la casa</p>
               </div>
               <div className="divide-y divide-gray-200">
                 {propertiesInnPets.map((item, index) => (
@@ -216,9 +216,9 @@ import {
             </div>
             {/* Hybrid Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="p-3 bg-pink-900">
-                <h3 className="text-xl font-bold text-gray-100">Fondos Hibridos (Tela y Piso en Símil de neoprene)</h3>
-                <p className="mt-1 text-sm text-gray-100">Combinamos las mejores texturas para lograr una experiencia superior.</p>
+              <div className="p-3 gradient-brown-colors">
+                <h3 className="text-xl font-bold text-gray-900">Fondos Hibridos (Tela y Piso en Símil de neoprene)</h3>
+                <p className="mt-1 text-sm text-gray-900">Combinamos las mejores texturas para lograr una experiencia superior.</p>
               </div>
               <div className="divide-y divide-gray-200">
                 {propertiesHybridBackdrops.map((item, index) => (
@@ -246,9 +246,9 @@ import {
             </div>
             {/* floor Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="p-3 bg-yellow-700">
-                <h3 className="text-xl font-bold text-white">Pisos y Alfombras</h3>
-                <p className="mt-1 text-sm text-white">Proporciona una superficie suave y flexible </p>
+              <div className="p-3 gradient-brown-colors">
+                <h3 className="text-xl font-bold text-gray-900">Pisos y Alfombras</h3>
+                <p className="mt-1 text-sm text-gray-900">Proporciona una superficie suave y flexible </p>
               </div>
               <div className="divide-y divide-gray-200">
                 {propertiesFloor.map((item, index) => (

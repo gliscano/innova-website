@@ -34,7 +34,7 @@ const cards: Array<cardsProps> = [
 export default function ProductCategoryMenu() {
 
   return (
-    <div className="bg-yellow-gold">
+    <div className="gradient-rose-gold-colors">
       <div className="max-w-7xl mx-auto py-6 px-8 sm:px-6 lg:py-8 lg:px-8 flex flex-col justify-center">
         <h1 className='copperplate-bold-font text-gray-900 sm:text-2xl text-center pb-4'>
           Productos en Stock para entrega inmediata!

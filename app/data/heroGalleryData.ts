@@ -20,61 +20,36 @@ export interface ImageSet {
   height: string
 }
 
-// Content sets for 3 iterations
 export const contentSets: ContentSet[] = [
   {
-    title: "Creatividad sin límites:",
+    title: "Creatividad sin límites",
     highlight: "Diseño y Tecnología",
     subtitle: "que elevan tus producciones",
-    description: "Fondos fotográficos y diseños digitales en alta definición, pensados para inspirar y destacar.",
-    buttonText: "Quiero ver los diseños!",
+    description: "Fondos fotográficos y Diseños digitales creados para inspirar.",
+    buttonText: "Ver Diseños",
     stats: [
       { value: "50+", label: "Estilos artísticos" },
-      { value: "3K+", label: "Diseños disponibles" },
-      { value: "300dpi", label: "Alta definición" },
+      { value: "10K+", label: "Diseños disponibles" },
+      { value: "RGB", label: "Colores verdaderos" },
     ],
-    gradientFrom: "from-blue-400",
-    gradientVia: "via-indigo-400",
-    gradientTo: "to-blue-500",
-  },
-  {
-    title: "Diseños digitales y",
-    highlight: "Fondos fotográficos",
-    subtitle: "creados para inspirar",
-    description: "Escenografías para producciones y eventos en alta definición, desarrolladas con una mirada creativa.",
-    buttonText: "Crear ahora",
-    stats: [
-      { value: "50+", label: "Estilos artísticos" },
-      { value: "4K", label: "Resolución máxima" },
-      { value: "< 10s", label: "Tiempo de generación" },
-    ],
-    gradientFrom: "from-purple-400",
-    gradientVia: "via-pink-400",
-    gradientTo: "to-rose-500",
+    gradientFrom: "from-blue-500",
+    gradientVia: "via-teal-500 ",
+    gradientTo: "to-teal-700",
   }
 ]
 
-// Image sets for 2 iterations
+// Image sets for iterations
 export const imageSets: ImageSet[][] = [
   // Set 1
   [
-    { src: "/images/innova/hero/set_01/01.png", alt: "Dunas del desierto", icon: Camera, column: 1, height: "h-48" },
-    { src: "/images/innova/hero/set_01/02.png", alt: "Libélula iridiscente", icon: Sparkles, column: 1, height: "h-72" },
-    { src: "/images/innova/hero/set_01/03.png", alt: "Esfera flotante", icon: Palette, column: 1, height: "h-56" },
-    { src: "/images/innova/hero/set_01/04.png", alt: "Retrato holográfico", icon: Wand2, column: 2, height: "h-64" },
-    { src: "/images/innova/hero/set_01/05.png", alt: "Zapatilla de cristal", icon: Layers, column: 2, height: "h-56" },
-    { src: "/images/innova/hero/set_01/06.png", alt: "Formas orgánicas", icon: Brush, column: 2, height: "h-52" },
-    { src: "/images/innova/hero/set_01/07.jpg", alt: "Hojas abstractas", icon: Palette, column: 3, height: "h-44" },
-    { src: "/images/innova/hero/set_01/08.png", alt: "Pétalos flotantes", icon: Sparkles, column: 3, height: "h-52" },
-    { src: "/images/innova/hero/set_01/09.png", alt: "Paisaje de nubes", icon: Camera, column: 3, height: "h-64" },
-    { src: "/images/innova/hero/neon-city.jpg", alt: "Ciudad neón", icon: Zap, column: 1, height: "h-52" },
-    { src: "/images/innova/hero/crystal-butterfly.jpg", alt: "Mariposa de cristal", icon: Sparkles, column: 1, height: "h-64" },
-    { src: "/images/innova/hero/liquid-chrome.jpg", alt: "Metal líquido", icon: Layers, column: 1, height: "h-56" },
-    { src: "/images/innova/hero/cosmic-eye.jpg", alt: "Ojo cósmico", icon: Star, column: 2, height: "h-56" },
-    { src: "/images/innova/hero/floating-bonsai.jpg", alt: "Bonsái flotante", icon: Palette, column: 2, height: "h-68" },
-    { src: "/images/innova/hero/aurora-mountains.jpg", alt: "Aurora boreal", icon: Camera, column: 2, height: "h-48" },
-    { src: "/images/innova/hero/robot-portrait.jpg", alt: "Retrato robot", icon: Wand2, column: 3, height: "h-60" },
-    { src: "/images/innova/hero/neon-jellyfish.jpg", alt: "Medusa neón", icon: Sparkles, column: 3, height: "h-52" },
-    { src: "/images/innova/hero/origami-bird.jpg", alt: "Origami", icon: Brush, column: 3, height: "h-48" },
+    { src: "/images/innova/hero/01.webp", alt: "", icon: Camera, column: 1, height: "h-72" },
+    { src: "/images/innova/hero/02.webp", alt:"", icon: Sparkles, column: 1, height: "h-64" },
+    { src: "/images/innova/hero/03.webp", alt:"", icon: Palette, column: 1, height: "h-56" },
+    { src: "/images/innova/hero/04.webp", alt:"", icon: Wand2, column: 2, height: "h-64" },
+    { src: "/images/innova/hero/05.webp", alt: "", icon: Layers, column: 2, height: "h-56" },
+    { src: "/images/innova/hero/06.webp", alt:"", icon: Brush, column: 2, height: "h-52" },
+    { src: "/images/innova/hero/07.webp", alt:"", icon: Palette, column: 3, height: "h-56" },
+    { src: "/images/innova/hero/08.webp", alt:"", icon: Sparkles, column: 3, height: "h-52" },
+    { src: "/images/innova/hero/09.webp", alt: "", icon: Camera, column: 3, height: "h-64" },
   ]
 ]

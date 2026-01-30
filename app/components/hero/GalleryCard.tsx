@@ -40,6 +40,7 @@ export const GalleryCard = React.memo(function GalleryCard({ image, delay = 0 }:
         src={image.src || "/placeholder.svg"}
         alt={image.alt}
         fill
+        sizes="(max-width: 1024px) 33vw, 16vw"
         className="object-cover transition-transform duration-500 group-hover:scale-110"
       />
 

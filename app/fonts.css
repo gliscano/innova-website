@@ -17,28 +17,32 @@
 
 @import url("https://p.typekit.net/p.css?s=1&k=lde5vfd&ht=tk&f=11903.11905.12379.12381&a=216779353&app=typekit&e=css");
 
+/* Copperplate Light - NO CRÍTICA (se usa en páginas internas, no en home inicial) */
 @font-face {
 font-family:"copperplate";
 src:url("https://use.typekit.net/af/bdd28f/000000000000000077359ed9/30/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3") format("woff2"),url("https://use.typekit.net/af/bdd28f/000000000000000077359ed9/30/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3") format("woff"),url("https://use.typekit.net/af/bdd28f/000000000000000077359ed9/30/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3") format("opentype");
-font-display:swap;font-style:normal;font-weight:300;font-stretch:normal;
+font-display:optional;font-style:normal;font-weight:300;font-stretch:normal;
 }
 
+/* Copperplate Bold - CRÍTICA (usada en Catálogo de Diseños y títulos importantes) */
 @font-face {
 font-family:"copperplate";
 src:url("https://use.typekit.net/af/a8277e/000000000000000077359ee2/30/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3") format("woff2"),url("https://use.typekit.net/af/a8277e/000000000000000077359ee2/30/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3") format("woff"),url("https://use.typekit.net/af/a8277e/000000000000000077359ee2/30/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3") format("opentype");
 font-display:swap;font-style:normal;font-weight:700;font-stretch:normal;
 }
 
+/* Copperplate Condensed Light - CRÍTICA (usada en Header visible siempre) */
 @font-face {
 font-family:"copperplate-condensed";
 src:url("https://use.typekit.net/af/c9d1f0/000000000000000077359edb/30/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3") format("woff2"),url("https://use.typekit.net/af/c9d1f0/000000000000000077359edb/30/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3") format("woff"),url("https://use.typekit.net/af/c9d1f0/000000000000000077359edb/30/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3") format("opentype");
 font-display:swap;font-style:normal;font-weight:300;font-stretch:normal;
 }
 
+/* Copperplate Condensed Bold - NO CRÍTICA (se usa below the fold) */
 @font-face {
 font-family:"copperplate-condensed";
 src:url("https://use.typekit.net/af/7890b3/000000000000000077359ee4/30/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3") format("woff2"),url("https://use.typekit.net/af/7890b3/000000000000000077359ee4/30/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3") format("woff"),url("https://use.typekit.net/af/7890b3/000000000000000077359ee4/30/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3") format("opentype");
-font-display:swap;font-style:normal;font-weight:700;font-stretch:normal;
+font-display:optional;font-style:normal;font-weight:700;font-stretch:normal;
 }
 
 .tk-copperplate { font-family: "copperplate",serif; }

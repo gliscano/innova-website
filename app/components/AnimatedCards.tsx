@@ -21,7 +21,7 @@ const navItems: Array<NavItemProps> = [
     href: '/prices',
   },
   { 
-    title: 'Respuestas rápidas',
+    title: 'Preguntas frecuentes',
     icon: 'message-circle-question-mark',
     href: '/preguntas-frecuentes',
   }
@@ -30,7 +30,7 @@ const navItems: Array<NavItemProps> = [
 export default function AnimatedCards() {
   return (
     <div className="mx-auto sm:px-6 lg:px-8 section-menu-buttons">
-      <nav className="flex items-center justify-around py-2 px-4">
+      <nav className="flex items-center justify-center py-2 px-4 lg:gap-24">
         {navItems.map((item) => (
           <a
             key={item.title}

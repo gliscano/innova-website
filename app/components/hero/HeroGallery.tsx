@@ -21,6 +21,13 @@ export function HeroGallery() {
   const allImages = useMemo(() => imageSets.flat(), [])
   
   const [selectedImages, setSelectedImages] = useState(() => allImages.slice(0, 9))
+
+  const handleViewDesigns = () => {
+    const catalogSection = document.getElementById('catalog')
+    if (catalogSection) {
+      catalogSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
   
   useEffect(() => {
     setSelectedImages(getRandomImages(allImages, 9))
@@ -32,11 +39,13 @@ export function HeroGallery() {
   const column3 = selectedImages.slice(6, 9)
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSet((prev) => (prev + 1) % 2)
-    }, secondsToChangeSet)
+    if (contentSets.length > 1) {
+      const interval = setInterval(() => {
+        setCurrentSet((prev) => (prev + 1) % 2)
+      }, secondsToChangeSet)
 
-    return () => clearInterval(interval)
+      return () => clearInterval(interval)
+    }
   }, [])
 
   const content = contentSets[currentSet]
@@ -62,9 +71,11 @@ export function HeroGallery() {
                 transition={{ duration: 0.5 }}
                 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#4a3a2a] leading-tight mb-6 text-balance"
               >
-                {content.title}
+                <span className="text-2xl md:text-4xl lg:text-5xl font-bold text-[#4a3a2a] leading-tight mb-6 text-balance">
+                  {content.title}
+                </span>
                 <br />
-                <span className={`bg-gradient-to-r ${content.gradientFrom} ${content.gradientVia} ${content.gradientTo} bg-clip-text text-transparent`}>
+                <span className={`bg-gradient-to-r ${content.gradientFrom} ${content.gradientVia} ${content.gradientTo} bg-clip-text text-transparent drop-shadow-md`}>
                   {content.highlight}
                 </span>
                 <br />
@@ -98,7 +109,9 @@ export function HeroGallery() {
                 whileTap={{ scale: 0.98 }}
               >
                 <button
-                  className="inline-flex items-center justify-center px-6 py-4 rounded-full btn-cta-style"
+                  onClick={handleViewDesigns}
+                  aria-label="Ver Diseños"
+                  className="inline-flex items-center justify-center px-6 py-3 rounded-full btn-cta-style"
                 >
                   <Sparkles className="w-5 h-5 mr-2" />
                   {content.buttonText}
@@ -124,28 +137,6 @@ export function HeroGallery() {
                 ))}
               </motion.div>
             </AnimatePresence>
-
-            {/* Progress Indicators */}
-            <div className="flex gap-2 mt-8">
-              {[0, 1, 2].map((index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentSet(index)}
-                  className="relative h-1 w-12 rounded-full overflow-hidden bg-[#cab896]/40 transition-all duration-300"
-                  aria-label={`Ir a slide ${index + 1}`}
-                >
-                  {currentSet === index && (
-                    <motion.div
-                      className="absolute inset-0 bg-[#c19d83] rounded-full"
-                      initial={{ scaleX: 0 }}
-                      animate={{ scaleX: 1 }}
-                      transition={{ duration: 5, ease: "linear" }}
-                      style={{ transformOrigin: "left" }}
-                    />
-                  )}
-                </button>
-              ))}
-            </div>
           </div>
 
           {/* Right Gallery Grid with Animated Images */}

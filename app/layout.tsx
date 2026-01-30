@@ -3,7 +3,13 @@ import './fonts.css'
 import { Inter } from 'next/font/google'
 import Script from 'next/script'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ 
+  subsets: ['latin'],
+  weight: ['400', '600', '700'], // Solo los pesos necesarios
+  display: 'swap', // Mejora la percepción de carga
+  preload: true,
+  fallback: ['system-ui', 'arial'],
+})
 
 export const metadata = {
   title: 'Innova - Backdrops e Insumos de fotografía',
@@ -18,18 +24,24 @@ export default function RootLayout({
   return (
     <html lang="es">
       <head>
-      <Script async src="https://www.googletagmanager.com/gtag/js?id=G-EZ8J02VNPE"></Script>
-      <Script id='google-analytics'>
-        {
-        `
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
+        {/* Preconnect a dominios externos para reducir latencia */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://use.typekit.net" />
+        <link rel="preconnect" href="https://p.typekit.net" />
+        
+        <Script async src="https://www.googletagmanager.com/gtag/js?id=G-EZ8J02VNPE"></Script>
+        <Script id='google-analytics'>
+          {
+          `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
 
-          gtag('config', 'G-EZ8J02VNPE');
-        `
-        }
-      </Script>
+            gtag('config', 'G-EZ8J02VNPE');
+          `
+          }
+        </Script>
       </head>
       <body
         className={inter.className}
