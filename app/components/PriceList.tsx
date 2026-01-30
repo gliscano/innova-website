@@ -157,8 +157,8 @@ import {
             {/* Room Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
               <div className="p-3 gradient-rose-gold-colors">
-                <h3 className="text-xl font-bold text-white">Fondos Room</h3>
-                <p className="mt-1 text-sm text-white">Vive una sesión con perspectivas diferentes  </p>
+                <h3 className="text-xl font-bold text-gray-900">Fondos Room</h3>
+                <p className="mt-1 text-sm text-gray-900">Vive una sesión con perspectivas diferentes  </p>
               </div>
               <div className="divide-y divide-gray-200">
                 {propertiesRooms.map((item, index) => (
