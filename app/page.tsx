@@ -1,5 +1,3 @@
-import Header from './components/Header'
-import Hero from './components/Hero'
 import AnimatedCards from './components/AnimatedCards'
 import Footer from './components/Footer'
 import FAQ from './components/FAQ'

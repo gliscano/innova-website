@@ -1,4 +1,4 @@
-import { Camera, Palette, Sparkles, Wand2, Brush, Zap, Star, Layers, Globe } from "lucide-react"
+import { Camera, Palette, Sparkles, Wand2, Brush, Layers } from "lucide-react"
 
 export interface ContentSet {
   title: string

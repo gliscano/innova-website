@@ -59,7 +59,7 @@ export function HeroGallery() {
           {/* Left Content */}
           <div className="sticky top-10 pt-4 lg:pt-16">
             <div className="py-1 mb-4">
-              <Image src="/svg/innova-logo.svg" alt="Innova Logo" width={128} height={0} style={{ height: 'auto' }} />
+              <Image src="/svg/innova-logo.svg" alt="Innova Logo" width={128} height={31} style={{ height: 'auto' }} />
             </div>
             {/* Animated Headline */}
             <AnimatePresence mode="wait">

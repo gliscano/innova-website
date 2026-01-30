@@ -20,8 +20,6 @@ interface GalleryCardProps {
 }
 
 export const GalleryCard = React.memo(function GalleryCard({ image, delay = 0 }: GalleryCardProps) {
-  const Icon = image.icon
-
   return (
     <motion.div
       animate={floatAnimation}
