@@ -19,7 +19,7 @@ import {
     },
     {
       title: 'Parejas',
-      size: '2.0m × 2.5m',
+      size: '2.0m × 2.9m',
       description: 'Perfecto para sesiones de pareja, fotos de pie o retratos de dos personas con encuadres de cuerpo completo',
       image: '/images/innova/backdrops-couples-size.png',
     },
