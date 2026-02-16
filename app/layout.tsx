@@ -30,6 +30,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://use.typekit.net" />
         <link rel="preconnect" href="https://p.typekit.net" />
         
+        {/* Google Analytics */}
         <Script async src="https://www.googletagmanager.com/gtag/js?id=G-EZ8J02VNPE"></Script>
         <Script id='google-analytics'>
           {
@@ -42,6 +43,25 @@ export default function RootLayout({
           `
           }
         </Script>
+        {/* Meta Pixel Facebook */}
+        <Script id='meta-pixel'>
+          {
+          `!function(f,b,e,v,n,t,s) {
+          if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+          n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+          if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+          n.queue=[];t=b.createElement(e);t.async=!0;
+          t.src=v;s=b.getElementsByTagName(e)[0];
+          s.parentNode.insertBefore(t,s)}(window, document,'script',
+          'https://connect.facebook.net/en_US/fbevents.js');
+          fbq('init', '2037570953478682');
+          fbq('track', 'PageView');
+          `}
+        </Script>
+        <noscript><img height="1" width="1" style={{display: 'none' as const}}
+        src="https://www.facebook.com/tr?id=2037570953478682&ev=PageView&noscript=1"
+        /></noscript>
+        {/* End Meta Pixel Facebook */}
       </head>
       <body
         className={inter.className}
