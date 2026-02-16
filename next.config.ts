@@ -48,11 +48,11 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://p.typekit.net",
               "img-src 'self' data: https: blob:",
               "font-src 'self' data: https://fonts.gstatic.com https://use.typekit.net",
-              "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://res.cloudinary.com https://use.typekit.net https://p.typekit.net",
+              "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://res.cloudinary.com https://use.typekit.net https://p.typekit.net https://connect.facebook.net https://www.facebook.com",
               "frame-src 'self'",
               "object-src 'none'",
               "base-uri 'self'",
