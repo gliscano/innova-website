@@ -2,6 +2,7 @@ import './globals.css'
 import './fonts.css'
 import { Inter } from 'next/font/google'
 import Script from 'next/script'
+import Image from 'next/image'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -58,15 +59,22 @@ export default function RootLayout({
           fbq('track', 'PageView');
           `}
         </Script>
-        <noscript><img height="1" width="1" style={{display: 'none' as const}}
-        src="https://www.facebook.com/tr?id=2037570953478682&ev=PageView&noscript=1"
-        /></noscript>
         {/* End Meta Pixel Facebook */}
       </head>
       <body
         className={inter.className}
          cz-shortcut-listen="true"
       >
+        {/* Meta Pixel noscript fallback*/}
+        <noscript>
+          <Image
+            height={1}
+            width={1}
+            style={{ display: 'none' }}
+            src="https://www.facebook.com/tr?id=2037570953478682&ev=PageView&noscript=1"
+            alt=""
+          />
+        </noscript>
         {children}
       </body>
     </html>
