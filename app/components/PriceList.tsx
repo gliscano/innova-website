@@ -55,6 +55,30 @@ import {
         </div>
   
         <div className="mx-auto max-w-7xl px-6 py-4  lg:px-8">  
+        {/* Size Guide Section */}
+          <div className="mx-auto max-w-7xl px-6 py-4  lg:px-8">
+            <h3 className="text-2xl copperplate-condensed-bold-font text-gray-900 mb-4 text-center">Guía de Tamaños Recomendados</h3>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+              {sizeGuides.map((guide, index) => (
+                <div key={index} className={`${index > 1 ? 'bg-rose-gold' : 'bg-yellow-gold-light'} bg-opacity-50 rounded-xl shadow-sm p-6 flex flex-col items-center text-center`}>
+                  <div className="w-40 h-40 rounded-lg mb-4 flex items-center justify-center">
+                    <div className="text-violet-600">
+                      <Image
+                        src={guide.image}
+                        alt={guide.title}
+                        className="object-contain"
+                        width={200}
+                        height={200}
+                      />
+                    </div>
+                  </div>
+                  <h4 className="font-semibold text-lg mb-2">{guide.title}</h4>
+                  <p className="text-rose-800 font-medium py-1 px-2 mb-2 bg-white rounded-2xl">{guide.size}</p>
+                  <p className="text-gray-800 text-sm">{guide.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
           {/* fabric Pricing Section */}  
           <div className="grid grid-cols-1 gap-7 md:grid-cols-2 lg:grid-cols-2">
             {/* Standard Backdrops */}
@@ -273,30 +297,6 @@ import {
                   </div>
                 ))}
               </div>
-            </div>
-          </div>
-          {/* Size Guide Section */}
-          <div className="py-6 mb-8">
-            <h3 className="text-2xl copperplate-condensed-bold-font text-gray-900 mb-4 text-center">Guía de Tamaños Recomendados</h3>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
-              {sizeGuides.map((guide, index) => (
-                <div key={index} className={`${index > 1 ? 'bg-rose-gold' : 'bg-yellow-gold-light'} bg-opacity-50 rounded-xl shadow-sm p-6 flex flex-col items-center text-center`}>
-                  <div className="w-40 h-40 rounded-lg mb-4 flex items-center justify-center">
-                    <div className="text-violet-600">
-                      <Image
-                        src={guide.image}
-                        alt={guide.title}
-                        className="object-contain"
-                        width={200}
-                        height={200}
-                      />
-                    </div>
-                  </div>
-                  <h4 className="font-semibold text-lg mb-2">{guide.title}</h4>
-                  <p className="text-rose-800 font-medium py-1 px-2 mb-2 bg-white rounded-2xl">{guide.size}</p>
-                  <p className="text-gray-800 text-sm">{guide.description}</p>
-                </div>
-              ))}
             </div>
           </div>
         </div>
