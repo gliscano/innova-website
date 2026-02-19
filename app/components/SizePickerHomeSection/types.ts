@@ -58,18 +58,10 @@ export interface RecommendationResult {
   reason: string
 }
 
-/** Builders de URLs para desacoplar navegación */
-export interface RouteBuilders {
-  designCatalog: (size: string) => string
-  studio: (size: string) => string
-  prices: () => string
-}
-
 /** Props del componente principal */
 export interface SizePickerHomeSectionProps {
   sizes?: SizeOption[]
   quizConfig?: QuizConfig
-  routes?: RouteBuilders
   /** Skeleton loading si sizes/config viene async */
   isLoading?: boolean
   /** Callback al hacer clic en "Ver más medidas y precios" (home: expande in-place) */

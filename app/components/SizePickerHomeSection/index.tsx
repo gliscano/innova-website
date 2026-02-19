@@ -2,7 +2,7 @@
 
 import { useState, useCallback, lazy, Suspense } from 'react'
 import { SectionHeader, SegmentedTabs, SizeCarousel, SizeVisualReference, QuickQuiz } from './subcomponents'
-import { DEFAULT_SIZES, DEFAULT_QUIZ_CONFIG, DEFAULT_ROUTES } from '../../data/sizePickerData'
+import { DEFAULT_SIZES, DEFAULT_QUIZ_CONFIG } from '../../data/sizePickerData'
 import type { SizePickerHomeSectionProps, QuizAnswer } from './types'
 
 const CompareModal = lazy(() =>
@@ -22,7 +22,6 @@ const TABS = [
 export function SizePickerHomeSection({
   sizes = DEFAULT_SIZES,
   quizConfig = DEFAULT_QUIZ_CONFIG,
-  routes = DEFAULT_ROUTES,
   isLoading = false,
   onShowPrices,
   sectionId = 'size-picker',
@@ -110,7 +109,6 @@ export function SizePickerHomeSection({
           {activeTab === 'popular' && (
             <SizeCarousel
               sizes={sizes}
-              routes={routes}
               onShowPrices={onShowPrices}
             />
           )}
@@ -130,7 +128,6 @@ export function SizePickerHomeSection({
               answers={quizAnswers}
               onAnswer={handleQuizAnswer}
               onReset={handleQuizReset}
-              designCatalogUrl={(size) => routes.designCatalog(size)}
               onCompareClick={handleCompareClick}
             />
           )}

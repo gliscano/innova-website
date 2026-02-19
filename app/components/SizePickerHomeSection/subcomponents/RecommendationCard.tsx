@@ -1,11 +1,9 @@
 'use client'
 
-import { sizeToUrlParam } from '../recommendation'
 import type { RecommendationResult, SizeOption } from '../types'
 
 interface RecommendationCardProps {
   result: RecommendationResult
-  designCatalogUrl: (size: string) => string
   onCompareClick: () => void
 }
 
@@ -14,11 +12,8 @@ interface RecommendationCardProps {
  */
 export function RecommendationCard({
   result,
-  designCatalogUrl,
   onCompareClick,
 }: RecommendationCardProps) {
-  const urlParam = sizeToUrlParam(result.primary)
-
   return (
     <article className=" rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
       <div className="flex items-start gap-2 mb-2">

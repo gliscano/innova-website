@@ -12,7 +12,6 @@ interface QuickQuizProps {
   answers: QuizAnswer[]
   onAnswer: (questionId: string, optionId: string) => void
   onReset: () => void
-  designCatalogUrl: (size: string) => string
   onCompareClick: () => void
 }
 
@@ -26,7 +25,6 @@ export function QuickQuiz({
   answers,
   onAnswer,
   onReset,
-  designCatalogUrl,
   onCompareClick,
 }: QuickQuizProps) {
   const recommendation = getRecommendations(answers, quizConfig, sizes)
@@ -91,7 +89,6 @@ export function QuickQuiz({
       {recommendation && (
         <RecommendationCard
           result={recommendation}
-          designCatalogUrl={designCatalogUrl}
           onCompareClick={onCompareClick}
         />
       )}

@@ -3,13 +3,10 @@
 import { useRef } from 'react'
 import Link from 'next/link'
 import { SizeCard } from './SizeCard'
-import { sizeIdToUrlParam } from '../recommendation'
 import type { SizeOption } from '../types'
-import type { RouteBuilders } from '../types'
 
 interface SizeCarouselProps {
   sizes: SizeOption[]
-  routes: RouteBuilders
   /** Si se provee, al hacer clic se expande PriceList in-place en lugar de ir a /prices */
   onShowPrices?: () => void
 }
@@ -17,7 +14,7 @@ interface SizeCarouselProps {
 /**
  * Carrusel horizontal en mobile (snap scroll), grid en desktop.
  */
-export function SizeCarousel({ sizes, routes, onShowPrices }: SizeCarouselProps) {
+export function SizeCarousel({ sizes, onShowPrices }: SizeCarouselProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
 
   const displaySizes = sizes.slice(0, 4)
@@ -39,8 +36,6 @@ export function SizeCarousel({ sizes, routes, onShowPrices }: SizeCarouselProps)
           >
             <SizeCard
               size={size}
-              designCatalogUrl={routes.designCatalog(sizeIdToUrlParam(size.id, sizes))}
-              studioUrl={routes.studio(sizeIdToUrlParam(size.id, sizes))}
               primaryBadge={i === 0 ? primaryBadgeForFirst : undefined}
             />
           </div>
@@ -57,8 +52,6 @@ export function SizeCarousel({ sizes, routes, onShowPrices }: SizeCarouselProps)
           <SizeCard
             key={size.id}
             size={size}
-            designCatalogUrl={routes.designCatalog(sizeIdToUrlParam(size.id, sizes))}
-            studioUrl={routes.studio(sizeIdToUrlParam(size.id, sizes))}
             primaryBadge={i === 0 ? primaryBadgeForFirst : undefined}
           />
         ))}
@@ -71,14 +64,14 @@ export function SizeCarousel({ sizes, routes, onShowPrices }: SizeCarouselProps)
             onClick={onShowPrices}
             className="text-sm text-blue-500 hover:text-blue-700 underline underline-offset-2 transition-colors cursor-pointer bg-transparent border-none font-inherit"
           >
-            Ver más medidas y precios
+            Ver medidas y precios completos
           </button>
         ) : (
           <Link
             href="/prices"
             className="text-sm text-blue-500 hover:text-blue-700 underline underline-offset-2 transition-colors"
           >
-            Ver más medidas y precios
+            Ver medidas y precios
           </Link>
         )}
       </p>

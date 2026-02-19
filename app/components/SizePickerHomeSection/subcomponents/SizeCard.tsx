@@ -1,22 +1,17 @@
 'use client'
 
-import Link from 'next/link'
 import { memo } from 'react'
 import { Check, Zap, Layers } from 'lucide-react'
 import type { SizeOption } from '../types'
 
 interface SizeCardProps {
   size: SizeOption
-  designCatalogUrl: string
-  studioUrl: string
   primaryBadge?: string
 }
 
 /** Card de tamaño: premium, limpia, con bullets y CTAs. */
 export const SizeCard = memo(function SizeCard({
   size,
-  designCatalogUrl,
-  studioUrl,
   primaryBadge,
 }: SizeCardProps) {
   const badge = primaryBadge ?? size.badges[0]

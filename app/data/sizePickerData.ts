@@ -3,7 +3,7 @@
  * Fuente de verdad para sizes y quiz; mantiene UI desacoplada.
  */
 
-import type { SizeOption, QuizConfig, RouteBuilders } from '../components/SizePickerHomeSection/types'
+import type { SizeOption, QuizConfig } from '../components/SizePickerHomeSection/types'
 
 /** Tamaños populares (fondos 2.90m y 1.50m más usados) */
 export const DEFAULT_SIZES: SizeOption[] = [
@@ -160,11 +160,4 @@ export const DEFAULT_QUIZ_CONFIG: QuizConfig = {
       reason: 'Versatilidad para cualquier tipo de sesión.',
     },
   ],
-}
-
-/** Builders de rutas por defecto (rutas reales del proyecto) */
-export const DEFAULT_ROUTES: RouteBuilders = {
-  designCatalog: (size) => `/design-catalog?size=${encodeURIComponent(size)}`,
-  studio: (size) => `/design-catalog?size=${encodeURIComponent(size)}&view=studio`,
-  prices: () => '/prices',
 }
