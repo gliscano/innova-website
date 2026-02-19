@@ -43,7 +43,7 @@ export default function HeroProps() {
     <div className="relative isolate overflow-hidden gradient-light-colors-props">     
       <div className="mx-auto max-w-7xl px-6 pb-2 pt-6 lg:pt-12 lg:pb-12 lg:flex lg:px-8 lg:py-8">
         <div className="mx-auto max-w-md flex-shrink-0 lg:mx-0 lg:w-md lg:pt-4">
-          <h2 className="mt-4 pr-4 text-3xl copperplate-condensed-bold-font text-amber-800 sm:text-5xl">
+          <h2 className="mt-4 pr-4 text-3xl copperplate-bold-font text-amber-800 sm:text-5xl">
               Línea Newborn
               Almohadones y Mantas  
           </h2>

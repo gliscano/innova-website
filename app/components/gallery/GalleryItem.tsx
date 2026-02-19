@@ -92,16 +92,9 @@ export default function GalleryItem({ image, onClick, index }: GalleryItemProps)
         </div>
       </div>
 
-      {/* Información de la imagen */}
-      <div className="p-3">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs text-gray-500 truncate max-w-full">
-            {image.display_name}
-          </span>
-        </div>
-
-        {/* Tags */}
-        {image.tags?.length > 0 && (
+      {/* Tags (display_name solo en modal para reducir carga cognitiva) */}
+      {image.tags?.length > 0 && (
+        <div className="p-3">
           <div className="flex flex-wrap gap-1">
             {image.tags.slice(0, 2).map((tag, tagIndex) => (
               <span
@@ -117,8 +110,8 @@ export default function GalleryItem({ image, onClick, index }: GalleryItemProps)
               </span>
             )}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }
