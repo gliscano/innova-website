@@ -5,7 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import Header from "@/app/components/Header"
 import { getCatalogItemByCategory } from "@/app/utils/catalogUtils"
-import PriceList from "@/app/components/PriceList"
+import { HomeSizePickerWithPrices } from "@/app/components/HomeSizePickerWithPrices"
 import Gallery from "@/app/components/gallery/Gallery"
 import { CatalogItem } from "@/app/data/catalogData"
 import WhatsAppDropdown from "@/app/components/WhatsAppDropdown"
@@ -269,7 +269,7 @@ export default function ProductPage({ params }: ProductPageProps) {
           </div>
         </div>
       </div>
-      <PriceList />
+      <HomeSizePickerWithPrices sectionId="prices" />
     </div>
   )
 }

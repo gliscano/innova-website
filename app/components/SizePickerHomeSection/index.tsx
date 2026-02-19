@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useCallback, lazy, Suspense } from 'react'
-import { SectionHeader, SegmentedTabs, SizeCarousel, QuickQuiz } from './subcomponents'
-import { DEFAULT_SIZES, DEFAULT_QUIZ_CONFIG, DEFAULT_ROUTES } from './config'
+import { SectionHeader, SegmentedTabs, SizeCarousel, SizeVisualReference, QuickQuiz } from './subcomponents'
+import { DEFAULT_SIZES, DEFAULT_QUIZ_CONFIG, DEFAULT_ROUTES } from '../../data/sizePickerData'
 import type { SizePickerHomeSectionProps, QuizAnswer } from './types'
 
 const CompareModal = lazy(() =>
@@ -24,6 +24,8 @@ export function SizePickerHomeSection({
   quizConfig = DEFAULT_QUIZ_CONFIG,
   routes = DEFAULT_ROUTES,
   isLoading = false,
+  onShowPrices,
+  sectionId = 'size-picker',
 }: SizePickerHomeSectionProps) {
   const [activeTab, setActiveTab] = useState('popular')
   const [quizAnswers, setQuizAnswers] = useState<QuizAnswer[]>([])
@@ -78,7 +80,7 @@ export function SizePickerHomeSection({
 
   return (
     <section
-      id="size-picker"
+      id={sectionId}
       className="py-12 md:py-16 px-4 sm:px-6 lg:px-8"
       style={{ backgroundColor: '#F7F7F8' }}
       aria-labelledby="size-picker-title"
@@ -105,7 +107,13 @@ export function SizePickerHomeSection({
           hidden={activeTab !== 'popular'}
           className="transition-opacity duration-200"
         >
-          {activeTab === 'popular' && <SizeCarousel sizes={sizes} routes={routes} />}
+          {activeTab === 'popular' && (
+            <SizeCarousel
+              sizes={sizes}
+              routes={routes}
+              onShowPrices={onShowPrices}
+            />
+          )}
         </div>
 
         <div
@@ -127,6 +135,8 @@ export function SizePickerHomeSection({
             />
           )}
         </div>
+
+        <SizeVisualReference />
       </div>
 
       {compareModalOpen && (

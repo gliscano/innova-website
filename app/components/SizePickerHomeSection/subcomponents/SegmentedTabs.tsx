@@ -2,11 +2,6 @@
 
 import { useRef, useEffect } from 'react'
 
-/**
- * Tabs estilo Leonardo AI (segmented control).
- * Indicador activo con animación suave, roles ARIA correctos.
- */
-
 export interface TabItem {
   id: string
   label: string

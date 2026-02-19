@@ -1,10 +1,5 @@
 'use client'
 
-/**
- * Header de sección con título y subtítulo.
- * Estilo Leonardo AI: jerarquía clara, tipografía semi-bold.
- */
-
 interface SectionHeaderProps {
   title: string
   subtitle: string

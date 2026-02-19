@@ -2,11 +2,10 @@ import AnimatedCards from './components/AnimatedCards'
 import Footer from './components/Footer'
 import FAQ from './components/FAQ'
 import ProductCategoryMenu from './components/ProductCategoryMenu'
-import PriceList from './components/PriceList'
 import DesignCatalog from './components/gallery/DesignCatalog'
 import HeroProps from './components/HeroProps'
 import { HeroGallery } from './components/hero/HeroGallery'
-import { SizePickerHomeSection } from './components/SizePickerHomeSection'
+import { HomeSizePickerWithPrices } from './components/HomeSizePickerWithPrices'
 
 export default function Home() {
   return (
@@ -16,8 +15,7 @@ export default function Home() {
         <HeroGallery />
         <AnimatedCards />
         <DesignCatalog />
-        <SizePickerHomeSection />
-        <PriceList />
+        <HomeSizePickerWithPrices />
         <HeroProps />
         <ProductCategoryMenu />
         <FAQ />

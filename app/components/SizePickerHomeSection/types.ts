@@ -72,4 +72,8 @@ export interface SizePickerHomeSectionProps {
   routes?: RouteBuilders
   /** Skeleton loading si sizes/config viene async */
   isLoading?: boolean
+  /** Callback al hacer clic en "Ver más medidas y precios" (home: expande in-place) */
+  onShowPrices?: () => void
+  /** ID de la sección (ej: "prices" para que el link #prices haga scroll aquí) */
+  sectionId?: string
 }

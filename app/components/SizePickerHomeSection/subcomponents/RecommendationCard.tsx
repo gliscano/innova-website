@@ -1,6 +1,5 @@
 'use client'
 
-import Link from 'next/link'
 import { sizeToUrlParam } from '../recommendation'
 import type { RecommendationResult, SizeOption } from '../types'
 
@@ -50,13 +49,7 @@ export function RecommendationCard({
         </div>
       )}
 
-      <div className="flex flex-col gap-2">
-        <Link
-          href={designCatalogUrl(urlParam)}
-          className="min-h-[44px] flex items-center justify-center rounded-xl font-medium bg-gray-900 text-white hover:bg-gray-800 transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-        >
-          Ver diseños recomendados
-        </Link>
+      <div className="flex flex-col gap-2"> 
         <button
           type="button"
           onClick={onCompareClick}

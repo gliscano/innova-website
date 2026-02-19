@@ -67,20 +67,6 @@ export const SizeCard = memo(function SizeCard({
             </li>
           ))}
         </ul>
-        <div className="flex flex-col gap-2">
-          <Link
-            href={designCatalogUrl}
-            className="min-h-[44px] flex items-center justify-center rounded-xl font-medium bg-gray-900 text-white hover:bg-gray-800 transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-          >
-            Ver diseños
-          </Link>
-          <Link
-            href={studioUrl}
-            className="min-h-[44px] flex items-center justify-center rounded-xl font-medium border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-          >
-            Ver escena
-          </Link>
-        </div>
       </div>
     </article>
   )

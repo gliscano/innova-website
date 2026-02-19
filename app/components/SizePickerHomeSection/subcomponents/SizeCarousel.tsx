@@ -10,12 +10,14 @@ import type { RouteBuilders } from '../types'
 interface SizeCarouselProps {
   sizes: SizeOption[]
   routes: RouteBuilders
+  /** Si se provee, al hacer clic se expande PriceList in-place en lugar de ir a /prices */
+  onShowPrices?: () => void
 }
 
 /**
  * Carrusel horizontal en mobile (snap scroll), grid en desktop.
  */
-export function SizeCarousel({ sizes, routes }: SizeCarouselProps) {
+export function SizeCarousel({ sizes, routes, onShowPrices }: SizeCarouselProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
 
   const displaySizes = sizes.slice(0, 4)
@@ -63,12 +65,22 @@ export function SizeCarousel({ sizes, routes }: SizeCarouselProps) {
       </div>
 
       <p className="mt-4 text-center">
-        <Link
-          href={routes.prices()}
-          className="text-sm text-gray-500 hover:text-gray-700 underline underline-offset-2 transition-colors"
-        >
-          Ver precios completos
-        </Link>
+        {onShowPrices ? (
+          <button
+            type="button"
+            onClick={onShowPrices}
+            className="text-sm text-blue-500 hover:text-blue-700 underline underline-offset-2 transition-colors cursor-pointer bg-transparent border-none font-inherit"
+          >
+            Ver más medidas y precios
+          </button>
+        ) : (
+          <Link
+            href="/prices"
+            className="text-sm text-blue-500 hover:text-blue-700 underline underline-offset-2 transition-colors"
+          >
+            Ver más medidas y precios
+          </Link>
+        )}
       </p>
     </div>
   )
