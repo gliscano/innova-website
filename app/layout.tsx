@@ -2,7 +2,6 @@ import './globals.css'
 import './fonts.css'
 import { Inter } from 'next/font/google'
 import Script from 'next/script'
-import Image from 'next/image'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -65,9 +64,9 @@ export default function RootLayout({
         className={inter.className}
          cz-shortcut-listen="true"
       >
-        {/* Meta Pixel noscript fallback*/}
+        {/* Meta Pixel noscript fallback - img nativo (no next/image) para tracking */}
         <noscript>
-          <Image
+          <img
             height={1}
             width={1}
             style={{ display: 'none' }}

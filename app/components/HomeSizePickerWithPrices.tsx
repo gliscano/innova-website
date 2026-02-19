@@ -18,7 +18,6 @@ export function HomeSizePickerWithPrices({ sectionId }: HomeSizePickerWithPrices
 
   useEffect(() => {
     if (showPriceList) {
-      // Pequeño delay para asegurar que PriceList esté en el DOM antes del scroll
       const timer = setTimeout(() => {
         document.getElementById('prices')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
       }, 50)
@@ -26,11 +25,13 @@ export function HomeSizePickerWithPrices({ sectionId }: HomeSizePickerWithPrices
     }
   }, [showPriceList])
 
+  const effectiveSectionId = showPriceList ? 'size-picker' : sectionId
+
   return (
     <>
       <SizePickerHomeSection
         onShowPrices={() => setShowPriceList(true)}
-        sectionId={sectionId}
+        sectionId={effectiveSectionId}
       />
       {showPriceList && <PriceList />}
     </>
