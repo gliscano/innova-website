@@ -12,7 +12,7 @@ export const DEFAULT_SIZES: SizeOption[] = [
     label: '2.9m × 4m',
     widthM: 2.9,
     heightM: 4.0,
-    fromPrice: 66783,
+    fromPrice: 94625,
     bestFor: ['Sesiones', 'Eventos', 'Mascotas', 'Smash cake', 'Set pared + piso'],
     depthLevel: 'Media',
     lightingHint: 'Flash o luz natural',
@@ -42,7 +42,7 @@ export const DEFAULT_SIZES: SizeOption[] = [
   },
   {
     id: 'S1520',
-    label: '1,5m × 2m',
+    label: '1.5m × 2m',
     widthM: 1.5,
     heightM: 2.0,
     fromPrice: 32718,
