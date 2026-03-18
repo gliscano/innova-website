@@ -36,7 +36,6 @@ export function InspirationFeed({ folder, initialImages, initialCursor }: Inspir
     closeModal,
     goToNext,
     goToPrevious,
-    goToImage,
   } = useGalleryModal(filteredImages)
 
   if (error && filteredImages.length === 0) {
@@ -92,7 +91,6 @@ export function InspirationFeed({ folder, initialImages, initialCursor }: Inspir
         initialIndex={modalIndex}
         goToNext={goToNext}
         goToPrevious={goToPrevious}
-        goToImage={goToImage}
         category={searchTerm || activeCategory || undefined}
       />
     </div>

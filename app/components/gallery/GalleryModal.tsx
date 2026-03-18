@@ -33,7 +33,6 @@ export default function GalleryModal({
   initialIndex,
   goToNext,
   goToPrevious,
-  goToImage,
   category,
 }: GalleryModalProps) {
   const modalRef = useRef<HTMLDivElement>(null)

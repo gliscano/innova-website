@@ -27,7 +27,6 @@ export default function Gallery(props: GalleryProps) {
     closeModal,
     goToNext,
     goToPrevious,
-    goToImage,
   } = useGalleryModal(images)
 
   const handleImageClick = (index: number) => {
@@ -138,7 +137,6 @@ export default function Gallery(props: GalleryProps) {
             initialIndex={modalIndex}
             goToNext={goToNext}
             goToPrevious={goToPrevious}
-            goToImage={goToImage}
             category={props.searchTerm}
           />
         )}

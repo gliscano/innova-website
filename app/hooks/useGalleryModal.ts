@@ -11,7 +11,6 @@ interface UseGalleryModalReturn {
   closeModal: () => void
   goToNext: () => void
   goToPrevious: () => void
-  goToImage: (index: number) => void
 }
 
 export function useGalleryModal(images: GalleryImage[]): UseGalleryModalReturn {
@@ -51,12 +50,6 @@ export function useGalleryModal(images: GalleryImage[]): UseGalleryModalReturn {
     const prevIndex = currentIndex === 0 ? images.length - 1 : currentIndex - 1
     setCurrentIndex(prevIndex)
   }, [currentIndex, images.length])
-
-  const goToImage = useCallback((index: number) => {
-    if (index >= 0 && index < images.length) {
-      setCurrentIndex(index)
-    }
-  }, [images.length])
 
   // Navegación con teclado
   useEffect(() => {
@@ -103,6 +96,5 @@ export function useGalleryModal(images: GalleryImage[]): UseGalleryModalReturn {
     closeModal,
     goToNext,
     goToPrevious,
-    goToImage,
   }
 }

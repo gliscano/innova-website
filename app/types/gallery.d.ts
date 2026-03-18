@@ -40,8 +40,6 @@ export interface GalleryModalProps {
   onClose: () => void
   goToNext: () => void
   goToPrevious: () => void
-  /** @deprecated Los dots de paginación fueron removidos. Ya no se usa. */
-  goToImage?: (index: number) => void
   category?: string
 }
 
