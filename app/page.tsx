@@ -6,6 +6,7 @@ import DesignCatalog from './components/gallery/DesignCatalog'
 import HeroProps from './components/HeroProps'
 import { HeroGallery } from './components/hero/HeroGallery'
 import { HomeSizePickerWithPrices } from './components/HomeSizePickerWithPrices'
+import { InspirationSection } from './components/inspiracion'
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
         {/* <Hero /> */}
         <HeroGallery />
         <AnimatedCards />
+        <InspirationSection />
         <DesignCatalog />
         <HomeSizePickerWithPrices />
         <HeroProps />

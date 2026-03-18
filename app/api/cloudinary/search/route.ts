@@ -20,10 +20,15 @@ interface CloudinaryImage {
   display_name: string
   aspect_ratio: number
   bytes?: number
+  metadata?: Record<string, unknown>
+  image_metadata?: Record<string, unknown>
   context?: {
     custom?: {
       collection?: string
+      Description?: string
+      [key: string]: unknown
     }
+    [key: string]: unknown
   }
 }
 
@@ -78,16 +83,78 @@ function buildExpression(params: { searchTerm?: string; folder?: string }) {
   return expression
 }
 
+function transformResources(resources: CloudinaryImage[]) {
+  return resources.map((img) => ({
+    id: img.public_id,
+    url: img.secure_url,
+    width: img.width,
+    height: img.height,
+    format: img.format,
+    createdAt: img.created_at,
+    tags: img.tags || [],
+    folder: img.folder,
+    display_name: img.display_name,
+    aspect_ratio: img.aspect_ratio,
+    collection: img.context?.custom?.collection,
+    description: img.context?.custom?.Description || '',
+    bytes: img.bytes || 0,
+    metadata: img.metadata || {},
+    context: img.context || {},
+  }))
+}
+
+async function runFolderList(params: { folder: string; nextCursor?: string; maxResults?: number }) {
+  const { folder, nextCursor, maxResults = 20 } = params
+
+  const options: Record<string, unknown> = {
+    asset_folder: folder,
+    max_results: maxResults,
+    tags: true,
+    context: true,
+    metadata: true,
+    resource_type: 'image',
+  }
+  if (nextCursor) options.next_cursor = nextCursor
+
+  const result = await cloudinary.api.resources_by_asset_folder(folder, options) as unknown as CloudinaryResponse
+
+  const images = transformResources(result.resources || [])
+  return NextResponse.json(
+    {
+      images,
+      nextCursor: result.next_cursor || null,
+      totalCount: result.total_count ?? images.length,
+      hasMore: Boolean(result.next_cursor),
+    },
+    {
+      headers: {
+        'Cache-Control': 'public, max-age=86400, s-maxage=86400, stale-while-revalidate=3600',
+      },
+    },
+  )
+}
+
 async function runSearch(params: { searchTerm?: string; folder?: string; nextCursor?: string; maxResults?: number; ttlSeconds?: number }) {
   const { searchTerm, folder, nextCursor, maxResults = 20, ttlSeconds } = params
+
+  if (folder && !searchTerm) {
+    return runFolderList({ folder, nextCursor, maxResults })
+  }
+
   const expression = buildExpression({ searchTerm, folder })
 
-  let search = cloudinary.search.expression(expression).max_results(maxResults).sort_by('created_at', 'desc')
+  let search = cloudinary.search
+    .expression(expression)
+    .max_results(maxResults)
+    .sort_by('created_at', 'desc')
+    .with_field('tags')
+    .with_field('context')
+    .with_field('metadata')
+    .with_field('image_metadata')
   if (nextCursor) {
     search = search.next_cursor(nextCursor)
   }
 
-  // 1) Intentar URL cacheable firmada (CDN) con to_url
   const ttl = typeof ttlSeconds === 'number' && ttlSeconds > 0 ? ttlSeconds : 60
   let data: CloudinaryResponse | null = null
   try {
@@ -104,11 +171,10 @@ async function runSearch(params: { searchTerm?: string; folder?: string; nextCur
       }
     }
   } catch (error) {
-    console.error('Error en búsqueda de Cloudinary (GET):', error)
+    console.error('Error en búsqueda de Cloudinary (CDN):', error)
   }
 
-  // 2) Fallback a Admin API si no hay datos válidos desde CDN
-  if (!data || (data && data.resources.length === 0)) {
+  if (!data || data.resources.length === 0) {
     const searchResult = await search.execute()
     data = {
       resources: searchResult.resources || [],
@@ -117,27 +183,13 @@ async function runSearch(params: { searchTerm?: string; folder?: string; nextCur
     }
   }
 
-  const transformedImages = (data.resources || [])
-    .map((img) => ({
-      id: img.public_id,
-      url: img.secure_url,
-      width: img.width,
-      height: img.height,
-      format: img.format,
-      createdAt: img.created_at,
-      tags: img.tags || [],
-      folder: img.folder,
-      display_name: (img as CloudinaryImage).display_name,
-      aspect_ratio: (img as CloudinaryImage).aspect_ratio,
-      collection: img.context?.custom?.collection,
-      bytes: (img as CloudinaryImage).bytes || 0,
-    }))
+  const images = transformResources(data.resources || [])
 
   return NextResponse.json(
     {
-      images: transformedImages,
+      images,
       nextCursor: data.next_cursor || null,
-      totalCount: data.total_count || transformedImages.length || 0,
+      totalCount: data.total_count || images.length || 0,
       hasMore: Boolean(data.next_cursor),
     },
     {

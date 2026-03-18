@@ -8,8 +8,12 @@ export interface GalleryImage {
   tags: string[]
   folder?: string
   collection?: string
+  description?: string
   display_name: string
   aspect_ratio: number
+  bytes?: number
+  metadata?: Record<string, unknown>
+  context?: Record<string, unknown>
 }
 
 export interface GalleryProps {
@@ -36,7 +40,8 @@ export interface GalleryModalProps {
   onClose: () => void
   goToNext: () => void
   goToPrevious: () => void
-  goToImage: (index: number) => void
+  /** @deprecated Los dots de paginación fueron removidos. Ya no se usa. */
+  goToImage?: (index: number) => void
   category?: string
 }
 

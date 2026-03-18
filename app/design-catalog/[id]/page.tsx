@@ -84,9 +84,9 @@ export default function ProductPage({ params }: ProductPageProps) {
               <h1 className="text-3xl copperplate-bold-font font-bold text-gray-900 mb-2">Catálogo de {product.title}</h1>
               <p className="text-lg text-gray-800 mb-4">{product.description}</p>
               <div className="hidden lg:flex flex-wrap gap-2">
-                {product.tags.map((tag) => (
+                {product.tags.map((tag, index) => (
                   <span
-                    key={tag}
+                    key={`${tag}-${index}`}
                     className="inline-flex items-center px-2 py-1 rounded-md text-sm font-medium bg-gray-100 text-gray-800"
                   >
                     {tag}
