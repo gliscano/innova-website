@@ -5,51 +5,51 @@
 
 import type { SizeOption, QuizConfig } from '../components/SizePickerHomeSection/types'
 
-/** Tamaños populares (fondos 2.90m y 1.50m más usados) */
+/** Tamaños populares (fondos 2.90m y 1.50m más vendidos) */
 export const DEFAULT_SIZES: SizeOption[] = [
-  {
-    id: 'S2940',
-    label: '2.9m × 4m',
-    widthM: 2.9,
-    heightM: 4.0,
-    fromPrice: 94625,
-    bestFor: ['Sesiones', 'Eventos', 'Mascotas', 'Smash cake', 'Set pared + piso'],
-    depthLevel: 'Media',
-    lightingHint: 'Flash o luz natural',
-    badges: ['Más elegido', 'Set Profesional'],
-  },
   {
     id: 'S2920',
     label: '2.9m × 2m',
     widthM: 2.9,
     heightM: 2.0,
-    fromPrice: 51307,
-    bestFor: ['Estudio chico', 'Infantil (0-3 años)'],
+    fromPrice: 61000,
+    bestFor: ['Estudio chico', 'Newborn', 'Infantil', 'Retratos', 'Home studio'],
     depthLevel: 'Baja',
-    lightingHint: 'Flash de estudio',
-    badges: ['Ideal estudio chico'],
+    lightingHint: 'Flash de estudio o luz continua',
+    badges: ['Más vendido', 'Ideal estudio chico'],
   },
   {
-    id: 'S2950',
-    label: '5m × 2.9m',
-    widthM: 5.0,
-    heightM: 2.9,
-    fromPrice: 110958,
-    bestFor: ['Eventos', 'Corporativo', 'Grupos', 'Video'],
+    id: 'S2930',
+    label: '2.9m × 3m',
+    widthM: 2.9,
+    heightM: 3.0,
+    fromPrice: 87000,
+    bestFor: ['Sesiones familiares', 'Smash cake', 'Cumpleaños', 'Parejas', 'Decoración'],
+    depthLevel: 'Media',
+    lightingHint: 'Flash o luz natural lateral',
+    badges: ['Más versátil', 'Recomendado'],
+  },
+  {
+    id: 'S2940',
+    label: '2.9m × 4m',
+    widthM: 2.9,
+    heightM: 4.0,
+    fromPrice: 108000,
+    bestFor: ['Decoración de eventos', 'Cumpleaños temáticos', 'Salón de fiestas', 'Set pared + piso', 'Grupos'],
     depthLevel: 'Alta',
-    lightingHint: 'Ideal luz natural y video',
-    badges: ['Eventos', 'Premium'],
+    lightingHint: 'Flash con difusor o luz natural',
+    badges: ['Decoradores', 'Set Profesional'],
   },
   {
     id: 'S1520',
     label: '1.5m × 2m',
     widthM: 1.5,
     heightM: 2.0,
-    fromPrice: 32718,
-    bestFor: ['Retratos', 'Newborn', 'Producto', 'Home studio'],
+    fromPrice: 39000,
+    bestFor: ['Retratos', 'Newborn', 'Fotografía de producto', 'Home studio'],
     depthLevel: 'Baja',
-    lightingHint: 'Flash de estudio',
-    badges: ['Compacto'],
+    lightingHint: 'Flash de estudio o luz continua',
+    badges: ['Compacto', 'Económico'],
   },
 ];
 
@@ -107,28 +107,28 @@ export const DEFAULT_QUIZ_CONFIG: QuizConfig = {
     {
       conditions: { space: 'estudio_chico', use: 'cumple' },
       priority: 90,
-      sizeIds: ['S2940', 'S2920'],
+      sizeIds: ['S2930', 'S2920'],
       reason: 'Perfecto para cumples y detalles en estudios pequeños.',
     },
-    // Salón/evento → 5×2,5
+    // Salón/evento → 2.9×3.5 o 2.9×3
     {
       conditions: { space: 'salon_evento' },
       priority: 95,
-      sizeIds: ['S2950', 'S2940'],
+      sizeIds: ['S2940', 'S2930'],
       reason: 'Ideal para grupos grandes y decoración de eventos.',
     },
     // Estudio grande + evento
     {
       conditions: { space: 'estudio_grande', use: 'evento' },
       priority: 85,
-      sizeIds: ['S2950', 'S2940'],
+      sizeIds: ['S2940', 'S2930'],
       reason: 'Máxima versatilidad para eventos en espacios amplios.',
     },
     // Exterior/mixto
     {
       conditions: { space: 'exterior_mixto' },
       priority: 80,
-      sizeIds: ['S2950', 'S2940'],
+      sizeIds: ['S2940', 'S2930'],
       reason: 'Buen balance para uso interior y exterior.',
     },
     // Producto → compacto
@@ -142,7 +142,7 @@ export const DEFAULT_QUIZ_CONFIG: QuizConfig = {
     {
       conditions: { space: 'estudio_chico', use: 'pareja' },
       priority: 88,
-      sizeIds: ['S2940'],
+      sizeIds: ['S2930', 'S2920'],
       reason: 'Encaja perfecto para parejas en espacios reducidos.',
     },
     // Fallback: estudio chico
@@ -150,13 +150,13 @@ export const DEFAULT_QUIZ_CONFIG: QuizConfig = {
       conditions: { space: 'estudio_chico' },
       priority: 50,
       sizeIds: ['S2920'],
-      reason: 'Los más elegidos para estudios pequeños.',
+      reason: 'El más vendido para estudios pequeños.',
     },
     // Fallback: estudio grande
     {
       conditions: { space: 'estudio_grande' },
       priority: 45,
-      sizeIds: ['S2940', 'S2950'],
+      sizeIds: ['S2930', 'S2940'],
       reason: 'Versatilidad para cualquier tipo de sesión.',
     },
   ],

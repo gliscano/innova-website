@@ -56,7 +56,7 @@ export default function GalleryItem({ image, onClick, index }: GalleryItemProps)
             crop="fill"
             gravity="auto"
             format="webp"
-            quality="auto"
+            quality="auto:good"
             sizes="(max-width: 639px) 50vw, 25vw"
             priority={isPriority}
             loading={isPriority ? 'eager' : 'lazy'}

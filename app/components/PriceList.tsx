@@ -5,8 +5,6 @@ import {
   propertiesBackdrops,
   propertiesHybridBackdrops,
   propertiesFloor,
-  propertiesInnPets,
-  propertiesRooms,
 } from '../data/pricesData'
 
 export default function PriceList() {
@@ -121,66 +119,6 @@ export default function PriceList() {
                         </p>
                       </div>
                     )}
-                  </div>
-                ))}
-              </div>
-            </div>
-            {/* Room Backdrops */}
-            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="p-3 gradient-rose-gold-colors">
-                <h3 className="text-xl font-bold text-gray-900">Fondos Room</h3>
-                <p className="mt-1 text-sm text-gray-900">Vive una sesión con perspectivas diferentes  </p>
-              </div>
-              <div className="divide-y divide-gray-200">
-                {propertiesRooms.map((item, index) => (
-                  <div key={index} className="flex items-center p-4 hover:bg-gray-50 transition-colors">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-4">
-                        <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium text-gray-900">
-                            {`Dimensiones: ${item.width.toFixed(2)}m × ${item.height.toFixed(1)}m`}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            Área total: {(item.width * item.height).toFixed(1)}m²
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="ml-4">
-                      <div className="font-medium text-gray-900">
-                        ${item.price.toLocaleString("es-AR")}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            {/* InnPets Backdrops */}
-            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="p-3 gradient-rose-gold-colors">
-                <h3 className="text-xl font-bold text-gray-900">Fondos para Mascotas - InnPets</h3>
-                <p className="mt-1 text-sm text-gray-900">Los mejores diseños para peluditos de la casa</p>
-              </div>
-              <div className="divide-y divide-gray-200">
-                {propertiesInnPets.map((item, index) => (
-                  <div key={index} className="flex items-center p-4 hover:bg-gray-50 transition-colors">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-4">
-                        <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium text-gray-900">
-                            {`Dimensiones: ${item.width.toFixed(2)}m × ${item.height.toFixed(1)}m`}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            Área total: {(item.width * item.height).toFixed(1)}m²
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="ml-4">
-                      <div className="font-medium text-gray-900">
-                        ${item.price.toLocaleString("es-AR")}
-                      </div>
-                    </div>
                   </div>
                 ))}
               </div>

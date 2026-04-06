@@ -3,7 +3,6 @@
 import { GalleryImage } from '../../types/gallery'
 import { useInspirationFeed } from '../../hooks/useInspirationFeed'
 import { useGalleryModal } from '../../hooks/useGalleryModal'
-import { InspirationHeader } from './subcomponents/InspirationHeader'
 import { InspirationGrid } from './subcomponents/InspirationGrid'
 import GalleryModal from '../gallery/GalleryModal'
 
@@ -20,11 +19,6 @@ export function InspirationFeed({ folder, initialImages, initialCursor }: Inspir
     isLoadingMore,
     error,
     hasMore,
-    searchTerm,
-    activeCategory,
-    categories,
-    setSearchTerm,
-    setActiveCategory,
     loadMore,
     retry,
   } = useInspirationFeed({ folder, initialImages, initialCursor })
@@ -61,15 +55,6 @@ export function InspirationFeed({ folder, initialImages, initialCursor }: Inspir
 
   return (
     <div className="relative">
-      {/* Header sticky: buscador + chips */}
-      <InspirationHeader
-        searchTerm={searchTerm}
-        onSearch={setSearchTerm}
-        activeCategory={activeCategory}
-        onCategoryChange={setActiveCategory}
-        categories={categories}
-      />
-
       {/* Grid de creaciones */}
       <div className="px-3 sm:px-4 pt-4">
         <InspirationGrid
@@ -91,7 +76,7 @@ export function InspirationFeed({ folder, initialImages, initialCursor }: Inspir
         initialIndex={modalIndex}
         goToNext={goToNext}
         goToPrevious={goToPrevious}
-        category={searchTerm || activeCategory || undefined}
+        category={undefined}
       />
     </div>
   )
