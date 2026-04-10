@@ -97,6 +97,15 @@ export function HeroGallery() {
               </motion.p>
             </AnimatePresence>
 
+            {/* Process explanation */}
+            <div className="flex items-center gap-2 text-sm text-[#8b7355] mb-6 flex-wrap">
+              <span className="font-medium">Elegís el diseño</span>
+              <span className="text-[#cab896]">→</span>
+              <span className="font-medium">Lo producimos con calidad premium</span>
+              <span className="text-[#cab896]">→</span>
+              <span className="font-medium">Lo recibís en tu estudio o evento</span>
+            </div>
+
             {/* CTA Button */}
             <AnimatePresence mode="wait">
               <motion.div

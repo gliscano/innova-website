@@ -1,11 +1,14 @@
 "use client"
 
 import { useRef } from 'react'
+import Link from 'next/link'
+import Image from 'next/image'
 import {
   propertiesBackdrops,
   propertiesHybridBackdrops,
   propertiesFloor,
 } from '../data/pricesData'
+import { defaultOptions } from './WhatsAppDropdown'
 
 export default function PriceList() {
     const wideBackdrops = useRef(propertiesBackdrops.filter(p => p.width === 2.90))
@@ -184,6 +187,28 @@ export default function PriceList() {
               </div>
             </div>
           </div>
+
+        {/* CTA WhatsApp */}
+        <div className="mt-10 mb-4 rounded-xl bg-green-50 border border-green-200 px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <p className="text-base font-semibold text-gray-900">¿Ya elegiste tu diseño?</p>
+            <p className="text-sm text-gray-600 mt-0.5">Escribinos y coordinamos el pedido con el tamaño que necesitás.</p>
+          </div>
+          <div className="flex gap-3 shrink-0">
+            {defaultOptions.map((option, i) => (
+              <Link
+                key={i}
+                href={`https://wa.me/${option.phoneNumber}?text=${encodeURIComponent("Hola! Ya elegí mi diseño y quiero consultar el precio y el pedido.")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white text-sm font-medium px-4 py-2.5 rounded-full transition-colors shadow-sm"
+              >
+                <Image src="/svg/whatsapp.svg" alt="" width={16} height={16} aria-hidden />
+                {option.label}
+              </Link>
+            ))}
+          </div>
+        </div>
         </div>
       </section>
     )

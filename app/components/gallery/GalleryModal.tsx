@@ -5,6 +5,8 @@ import { CldImage } from 'next-cloudinary'
 import { motion, AnimatePresence } from 'framer-motion'
 import { GalleryModalProps } from '../../types/gallery'
 import WhatsAppDropdown from '../WhatsAppDropdown'
+import { useSelectedSize } from '../../context/SelectedSizeContext'
+import { SizeSelectorCompact } from '../SizeSelectorCompact'
 
 function parseDescription(raw?: string) {
   if (!raw?.trim()) return null
@@ -38,6 +40,12 @@ export default function GalleryModal({
   const modalRef = useRef<HTMLDivElement>(null)
   const [hasError, setHasError] = useState(false)
   const [showDescription, setShowDescription] = useState(false)
+  const { selectedSize, setSelectedSize, setModalOpen } = useSelectedSize()
+
+  useEffect(() => {
+    setModalOpen(isOpen)
+    return () => setModalOpen(false)
+  }, [isOpen, setModalOpen])
 
   // Cerrar modal al hacer clic fuera
   useEffect(() => {
@@ -69,6 +77,10 @@ export default function GalleryModal({
 
   const currentImage = images[initialIndex] ?? null
   const description = useMemo(() => parseDescription(currentImage?.description), [currentImage?.description])
+
+  const whatsappMessage = selectedSize
+    ? `Hola! Me interesa este diseño:\nCategoría: ${category || 'diseño'}\nDiseño: ${currentImage?.display_name}\nTamaño elegido: ${selectedSize.label} — desde $${selectedSize.fromPrice?.toLocaleString('es-AR')}\nVer imagen: ${currentImage?.url}`
+    : `Hola, Quiero comprar o consultar sobre\nCategoría: ${category || 'diseño'}\nDiseño: ${currentImage?.display_name}\nVer imagen: ${currentImage?.url}`
 
   if (!isOpen || !currentImage) return null
 
@@ -164,8 +176,7 @@ export default function GalleryModal({
 
           {/* Descripción y colores */}
           {description && (
-            <div className="flex-shrink-0 px-2 sm:px-6 mt-2 mb-8 space-y-2">
-              {/* Colores siempre visibles */}
+            <div className="flex-shrink-0 px-2 sm:px-6 mt-2 mb-2 space-y-2">
               {description.colors && (
                 <div className="flex flex-wrap items-center gap-1.5">
                   <span className="text-gray-500 text-xs font-medium uppercase tracking-wider mr-1">Colores</span>
@@ -179,8 +190,6 @@ export default function GalleryModal({
                   ))}
                 </div>
               )}
-
-              {/* Descripción: 2 líneas visibles + expandible */}
               {description.text && (
                 <div>
                   <p
@@ -208,12 +217,49 @@ export default function GalleryModal({
           )}
 
           {/* Footer */}
-          <div className="mt-4 flex items-center justify-center pb-4 flex-shrink-0">
-            <WhatsAppDropdown
-              buttonText="Quiero comprar o consultar"
-              message={`Hola, Quiero comprar o consultar sobre\nCategoría: ${category || 'diseño'}\nDiseño: ${currentImage.display_name}\nVer imagen: ${currentImage.url}`}
-              className="px-2 py-1 bg-white text-black font-medium rounded-lg hover:bg-gray-100 transition-colors duration-200 hover:scale-105 transform flex items-center gap-2"
-            />
+          <div className="flex-shrink-0 px-2 sm:px-6 pb-4 mt-2">
+            {selectedSize ? (
+              /* Tamaño seleccionado — mostrar info + WhatsApp */
+              <div className="flex flex-col sm:flex-row items-center gap-3">
+                <div className="flex items-center gap-2 bg-amber-400/20 border border-amber-400/40 rounded-xl px-4 h-11 w-full sm:w-auto">
+                  <svg className="w-4 h-4 text-amber-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-white text-sm font-medium">{selectedSize.label}</span>
+                  <span className="text-amber-300 text-sm">
+                    {selectedSize.isExactPrice ? '' : 'desde '}${selectedSize.fromPrice?.toLocaleString('es-AR')}
+                  </span>
+                  <button
+                    onClick={() => setSelectedSize(null)}
+                    className="ml-1 text-gray-400 hover:text-white transition-colors text-xs underline shrink-0"
+                  >
+                    cambiar
+                  </button>
+                </div>
+                <WhatsAppDropdown
+                  buttonText="Quiero este diseño"
+                  message={whatsappMessage}
+                  className="w-full sm:w-auto px-5 h-11 bg-green-500 hover:bg-green-400 text-white font-semibold rounded-xl flex items-center justify-center gap-2 transition-colors"
+                  iconClassName="brightness-0 invert"
+                />
+              </div>
+            ) : (
+              /* Sin tamaño elegido — pills para elegir + WhatsApp */
+              <div className="space-y-3">
+                <p className="text-gray-400 text-xs mb-1">
+                  Elegí un tamaño para agilizar tu pedido
+                </p>
+                <SizeSelectorCompact onSelect={setSelectedSize} variant="dark" />
+                <div className="flex justify-center">
+                  <WhatsAppDropdown
+                    buttonText="Consultar sin elegir tamaño"
+                    message={whatsappMessage}
+                    className="w-full sm:w-auto px-5 h-11 bg-green-800 hover:bg-green-400 text-white font-semibold rounded-xl flex items-center justify-center gap-2 transition-colors"
+                    iconClassName="brightness-0 invert"
+                  />
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </motion.div>

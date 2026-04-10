@@ -2,6 +2,8 @@ import './globals.css'
 import './fonts.css'
 import { Inter } from 'next/font/google'
 import Script from 'next/script'
+import WhatsAppFloat from './components/WhatsAppFloat'
+import { SelectedSizeProvider } from './context/SelectedSizeContext'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -74,7 +76,10 @@ export default function RootLayout({
             alt=""
           />
         </noscript>
-        {children}
+        <SelectedSizeProvider>
+          {children}
+          <WhatsAppFloat />
+        </SelectedSizeProvider>
       </body>
     </html>
   );

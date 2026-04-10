@@ -13,9 +13,10 @@ export interface WhatsAppDropdownProps {
   message: string
   buttonText?: string
   className?: string
+  iconClassName?: string
 }
 
-const defaultOptions: DefaultOptions[] = [
+export const defaultOptions: DefaultOptions[] = [
   {
     label: 'Hablar con Daniela',
     phoneNumber: "5491171419752"
@@ -30,6 +31,7 @@ export default function WhatsAppDropdown({
   message,
   buttonText = 'Acción',
   className = '',
+  iconClassName = '',
 }: WhatsAppDropdownProps) {
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -71,7 +73,7 @@ export default function WhatsAppDropdown({
           aria-hidden
           src="/svg/whatsapp.svg"
           alt="Whatsapp icon"
-          className="mr-2"
+          className={`mr-2 ${iconClassName}`}
           width={20}
           height={20}
         />
