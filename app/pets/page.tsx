@@ -1,6 +1,17 @@
+import type { Metadata } from 'next'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import PhotographyBackdrop from '../components/PhotographyBackdrop'
+
+export const metadata: Metadata = {
+  title: 'Fondos para Mascotas',
+  description: 'Fondos fotográficos especiales para sesiones con mascotas. Diseños únicos para retratos de pets llenos de personalidad.',
+  openGraph: {
+    title: 'Fondos para Mascotas | Innova',
+    description: 'Diseños exclusivos para fotografía de mascotas.',
+    url: 'https://www.innova54.com/pets',
+  },
+}
 
 const backdrops = [
   { id: 0, name: 'Enchanted Forest', image: '/images/innpets/innpets-1.jpg', title: '', subtitle: '' },

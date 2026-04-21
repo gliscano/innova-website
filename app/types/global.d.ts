@@ -12,6 +12,11 @@ declare global {
         [key: string]: unknown
       }
     ) => void
+    fbq: (
+      command: 'init' | 'track' | 'trackCustom',
+      eventNameOrPixelId: string,
+      params?: Record<string, unknown>
+    ) => void
   }
 }
 

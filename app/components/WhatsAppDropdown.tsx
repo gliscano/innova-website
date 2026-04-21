@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { trackWhatsAppClick } from '@/app/utils/tracking'
 
 export interface DefaultOptions {
   label: string
@@ -57,7 +58,8 @@ export default function WhatsAppDropdown({
     setIsOpen(!isOpen)
   }
 
-  const handleOptionClick = () => {
+  const handleOptionClick = (label: string) => {
+    trackWhatsAppClick(label)
     setIsOpen(false)
   }
 
@@ -96,7 +98,7 @@ export default function WhatsAppDropdown({
               href={`https://wa.me/${option.phoneNumber}?text=${encodeURIComponent(message)}`}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={handleOptionClick}
+              onClick={() => handleOptionClick(option.label)}
               className="block px-4 py-3 text-black hover:bg-gray-100 transition-colors duration-150 text-left border-b border-gray-100 last:border-b-0"
             >
               {option.label}

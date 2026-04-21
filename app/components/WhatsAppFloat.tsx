@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { defaultOptions } from './WhatsAppDropdown'
 import { useSelectedSize } from '../context/SelectedSizeContext'
+import { trackWhatsAppClick } from '@/app/utils/tracking'
 
 const DEFAULT_MESSAGE = "Hola! Quiero consultar sobre sus fondos fotográficos"
 
@@ -38,7 +39,7 @@ export default function WhatsAppFloat() {
               href={`https://wa.me/${option.phoneNumber}?text=${encodeURIComponent(DEFAULT_MESSAGE)}`}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => setIsOpen(false)}
+              onClick={() => { trackWhatsAppClick(option.label); setIsOpen(false) }}
               className="flex items-center gap-2 px-4 py-3 hover:bg-green-50 text-sm text-gray-800 border-b border-gray-100 last:border-b-0 transition-colors"
             >
               <Image src="/svg/whatsapp.svg" alt="" width={16} height={16} aria-hidden />

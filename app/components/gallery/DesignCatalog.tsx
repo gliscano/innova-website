@@ -7,11 +7,13 @@ import { useRouter } from "next/navigation"
 import { useProductSearch } from "../../hooks/useProductSearch"
 import { ProductGridSkeleton } from "./ProductSkeleton"
 import { SearchIcon } from "../icons"
+import { trackSearch } from "@/app/utils/tracking"
 
 
 export default function InnovaCatalog() {
   const router = useRouter()
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const searchTrackedRef = useRef(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [categorySearchTerm, setCategorySearchTerm] = useState("")
   
@@ -80,6 +82,14 @@ export default function InnovaCatalog() {
     if (value.length <= 25) {
       setSearchTerm(value)
       setCategorySearchTerm(value)
+      // Fire once per search session when the user has typed at least 3 characters
+      if (value.length >= 3 && !searchTrackedRef.current) {
+        trackSearch(value)
+        searchTrackedRef.current = true
+      }
+      if (value.length === 0) {
+        searchTrackedRef.current = false
+      }
     }
   }
 

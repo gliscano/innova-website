@@ -2,6 +2,7 @@ import './globals.css'
 import './fonts.css'
 import { Inter } from 'next/font/google'
 import Script from 'next/script'
+import type { Metadata } from 'next'
 import WhatsAppFloat from './components/WhatsAppFloat'
 import { SelectedSizeProvider } from './context/SelectedSizeContext'
 
@@ -13,9 +14,29 @@ const inter = Inter({
   fallback: ['system-ui', 'arial'],
 })
 
-export const metadata = {
-  title: 'Innova - Backdrops e Insumos de fotografía',
-  description: 'Fondos fotográficos (backdrops) y props para crear una experiencia de otro nivel',
+export const metadata: Metadata = {
+  metadataBase: new URL('https://www.innova54.com'),
+  title: {
+    default: 'Innova — Backdrops e Insumos de Fotografía',
+    template: '%s | Innova',
+  },
+  description: 'Fondos fotográficos (backdrops) y props para crear una experiencia de otro nivel. Diseños exclusivos para fotógrafos y decoradores en Argentina.',
+  openGraph: {
+    siteName: 'Innova',
+    locale: 'es_AR',
+    type: 'website',
+    images: [
+      {
+        url: '/svg/innova-logo.svg',
+        width: 512,
+        height: 512,
+        alt: 'Innova — Backdrops e Insumos de Fotografía',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
 }
 
 export default function RootLayout({
