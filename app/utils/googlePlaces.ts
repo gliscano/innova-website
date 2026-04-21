@@ -25,14 +25,21 @@ export async function getPlaceReviews(): Promise<GoogleReview[] | null> {
     url.searchParams.set('key', apiKey)
 
     const res = await fetch(url.toString(), { next: { revalidate: 3600 } })
-    if (!res.ok) return null
+    if (!res.ok) {
+      console.error('[GooglePlaces] HTTP error:', res.status, res.statusText)
+      return null
+    }
 
     const data = await res.json() as {
       status: string
+      error_message?: string
       result?: { reviews?: GoogleReview[] }
     }
 
-    if (data.status !== 'OK' || !data.result?.reviews) return null
+    if (data.status !== 'OK' || !data.result?.reviews) {
+      console.error('[GooglePlaces] API error:', data.status, data.error_message ?? '')
+      return null
+    }
 
     // Only show reviews with text and at least 4 stars
     return data.result.reviews.filter((r) => r.text?.trim() && r.rating >= 4)
