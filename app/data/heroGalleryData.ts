@@ -6,6 +6,8 @@ export interface ContentSet {
   subtitle: string
   description: string
   buttonText: string
+  secondaryButtonText?: string
+  secondaryButtonUrl?: string
   stats: Array<{ value: string; label: string }>
   gradientFrom: string
   gradientVia: string
@@ -22,19 +24,21 @@ export interface ImageSet {
 
 export const contentSets: ContentSet[] = [
   {
-    title: "Creatividad sin límites",
-    highlight: "Diseño y Tecnología",
-    subtitle: "que elevan tus producciones",
-    description: "Fondos fotográficos y Diseños digitales creados para inspirar.",
-    buttonText: "Ver Diseños",
+    title: "Tu backdrop",
+    highlight: "personalizado",
+    subtitle: "en dos semanas.",
+    description: "Alta definición · Impresión RGB real.",
+    buttonText: "Inspirarme con diseños",
+    secondaryButtonText: "Quiero entrega inmediata",
+    secondaryButtonUrl: "https://store.innova54.com",
     stats: [
-      { value: "50+", label: "Estilos artísticos" },
-      { value: "10K+", label: "Diseños disponibles" },
-      { value: "RGB", label: "Colores verdaderos" },
+      { value: "+10k", label: "Diseños" },
+      { value: "+50", label: "Estilos" },
+      { value: "5.0", label: "+75 Reseñas" },
     ],
-    gradientFrom: "from-blue-500",
-    gradientVia: "via-teal-500 ",
-    gradientTo: "to-teal-700",
+    gradientFrom: "from-amber-500",
+    gradientVia: "via-orange-400",
+    gradientTo: "to-rose-400",
   }
 ]
 

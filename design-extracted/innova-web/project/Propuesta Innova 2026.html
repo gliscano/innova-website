@@ -1,0 +1,1924 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Innova 2026 — Propuesta de evolución</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="proposal-styles.css" />
+  <style>
+    /* ===================== SLIDES ===================== */
+
+    /* ---------- 01 Cover ---------- */
+    .cover { padding: 0; }
+    .cover__main {
+      flex: 1;
+      padding: 96px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 32px;
+    }
+    .cover__top {
+      display: flex; align-items: baseline; justify-content: space-between;
+    }
+    .cover__brand {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 32px;
+      letter-spacing: -0.01em;
+    }
+    .cover__brand small {
+      font-family: var(--font-sans);
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-2);
+      margin-left: 14px;
+    }
+    .cover__meta {
+      font-family: var(--font-mono);
+      font-size: 18px;
+      color: var(--ink-2);
+      letter-spacing: 0.05em;
+    }
+    .cover__title {
+      align-self: end;
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 232px;
+      line-height: 0.86;
+      letter-spacing: -0.035em;
+      color: var(--ink);
+    }
+    .cover__title em { font-style: italic; color: var(--accent); }
+    .cover__title sup {
+      font-size: 0.18em;
+      font-family: var(--font-sans);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      vertical-align: top;
+      color: var(--ink-2);
+      margin-left: 8px;
+      top: 0;
+    }
+    .cover__bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-bottom: 36px;
+    }
+    .cover__sub {
+      font-size: 28px;
+      max-width: 32ch;
+      line-height: 1.4;
+      color: var(--ink-2);
+    }
+    .cover__sub strong { color: var(--ink); font-weight: 600; }
+    .cover__details {
+      text-align: right;
+      font-size: 18px;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+    .cover__details b { display: block; color: var(--ink); font-weight: 600; }
+    .cover__strip {
+      display: flex;
+      height: 80px;
+    }
+    .cover__strip > div { flex: 1; }
+
+    /* ---------- 02 Diagnóstico ---------- */
+    .diag__grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+      align-items: end;
+      margin-bottom: 56px;
+    }
+    .diag__obs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      padding-top: 48px;
+      border-top: 1px solid var(--line);
+    }
+    .diag__obs h4 {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 28px;
+      line-height: 1.1;
+      margin: 0 0 12px;
+    }
+    .diag__obs p {
+      font-size: 17px;
+      line-height: 1.55;
+      color: var(--ink-2);
+      margin: 0;
+    }
+
+    /* ---------- 03 Mapa de oportunidades ---------- */
+    .opp-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .opp {
+      padding: 32px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .opp__num {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+    .opp__title {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 32px;
+      line-height: 1.05;
+      letter-spacing: -0.015em;
+      margin: 0 0 12px;
+    }
+    .opp__desc {
+      font-size: 15px;
+      line-height: 1.5;
+      color: var(--ink-2);
+      margin: 0;
+    }
+    .opp__impact {
+      margin-top: 24px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .opp__impact-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+    }
+    .opp--featured {
+      background: var(--ink);
+      color: var(--bg);
+      border-color: var(--ink);
+    }
+    .opp--featured .opp__num { color: var(--gold); }
+    .opp--featured .opp__desc { color: rgba(255,255,255,0.7); }
+
+    /* ---------- 04+ Mockup slides ---------- */
+    .mock-slide__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 24px;
+    }
+    .mock-slide__title-wrap {
+      max-width: 60%;
+    }
+    .mock-slide__header .h2 { font-size: 56px; margin-bottom: 14px; }
+    .mock-slide__header .body { font-size: 16px; max-width: 40ch; line-height: 1.5; }
+    .mock-slide__header .slide__eyebrow { margin-bottom: 12px; }
+    .mock-slide__num-big {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 72px;
+      line-height: 0.9;
+      color: var(--accent);
+      opacity: 0.8;
+    }
+    .mock-slide__body {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 64px;
+      align-items: center;
+      padding-bottom: 56px;
+      min-height: 0;
+    }
+    .mock-slide__phone-area {
+      display: flex;
+      gap: 40px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* ---------- Hero mockup ---------- */
+    .m-hero { background: linear-gradient(180deg, #2A2520 0%, #1A1714 100%); color: white; height: 100%; position: relative; padding: 0; }
+    .m-hero__photo {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(120% 60% at 50% 0%, rgba(200,84,61,0.45), transparent 60%),
+        radial-gradient(80% 50% at 80% 80%, rgba(196,156,88,0.3), transparent 70%),
+        linear-gradient(180deg, #3A2E26 0%, #1A1714 100%);
+    }
+    .m-hero__photo::before {
+      content: ""; position: absolute; inset: 0;
+      background:
+        repeating-linear-gradient(135deg, transparent 0 12px, rgba(255,255,255,0.02) 12px 13px);
+    }
+    /* siluetas decorativas */
+    .m-hero__silh {
+      position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 70%; height: 50%;
+      background:
+        radial-gradient(50% 70% at 50% 100%, rgba(0,0,0,0.5), transparent 70%);
+    }
+    .m-hero__content {
+      position: absolute; inset: 0;
+      padding: 80px 24px 32px;
+      display: flex; flex-direction: column;
+      gap: 16px;
+    }
+    .m-hero__chip {
+      align-self: flex-start;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 12px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(8px);
+      border-radius: 999px;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+    .m-hero__chip-dot { width: 6px; height: 6px; border-radius: 50%; background: #6FCF8E; box-shadow: 0 0 8px #6FCF8E; }
+    .m-hero__title {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 42px;
+      line-height: 0.96;
+      letter-spacing: -0.02em;
+      margin: auto 0 0;
+    }
+    .m-hero__title em { font-style: italic; color: var(--gold); font-weight: 400; }
+    .m-hero__sub {
+      font-size: 13px;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.75);
+      margin: 0;
+      max-width: 28ch;
+    }
+    .m-hero__ctas { display: flex; gap: 8px; margin-top: 8px; }
+    .m-hero__cta {
+      padding: 14px 18px;
+      background: white; color: var(--ink);
+      border-radius: 999px;
+      font-size: 13px; font-weight: 600;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .m-hero__cta--ghost {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+    }
+    .m-hero__trust {
+      display: flex; gap: 16px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 11px;
+      color: rgba(255,255,255,0.6);
+    }
+    .m-hero__trust b { color: white; font-weight: 600; display: block; }
+
+    /* ---------- Hero BEFORE ---------- */
+    .m-hero-old__content {
+      position: absolute; inset: 0; padding: 80px 24px 24px;
+      display: flex; flex-direction: column; gap: 12px;
+      background: linear-gradient(180deg, #FBF7F1 0%, #F4EEE3 100%);
+    }
+    .m-hero-old__title {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 500;
+      line-height: 1;
+      margin: auto 0 8px;
+      color: var(--ink);
+    }
+    .m-hero-old__sub {
+      font-size: 13px; color: var(--ink-2);
+      line-height: 1.5;
+      margin: 0;
+    }
+    .m-hero-old__metrics {
+      display: flex; gap: 16px;
+      margin-top: 12px;
+      font-size: 11px;
+      color: var(--ink-2);
+    }
+    .m-hero-old__metrics b { display: block; color: var(--ink); font-weight: 600; font-size: 18px; }
+    .m-hero-old__cta {
+      padding: 12px 18px; background: var(--ink); color: var(--bg);
+      border-radius: 999px;
+      font-size: 13px; font-weight: 600;
+      align-self: flex-start;
+      margin-top: 8px;
+    }
+
+    /* ---------- Wizard / configurador ---------- */
+    .m-wiz { padding: 70px 0 0; background: var(--bg); height: 100%; display: flex; flex-direction: column; }
+    .m-wiz__top { padding: 0 20px 16px; }
+    .m-wiz__back {
+      font-size: 13px; color: var(--ink-2);
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-bottom: 16px;
+    }
+    .m-wiz__steps {
+      display: flex; gap: 4px; margin-bottom: 20px;
+    }
+    .m-wiz__step { flex: 1; height: 3px; background: var(--line); border-radius: 2px; }
+    .m-wiz__step--active { background: var(--accent); }
+    .m-wiz__step--done { background: var(--ink); }
+    .m-wiz__step-lbl {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-2);
+      letter-spacing: 0.05em;
+    }
+    .m-wiz__h {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 32px;
+      line-height: 1;
+      letter-spacing: -0.015em;
+      margin: 14px 0 8px;
+      padding: 0 20px;
+    }
+    .m-wiz__hint {
+      font-size: 13px; color: var(--ink-2);
+      padding: 0 20px 20px;
+      margin: 0;
+    }
+    .m-wiz__opts {
+      flex: 1;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      align-content: start;
+    }
+    .m-wiz__opt {
+      min-width: 0;
+      aspect-ratio: 1;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: white;
+      position: relative;
+    }
+    .m-wiz__opt--sel {
+      border-color: var(--ink);
+      border-width: 2px;
+      padding: 9px;
+      box-shadow: 0 0 0 4px rgba(31,26,20,0.06);
+    }
+    .m-wiz__opt-thumb {
+      height: 48px;
+      border-radius: 6px;
+      background: var(--bg-3);
+      position: relative;
+      overflow: hidden;
+    }
+    .m-wiz__opt-title { font-size: 12px; font-weight: 600; margin: 0; line-height: 1.15; }
+    .m-wiz__opt-meta { font-size: 10px; color: var(--ink-2); margin: 2px 0 0; line-height: 1.2; }
+    .m-wiz__opt-check {
+      position: absolute; top: 6px; right: 6px;
+      width: 18px; height: 18px;
+      border-radius: 50%; background: var(--ink); color: white;
+      display: grid; place-items: center;
+      font-size: 10px; font-weight: 700;
+    }
+    .m-wiz__bottom {
+      padding: 16px 20px 24px;
+      border-top: 1px solid var(--line);
+      background: white;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .m-wiz__bottom-info { font-size: 12px; color: var(--ink-2); }
+    .m-wiz__bottom-info b { color: var(--ink); font-size: 16px; font-weight: 600; display: block; }
+    .m-wiz__continue {
+      padding: 14px 22px;
+      background: var(--ink); color: var(--bg);
+      border-radius: 999px;
+      font-size: 13px; font-weight: 600;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+
+    /* ---------- Catálogo preview ---------- */
+    .m-cat { padding: 70px 0 0; background: var(--bg); height: 100%; display: flex; flex-direction: column; }
+    .m-cat__head { padding: 8px 20px 16px; }
+    .m-cat__eye {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 8px;
+    }
+    .m-cat__t {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 36px;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      margin: 0;
+    }
+    .m-cat__t em { font-style: italic; color: var(--ink-2); }
+    .m-cat__controls {
+      padding: 0 20px 14px;
+      display: flex; gap: 8px;
+    }
+    .m-cat__search {
+      flex: 1; height: 36px;
+      background: white; border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0 12px;
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; color: var(--ink-3);
+    }
+    .m-cat__sort {
+      height: 36px; padding: 0 12px;
+      background: white; border: 1px solid var(--line);
+      border-radius: 10px;
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600;
+    }
+    .m-cat__grid {
+      flex: 1;
+      padding: 0 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      align-content: start;
+    }
+    .m-cat__card {
+      min-width: 0;
+      aspect-ratio: 4 / 5;
+      border-radius: 10px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 8px;
+      color: white;
+    }
+    .m-cat__card .m-cat__pill {
+      position: absolute; top: 8px; right: 8px;
+      padding: 3px 8px;
+      font-size: 10px; font-weight: 700;
+      background: rgba(255,255,255,0.95);
+      border-radius: 999px;
+      backdrop-filter: blur(6px);
+      width: auto;
+    }
+    .m-cat__card h5 {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 17px;
+      line-height: 1;
+      margin: 0 0 4px;
+      position: relative; z-index: 2;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    .m-cat__card span {
+      font-size: 10px;
+      font-weight: 600;
+      opacity: 0.9;
+      position: relative; z-index: 2;
+    }
+    .m-cat__card::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.4) 100%);
+    }
+
+    /* Quicklook overlay */
+    .m-cat__quick {
+      position: absolute;
+      top: 280px; left: 12px; right: 12px;
+      background: white;
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: 0 30px 50px -10px rgba(0,0,0,0.25);
+      z-index: 30;
+    }
+    .m-cat__quick-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .m-cat__quick-thumb {
+      aspect-ratio: 1;
+      border-radius: 8px;
+      background: var(--bg-3);
+    }
+    .m-cat__quick-title { font-family: var(--font-display); font-size: 18px; font-weight: 500; margin: 0 0 8px; line-height: 1; }
+    .m-cat__quick-cta {
+      width: 100%;
+      padding: 10px;
+      background: var(--ink); color: var(--bg);
+      border-radius: 999px;
+      font-size: 12px; font-weight: 600;
+      text-align: center;
+    }
+
+    /* ---------- B2B / Marcas ---------- */
+    .m-b2b { background: #0F0E0D; color: white; height: 100%; padding: 70px 0 0; display: flex; flex-direction: column; position: relative; }
+    .m-b2b__bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(60% 40% at 80% 20%, rgba(196,156,88,0.18), transparent 60%),
+        radial-gradient(50% 35% at 10% 90%, rgba(200,84,61,0.15), transparent 70%);
+    }
+    .m-b2b__head { padding: 14px 18px 16px; position: relative; }
+    .m-b2b__chip {
+      display: inline-block;
+      padding: 4px 10px;
+      border: 1px solid rgba(196,156,88,0.4);
+      border-radius: 999px;
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+    .m-b2b__t {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 30px;
+      line-height: 0.98;
+      letter-spacing: -0.015em;
+      margin: 0 0 8px;
+    }
+    .m-b2b__t em { font-style: italic; color: var(--gold); font-weight: 400; }
+    .m-b2b__lede {
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.45;
+      margin: 0 0 14px;
+      max-width: 32ch;
+    }
+    .m-b2b__cta {
+      align-self: flex-start;
+      padding: 10px 16px;
+      background: var(--gold); color: #0F0E0D;
+      border-radius: 999px;
+      font-size: 11px; font-weight: 700;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .m-b2b__clients {
+      padding: 12px 18px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+    }
+    .m-b2b__clients-lbl {
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 8px;
+    }
+    .m-b2b__logos {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      align-items: center;
+    }
+    .m-b2b__logo {
+      height: 16px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 3px;
+    }
+    .m-b2b__cases { padding: 12px 18px; position: relative; flex: 1; min-height: 0; }
+    .m-b2b__case {
+      display: flex; gap: 8px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      align-items: center;
+    }
+    .m-b2b__case:last-child { border-bottom: none; }
+    .m-b2b__case-thumb {
+      width: 36px; height: 36px;
+      border-radius: 7px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      flex-shrink: 0;
+    }
+    .m-b2b__case-2 .m-b2b__case-thumb { background: linear-gradient(135deg, var(--gold), #8C5A3C); }
+    .m-b2b__case-3 .m-b2b__case-thumb { background: linear-gradient(135deg, #2C3554, #5A3373); }
+    .m-b2b__case h6 { font-size: 11px; font-weight: 600; margin: 0 0 2px; line-height: 1.2; }
+    .m-b2b__case p { font-size: 10px; color: rgba(255,255,255,0.55); margin: 0; line-height: 1.3; }
+
+    /* ---------- Newsletter ---------- */
+    .m-news { background: var(--bg); height: 100%; padding: 70px 0 0; display: flex; flex-direction: column; }
+    .m-news__hero {
+      flex: 1;
+      padding: 24px 20px;
+      display: flex; flex-direction: column;
+      justify-content: center;
+      background:
+        linear-gradient(180deg, transparent 0%, var(--bg-2) 100%);
+      position: relative;
+    }
+    .m-news__badge {
+      align-self: flex-start;
+      padding: 8px 14px;
+      background: var(--accent); color: white;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      margin-bottom: 16px;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .m-news__t {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 40px;
+      line-height: 0.98;
+      letter-spacing: -0.02em;
+      margin: 0 0 12px;
+    }
+    .m-news__t em { font-style: italic; color: var(--accent); }
+    .m-news__list {
+      list-style: none; padding: 0; margin: 0 0 20px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .m-news__list li {
+      font-size: 13px;
+      color: var(--ink);
+      display: flex; gap: 8px; align-items: flex-start;
+    }
+    .m-news__list li::before {
+      content: "✓";
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .m-news__form {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 6px 6px 6px 14px;
+      display: flex; align-items: center;
+      gap: 8px;
+    }
+    .m-news__input { flex: 1; font-size: 13px; color: var(--ink-3); padding: 10px 0; }
+    .m-news__btn {
+      padding: 10px 14px;
+      background: var(--ink); color: var(--bg);
+      border-radius: 10px;
+      font-size: 12px; font-weight: 600;
+    }
+    .m-news__legal {
+      font-size: 10px; color: var(--ink-3);
+      margin: 10px 0 0;
+      text-align: center;
+    }
+
+    /* ---------- Unify flow ---------- */
+    .unify-diag {
+      display: flex; align-items: stretch;
+      gap: 24px; margin-bottom: 32px;
+    }
+    .unify-col {
+      flex: 1;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: white;
+      display: flex; flex-direction: column;
+      gap: 14px;
+    }
+    .unify-col h4 {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 26px;
+      margin: 0 0 4px;
+    }
+    .unify-col__lbl { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-2); font-weight: 600; }
+    .unify-col__nodes {
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .unify-node {
+      padding: 12px 14px;
+      background: var(--bg);
+      border-radius: 10px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--ink-2);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .unify-node b { color: var(--ink); font-family: var(--font-sans); font-size: 13px; font-weight: 600; }
+    .unify-arrow {
+      display: flex; align-items: center;
+      font-size: 32px;
+      color: var(--accent);
+    }
+    .unify-col--after {
+      background: var(--ink); color: var(--bg);
+      border-color: var(--ink);
+    }
+    .unify-col--after h4 { color: white; }
+    .unify-col--after .unify-col__lbl { color: var(--gold); }
+    .unify-col--after .unify-node {
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.7);
+    }
+    .unify-col--after .unify-node b { color: white; }
+
+    /* ---------- FAQ contextual ---------- */
+    .m-faq { background: var(--bg); height: 100%; padding: 70px 0 0; display: flex; flex-direction: column; overflow: hidden; }
+    .m-faq__crumb { padding: 8px 20px; font-size: 11px; color: var(--ink-2); }
+    .m-faq__t {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 28px;
+      letter-spacing: -0.01em;
+      margin: 0;
+      padding: 0 20px 14px;
+    }
+    .m-faq__sizes { padding: 0 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .m-faq__size {
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+    }
+    .m-faq__size--sel {
+      border-color: var(--ink);
+      border-width: 2px;
+      padding: 11px;
+    }
+    .m-faq__size-d {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 500;
+    }
+    .m-faq__size-l { font-size: 11px; color: var(--ink-2); margin-top: 2px; }
+    .m-faq__size-p { font-size: 12px; font-weight: 600; margin-top: 8px; color: var(--ink); }
+    .m-faq__inline {
+      margin: 16px 16px 0;
+      padding: 14px;
+      background: linear-gradient(180deg, white, var(--bg-2));
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+    .m-faq__inline-lbl {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .m-faq__inline-q {
+      font-size: 13px; font-weight: 600; margin: 0 0 4px;
+    }
+    .m-faq__inline-a {
+      font-size: 12px; color: var(--ink-2); margin: 0; line-height: 1.45;
+    }
+    .m-faq__inline-more {
+      font-size: 11px; font-weight: 600;
+      color: var(--accent);
+      margin-top: 8px;
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+
+    /* ---------- Roadmap ---------- */
+    .road {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .road__col {
+      padding: 32px;
+      border-radius: 22px;
+      display: flex; flex-direction: column; gap: 18px;
+      position: relative;
+    }
+    .road__col--1 { background: var(--bg-2); }
+    .road__col--2 { background: var(--bg-3); }
+    .road__col--3 { background: var(--ink); color: var(--bg); }
+    .road__col--3 .road__phase-lbl { color: var(--gold); }
+    .road__col--3 .road__item { border-color: rgba(255,255,255,0.1); }
+    .road__col--3 .road__item-desc { color: rgba(255,255,255,0.6); }
+    .road__phase-lbl {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+    }
+    .road__phase-h {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 36px;
+      line-height: 1;
+      margin: 0;
+    }
+    .road__phase-time {
+      font-size: 13px;
+      color: var(--ink-2);
+    }
+    .road__col--3 .road__phase-time { color: rgba(255,255,255,0.55); }
+    .road__items { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+    .road__item {
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.5);
+    }
+    .road__col--3 .road__item { background: rgba(255,255,255,0.04); }
+    .road__item-title { font-size: 15px; font-weight: 600; margin: 0 0 4px; }
+    .road__item-desc { font-size: 12px; color: var(--ink-2); margin: 0; line-height: 1.4; }
+
+    /* ---------- Closing ---------- */
+    .close__main {
+      flex: 1;
+      display: flex; flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 36px;
+    }
+    .close__title {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 184px;
+      line-height: 0.9;
+      letter-spacing: -0.03em;
+      margin: 0;
+    }
+    .close__title em { font-style: italic; color: var(--accent); }
+    .close__sub {
+      font-size: 24px;
+      color: var(--ink-2);
+      max-width: 36ch;
+      line-height: 1.4;
+    }
+    .close__contact {
+      display: flex; gap: 48px;
+      padding-top: 32px;
+      border-top: 1px solid var(--line);
+    }
+    .close__contact-item {
+      display: flex; flex-direction: column;
+    }
+    .close__contact-item span {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-2);
+      margin-bottom: 6px;
+    }
+    .close__contact-item b {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 500;
+      color: var(--ink);
+    }
+  </style>
+</head>
+<body>
+<deck-stage>
+
+  <!-- ============================================ -->
+  <!-- 01 · COVER -->
+  <!-- ============================================ -->
+  <section data-screen-label="01 Cover">
+    <div class="slide cover">
+      <div class="cover__main">
+        <header class="cover__top">
+          <div class="cover__brand">innova <small>backdrops · ar</small></div>
+          <div class="cover__meta">Propuesta interna · v1.0 · 2026</div>
+        </header>
+
+        <h1 class="cover__title">
+          Innova<sup>2026</sup><br>
+          <em>Evolución</em>
+        </h1>
+
+        <div class="cover__bottom">
+          <p class="cover__sub">
+            <strong>Siete oportunidades</strong> para subir la conversión y unificar la experiencia, sin perder el alma cálida de la marca.
+          </p>
+          <div class="cover__details">
+            <b>Alcance</b>
+            Sitio público + tienda<br>
+            <b>Foco</b>
+            Mobile (95% del tráfico)<br>
+            <b>Plazo sugerido</b>
+            Q1 — Q3 2026
+          </div>
+        </div>
+      </div>
+
+      <div class="cover__strip">
+        <div style="background:#C56A4B"></div>
+        <div style="background:#F2C879"></div>
+        <div style="background:#E5C5B5"></div>
+        <div style="background:#4A6048"></div>
+        <div style="background:#2C3554"></div>
+        <div style="background:#C896A8"></div>
+        <div style="background:#B58947"></div>
+        <div style="background:#A66C4B"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- 02 · DIAGNÓSTICO -->
+  <!-- ============================================ -->
+  <section data-screen-label="02 Diagnóstico">
+    <div class="slide">
+      <span class="slide__eyebrow">Punto de partida</span>
+      <h2 class="h2">El sitio funciona.<br><em>Hay margen para que convierta mejor.</em></h2>
+
+      <div class="diag__grid">
+        <div>
+          <div class="stat__num">95<span style="font-size:0.5em">%</span></div>
+          <div class="stat__lbl">del tráfico es mobile (360–432px)</div>
+        </div>
+        <div>
+          <div class="stat__num">31</div>
+          <div class="stat__lbl">catálogos temáticos · 8.000+ diseños</div>
+        </div>
+        <div>
+          <div class="stat__num">3</div>
+          <div class="stat__lbl">dominios distintos en el viaje de compra</div>
+        </div>
+        <div>
+          <div class="stat__num">~70<span style="font-size:0.5em">%</span></div>
+          <div class="stat__lbl">de las conversiones cierran por WhatsApp</div>
+        </div>
+      </div>
+
+      <div class="diag__obs">
+        <div>
+          <h4>Qué funciona bien</h4>
+          <p>Catálogo robusto, copy emocional consistente, prueba social real desde Google Maps, stack moderno (Next.js, WebP). La marca tiene identidad propia y se percibe.</p>
+        </div>
+        <div>
+          <h4>Qué deja valor en la mesa</h4>
+          <p>El hero no diferencia, la guía de tamaños no convierte, no hay un vertical claro para marcas, la compra se fragmenta entre tres dominios y el FAQ está al final cuando la duda nace antes.</p>
+        </div>
+      </div>
+
+      <div class="slide__num">02 / 12</div>
+      <div class="slide__brand">innova 2026</div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- 03 · MAPA DE OPORTUNIDADES -->
+  <!-- ============================================ -->
+  <section data-screen-label="03 Mapa de oportunidades">
+    <div class="slide">
+      <span class="slide__eyebrow">Hoja de ruta · 7 movimientos</span>
+      <h2 class="h2" style="margin-bottom: 48px;">Las siete <em>oportunidades</em>.</h2>
+
+      <div class="opp-grid">
+        <div class="opp opp--featured">
+          <div>
+            <div class="opp__num">01 · Quick win</div>
+            <h3 class="opp__title">Hero diferencial</h3>
+            <p class="opp__desc">Liderar con un beneficio único y concreto en lugar de claim genérico.</p>
+          </div>
+          <div class="opp__impact">
+            <span class="opp__impact-dot" style="background:#6FCF8E"></span>
+            Impacto alto · Esfuerzo bajo
+          </div>
+        </div>
+
+        <div class="opp">
+          <div>
+            <div class="opp__num">02 · Big bet</div>
+            <h3 class="opp__title">Configurador visual</h3>
+            <p class="opp__desc">De buscar a guiar: wizard que combina sesión, espacio, estilo y tamaño.</p>
+          </div>
+          <div class="opp__impact">
+            <span class="opp__impact-dot" style="background:#C8543D"></span>
+            Impacto muy alto · Esfuerzo alto
+          </div>
+        </div>
+
+        <div class="opp">
+          <div>
+            <div class="opp__num">03 · Iteración</div>
+            <h3 class="opp__title">Catálogo con preview</h3>
+            <p class="opp__desc">Cards minimalistas + quick-look con 3-6 diseños del catálogo.</p>
+          </div>
+          <div class="opp__impact">
+            <span class="opp__impact-dot" style="background:#6FCF8E"></span>
+            Impacto alto · Esfuerzo bajo
+          </div>
+        </div>
+
+        <div class="opp opp--featured">
+          <div>
+            <div class="opp__num">04 · Nuevo vertical</div>
+            <h3 class="opp__title">Innova para Marcas</h3>
+            <p class="opp__desc">Landing B2B propia con casos, escala y modalidad corporativa.</p>
+          </div>
+          <div class="opp__impact">
+            <span class="opp__impact-dot" style="background:#C8543D"></span>
+            Impacto muy alto · Esfuerzo medio
+          </div>
+        </div>
+
+        <div class="opp">
+          <div>
+            <div class="opp__num">05 · Quick win</div>
+            <h3 class="opp__title">Newsletter incentivado</h3>
+            <p class="opp__desc">"10% off + drops mensuales" en vez de "Suscribite gratis".</p>
+          </div>
+          <div class="opp__impact">
+            <span class="opp__impact-dot" style="background:#6FCF8E"></span>
+            Impacto medio · Esfuerzo bajo
+          </div>
+        </div>
+
+        <div class="opp">
+          <div>
+            <div class="opp__num">06 · Big bet</div>
+            <h3 class="opp__title">Showroom + Tienda unificados</h3>
+            <p class="opp__desc">De 3 dominios a 1 experiencia: catálogo → tamaño → checkout.</p>
+          </div>
+          <div class="opp__impact">
+            <span class="opp__impact-dot" style="background:#C8543D"></span>
+            Impacto muy alto · Esfuerzo alto
+          </div>
+        </div>
+
+        <div class="opp">
+          <div>
+            <div class="opp__num">07 · Iteración</div>
+            <h3 class="opp__title">FAQ contextual</h3>
+            <p class="opp__desc">Respuestas en el momento de la duda, no al final del scroll.</p>
+          </div>
+          <div class="opp__impact">
+            <span class="opp__impact-dot" style="background:#F2C879"></span>
+            Impacto medio · Esfuerzo bajo
+          </div>
+        </div>
+
+        <div class="opp" style="background: var(--bg-2); border: 1px dashed var(--line-2);">
+          <div>
+            <div class="opp__num" style="color: var(--ink-2)">Bonus</div>
+            <h3 class="opp__title" style="color: var(--ink-2)">+ Sistema de diseño documentado</h3>
+            <p class="opp__desc">Base para que estas siete piezas evolucionen sin desviarse.</p>
+          </div>
+          <div class="opp__impact" style="color: var(--ink-2)">
+            <span class="opp__impact-dot" style="background:#9C8E7C"></span>
+            Habilitador transversal
+          </div>
+        </div>
+      </div>
+
+      <div class="slide__num">03 / 12</div>
+      <div class="slide__brand">innova 2026</div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- 04 · HERO DIFERENCIAL -->
+  <!-- ============================================ -->
+  <section data-screen-label="04 Hero diferencial">
+    <div class="slide">
+      <div class="mock-slide__header">
+        <div class="mock-slide__title-wrap">
+          <span class="slide__eyebrow">Oportunidad 01 · Quick win</span>
+          <h2 class="h2">Un hero que <em>promete algo</em>.</h2>
+          <p class="body">Hoy el claim "Creatividad sin límites" podría ser de cualquier marca creativa. Lo cambiamos por <strong>una promesa concreta</strong> que sólo Innova puede sostener: producción a medida, RGB real, entrega en 7 días en Argentina.</p>
+        </div>
+        <span class="mock-slide__num-big">04</span>
+      </div>
+
+      <div class="mock-slide__body">
+        <div class="col col--stack" style="gap: 20px;">
+          <div class="note">
+            <div class="note__label">Antes</div>
+            <p class="note__body"><strong>"Creatividad sin límites"</strong> + carrusel + 3 CTAs. El usuario tarda en entender qué se hace, en cuánto tiempo y por qué Innova vs. otro.</p>
+          </div>
+          <div class="note" style="background: var(--ink); color: var(--bg); border-color: var(--ink);">
+            <div class="note__label" style="color: var(--gold);">Después</div>
+            <p class="note__body" style="color: rgba(255,255,255,0.85);"><strong style="color: white;">Una promesa clara + prueba en vivo.</strong> "Tu backdrop a medida en 7 días" con chip de disponibilidad real, 2 CTAs (configurar / ver en stock), y 3 señales de confianza visibles sin scroll.</p>
+          </div>
+          <div class="tag-row" style="margin-top: 12px;">
+            <span class="pill pill--outline">Tiempo de entrega visible</span>
+            <span class="pill pill--outline">Stock real-time</span>
+            <span class="pill pill--outline">CTA segmentado</span>
+          </div>
+        </div>
+
+        <div class="mock-slide__phone-area">
+          <!-- Mobile BEFORE -->
+          <div class="phone" style="opacity: 0.55; transform: scale(0.88);">
+            <div class="phone__notch"></div>
+            <div class="phone__screen">
+              <div class="phone__status">
+                <span>9:41</span>
+                <span class="phone__status-icons"><span></span><span></span><span></span></span>
+              </div>
+              <div class="phone__viewport">
+                <div class="mnav"><span class="mnav__brand">innova</span><span class="mnav__icons">≡</span></div>
+                <div class="m-hero-old__content">
+                  <div style="display: flex; gap: 6px;">
+                    <span style="height: 6px; width: 6px; border-radius: 50%; background: var(--accent);"></span>
+                    <span style="height: 6px; width: 6px; border-radius: 50%; background: var(--line-2);"></span>
+                    <span style="height: 6px; width: 6px; border-radius: 50%; background: var(--line-2);"></span>
+                  </div>
+                  <h2 class="m-hero-old__title">Creatividad sin límites — Diseño y Tecnología que elevan tus producciones</h2>
+                  <p class="m-hero-old__sub">Fondos fotográficos y diseños digitales creados para inspirar.</p>
+                  <div class="m-hero-old__metrics">
+                    <div><b>50+</b>Estilos</div>
+                    <div><b>10K+</b>Diseños</div>
+                    <div><b>RGB</b>Colores</div>
+                  </div>
+                  <span class="m-hero-old__cta">Ver diseños →</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mobile AFTER -->
+          <div class="phone phone--lg">
+            <div class="phone__notch"></div>
+            <div class="phone__screen">
+              <div class="phone__status" style="color: white;">
+                <span>9:41</span>
+                <span class="phone__status-icons"><span style="background:white"></span><span style="background:white"></span><span style="background:white"></span></span>
+              </div>
+              <div class="phone__viewport" style="padding: 0;">
+                <div class="m-hero">
+                  <div class="m-hero__photo"></div>
+                  <div class="m-hero__silh"></div>
+                  <div class="m-hero__content">
+                    <span class="m-hero__chip"><span class="m-hero__chip-dot"></span> Entrega en 7 días · CABA</span>
+                    <h1 class="m-hero__title">Tu backdrop <em>a medida</em> en una semana.</h1>
+                    <p class="m-hero__sub">Diseño exclusivo, impresión RGB y costuras profesionales. Producido en Argentina.</p>
+                    <div class="m-hero__ctas">
+                      <a class="m-hero__cta">Configurar el mío →</a>
+                      <a class="m-hero__cta m-hero__cta--ghost">Ver en stock</a>
+                    </div>
+                    <div class="m-hero__trust">
+                      <div><b>8.000+</b>diseños</div>
+                      <div><b>4.9 ★</b>500+ reseñas</div>
+                      <div><b>RGB</b>color real</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide__num">04 / 12</div>
+      <div class="slide__brand">innova 2026</div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- 05 · CONFIGURADOR -->
+  <!-- ============================================ -->
+  <section data-screen-label="05 Configurador">
+    <div class="slide">
+      <div class="mock-slide__header">
+        <div class="mock-slide__title-wrap">
+          <span class="slide__eyebrow">Oportunidad 02 · Big bet</span>
+          <h2 class="h2">De buscar <em>a configurar</em>.</h2>
+          <p class="body">El "Ayudame a elegir" actual es un texto. Lo convertimos en un <strong>wizard de 4 pasos</strong> que entiende qué hacés y te lleva al producto correcto con precio ya calculado. Reduce fricción para perfiles no técnicos —decoradores, padres, marcas— sin sacrificar al fotógrafo que ya sabe.</p>
+        </div>
+        <span class="mock-slide__num-big">05</span>
+      </div>
+
+      <div class="mock-slide__body">
+        <div class="col col--stack" style="gap: 18px;">
+          <div style="display: flex; gap: 12px; align-items: stretch;">
+            <div style="flex:1; padding: 18px; background: var(--ink); color: var(--bg); border-radius: 14px;">
+              <div style="font-family: var(--font-mono); font-size: 11px; color: var(--gold); letter-spacing: 0.1em;">PASO 1</div>
+              <div style="font-family: var(--font-display); font-size: 22px; font-weight: 500; line-height: 1.1; margin-top: 6px;">Tipo de sesión</div>
+              <div style="font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 4px;">Newborn · Familiar · Evento · Empresarial</div>
+            </div>
+            <div style="flex:1; padding: 18px; background: var(--bg-2); border-radius: 14px;">
+              <div style="font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.1em;">PASO 2</div>
+              <div style="font-family: var(--font-display); font-size: 22px; font-weight: 500; line-height: 1.1; margin-top: 6px;">Espacio</div>
+              <div style="font-size: 11px; color: var(--ink-2); margin-top: 4px;">Estudio · Casa · Salón · Exterior</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: stretch;">
+            <div style="flex:1; padding: 18px; background: var(--bg-2); border-radius: 14px;">
+              <div style="font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.1em;">PASO 3</div>
+              <div style="font-family: var(--font-display); font-size: 22px; font-weight: 500; line-height: 1.1; margin-top: 6px;">Estilo</div>
+              <div style="font-size: 11px; color: var(--ink-2); margin-top: 4px;">Sugerencias del catálogo según pasos 1+2</div>
+            </div>
+            <div style="flex:1; padding: 18px; background: var(--bg-2); border-radius: 14px;">
+              <div style="font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.1em;">PASO 4</div>
+              <div style="font-family: var(--font-display); font-size: 22px; font-weight: 500; line-height: 1.1; margin-top: 6px;">Tamaño + precio</div>
+              <div style="font-size: 11px; color: var(--ink-2); margin-top: 4px;">Calculado · listo para pagar o consultar</div>
+            </div>
+          </div>
+
+          <div class="note" style="margin-top: 4px;">
+            <div class="note__label">Por qué importa</div>
+            <p class="note__body">El 70% del tráfico cierra por WhatsApp porque <strong>el sitio no termina la venta</strong>. Un configurador con precio acelera la decisión y reduce ese embudo manual.</p>
+          </div>
+        </div>
+
+        <div class="mock-slide__phone-area">
+          <div class="phone phone--lg">
+            <div class="phone__notch"></div>
+            <div class="phone__screen">
+              <div class="phone__status">
+                <span>9:41</span>
+                <span class="phone__status-icons"><span></span><span></span><span></span></span>
+              </div>
+              <div class="phone__viewport" style="padding-top: 50px;">
+                <div class="m-wiz">
+                  <div class="m-wiz__top">
+                    <span class="m-wiz__back">← Configurar mi backdrop</span>
+                    <div class="m-wiz__steps">
+                      <span class="m-wiz__step m-wiz__step--done"></span>
+                      <span class="m-wiz__step m-wiz__step--active"></span>
+                      <span class="m-wiz__step"></span>
+                      <span class="m-wiz__step"></span>
+                    </div>
+                    <span class="m-wiz__step-lbl">PASO 2 DE 4 · ESPACIO</span>
+                  </div>
+                  <h3 class="m-wiz__h">¿Dónde lo vas a usar?</h3>
+                  <p class="m-wiz__hint">Te recomendamos un tamaño según el espacio.</p>
+
+                  <div class="m-wiz__opts">
+                    <div class="m-wiz__opt">
+                      <div class="m-wiz__opt-thumb" style="background: linear-gradient(135deg, #E5C5B5, #C99E87);"></div>
+                      <div>
+                        <h6 class="m-wiz__opt-title">Estudio chico</h6>
+                        <p class="m-wiz__opt-meta">Hasta 3m de profundidad</p>
+                      </div>
+                    </div>
+                    <div class="m-wiz__opt m-wiz__opt--sel">
+                      <div class="m-wiz__opt-thumb" style="background: linear-gradient(135deg, #C56A4B, #F4E6D2);"></div>
+                      <div>
+                        <h6 class="m-wiz__opt-title">Casa / Living</h6>
+                        <p class="m-wiz__opt-meta">Espacio compacto</p>
+                      </div>
+                      <span class="m-wiz__opt-check">✓</span>
+                    </div>
+                    <div class="m-wiz__opt">
+                      <div class="m-wiz__opt-thumb" style="background: linear-gradient(135deg, #C2B5A3, #8C7C68);"></div>
+                      <div>
+                        <h6 class="m-wiz__opt-title">Salón de eventos</h6>
+                        <p class="m-wiz__opt-meta">Decoración temática</p>
+                      </div>
+                    </div>
+                    <div class="m-wiz__opt">
+                      <div class="m-wiz__opt-thumb" style="background: linear-gradient(135deg, #4A6048, #91A082);"></div>
+                      <div>
+                        <h6 class="m-wiz__opt-title">Exterior</h6>
+                        <p class="m-wiz__opt-meta">Aire libre</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="m-wiz__bottom">
+                    <div class="m-wiz__bottom-info">
+                      Recomendado<br>
+                      <b>2.9m × 2m</b>
+                    </div>
+                    <a class="m-wiz__continue">Continuar →</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide__num">05 / 12</div>
+      <div class="slide__brand">innova 2026</div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- 06 · CATÁLOGO CON PREVIEW -->
+  <!-- ============================================ -->
+  <section data-screen-label="06 Catálogo con preview">
+    <div class="slide">
+      <div class="mock-slide__header">
+        <div class="mock-slide__title-wrap">
+          <span class="slide__eyebrow">Oportunidad 03 · Iteración</span>
+          <h2 class="h2">Catálogo que <em>respira</em>.</h2>
+          <p class="body">Cards minimalistas (título + cantidad + CTA) y un <strong>quick-look</strong> con 3-6 diseños reales del catálogo al tocar. El usuario decide entrar a un catálogo con información real, no con una microcopy. <a href="Catalogo de Disenos.html" style="color: var(--accent); border-bottom: 1px solid currentColor;">Ver prototipo interactivo →</a></p>
+        </div>
+        <span class="mock-slide__num-big">06</span>
+      </div>
+
+      <div class="mock-slide__body">
+        <div class="col col--stack" style="gap: 18px;">
+          <div class="note">
+            <div class="note__label">Cambios clave</div>
+            <p class="note__body">
+              <strong>1.</strong> Eliminamos la descripción larga de cada card (era ruido en mobile).<br>
+              <strong>2.</strong> Cada catálogo tiene <strong>paleta propia + patrón</strong> que evoca la temática.<br>
+              <strong>3.</strong> Pill de cantidad arriba a la derecha, CTA siempre visible abajo.<br>
+              <strong>4.</strong> <strong>Quick-look</strong> al tap-largo: 6 diseños del catálogo sin salir de la grilla.
+            </p>
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <div style="flex: 1; padding: 14px; background: var(--bg-2); border-radius: 12px;">
+              <div style="font-family: var(--font-mono); font-size: 11px; color: var(--ink-2);">DENSIDAD</div>
+              <div style="font-size: 14px; font-weight: 600; margin-top: 4px;">2 cols mobile · 4 cols desktop</div>
+            </div>
+            <div style="flex: 1; padding: 14px; background: var(--bg-2); border-radius: 12px;">
+              <div style="font-family: var(--font-mono); font-size: 11px; color: var(--ink-2);">ORDEN</div>
+              <div style="font-size: 14px; font-weight: 600; margin-top: 4px;">Destacados · A–Z · Más diseños</div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <div style="flex: 1; padding: 14px; background: var(--bg-2); border-radius: 12px;">
+              <div style="font-family: var(--font-mono); font-size: 11px; color: var(--ink-2);">PESO</div>
+              <div style="font-size: 14px; font-weight: 600; margin-top: 4px;">Sin imágenes externas, carga instantánea</div>
+            </div>
+            <div style="flex: 1; padding: 14px; background: var(--bg-2); border-radius: 12px;">
+              <div style="font-family: var(--font-mono); font-size: 11px; color: var(--ink-2);">A11Y</div>
+              <div style="font-size: 14px; font-weight: 600; margin-top: 4px;">aria-labels · foco visible · reduced-motion</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mock-slide__phone-area">
+          <div class="phone phone--lg">
+            <div class="phone__notch"></div>
+            <div class="phone__screen">
+              <div class="phone__status">
+                <span>9:41</span>
+                <span class="phone__status-icons"><span></span><span></span><span></span></span>
+              </div>
+              <div class="phone__viewport" style="padding-top: 50px;">
+                <div class="m-cat">
+                  <div class="m-cat__head">
+                    <div class="m-cat__eye">INSPIRACIÓN</div>
+                    <h3 class="m-cat__t">Catálogo <em>de</em> Diseños</h3>
+                  </div>
+                  <div class="m-cat__controls">
+                    <div class="m-cat__search">🔍 Buscar catálogo…</div>
+                    <div class="m-cat__sort">Destacados ▾</div>
+                  </div>
+                  <div class="m-cat__grid">
+                    <div class="m-cat__card" style="background:#C56A4B;">
+                      <span class="m-cat__pill" style="color:#C56A4B;">412</span>
+                      <h5>Boho</h5><span>Ver diseños →</span>
+                    </div>
+                    <div class="m-cat__card" style="background:#F2C879; color:#3D2A1F;">
+                      <span class="m-cat__pill" style="color:#3D2A1F;">648</span>
+                      <h5>Infantiles</h5><span>Ver diseños →</span>
+                    </div>
+                    <div class="m-cat__card" style="background:#E5C5B5; color:#4A2E22;">
+                      <span class="m-cat__pill" style="color:#4A2E22;">524</span>
+                      <h5>Newborn</h5><span>Ver diseños →</span>
+                    </div>
+                    <div class="m-cat__card" style="background:#2C3554;">
+                      <span class="m-cat__pill" style="color:#2C3554;">256</span>
+                      <h5>Lunas y Estrellas</h5><span>Ver diseños →</span>
+                    </div>
+                    <div class="m-cat__card" style="background:#4A6048;">
+                      <span class="m-cat__pill" style="color:#4A6048;">174</span>
+                      <h5>Bosque</h5><span>Ver diseños →</span>
+                    </div>
+                    <div class="m-cat__card" style="background:#B58947;">
+                      <span class="m-cat__pill" style="color:#B58947;">467</span>
+                      <h5>Texturas Abstractas</h5><span>Ver diseños →</span>
+                    </div>
+                  </div>
+
+                  <!-- Quicklook overlay -->
+                  <div class="m-cat__quick">
+                    <div class="m-cat__quick-grid">
+                      <div class="m-cat__quick-thumb" style="background: linear-gradient(135deg,#E5C5B5,#C99E87);"></div>
+                      <div class="m-cat__quick-thumb" style="background: linear-gradient(135deg,#C99E87,#8C5A3C);"></div>
+                      <div class="m-cat__quick-thumb" style="background: linear-gradient(135deg,#F4E6D2,#E5C5B5);"></div>
+                      <div class="m-cat__quick-thumb" style="background: linear-gradient(135deg,#DEB8B5,#C896A8);"></div>
+                      <div class="m-cat__quick-thumb" style="background: linear-gradient(135deg,#8C5A3C,#4E2F2C);"></div>
+                      <div class="m-cat__quick-thumb" style="background: linear-gradient(135deg,#ECE0CC,#D8C0A4);"></div>
+                    </div>
+                    <h5 class="m-cat__quick-title">Newborn · 6 de 524</h5>
+                    <div class="m-cat__quick-cta">Explorar todo el catálogo →</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide__num">06 / 12</div>
+      <div class="slide__brand">innova 2026</div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- 07 · PARA MARCAS -->
+  <!-- ============================================ -->
+  <section data-screen-label="07 Para Marcas">
+    <div class="slide">
+      <div class="mock-slide__header">
+        <div class="mock-slide__title-wrap">
+          <span class="slide__eyebrow">Oportunidad 04 · Nuevo vertical</span>
+          <h2 class="h2">Innova <em>para Marcas</em>.</h2>
+          <p class="body">Hoy "Empresariales" es <strong>una categoría más</strong> escondida entre 31. Le damos su propia landing con casos, escala, modalidad corporativa y un canal de contacto B2B propio. <strong>Mayor ticket promedio · ciclo recurrente.</strong></p>
+        </div>
+        <span class="mock-slide__num-big">07</span>
+      </div>
+
+      <div class="mock-slide__body">
+        <div class="col col--stack" style="gap: 18px;">
+          <div class="note">
+            <div class="note__label">Mercado objetivo</div>
+            <p class="note__body">Productoras audiovisuales, agencias de eventos corporativos, retailers que hacen pop-ups, marcas con activaciones. <strong>Tickets de $300K–$2M+ por pedido</strong>, vs. tickets de fotógrafo individual de $60K–$120K.</p>
+          </div>
+          <div class="note">
+            <div class="note__label">Diferenciadores B2B</div>
+            <p class="note__body">
+              <strong>Producción a escala</strong> (10+ unidades), <strong>cotización express</strong> con presupuesto firmado en 24hs, <strong>NDA</strong> para campañas confidenciales, <strong>logística federal</strong> con envío coordinado por evento.
+            </p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <span class="pill pill--accent">Tier corporativo</span>
+            <span class="pill pill--outline">Cuenta dedicada</span>
+            <span class="pill pill--outline">Facturación A</span>
+          </div>
+        </div>
+
+        <div class="mock-slide__phone-area">
+          <div class="phone phone--lg">
+            <div class="phone__notch"></div>
+            <div class="phone__screen" style="background:#0F0E0D;">
+              <div class="phone__status" style="color: white;">
+                <span>9:41</span>
+                <span class="phone__status-icons"><span style="background:white"></span><span style="background:white"></span><span style="background:white"></span></span>
+              </div>
+              <div class="phone__viewport" style="padding-top: 50px;">
+                <div class="m-b2b">
+                  <div class="m-b2b__bg"></div>
+                  <div class="m-b2b__head">
+                    <span class="m-b2b__chip">Innova / Marcas</span>
+                    <h3 class="m-b2b__t">Producciones <em>a escala</em> para tu campaña.</h3>
+                    <p class="m-b2b__lede">Diseño exclusivo, producción multi-unidad y logística federal. Cotización en 24hs.</p>
+                    <a class="m-b2b__cta">Pedir cotización express →</a>
+                  </div>
+
+                  <div class="m-b2b__clients">
+                    <div class="m-b2b__clients-lbl">Confían en Innova</div>
+                    <div class="m-b2b__logos">
+                      <div class="m-b2b__logo"></div>
+                      <div class="m-b2b__logo"></div>
+                      <div class="m-b2b__logo"></div>
+                      <div class="m-b2b__logo"></div>
+                      <div class="m-b2b__logo"></div>
+                      <div class="m-b2b__logo"></div>
+                    </div>
+                  </div>
+
+                  <div class="m-b2b__cases">
+                    <div class="m-b2b__clients-lbl" style="margin-bottom: 6px;">Casos recientes</div>
+                    <div class="m-b2b__case">
+                      <div class="m-b2b__case-thumb"></div>
+                      <div>
+                        <h6>Activación retail · 12 ciudades</h6>
+                        <p>180 backdrops · 14 días</p>
+                      </div>
+                    </div>
+                    <div class="m-b2b__case m-b2b__case-2">
+                      <div class="m-b2b__case-thumb"></div>
+                      <div>
+                        <h6>Lanzamiento de producto</h6>
+                        <p>Backdrop 6×3m con diseño exclusivo</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide__num">07 / 12</div>
+      <div class="slide__brand">innova 2026</div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- 08 · NEWSLETTER -->
+  <!-- ============================================ -->
+  <section data-screen-label="08 Newsletter">
+    <div class="slide">
+      <div class="mock-slide__header">
+        <div class="mock-slide__title-wrap">
+          <span class="slide__eyebrow">Oportunidad 05 · Quick win</span>
+          <h2 class="h2">Suscribite no es <em>una promesa</em>.</h2>
+          <p class="body">"Suscribite gratis · Sin spam" es la copy más genérica de internet. La cambiamos por <strong>un incentivo concreto</strong> y una promesa de contenido específica: 10% off en el primer pedido + drops mensuales de colecciones nuevas.</p>
+        </div>
+        <span class="mock-slide__num-big">08</span>
+      </div>
+
+      <div class="mock-slide__body">
+        <div class="col col--stack" style="gap: 18px;">
+          <div class="note">
+            <div class="note__label">Antes</div>
+            <p class="note__body">"Recibí novedades y diseños exclusivos. Suscribite gratis. Sin spam."<br><br><em style="color: var(--ink-3); font-style: italic;">Conversión típica web: 1–2%</em></p>
+          </div>
+          <div class="note" style="background: var(--ink); color: var(--bg); border-color: var(--ink);">
+            <div class="note__label" style="color: var(--gold);">Después</div>
+            <p class="note__body" style="color: rgba(255,255,255,0.85);">
+              <strong style="color: white;">10% off + drops mensuales</strong> + acceso anticipado a colecciones nuevas + tips de iluminación.<br><br>
+              <em style="color: rgba(255,255,255,0.55); font-style: italic;">Benchmark con incentivo: 4–7%</em>
+            </p>
+          </div>
+          <div class="note" style="background: var(--bg-2); border: 1px dashed var(--line-2);">
+            <div class="note__label">Bonus: re-engagement</div>
+            <p class="note__body">El email recibe el cupón, pero también recibe la <strong>secuencia de bienvenida de 3 mails</strong>: estilos según tipo de sesión, guía de tamaños, casos reales. Construye relación antes del primer pedido.</p>
+          </div>
+        </div>
+
+        <div class="mock-slide__phone-area">
+          <div class="phone phone--lg">
+            <div class="phone__notch"></div>
+            <div class="phone__screen">
+              <div class="phone__status">
+                <span>9:41</span>
+                <span class="phone__status-icons"><span></span><span></span><span></span></span>
+              </div>
+              <div class="phone__viewport" style="padding-top: 50px;">
+                <div class="m-news">
+                  <div class="mnav"><span class="mnav__brand">innova</span><span class="mnav__icons">≡</span></div>
+                  <div class="m-news__hero">
+                    <span class="m-news__badge">💌 Solo para suscriptores · 10% OFF</span>
+                    <h3 class="m-news__t">Recibí <em>colecciones nuevas</em> antes que nadie.</h3>
+                    <p style="font-size: 14px; color: var(--ink-2); margin: 0 0 18px; line-height: 1.5;">Suscribite y obtené beneficios reales:</p>
+                    <ul class="m-news__list">
+                      <li><strong style="color: var(--ink);">10% off</strong> en tu primer pedido</li>
+                      <li>Drops mensuales antes del lanzamiento público</li>
+                      <li>Guías de iluminación y composición</li>
+                      <li>Acceso a precios mayoristas</li>
+                    </ul>
+                    <div class="m-news__form">
+                      <span class="m-news__input">tu@email.com</span>
+                      <span class="m-news__btn">Quiero el 10% →</span>
+                    </div>
+                    <p class="m-news__legal">Sin spam · Podés darte de baja cuando quieras</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide__num">08 / 12</div>
+      <div class="slide__brand">innova 2026</div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- 09 · UNIFICAR -->
+  <!-- ============================================ -->
+  <section data-screen-label="09 Unificar tienda y showroom">
+    <div class="slide">
+      <div class="mock-slide__header" style="margin-bottom: 32px;">
+        <div class="mock-slide__title-wrap" style="max-width: 70%;">
+          <span class="slide__eyebrow">Oportunidad 06 · Big bet</span>
+          <h2 class="h2">De tres dominios <em>a una experiencia</em>.</h2>
+          <p class="body">Hoy el viaje cruza <strong>innova54.com → store.innova54.com → empretienda.com.ar</strong>. Cada salto pierde gente. La propuesta: <strong>un solo dominio</strong> con showroom + carrito + checkout integrados, y empretienda como back-office de fulfillment.</p>
+        </div>
+        <span class="mock-slide__num-big">09</span>
+      </div>
+
+      <div class="unify-diag">
+        <div class="unify-col">
+          <span class="unify-col__lbl">Hoy · Fragmentado</span>
+          <h4>3 dominios</h4>
+          <div class="unify-col__nodes">
+            <div class="unify-node"><b>innova54.com</b><span>Showroom</span></div>
+            <div class="unify-node"><b>store.innova54.com</b><span>Stock</span></div>
+            <div class="unify-node"><b>empretienda.com.ar</b><span>Checkout</span></div>
+            <div class="unify-node"><b>WhatsApp</b><span>Cierre real</span></div>
+          </div>
+          <p style="font-size: 13px; color: var(--ink-2); margin: 4px 0 0; line-height: 1.4;">
+            El usuario se desorienta en cada salto. La marca pierde branding cuando llega a empretienda. WhatsApp termina cerrando ~70% de la venta.
+          </p>
+        </div>
+
+        <div class="unify-arrow">→</div>
+
+        <div class="unify-col unify-col--after">
+          <span class="unify-col__lbl">Propuesta · Unificado</span>
+          <h4>1 dominio · 1 marca</h4>
+          <div class="unify-col__nodes">
+            <div class="unify-node"><b>innova54.com / catálogo</b><span>Showroom</span></div>
+            <div class="unify-node"><b>innova54.com / configurar</b><span>Wizard + Stock</span></div>
+            <div class="unify-node"><b>innova54.com / checkout</b><span>Pago</span></div>
+            <div class="unify-node"><b>WhatsApp</b><span>Soporte (no venta)</span></div>
+          </div>
+          <p style="font-size: 13px; color: rgba(255,255,255,0.65); margin: 4px 0 0; line-height: 1.4;">
+            Empretienda se mantiene como sistema de gestión de pedidos en backend. El cliente nunca lo ve.
+          </p>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+        <div class="note">
+          <div class="note__label">Tracking</div>
+          <p class="note__body">Un solo dominio = embudo medible end-to-end. Hoy no se puede atribuir bien.</p>
+        </div>
+        <div class="note">
+          <div class="note__label">Branding</div>
+          <p class="note__body">El checkout no se siente "ajeno". La identidad cálida llega hasta el último click.</p>
+        </div>
+        <div class="note">
+          <div class="note__label">Carrito mixto</div>
+          <p class="note__body">Stock + producción a medida en el mismo carrito (algo imposible hoy).</p>
+        </div>
+      </div>
+
+      <div class="slide__num">09 / 12</div>
+      <div class="slide__brand">innova 2026</div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- 10 · FAQ CONTEXTUAL -->
+  <!-- ============================================ -->
+  <section data-screen-label="10 FAQ contextual">
+    <div class="slide">
+      <div class="mock-slide__header">
+        <div class="mock-slide__title-wrap">
+          <span class="slide__eyebrow">Oportunidad 07 · Iteración</span>
+          <h2 class="h2">Respuestas <em>donde nacen</em> las dudas.</h2>
+          <p class="body">El FAQ vive al final del scroll, cuando ya tomaste la decisión (o la abandonaste). Lo distribuimos <strong>contextualmente</strong>: la duda de tiempo aparece al elegir tamaño; la de envíos al ver precio; la de impresión al elegir diseño. Sin tener que volver atrás.</p>
+        </div>
+        <span class="mock-slide__num-big">10</span>
+      </div>
+
+      <div class="mock-slide__body">
+        <div class="col col--stack" style="gap: 18px;">
+          <div class="note">
+            <div class="note__label">Patrón actual</div>
+            <p class="note__body">FAQ acordeón al pie. Generales / Fondos y Pisos / Pagos / Soporte. <strong>Sólo se llega scrolleando hasta el final</strong>, cuando muchos usuarios ya rebotaron.</p>
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <div style="flex:1; padding: 14px; background: var(--bg-2); border-radius: 12px;">
+              <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.15em; color: var(--accent); text-transform: uppercase;">En tamaños</div>
+              <div style="font-size: 13px; margin-top: 4px; color: var(--ink);">"¿Cuánto tarda?"</div>
+            </div>
+            <div style="flex:1; padding: 14px; background: var(--bg-2); border-radius: 12px;">
+              <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.15em; color: var(--accent); text-transform: uppercase;">En precio</div>
+              <div style="font-size: 13px; margin-top: 4px; color: var(--ink);">"¿Hacen envíos?"</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <div style="flex:1; padding: 14px; background: var(--bg-2); border-radius: 12px;">
+              <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.15em; color: var(--accent); text-transform: uppercase;">En diseño</div>
+              <div style="font-size: 13px; margin-top: 4px; color: var(--ink);">"¿RGB se ve igual?"</div>
+            </div>
+            <div style="flex:1; padding: 14px; background: var(--bg-2); border-radius: 12px;">
+              <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.15em; color: var(--accent); text-transform: uppercase;">En checkout</div>
+              <div style="font-size: 13px; margin-top: 4px; color: var(--ink);">"¿Devoluciones?"</div>
+            </div>
+          </div>
+
+          <div class="note" style="background: var(--bg-2); border: 1px dashed var(--line-2);">
+            <p class="note__body">El FAQ completo sigue existiendo en su página. Pero se vuelve <strong>la última línea de defensa</strong>, no la primera.</p>
+          </div>
+        </div>
+
+        <div class="mock-slide__phone-area">
+          <div class="phone phone--lg">
+            <div class="phone__notch"></div>
+            <div class="phone__screen">
+              <div class="phone__status">
+                <span>9:41</span>
+                <span class="phone__status-icons"><span></span><span></span><span></span></span>
+              </div>
+              <div class="phone__viewport" style="padding-top: 50px;">
+                <div class="m-faq">
+                  <div class="m-faq__crumb">← Volver al catálogo</div>
+                  <h3 class="m-faq__t">Elegí el tamaño</h3>
+                  <div class="m-faq__sizes">
+                    <div class="m-faq__size">
+                      <div class="m-faq__size-d">1.5×2m</div>
+                      <div class="m-faq__size-l">Retratos · Newborn</div>
+                      <div class="m-faq__size-p">desde $39.000</div>
+                    </div>
+                    <div class="m-faq__size m-faq__size--sel">
+                      <div class="m-faq__size-d">2.9×2m</div>
+                      <div class="m-faq__size-l">Más elegido</div>
+                      <div class="m-faq__size-p">desde $61.000</div>
+                    </div>
+                    <div class="m-faq__size">
+                      <div class="m-faq__size-d">2.9×3m</div>
+                      <div class="m-faq__size-l">Familiar · Smash</div>
+                      <div class="m-faq__size-p">desde $87.000</div>
+                    </div>
+                    <div class="m-faq__size">
+                      <div class="m-faq__size-d">2.9×4m</div>
+                      <div class="m-faq__size-l">Eventos</div>
+                      <div class="m-faq__size-p">desde $108.000</div>
+                    </div>
+                  </div>
+
+                  <div class="m-faq__inline">
+                    <div class="m-faq__inline-lbl">⏱  Duda frecuente acá</div>
+                    <div class="m-faq__inline-q">¿Cuánto tarda en estar listo?</div>
+                    <p class="m-faq__inline-a">Producción estándar: <strong>5–7 días hábiles</strong>. Express: 48hs con recargo del 30%.</p>
+                    <span class="m-faq__inline-more">Ver más preguntas sobre tiempos →</span>
+                  </div>
+
+                  <div style="padding: 16px 20px;">
+                    <div style="background: var(--ink); color: var(--bg); padding: 14px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
+                      <div><div style="font-size: 11px; opacity: 0.6;">Total estimado</div><div style="font-size: 18px; font-weight: 700;">$61.000</div></div>
+                      <span style="background: var(--accent); padding: 10px 16px; border-radius: 999px; font-size: 12px; font-weight: 600;">Continuar →</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide__num">10 / 12</div>
+      <div class="slide__brand">innova 2026</div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- 11 · ROADMAP -->
+  <!-- ============================================ -->
+  <section data-screen-label="11 Roadmap">
+    <div class="slide">
+      <span class="slide__eyebrow">Cómo lo ejecutamos</span>
+      <h2 class="h2" style="margin-bottom: 40px;">Tres fases. <em>Empezando por lo barato</em>.</h2>
+
+      <div class="road">
+        <div class="road__col road__col--1">
+          <div>
+            <div class="road__phase-lbl">FASE 01 · Q1 2026</div>
+            <h3 class="road__phase-h">Quick wins</h3>
+            <div class="road__phase-time">~6 semanas</div>
+          </div>
+          <div class="road__items">
+            <div class="road__item">
+              <h4 class="road__item-title">Hero diferencial</h4>
+              <p class="road__item-desc">Reescribir copy + nuevo módulo de confianza con tiempos reales</p>
+            </div>
+            <div class="road__item">
+              <h4 class="road__item-title">Catálogo rediseñado</h4>
+              <p class="road__item-desc">Cards minimalistas + sort. Ya prototipado.</p>
+            </div>
+            <div class="road__item">
+              <h4 class="road__item-title">Newsletter incentivado</h4>
+              <p class="road__item-desc">Cupón 10% + secuencia de bienvenida</p>
+            </div>
+            <div class="road__item">
+              <h4 class="road__item-title">FAQ contextual</h4>
+              <p class="road__item-desc">Mover preguntas top a su contexto de decisión</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="road__col road__col--2">
+          <div>
+            <div class="road__phase-lbl">FASE 02 · Q2 2026</div>
+            <h3 class="road__phase-h">Vertical B2B</h3>
+            <div class="road__phase-time">~8 semanas</div>
+          </div>
+          <div class="road__items">
+            <div class="road__item">
+              <h4 class="road__item-title">Innova para Marcas</h4>
+              <p class="road__item-desc">Landing dedicada con 3-5 casos producidos</p>
+            </div>
+            <div class="road__item">
+              <h4 class="road__item-title">Cotizador express B2B</h4>
+              <p class="road__item-desc">Formulario que devuelve presupuesto en 24hs</p>
+            </div>
+            <div class="road__item">
+              <h4 class="road__item-title">Catálogo de casos</h4>
+              <p class="road__item-desc">Producción de fotos con marcas existentes (con permiso)</p>
+            </div>
+            <div class="road__item">
+              <h4 class="road__item-title">Quick-look en catálogo</h4>
+              <p class="road__item-desc">Tap-largo muestra 6 diseños sin salir de la grilla</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="road__col road__col--3">
+          <div>
+            <div class="road__phase-lbl">FASE 03 · Q3 2026</div>
+            <h3 class="road__phase-h">Big bets</h3>
+            <div class="road__phase-time">~12 semanas</div>
+          </div>
+          <div class="road__items">
+            <div class="road__item">
+              <h4 class="road__item-title">Configurador visual completo</h4>
+              <p class="road__item-desc">Wizard 4 pasos con precio en vivo</p>
+            </div>
+            <div class="road__item">
+              <h4 class="road__item-title">Checkout unificado</h4>
+              <p class="road__item-desc">Migrar pagos a innova54.com</p>
+            </div>
+            <div class="road__item">
+              <h4 class="road__item-title">Carrito mixto</h4>
+              <p class="road__item-desc">Stock + producción a medida en un solo flujo</p>
+            </div>
+            <div class="road__item">
+              <h4 class="road__item-title">Sistema de diseño</h4>
+              <p class="road__item-desc">Tokens + componentes para sostener todo lo anterior</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide__num">11 / 12</div>
+      <div class="slide__brand">innova 2026</div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- 12 · CIERRE -->
+  <!-- ============================================ -->
+  <section data-screen-label="12 Cierre">
+    <div class="slide">
+      <span class="slide__eyebrow">Próximo paso</span>
+      <div class="close__main">
+        <h1 class="close__title">
+          ¿Empezamos por<br><em>los quick wins?</em>
+        </h1>
+        <p class="close__sub">
+          Las cuatro intervenciones de Fase 01 se pueden producir en 6 semanas y son medibles desde el primer mes. Los resultados de esa fase financian la siguiente.
+        </p>
+
+        <div class="close__contact">
+          <div class="close__contact-item">
+            <span>Sitio en producción</span>
+            <b>innova54.com</b>
+          </div>
+          <div class="close__contact-item">
+            <span>Prototipos de esta propuesta</span>
+            <b>Catálogo · Hero · Wizard · B2B</b>
+          </div>
+          <div class="close__contact-item">
+            <span>Contacto interno</span>
+            <b>store@innova54.com</b>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide__num">12 / 12</div>
+      <div class="slide__brand">innova 2026</div>
+    </div>
+  </section>
+
+</deck-stage>
+
+<script type="application/json" id="speaker-notes">
+[
+  "Slide de apertura. Innova 2026, propuesta de evolución del sitio. Siete oportunidades concretas, sin perder el alma cálida de la marca.",
+  "Diagnóstico breve: el sitio ya funciona. Tenemos un catálogo robusto, identidad propia y stack moderno. Pero hay margen claro: el hero no diferencia, la guía de tamaños no convierte, el viaje fragmentado en 3 dominios pierde gente.",
+  "Las siete oportunidades en una sola vista. Dos son quick wins (impacto alto, esfuerzo bajo), dos son apuestas grandes (B2B y unificar la compra), y tres iteraciones de lo existente. Un bonus: documentar el sistema de diseño para sostener todo.",
+  "Oportunidad 1, hero diferencial. Hoy el claim podría ser de cualquier marca. Lo cambiamos por una promesa concreta y verificable: backdrop a medida en 7 días, con chip de stock real y dos CTAs claros. La diferencia mockup vs mockup habla sola.",
+  "Oportunidad 2, configurador. El Ayudame a elegir es texto. Lo convertimos en un wizard de 4 pasos: tipo de sesión, espacio, estilo, tamaño con precio. El objetivo es que el sitio cierre la venta sin necesidad de pasar por WhatsApp.",
+  "Oportunidad 3, catálogo. Cards minimalistas, paleta propia por categoría, quick-look con 6 diseños sin salir de la grilla. Ya tenemos prototipo navegable de esto, podés abrirlo desde el link de la slide.",
+  "Oportunidad 4, Innova para Marcas. Hoy Empresariales es una categoría más. Le damos su propia landing con casos, escala y modalidad B2B. Ticket promedio entre 300K y 2 millones por pedido, ciclo recurrente.",
+  "Oportunidad 5, newsletter incentivado. Suscribite gratis vs 10 por ciento off más drops mensuales. Benchmark: la conversión típica pasa de 1-2 por ciento a 4-7 por ciento con un incentivo claro.",
+  "Oportunidad 6, unificar tienda y showroom. Pasamos de 3 dominios a uno. Empretienda queda como sistema de gestión de pedidos en backend pero el cliente nunca lo ve. Habilita tracking real y carrito mixto entre stock y producción a medida.",
+  "Oportunidad 7, FAQ contextual. Las preguntas viven donde nacen las dudas: la de tiempos al elegir tamaño, la de envíos al ver precio, la de impresión al elegir diseño. El FAQ completo sigue existiendo, pero como última línea no como primera.",
+  "Roadmap propuesto en tres fases. Fase 1 son los quick wins: 6 semanas. Fase 2 es el vertical B2B: 8 semanas. Fase 3 las big bets: configurador completo y checkout unificado, 12 semanas. Los resultados de cada fase financian la siguiente.",
+  "Cierre. Sugiero empezar por los quick wins de fase 1: son medibles desde el primer mes y nos dan datos para validar el resto del plan. Conversamos cuándo arrancamos."
+]
+</script>
+
+<script src="deck-stage.js"></script>
+
+</body>
+</html>

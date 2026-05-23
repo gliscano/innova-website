@@ -43,9 +43,6 @@ export default function Gallery(props: GalleryProps) {
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
-            <h2 className="text-2xl copperplate-bold-font font-bold text-gray-900 mb-2">
-              Galería de Diseños
-            </h2>
             <p className="text-gray-600">
               Cargando diseños...
             </p>
@@ -62,9 +59,6 @@ export default function Gallery(props: GalleryProps) {
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
-            <h2 className="text-3xl copperplate-bold-font font-bold text-gray-900 mb-2">
-              Galería de Diseños
-            </h2>
           </div>
           <GalleryError message={error} onRetry={refresh} />
         </div>
@@ -77,9 +71,6 @@ export default function Gallery(props: GalleryProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl copperplate-bold-font font-bold text-gray-900 mb-2">
-            Galería de Diseños
-          </h1>
           
           {/* Información de búsqueda */}
           {
@@ -113,8 +104,9 @@ export default function Gallery(props: GalleryProps) {
 
           {/* Contador de resultados */}
           {totalCount > 0 && (
-            <p className="text-gray-600 mt-2">
-              {totalCount} imagen{totalCount !== 1 ? 'es' : ''} encontrada{totalCount !== 1 ? 's' : ''}
+            <p className="text-[13px] text-[#6B5F52] mt-1 flex items-center gap-1">
+              <strong className="text-[#1F1A14] font-semibold">{totalCount}</strong>
+              {totalCount === 1 ? 'diseño disponible' : 'diseños disponibles'}
             </p>
           )}
         </div>

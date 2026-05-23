@@ -4,17 +4,46 @@ import React, { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import Header from "@/app/components/Header"
-import { getCatalogItemByCategory } from "@/app/utils/catalogUtils"
 import { HomeSizePickerWithPrices } from "@/app/components/HomeSizePickerWithPrices"
 import Gallery from "@/app/components/gallery/Gallery"
-import { CatalogItem } from "@/app/data/catalogData"
 import WhatsAppDropdown from "@/app/components/WhatsAppDropdown"
 import { useSelectedSize } from "@/app/context/SelectedSizeContext"
 import { SizeSelectorCompact } from "@/app/components/SizeSelectorCompact"
 import { trackViewContent } from "@/app/utils/tracking"
+import { formatFolderName } from "@/app/utils/catalogUtils"
 
 interface ProductPageContentProps {
   id: string
+}
+
+function StickyProductBar({ title }: { title: string }) {
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > 70)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  return (
+    <div className={`fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-[#E7DFD2] transition-transform duration-300 ${visible ? 'translate-y-0' : '-translate-y-full'}`}>
+      <div className="max-w-7xl mx-auto px-4 h-12 flex items-center justify-between gap-3">
+        <Link href="/#catalog" className="flex items-center gap-1.5 text-sm text-[#6B5F52] shrink-0">
+          ← Catálogo
+        </Link>
+        <span className="copperplate-bold-font text-sm font-bold text-[#1F1A14] truncate">{title}</span>
+        <a
+          href={`https://wa.me/5491171419752?text=${encodeURIComponent(`Hola, quiero consultar sobre el catálogo: ${title}.`)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="shrink-0 flex items-center gap-1.5 bg-[#25D366] text-white text-xs font-semibold px-3 py-1.5 rounded-full"
+        >
+          <Image src="/svg/whatsapp.svg" alt="" width={14} height={14} />
+          Comprar
+        </a>
+      </div>
+    </div>
+  )
 }
 
 function SelectedSizeBanner() {
@@ -58,7 +87,10 @@ function SelectedSizeBanner() {
         onClick={() => setExpanded(v => !v)}
         className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
       >
-        <span className="text-sm text-gray-600 font-medium">Elegir medidas</span>
+        <div className="flex flex-col text-left">
+          <span className="text-sm text-gray-700 font-semibold">Elegí la medida de tu fondo</span>
+          <span className="text-xs text-gray-400 leading-none mt-0.5">Te mostramos el precio al instante</span>
+        </div>
         <svg
           className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`}
           fill="none" viewBox="0 0 24 24" stroke="currentColor"
@@ -68,9 +100,6 @@ function SelectedSizeBanner() {
       </button>
       {expanded && (
         <div className="px-4 py-4 bg-white">
-          <p className="text-xs text-gray-400 mb-3">
-            El precio se actualiza automáticamente al elegir las medidas.
-          </p>
           <SizeSelectorCompact onSelect={(size) => { setSelectedSize(size); setExpanded(false) }} variant="light" />
         </div>
       )}
@@ -79,137 +108,60 @@ function SelectedSizeBanner() {
 }
 
 export default function ProductPageContent({ id }: ProductPageContentProps) {
-  const product: CatalogItem | undefined = getCatalogItemByCategory(decodeURIComponent(id))
+  const folderName = decodeURIComponent(id)
+  const title = formatFolderName(folderName)
 
   useEffect(() => {
-    if (product) {
-      trackViewContent(product.title, product.category)
-    }
-  }, [product])
-
-  const getUrlLink = (url: string | null) => {
-    if (typeof url === 'string') {
-      return url
-    }
-    return '#catalog'
-  }
-
-  if (!product) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <div className="min-h-[calc(100vh-64px)] bg-gray-50 flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Categoría no encontrada</h1>
-            <Link
-              href="/"
-              className="gradient-orange-colors text-white px-4 py-2 rounded-md font-medium transition-colors"
-            >
-              Volver al Catálogo
-            </Link>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  const handleCatalogLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    if (typeof product.catalogURL !== 'string') {
-      event.preventDefault()
-      const section = document.getElementById('catalog')
-      if (section) {
-        section.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }
-    }
-  }
+    trackViewContent(title, folderName)
+  }, [title, folderName])
 
   return (
     <div className="min-h-screen bg-gray-50 bg-opacity-40 pb-6">
+      <StickyProductBar title={title} />
       <Header />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-2">
-        <nav className="flex mb-2" aria-label="Breadcrumb">
-          <ol className="inline-flex items-center space-x-1 md:space-x-3">
-            <li className="inline-flex items-center">
-              <Link href="/" className="text-gray-800 flex">
-              <Image
-                aria-hidden
-                src="../svg/left.svg"
-                alt="left icon"
-                className="mr-2"
-                width={25}
-                height={25}
-              />
-              volver
-              </Link>
-            </li>
-          </ol>
+
+        {/* Breadcrumb compacto */}
+        <nav className="flex items-center gap-1.5 text-sm text-[#6B5F52] mb-3" aria-label="Breadcrumb">
+          <Link href="/#catalog" className="hover:text-[#1F1A14] transition-colors">← Catálogo</Link>
+          <span>/</span>
+          <span className="text-[#1F1A14] font-medium">{title}</span>
         </nav>
 
-        {/* Contenido principal */}
-        <div id="header-content" className="mb-6">
-          {/* Información del producto */}
-          <div className="space-y-3">
-            <div>
-              <h1 className="text-3xl copperplate-bold-font font-bold text-gray-900 mb-2">Catálogo de {product.title}</h1>
-              <p className="text-lg text-gray-800 mb-4">{product.description}</p>
-              <div className="hidden lg:flex flex-wrap gap-2">
-                {product.tags.map((tag, index) => (
-                  <span
-                    key={`${tag}-${index}`}
-                    className="inline-flex items-center px-2 py-1 rounded-md text-sm font-medium bg-gray-100 text-gray-800"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
+        {/* Título + CTAs */}
+        <div className="mb-5">
+          <h1 className="copperplate-bold-font text-2xl sm:text-3xl font-bold text-[#4a3a2a] leading-tight mb-4">
+            {title}
+          </h1>
 
-            <div className="grid grid-cols-3 gap-2 text-center text-sm font-medium">
-              <Link
-                href={getUrlLink(product.catalogURL)}
-                onClick={handleCatalogLinkClick}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full gradient-orange-colors text-black px-1 py-3 rounded-md shadow-md flex items-center justify-center gap-2 group"
-              >
-                Galería de Diseños
-              </Link>
-              <Link
-                href="#information"
-                target="_self"
-                rel="noopener noreferrer"
-                className="w-full gradient-green-colors text-black px-1 py-3 rounded-md shadow-md flex items-center justify-center gap-2 group"
-              >
-                Información y Comprar
-              </Link>
-              <Link
-                href="#prices"
-                target="_self"
-                rel="noopener noreferrer"
-                className="w-full gradient-rose-gold-colors text-black px-1 py-3 rounded-md shadow-md flex items-center justify-center gap-2 group"
-              >
-                Precios y Medidas
-              </Link>
-            </div>
+          <div className="flex flex-col gap-2">
+            <Link
+              href="#information"
+              className="w-full gradient-green-colors text-black px-4 py-3 rounded-md font-semibold flex items-center justify-center gap-2 text-center"
+            >
+              Información y cómo comprar
+            </Link>
+            <Link
+              href="#prices"
+              className="text-center text-sm text-[#6B5F52] underline underline-offset-2 hover:text-[#1F1A14] transition-colors py-1"
+            >
+              Ver precios y medidas →
+            </Link>
           </div>
         </div>
 
-        {/* Galería de imágenes */}
-        {
-          !product.catalogURL && (
-            <section id="catalog" className="min-h-screen flex flex-col">
-              <SelectedSizeBanner />
-              <div className="flex-grow">
-                <Gallery
-                  searchTerm={product.category}
-                  folder={product.category}
-                  tags={product.tags}
-                  itemsPerPage={100}
-                />
-              </div>
-          </section>
-        )}
-        {/* Información detallada */}
+        <section id="catalog" className="min-h-screen flex flex-col">
+          <SelectedSizeBanner />
+          <div className="flex-grow">
+            <Gallery
+              searchTerm={folderName}
+              folder={folderName}
+              tags={[]}
+              itemsPerPage={100}
+            />
+          </div>
+        </section>
+
         <div id="information" className="bg-white rounded-lg p-4">
           <h3 className="text-xl copperplate-bold-font font-bold text-gray-900 mb-3">Información del Producto</h3>
 
@@ -217,12 +169,7 @@ export default function ProductPageContent({ id }: ProductPageContentProps) {
             <div className="space-y-6">
               <div className="flex items-start gap-3">
                 <svg className="h-6 w-6 text-blue-600 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <div>
                   <h3 className="text-md font-semibold text-gray-900">Tiempo de entrega</h3>
@@ -253,30 +200,19 @@ export default function ProductPageContent({ id }: ProductPageContentProps) {
 
               <div className="flex items-start gap-3">
                 <svg className="h-6 w-6 text-blue-600 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z" />
                 </svg>
                 <div>
                   <h3 className="text-md font-semibold text-gray-900">Personalización incluida</h3>
                   <p className="text-gray-600">
-                    Incluye la personalización del piso si lo deseás, con 3 opciones adaptadas al diseño, sin costo
-                    adicional.
+                    Incluye la personalización del piso si lo deseás, con 3 opciones adaptadas al diseño, sin costo adicional.
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
                 <svg className="h-6 w-6 text-blue-600 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                 </svg>
                 <div>
                   <h3 className="text-md font-semibold text-gray-900">Medidas estándar y Personalizadas</h3>
@@ -292,12 +228,7 @@ export default function ProductPageContent({ id }: ProductPageContentProps) {
             <div className="space-y-6">
               <div className="flex items-start gap-3">
                 <svg className="h-6 w-6 text-blue-600 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                 </svg>
                 <div>
                   <h3 className="text-md font-semibold text-gray-900">¿Cómo compras? Super fácil</h3>
@@ -310,12 +241,7 @@ export default function ProductPageContent({ id }: ProductPageContentProps) {
 
               <div className="flex items-start gap-3">
                 <svg className="h-6 w-6 text-blue-600 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                 </svg>
                 <div>
                   <h3 className="text-md font-semibold text-gray-900">Materiales Premium</h3>
@@ -328,7 +254,7 @@ export default function ProductPageContent({ id }: ProductPageContentProps) {
               </div>
               <div className="flex items-start flex-col gap-3">
                 <WhatsAppDropdown
-                  message={`Hola, estoy interesado en el catálogo de diseño: ${product?.title || decodeURIComponent(id)}.\nQuiero comprar o consultar sobre esta categoría.\n¿Podrían ayudarme con más información?`}
+                  message={`Hola, estoy interesado en el catálogo de diseño: ${title}.\nQuiero comprar o consultar sobre esta categoría.\n¿Podrían ayudarme con más información?`}
                   buttonText="Quiero comprar o consultar"
                   className="w-full gradient-green-colors text-black px-2 py-1 rounded-md font-medium sm:text-lg flex items-center justify-center gap-2"
                 />

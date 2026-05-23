@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import DesignCatalog from '../components/gallery/DesignCatalog'
+import { getCachedFolders } from '../lib/cloudinaryFolders'
 
 export const metadata: Metadata = {
   title: 'Catálogo de Diseños',
@@ -13,12 +14,13 @@ export const metadata: Metadata = {
   },
 }
 
-export default function DesignCatalogPage() {
+export default async function DesignCatalogPage() {
+  const folders = await getCachedFolders()
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-grow">
-        <DesignCatalog />
+        <DesignCatalog initialFolders={folders} />
       </main>
       <Footer />
     </div>

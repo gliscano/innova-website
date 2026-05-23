@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Catálogo de Diseños — Innova</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Manrope:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    /* ---------- Tokens ---------- */
+    :root {
+      --bg: #FBF7F1;
+      --bg-2: #F4EEE3;
+      --ink: #1F1A14;
+      --ink-2: #6B5F52;
+      --ink-3: #9C8E7C;
+      --line: #E7DFD2;
+      --line-2: #D9CEBC;
+      --accent: #C8543D;          /* terracota cálida (CTA) */
+      --accent-ink: #FFF5EF;
+      --radius-card: 18px;
+      --radius-pill: 999px;
+      --radius-input: 14px;
+      --shadow-card: 0 1px 2px rgba(31,26,20,.04), 0 8px 24px -16px rgba(31,26,20,.18);
+      --shadow-card-hover: 0 2px 4px rgba(31,26,20,.06), 0 20px 40px -16px rgba(31,26,20,.28);
+      --font-display: "Cormorant Garamond", "Times New Roman", serif;
+      --font-sans: "Manrope", -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+    img { max-width: 100%; display: block; }
+    button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ---------- Mini chrome del sitio (contexto liviano) ---------- */
+    .siteNav {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(251,247,241,.85);
+      backdrop-filter: saturate(140%) blur(10px);
+      -webkit-backdrop-filter: saturate(140%) blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    .siteNav__row {
+      max-width: 1320px; margin: 0 auto;
+      padding: 14px 20px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .siteNav__brand {
+      display: flex; align-items: baseline; gap: 6px;
+      font-family: var(--font-display); font-weight: 600; font-size: 24px; letter-spacing: -0.01em;
+    }
+    .siteNav__brand b { font-weight: 600; }
+    .siteNav__brand small { font-size: 11px; font-family: var(--font-sans); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); }
+    .siteNav__links { display: none; margin-left: auto; gap: 28px; font-size: 14px; font-weight: 500; color: var(--ink-2); }
+    .siteNav__links a:hover { color: var(--ink); }
+    .siteNav__cta {
+      margin-left: auto;
+      font-size: 13px; font-weight: 600;
+      padding: 10px 16px;
+      background: var(--ink); color: var(--bg);
+      border-radius: var(--radius-pill);
+      transition: background .2s ease, transform .2s ease;
+    }
+    .siteNav__cta:hover { background: var(--accent); transform: translateY(-1px); }
+
+    @media (min-width: 880px) {
+      .siteNav__links { display: flex; }
+      .siteNav__cta { margin-left: 0; }
+    }
+
+    /* ---------- Sección catálogo ---------- */
+    .catalog {
+      padding: 36px 0 80px;
+    }
+    .catalog__inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    .catalog__header {
+      max-width: 720px;
+      margin: 0 0 28px;
+    }
+    .catalog__eyebrow {
+      display: inline-block;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .catalog__title {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: clamp(36px, 7.5vw, 64px);
+      line-height: 1;
+      letter-spacing: -0.02em;
+      margin: 0 0 12px;
+      color: var(--ink);
+    }
+    .catalog__title em {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--ink-2);
+    }
+    .catalog__sub {
+      font-size: 15px;
+      color: var(--ink-2);
+      margin: 0;
+      max-width: 36ch;
+      line-height: 1.55;
+    }
+
+    /* ---------- Controles ---------- */
+    .catalog__controls {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      margin: 0 0 14px;
+    }
+
+    .search {
+      position: relative;
+      display: flex; align-items: center;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-input);
+      padding: 0 12px;
+      height: 46px;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    .search:focus-within {
+      border-color: var(--ink);
+      box-shadow: 0 0 0 4px rgba(31,26,20,.05);
+    }
+    .search svg { color: var(--ink-3); flex-shrink: 0; }
+    .search input {
+      flex: 1; min-width: 0;
+      border: 0; outline: 0; background: transparent;
+      font: inherit; color: var(--ink);
+      padding: 0 8px;
+      height: 100%;
+    }
+    .search input::placeholder { color: var(--ink-3); }
+    .search__clear {
+      width: 24px; height: 24px; border-radius: 50%;
+      display: grid; place-items: center;
+      color: var(--ink-2); background: var(--bg-2);
+      font-size: 18px; line-height: 1;
+      flex-shrink: 0;
+    }
+    .search__clear:hover { color: var(--ink); background: var(--line); }
+
+    .sort { position: relative; }
+    .sort__btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 46px;
+      padding: 0 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-input);
+      font-size: 14px; font-weight: 500;
+      color: var(--ink);
+      transition: border-color .2s ease;
+      white-space: nowrap;
+    }
+    .sort__btn:hover { border-color: var(--line-2); }
+    .sort__lbl { display: none; color: var(--ink-2); font-weight: 400; }
+    .sort__val { font-weight: 600; }
+    .sort__menu {
+      position: absolute; top: calc(100% + 6px); right: 0;
+      list-style: none; margin: 0; padding: 6px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: 0 12px 32px -8px rgba(31,26,20,.18);
+      min-width: 180px;
+      z-index: 20;
+    }
+    .sort__opt {
+      width: 100%;
+      display: block; text-align: left;
+      padding: 10px 12px;
+      font-size: 14px; font-weight: 500;
+      color: var(--ink);
+      border-radius: 8px;
+      transition: background .15s ease;
+    }
+    .sort__opt:hover { background: var(--bg-2); }
+    .sort__opt--active { background: var(--ink); color: var(--bg); }
+    .sort__opt--active:hover { background: var(--ink); }
+
+    @media (min-width: 560px) {
+      .sort__lbl { display: inline; }
+    }
+
+    /* ---------- Meta ---------- */
+    .catalog__meta {
+      font-size: 13px;
+      color: var(--ink-2);
+      margin: 0 0 22px;
+      display: flex; align-items: center; gap: 8px;
+      flex-wrap: wrap;
+    }
+    .catalog__meta strong { color: var(--ink); font-weight: 600; }
+    .catalog__dot { color: var(--ink-3); }
+
+    /* ---------- Grilla ---------- */
+    .catalog__grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    @media (min-width: 640px) {
+      .catalog__grid { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    }
+    @media (min-width: 960px) {
+      .catalog__grid { grid-template-columns: repeat(4, 1fr); gap: 18px; }
+    }
+
+    /* ---------- Card ---------- */
+    .card {
+      position: relative;
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      aspect-ratio: 4 / 5;
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      isolation: isolate;
+      box-shadow: var(--shadow-card);
+      transform: translateY(16px);
+      opacity: 0;
+      transition:
+        transform .65s cubic-bezier(.2,.7,.2,1),
+        opacity .65s cubic-bezier(.2,.7,.2,1),
+        box-shadow .35s ease;
+      will-change: transform, opacity;
+    }
+    .card--in { transform: translateY(0); opacity: 1; }
+
+    .card:hover { box-shadow: var(--shadow-card-hover); }
+    .card:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    /* arte interno */
+    .card__art {
+      position: absolute; inset: 0;
+      transition: transform .6s cubic-bezier(.2,.7,.2,1);
+      z-index: 0;
+    }
+    .card:hover .card__art { transform: scale(1.05); }
+
+    .card__sheen {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(120% 80% at 20% 10%, rgba(255,255,255,.18), transparent 55%),
+        linear-gradient(180deg, transparent 35%, rgba(0,0,0,.35) 100%);
+      pointer-events: none;
+    }
+
+    /* pill cantidad */
+    .card__pill {
+      position: absolute;
+      top: 10px; right: 10px;
+      z-index: 2;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .02em;
+      padding: 5px 9px 4px;
+      border-radius: var(--radius-pill);
+      line-height: 1;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      box-shadow: 0 1px 2px rgba(0,0,0,.08);
+    }
+
+    /* bloque inferior */
+    .card__bottom {
+      position: relative;
+      z-index: 2;
+      padding: 14px 14px 14px;
+      display: flex; flex-direction: column;
+      gap: 8px;
+    }
+    .card__title {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: clamp(18px, 2.6vw, 24px);
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      margin: 0;
+      text-shadow: 0 1px 2px rgba(0,0,0,.18);
+      text-wrap: balance;
+    }
+    .card__cta {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .02em;
+      opacity: .92;
+    }
+    .card__cta svg {
+      transition: transform .35s cubic-bezier(.2,.7,.2,1);
+    }
+    .card:hover .card__cta svg { transform: translateX(4px); }
+
+    @media (min-width: 640px) {
+      .card__bottom { padding: 16px 16px 16px; gap: 10px; }
+      .card__pill { top: 12px; right: 12px; font-size: 12px; padding: 6px 10px 5px; }
+      .card__cta { font-size: 13px; }
+    }
+
+    /* ---------- Empty state ---------- */
+    .catalog__empty {
+      padding: 60px 20px;
+      text-align: center;
+      color: var(--ink-2);
+      border: 1px dashed var(--line-2);
+      border-radius: 18px;
+      background: #fff;
+    }
+    .catalog__empty p { margin: 0 0 12px; font-size: 15px; }
+    .catalog__empty button {
+      font-size: 13px; font-weight: 600;
+      padding: 10px 18px;
+      background: var(--ink); color: var(--bg);
+      border-radius: var(--radius-pill);
+    }
+
+    /* ---------- Motion safety ---------- */
+    @media (prefers-reduced-motion: reduce) {
+      .card { transition: none; transform: none; opacity: 1; }
+      .card__art, .card__cta svg { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <!-- mini chrome del sitio para dar contexto -->
+  <nav class="siteNav" aria-label="Innova">
+    <div class="siteNav__row">
+      <a class="siteNav__brand" href="https://innova54.com/" aria-label="Innova">
+        <b>innova</b><small>backdrops</small>
+      </a>
+      <div class="siteNav__links">
+        <a href="#">Diseños</a>
+        <a href="#">Precios</a>
+        <a href="#">Newborn</a>
+        <a href="#">FAQ</a>
+      </div>
+      <a class="siteNav__cta" href="https://wa.me/5491171142152">WhatsApp</a>
+    </div>
+  </nav>
+
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <script src="catalog-data.js"></script>
+  <script type="text/babel" src="app.jsx"></script>
+</body>
+</html>

@@ -5,6 +5,7 @@ import Footer from './components/Footer'
 import FAQ from './components/FAQ'
 import ProductCategoryMenu from './components/ProductCategoryMenu'
 import DesignCatalog from './components/gallery/DesignCatalog'
+import { getCachedFolders } from './lib/cloudinaryFolders'
 import HeroProps from './components/HeroProps'
 import { HeroGallery } from './components/hero/HeroGallery'
 import { HomeSizePickerWithPrices } from './components/HomeSizePickerWithPrices'
@@ -22,14 +23,15 @@ export const metadata: Metadata = {
   },
 }
 
-export default function Home() {
+export default async function Home() {
+  const folders = await getCachedFolders()
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow">
         <HeroGallery />
         <AnimatedCards />
         <InspirationSection />
-        <DesignCatalog />
+        <DesignCatalog initialFolders={folders} />
         <HomeSizePickerWithPrices />
         <HeroProps />
         <ProductCategoryMenu />

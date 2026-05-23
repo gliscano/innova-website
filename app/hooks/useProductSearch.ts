@@ -1,210 +1,121 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from "react"
+import type { CloudinaryFolder } from "../types/catalog"
 import { catalogData } from "../data/catalogData"
 
 interface SearchMatch {
   categories: string[]
-  tags: string[]
   type: "exact"
 }
 
-export const useProductSearch = () => {
+export const useProductSearch = (folders: CloudinaryFolder[]) => {
   const [searchTerm, setSearchTerm] = useState("")
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("Todos")
-  const [sortBy, setSortBy] = useState("featured")
+  const [sortBy, setSortBy] = useState("name")
   const [isSearching, setIsSearching] = useState(false)
   const [searchResult, setSearchResult] = useState<SearchMatch | null>(null)
-  
-  // Cache para normalización de texto
+
   const normalizationCache = useRef(new Map<string, string>())
-  
-  // Construir categorías a partir de catalogData y ordenar por featured (true primero)
+
   const categoriesFromData = useMemo(() => {
-    const categoryToHasFeatured = new Map<string, boolean>()
-    catalogData.forEach((product) => {
-      const previous = categoryToHasFeatured.get(product.category) || false
-      categoryToHasFeatured.set(product.category, previous || !!product.featured)
-    })
+    return [...folders]
+      .map((f) => f.folderName)
+      .sort((a, b) => a.localeCompare(b))
+  }, [folders])
 
-    const sorted = Array.from(categoryToHasFeatured.entries())
-      .sort((a, b) => {
-        // featured true primero
-        const byFeatured = Number(b[1]) - Number(a[1])
-        if (byFeatured !== 0) return byFeatured
-        // secundario: orden alfabético
-        return a[0].localeCompare(b[0])
-      })
-      .map(([name]) => name)
-
-    return [...sorted]
-  }, [])
-
-  // Función optimizada para normalizar texto (solo acentos)
   const normalizeText = useCallback((text: string): string => {
-    const cacheKey = text
-    if (normalizationCache.current.has(cacheKey)) {
-      return normalizationCache.current.get(cacheKey)!
-    }
-    
+    const cached = normalizationCache.current.get(text)
+    if (cached) return cached
     const normalized = text
       .toLowerCase()
       .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "") // Elimina diacríticos (acentos)
+      .replace(/[̀-ͯ]/g, "")
       .trim()
-    
-    normalizationCache.current.set(cacheKey, normalized)
+    normalizationCache.current.set(text, normalized)
     return normalized
   }, [])
 
-  // Función simplificada para búsquedas exactas
-  const performExactSearch = useCallback((searchTerm: string): SearchMatch | null => {
-    if (!searchTerm || searchTerm.length < 2) return null
+  const performExactSearch = useCallback(
+    (term: string): SearchMatch | null => {
+      if (!term || term.length < 2) return null
+      const normalizedSearch = normalizeText(term)
+      const matchedCategories = new Set<string>()
 
-    const normalizedSearch = normalizeText(searchTerm)
-    const matchedCategories = new Set<string>()
-    const matchedTags = new Set<string>()
-
-    // Búsqueda exacta en todas las propiedades
-    catalogData.forEach((product) => {
-      // Buscar en título
-      if (normalizeText(product.title).includes(normalizedSearch)) {
-        matchedCategories.add(product.category)
-        product.tags.forEach(tag => matchedTags.add(tag))
-      }
-
-      // Buscar en categoría
-      if (normalizeText(product.category).includes(normalizedSearch)) {
-        matchedCategories.add(product.category)
-        product.tags.forEach(tag => matchedTags.add(tag))
-      }
-
-      // Buscar en descripción
-      if (normalizeText(product.description).includes(normalizedSearch)) {
-        matchedCategories.add(product.category)
-        product.tags.forEach(tag => matchedTags.add(tag))
-      }
-
-      // Buscar en tags
-      product.tags.forEach((tag) => {
-        if (normalizeText(tag).includes(normalizedSearch)) {
-          matchedCategories.add(product.category)
-          matchedTags.add(tag)
+      folders.forEach((folder) => {
+        if (
+          normalizeText(folder.title).includes(normalizedSearch) ||
+          normalizeText(folder.folderName).includes(normalizedSearch)
+        ) {
+          matchedCategories.add(folder.folderName)
         }
       })
 
-      // Buscar en recommendedUse
-      product.recommendedUse?.forEach((use) => {
-        if (normalizeText(use).includes(normalizedSearch)) {
-          matchedCategories.add(product.category)
-          product.tags.forEach(tag => matchedTags.add(tag))
-        }
-      })
-    })
-
-    // Retornar resultado si se encontraron coincidencias
-    if (matchedCategories.size > 0 || matchedTags.size > 0) {
-      return {
-        categories: Array.from(matchedCategories),
-        tags: Array.from(matchedTags),
-        type: "exact" as const,
+      if (matchedCategories.size > 0) {
+        return { categories: Array.from(matchedCategories), type: "exact" }
       }
-    }
+      return null
+    },
+    [folders, normalizeText]
+  )
 
-    return null
-  }, [normalizeText])
-
-  // Debounce search term
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm)
     }, 500)
-
     return () => clearTimeout(timer)
   }, [searchTerm])
 
-  // Lógica de búsqueda principal simplificada
   useEffect(() => {
-    const performSearch = () => {
-      if (!debouncedSearchTerm || debouncedSearchTerm.length < 2) {
-        setSearchResult(null)
-        setIsSearching(false)
-        return
-      }
-
-      setIsSearching(true)
-
-      try {
-        const searchMatches = performExactSearch(debouncedSearchTerm)
-        setSearchResult(searchMatches)
-      } catch (error) {
-        console.error("Error searching:", error)
-        setSearchResult(null)
-      } finally {
-        setIsSearching(false)
-      }
+    if (!debouncedSearchTerm || debouncedSearchTerm.length < 2) {
+      setSearchResult(null)
+      setIsSearching(false)
+      return
     }
-
-    performSearch()
+    setIsSearching(true)
+    try {
+      setSearchResult(performExactSearch(debouncedSearchTerm))
+    } catch {
+      setSearchResult(null)
+    } finally {
+      setIsSearching(false)
+    }
   }, [debouncedSearchTerm, performExactSearch])
 
   const filteredProducts = useMemo(() => {
-    let filtered = catalogData
+    let filtered = folders
 
-    // Aplicar filtro de categoría
     if (selectedCategory !== "Todos") {
-      filtered = filtered.filter(product => product.category === selectedCategory)
+      filtered = filtered.filter((f) => f.folderName === selectedCategory)
     }
 
-    // Aplicar búsqueda si hay término de búsqueda
-    if (searchResult && (searchResult.categories.length > 0 || searchResult.tags.length > 0)) {
-      filtered = filtered.filter((product) => {
-        if (searchResult.categories.includes(product.category)) {
-          return true
-        }
-        
-        if (product.tags.some(tag => searchResult.tags.includes(normalizeText(tag)))) {
-          return true
-        }
+    const normalizedSearch = searchTerm.length >= 2
+      ? normalizeText(searchTerm)
+      : null
 
-        return false
+    if (normalizedSearch) {
+      filtered = filtered.filter((f) => {
+        if (
+          normalizeText(f.title).includes(normalizedSearch) ||
+          normalizeText(f.folderName).includes(normalizedSearch)
+        ) return true
+        const item = catalogData.find((c) => c.category === f.folderName)
+        if (!item) return false
+        if (normalizeText(item.description).includes(normalizedSearch)) return true
+        return item.tags.some((tag) => normalizeText(tag).includes(normalizedSearch))
       })
     }
 
-    // Aplicar ordenamiento
-    if (debouncedSearchTerm && debouncedSearchTerm.length >= 2) {
-      const normalizedSearch = normalizeText(debouncedSearchTerm)
-      filtered.sort((a, b) => {
-        const aExactCategory = normalizeText(a.category) === normalizedSearch
-        const bExactCategory = normalizeText(b.category) === normalizedSearch
-
-        // Priorizar coincidencia exacta en category
-        if (aExactCategory !== bExactCategory) {
-          return bExactCategory ? 1 : -1
-        }
-
-        // Secundario: criterio seleccionado
-        switch (sortBy) {
-          case "name":
-            return a.title.localeCompare(b.title)
-          case "featured":
-          default:
-            return (b.featured ? 1 : 0) - (a.featured ? 1 : 0)
-        }
-      })
-    } else {
-      switch (sortBy) {
-        case "name":
-          filtered.sort((a, b) => a.title.localeCompare(b.title))
-          break
-        case "featured":
-        default:
-          filtered.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0))
-          break
+    return [...filtered].sort((a, b) => {
+      if (sortBy === "name-desc") return b.title.localeCompare(a.title, "es")
+      if (sortBy === "count") return b.imageCount - a.imageCount
+      if (normalizedSearch) {
+        const aExact = normalizeText(a.folderName) === normalizedSearch
+        const bExact = normalizeText(b.folderName) === normalizedSearch
+        if (aExact !== bExact) return bExact ? 1 : -1
       }
-    }
-
-      return filtered
-  }, [selectedCategory, sortBy, searchResult, debouncedSearchTerm, normalizeText])
+      return a.title.localeCompare(b.title, "es")
+    })
+  }, [folders, selectedCategory, searchTerm, sortBy, normalizeText])
 
   const clearFilters = () => {
     setSearchTerm("")
@@ -213,7 +124,6 @@ export const useProductSearch = () => {
   }
 
   return {
-    // Estados
     searchTerm,
     setSearchTerm,
     selectedCategory,
@@ -225,10 +135,7 @@ export const useProductSearch = () => {
     searchResultType: searchResult?.type || null,
     categoriesFromData,
     filteredProducts,
-    
-    // Funciones
     clearFilters,
-    normalizeText
+    normalizeText,
   }
 }
-

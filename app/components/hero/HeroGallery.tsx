@@ -69,13 +69,13 @@ export function HeroGallery() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.5 }}
-                className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#4a3a2a] leading-tight mb-6 text-balance"
+                className="copperplate-bold-font text-3xl md:text-4xl lg:text-5xl font-bold text-[#4a3a2a] leading-tight mb-6 text-balance"
               >
                 <span className="text-2xl md:text-4xl lg:text-5xl font-bold text-[#4a3a2a] leading-tight mb-6 text-balance">
                   {content.title}
                 </span>
                 <br />
-                <span className={`bg-gradient-to-r ${content.gradientFrom} ${content.gradientVia} ${content.gradientTo} bg-clip-text text-transparent drop-shadow-md`}>
+                <span className="bg-gradient-to-r from-amber-700 via-orange-600 to-rose-700 bg-clip-text text-transparent drop-shadow-md">
                   {content.highlight}
                 </span>
                 <br />
@@ -98,7 +98,7 @@ export function HeroGallery() {
             </AnimatePresence>
 
             {/* Process explanation */}
-            <div className="flex items-center gap-2 text-sm text-[#8b7355] mb-6 flex-wrap">
+            <div className="hidden lg:flex items-center gap-2 text-sm text-[#8b7355] mb-6 flex-wrap">
               <span className="font-medium">Elegís el diseño</span>
               <span className="text-[#cab896]">→</span>
               <span className="font-medium">Lo producimos con calidad premium</span>
@@ -106,7 +106,7 @@ export function HeroGallery() {
               <span className="font-medium">Lo recibís en tu estudio o evento</span>
             </div>
 
-            {/* CTA Button */}
+            {/* CTA Buttons */}
             <AnimatePresence mode="wait">
               <motion.div
                 key={`btn-${currentSet}`}
@@ -114,17 +114,32 @@ export function HeroGallery() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.3 }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                className="flex flex-wrap gap-3"
               >
-                <button
+                <motion.button
                   onClick={handleViewDesigns}
-                  aria-label="Ver Diseños"
+                  aria-label={content.buttonText}
                   className="inline-flex items-center justify-center px-6 py-3 rounded-full btn-cta-style"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
                   <Sparkles className="w-5 h-5 mr-2" />
                   {content.buttonText}
-                </button>
+                </motion.button>
+
+                {content.secondaryButtonText && content.secondaryButtonUrl && (
+                  <motion.a
+                    href={content.secondaryButtonUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={content.secondaryButtonText}
+                    className="inline-flex items-center justify-center px-6 py-3 rounded-full border border-[#cab896] text-[#4a3a2a] hover:bg-[#cab896]/20 transition-colors"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    {content.secondaryButtonText}
+                  </motion.a>
+                )}
               </motion.div>
             </AnimatePresence>
 

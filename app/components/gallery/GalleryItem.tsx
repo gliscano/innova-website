@@ -92,26 +92,6 @@ export default function GalleryItem({ image, onClick, index }: GalleryItemProps)
         </div>
       </div>
 
-      {/* Tags (display_name solo en modal para reducir carga cognitiva) */}
-      {image.tags?.length > 0 && (
-        <div className="p-3">
-          <div className="flex flex-wrap gap-1">
-            {image.tags.slice(0, 2).map((tag, tagIndex) => (
-              <span
-                key={`${tag}-${tagIndex}`}
-                className="inline-block px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded-full"
-              >
-                {tag}
-              </span>
-            ))}
-            {image.tags.length > 2 && (
-              <span className="inline-block px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded-full">
-                +{image.tags.length - 2}
-              </span>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   )
 }

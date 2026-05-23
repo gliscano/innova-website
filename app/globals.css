@@ -74,6 +74,11 @@ hero-front {
   margin-bottom: 22px; /* separa del buscador */
 }
 
+.btn-cta-color {
+  background-color: #4a3a2a;
+  color: #ffffff
+}
+
 .catalog-divider::after{
   content:"";
   display:block;

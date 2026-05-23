@@ -1,17 +1,25 @@
 import './globals.css'
 import './fonts.css'
-import { Inter } from 'next/font/google'
+import { Inter, Cormorant_Garamond } from 'next/font/google'
 import Script from 'next/script'
 import type { Metadata } from 'next'
 import WhatsAppFloat from './components/WhatsAppFloat'
 import { SelectedSizeProvider } from './context/SelectedSizeContext'
 
-const inter = Inter({ 
+const inter = Inter({
   subsets: ['latin'],
-  weight: ['400', '600', '700'], // Solo los pesos necesarios
-  display: 'swap', // Mejora la percepción de carga
+  weight: ['400', '600', '700'],
+  display: 'swap',
   preload: true,
   fallback: ['system-ui', 'arial'],
+})
+
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  style: ['normal', 'italic'],
+  display: 'swap',
+  variable: '--font-cormorant',
 })
 
 export const metadata: Metadata = {
@@ -84,7 +92,7 @@ export default function RootLayout({
         {/* End Meta Pixel Facebook */}
       </head>
       <body
-        className={inter.className}
+        className={`${inter.className} ${cormorant.variable}`}
          cz-shortcut-listen="true"
       >
         {/* Meta Pixel noscript fallback - img nativo (no next/image) para tracking */}
