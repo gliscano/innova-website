@@ -6,7 +6,7 @@ export default function ProductCategoryMenu() {
       href="https://store.innova54.com/"
       target="_self"
       rel="noopener noreferrer"
-      className="relative block overflow-hidden min-h-[280px] sm:min-h-[360px] lg:min-h-[440px] cursor-pointer group"
+      className="relative block overflow-hidden min-h-[280px] sm:min-h-[360px] lg:min-h-[440px] cursor-pointer group max-w-7xl mx-auto"
     >
       <Image
         src="/images/innova/background-store.png"

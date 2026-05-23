@@ -9,7 +9,7 @@ const features = [
 
 export default function HeroProps() {
   return (
-    <section className="relative overflow-hidden min-h-[600px] sm:min-h-[680px]">
+    <section className="relative overflow-hidden min-h-[600px] sm:min-h-[680px] max-w-7xl mx-auto">
       <Image
         src="/images/innova/props/background-newborn.png"
         alt="Fondos y props para sesiones newborn"
