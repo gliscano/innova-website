@@ -37,10 +37,13 @@ export interface GalleryModalProps {
   isOpen: boolean
   images: GalleryImage[]
   initialIndex: number
+  category?: string
+  context?: {
+    Description?: string
+  }
   onClose: () => void
   goToNext: () => void
   goToPrevious: () => void
-  category?: string
 }
 
 export interface GalleryItemProps {
@@ -53,6 +56,7 @@ export interface GalleryGridProps {
   images: GalleryImage[]
   onImageClick: (index: number) => void
   isLoading: boolean
+  isLoadingMore: boolean
   hasMore: boolean
   onLoadMore: () => void
 }

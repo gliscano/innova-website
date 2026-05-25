@@ -6,6 +6,7 @@ import { GalleryImage, GallerySearchResponse, GalleryProps } from '../types/gall
 interface UseGalleryImagesReturn {
   images: GalleryImage[]
   isLoading: boolean
+  isLoadingMore: boolean
   error: string | null
   hasMore: boolean
   totalCount: number
@@ -16,32 +17,35 @@ interface UseGalleryImagesReturn {
 export function useGalleryImages(props: GalleryProps): UseGalleryImagesReturn {
   const [images, setImages] = useState<GalleryImage[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [hasMore, setHasMore] = useState(true)
   const [totalCount, setTotalCount] = useState(0)
   const [nextCursor, setNextCursor] = useState<string | null>(null)
-  
+
   const abortControllerRef = useRef<AbortController | null>(null)
   const isLoadingMoreRef = useRef(false)
   const propsRef = useRef(props)
-  
+
   // Mantener props actualizados en ref para evitar dependencias circulares
   useEffect(() => {
     propsRef.current = props
   }, [props])
 
   const searchImages = useCallback(async (isLoadMore = false) => {
-    if (isLoadingMoreRef.current) return
+    // Guard: evitar llamadas concurrentes de "cargar más"
+    if (isLoadMore && isLoadingMoreRef.current) return
+    if (isLoadMore) isLoadingMoreRef.current = true
 
     try {
-      setIsLoading(true)
+      if (!isLoadMore) setIsLoading(true)
+      else setIsLoadingMore(true)
       setError(null)
 
       // Cancelar petición anterior si existe
       if (abortControllerRef.current) {
         abortControllerRef.current.abort()
       }
-
       abortControllerRef.current = new AbortController()
 
       const currentProps = propsRef.current
@@ -78,8 +82,6 @@ export function useGalleryImages(props: GalleryProps): UseGalleryImagesReturn {
       setNextCursor(data.nextCursor || null)
       setHasMore(data.hasMore)
       setTotalCount(data.totalCount)
-      setIsLoading(false)
-      isLoadingMoreRef.current = false
 
       // Trackear en Google Analytics
       if (typeof window !== 'undefined' && window.gtag) {
@@ -89,26 +91,22 @@ export function useGalleryImages(props: GalleryProps): UseGalleryImagesReturn {
           value: currentProps.searchTerm,
         })
       }
-
     } catch (err) {
       if (err instanceof Error && err.name === 'AbortError') {
         return // Petición cancelada
       }
-
       setError('Error al cargar las imágenes. Intenta de nuevo.')
+    } finally {
       setIsLoading(false)
+      setIsLoadingMore(false)
       isLoadingMoreRef.current = false
     }
   }, [nextCursor])
 
   const loadMore = useCallback(() => {
-    if (isLoading || !hasMore || isLoadingMoreRef.current){
-      return
-    }
-
-    isLoadingMoreRef.current = true
+    if (isLoading || isLoadingMore || !hasMore || isLoadingMoreRef.current) return
     searchImages(true)
-  }, [isLoading, hasMore, searchImages])
+  }, [isLoading, isLoadingMore, hasMore, searchImages])
 
   const refresh = useCallback(() => {
     setImages([])
@@ -140,6 +138,7 @@ export function useGalleryImages(props: GalleryProps): UseGalleryImagesReturn {
   return {
     images,
     isLoading,
+    isLoadingMore,
     error,
     hasMore,
     totalCount,

@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { GalleryImage, GallerySearchResponse } from '../types/gallery'
 
 const ITEMS_PER_PAGE = 12
-const DEFAULT_FOLDER = 'latest-creations'
 
 function shuffleImages(images: GalleryImage[]): GalleryImage[] {
   const shuffled = [...images]
@@ -16,7 +15,6 @@ function shuffleImages(images: GalleryImage[]): GalleryImage[] {
 }
 
 interface UseInspirationFeedProps {
-  folder?: string
   initialImages?: GalleryImage[]
   initialCursor?: string | null
   initialHasMore?: boolean
@@ -40,7 +38,6 @@ export interface UseInspirationFeedReturn {
 }
 
 export function useInspirationFeed({
-  folder = DEFAULT_FOLDER,
   initialImages = [],
   initialCursor = null,
   initialHasMore = true,
@@ -74,12 +71,13 @@ export function useInspirationFeed({
         if (abortRef.current) abortRef.current.abort()
         abortRef.current = new AbortController()
 
+        // El endpoint /api/cloudinary/inspiration detecta automáticamente
+        // los 2 folders más recientes en Cloudinary y mezcla sus imágenes
         const params = new URLSearchParams()
         params.set('maxResults', String(ITEMS_PER_PAGE))
-        if (folder) params.set('folder', folder)
         if (cursor) params.set('nextCursor', cursor)
 
-        const res = await fetch(`/api/cloudinary/search?${params.toString()}`, {
+        const res = await fetch(`/api/cloudinary/inspiration?${params.toString()}`, {
           signal: abortRef.current.signal,
           cache: 'default',
         })
@@ -88,6 +86,8 @@ export function useInspirationFeed({
 
         const data: GallerySearchResponse = await res.json()
         if (data.error) throw new Error(data.error)
+
+        // El servidor ya shufflea; el cliente shufflea de nuevo para mayor variedad
         const randomImages = shuffleImages(data.images || [])
 
         if (isLoadMore) {
@@ -108,7 +108,7 @@ export function useInspirationFeed({
         isLoadingMoreRef.current = false
       }
     },
-    [folder],
+    [],
   )
 
   // Carga inicial
@@ -120,7 +120,7 @@ export function useInspirationFeed({
       abortRef.current?.abort()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [folder])
+  }, [])
 
   const loadMore = useCallback(() => {
     if (!hasMore || isLoading || isLoadingMore || isLoadingMoreRef.current) return

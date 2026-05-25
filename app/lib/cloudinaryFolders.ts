@@ -38,3 +38,36 @@ async function fetchFolders(): Promise<CloudinaryFolder[]> {
 export const getCachedFolders = unstable_cache(fetchFolders, ['cloudinary-folders'], {
   revalidate: 86400,
 })
+
+async function fetchLatestFolderNames(n: number): Promise<string[]> {
+  // Usa la Search API ordenada por created_at desc para encontrar las N carpetas
+  // con actividad más reciente. Es más confiable que root_folders porque:
+  //  - root_folders no garantiza el campo created_at en todos los folders
+  //  - Este enfoque refleja qué carpetas tienen imágenes subidas recientemente
+  // Trae las 300 imágenes más recientes y extrae carpetas únicas en orden de aparición.
+  const result = await cloudinary.search
+    .expression('resource_type:image')
+    .sort_by('created_at', 'desc')
+    .max_results(300)
+    .execute() as { resources: Array<{ folder?: string; asset_folder?: string }> }
+
+  const seen = new Set<string>()
+  const latestFolders: string[] = []
+
+  for (const resource of result.resources ?? []) {
+    const name = resource.folder ?? resource.asset_folder
+    if (name && !EXCLUDED_FOLDERS.has(name) && !seen.has(name)) {
+      seen.add(name)
+      latestFolders.push(name)
+      if (latestFolders.length >= n) break
+    }
+  }
+
+  return latestFolders
+}
+
+export const getLatestFolderNames = unstable_cache(
+  (n: number) => fetchLatestFolderNames(n),
+  ['cloudinary-latest-folder-names'],
+  { revalidate: 3600 }, // 1 hora — refresca automáticamente cuando se sube contenido nuevo
+)

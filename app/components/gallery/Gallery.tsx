@@ -12,6 +12,7 @@ export default function Gallery(props: GalleryProps) {
   const {
     images,
     isLoading,
+    isLoadingMore,
     error,
     hasMore,
     totalCount,
@@ -116,6 +117,7 @@ export default function Gallery(props: GalleryProps) {
           images={images}
           onImageClick={handleImageClick}
           isLoading={isLoading}
+          isLoadingMore={isLoadingMore}
           hasMore={hasMore}
           onLoadMore={loadMore}
         />

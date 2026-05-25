@@ -7,12 +7,11 @@ import { InspirationGrid } from './subcomponents/InspirationGrid'
 import GalleryModal from '../gallery/GalleryModal'
 
 interface InspirationFeedProps {
-  folder?: string
   initialImages?: GalleryImage[]
   initialCursor?: string | null
 }
 
-export function InspirationFeed({ folder, initialImages, initialCursor }: InspirationFeedProps) {
+export function InspirationFeed({ initialImages, initialCursor }: InspirationFeedProps) {
   const {
     filteredImages,
     isLoading,
@@ -21,7 +20,7 @@ export function InspirationFeed({ folder, initialImages, initialCursor }: Inspir
     hasMore,
     loadMore,
     retry,
-  } = useInspirationFeed({ folder, initialImages, initialCursor })
+  } = useInspirationFeed({ initialImages, initialCursor })
 
   const {
     isOpen: isModalOpen,

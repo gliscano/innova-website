@@ -1,15 +1,11 @@
 import { InspirationFeed } from './InspirationFeed'
 
-interface InspirationSectionProps {
-  /** Carpeta de Cloudinary a filtrar. Si se omite, carga todas las imágenes. */
-  folder?: string
-}
-
 /**
  * Server Component — wrapper de sección.
  * Toda la lógica interactiva (fetch, estado, modal) vive dentro de InspirationFeed ('use client').
+ * El feed detecta automáticamente los 2 folders más recientes de Cloudinary.
  */
-export function InspirationSection({ folder }: InspirationSectionProps) {
+export function InspirationSection() {
   return (
     <section
       className="max-w-7xl mx-auto px-4 py-8 sm:py-12 sm:px-6 lg:px-8"
@@ -26,7 +22,7 @@ export function InspirationSection({ folder }: InspirationSectionProps) {
         <div className="catalog-divider mt-5" />
       </div>
 
-      <InspirationFeed folder={folder} />
+      <InspirationFeed />
     </section>
   )
 }

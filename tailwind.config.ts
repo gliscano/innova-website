@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+const plugin = require('tailwindcss/plugin')
+
 module.exports = {
   darkMode: ['class'],
   
@@ -94,5 +96,10 @@ module.exports = {
     }
   },
   
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    plugin(function({ addVariant }: { addVariant: (name: string, definition: string) => void }) {
+      addVariant('mob-landscape', '@media (orientation: landscape) and (max-height: 500px)')
+    }),
+  ],
 }
