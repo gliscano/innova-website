@@ -46,14 +46,14 @@ export const contentSets: ContentSet[] = [
 export const imageSets: ImageSet[][] = [
   // Set 1
   [
-    { src: "/images/innova/hero/01.webp", alt: "", icon: Camera, column: 1, height: "h-72" },
+    { src: "/images/innova/hero/futb-03.png", alt: "", icon: Camera, column: 1, height: "h-72" },
     { src: "/images/innova/hero/02.webp", alt:"", icon: Sparkles, column: 1, height: "h-64" },
-    { src: "/images/innova/hero/03.webp", alt:"", icon: Palette, column: 1, height: "h-56" },
-    { src: "/images/innova/hero/04.webp", alt:"", icon: Wand2, column: 2, height: "h-64" },
+    { src: "/images/innova/hero/futb-06.png", alt:"", icon: Palette, column: 1, height: "h-56" },
+    { src: "/images/innova/hero/futb-07.png", alt:"", icon: Wand2, column: 2, height: "h-64" },
     { src: "/images/innova/hero/05.webp", alt: "", icon: Layers, column: 2, height: "h-56" },
-    { src: "/images/innova/hero/06.webp", alt:"", icon: Brush, column: 2, height: "h-52" },
-    { src: "/images/innova/hero/07.webp", alt:"", icon: Palette, column: 3, height: "h-64" },
-    { src: "/images/innova/hero/08.webp", alt:"", icon: Sparkles, column: 3, height: "h-52" },
+    { src: "/images/innova/hero/futb-01.png", alt:"", icon: Brush, column: 2, height: "h-52" },
+    { src: "/images/innova/hero/futb-04.png", alt:"", icon: Palette, column: 3, height: "h-64" },
+    { src: "/images/innova/hero/futb-05.png", alt:"", icon: Sparkles, column: 3, height: "h-52" },
     { src: "/images/innova/hero/09.webp", alt: "", icon: Camera, column: 3, height: "h-64" },
   ]
 ]

@@ -15,10 +15,16 @@ body {
 }
 
 .hero-background {
-  background:
+ /*  background:
   radial-gradient(900px 450px at 20% 10%, rgba(202,184,150,.35) 0%, rgba(202,184,150,0) 60%),
   radial-gradient(700px 350px at 80% 30%, rgba(222,220,218,.55) 0%, rgba(222,220,218,0) 55%),
-  linear-gradient(154deg, #cab896, #ffffff, #dedcda, #cab896);  
+  linear-gradient(154deg, #cab896, #ffffff, #dedcda, #cab896);   */
+  /* Temática Mundial — Albiceleste Argentina */
+  background: #aacbe8;
+  background:
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0px, rgba(255, 255, 255, 0.06) 2px, transparent 2px, transparent 22px),
+    radial-gradient(800px 400px at 80% 12%, rgba(242, 183, 5, 0.18) 0%, rgba(242, 183, 5, 0) 60%),
+    linear-gradient(160deg, #75aadb 0%, #aacbe8 40%, #eaf3fb 70%, #ffffff 100%);
 }
 
 .btn-cta-style {
