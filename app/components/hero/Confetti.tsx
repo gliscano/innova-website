@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo } from "react"
+import { useMemo, useState, useEffect } from "react"
 import { motion, useReducedMotion } from "framer-motion"
 
 // Paleta mundialista albiceleste + dorado de la copa
@@ -14,6 +14,9 @@ interface ConfettiProps {
 // sincronizado con el rebote del logo-pelota.
 export function Confetti({ count = 70 }: ConfettiProps) {
   const prefersReducedMotion = useReducedMotion()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => setMounted(true), [])
 
   const pieces = useMemo(
     () =>
@@ -31,7 +34,7 @@ export function Confetti({ count = 70 }: ConfettiProps) {
     [count]
   )
 
-  if (prefersReducedMotion) return null
+  if (!mounted || prefersReducedMotion) return null
 
   return (
     <div

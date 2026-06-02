@@ -129,8 +129,8 @@ export default function PriceList() {
             {/* Hybrid Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
               <div className="p-3 gradient-rose-gold-colors">
-                <h3 className="text-xl font-bold text-gray-900">Fondos Hibridos (Tela y Piso en Símil de neoprene)</h3>
-                <p className="mt-1 text-sm text-gray-900">Combinamos las mejores texturas para lograr una experiencia superior.</p>
+                <h3 className="text-xl font-bold text-gray-900">Fondos Híbridos: Tela y Neoprene</h3>
+                <p className="mt-1 text-sm text-gray-900">La combinación perfecta de texturas.</p>
               </div>
               <div className="divide-y divide-gray-200">
                 {propertiesHybridBackdrops.map((item, index) => (
@@ -159,7 +159,7 @@ export default function PriceList() {
             {/* floor Backdrops */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
               <div className="p-3 gradient-rose-gold-colors">
-                <h3 className="text-xl font-bold text-gray-900">Pisos y Alfombras</h3>
+                <h3 className="text-xl font-bold text-gray-900">Pisos de Neoprene</h3>
                 <p className="mt-1 text-sm text-gray-900">Proporciona una superficie suave y flexible </p>
               </div>
               <div className="divide-y divide-gray-200">

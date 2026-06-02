@@ -28,27 +28,17 @@ const propertiesBackdrops: Array<propertiesProductsType> = [
 ];
 
 const propertiesHybridBackdrops: Array<propertiesProductsType> = [
-  { id: "SH1515", width: 1.50, height: 1.5, description: "Piso: 1,50 x 1,5", price: 49000 },
-  { id: "SH1520", width: 1.50, height: 2.0, description: "Pared: 1,50 x 0,5m + Piso: 1,50 x 1,5", price: 55000 },
-  { id: "SH1525", width: 1.50, height: 2.5, description: "Pared: 1,50 x 1,0m + Piso: 1,50 x 1,5", price: 60000 },
-  { id: "SH1530", width: 1.50, height: 3.0, description: "Pared: 1,50 x 1,5m + Piso: 1,50 x 1,5", price: 70000 },
-  { id: "SH1535", width: 1.50, height: 3.5, description: "Pared: 1,50 x 2,0m + Piso: 1,50 x 1,5", price: 75000 },
-  { id: "SH1540", width: 1.50, height: 4.0, description: "Pared: 1,50 x 2,5m + Piso: 1,50 x 1,5", price: 80000 },
-  { id: "SH2920", width: 2.90, height: 2.0, description: "Pared: 2,90 x 2,0m + Piso: 1,50 x 2,90", price: 96000 },
-  { id: "SH2925", width: 2.90, height: 2.5, description: "Pared: 2,90 x 2,0m + Piso: 1,50 x 2,90", price: 106000 },
-  { id: "SH2930", width: 2.90, height: 3.0, description: "Pared: 2,90 x 2,0m + Piso: 1,50 x 2,90", price: 121000 },
-  { id: "SH2935", width: 2.90, height: 3.5, description: "Pared: 2,90 x 2,0m + Piso: 1,50 x 2,90", price: 131000 },
-  { id: "SH2940", width: 2.90, height: 4.0, description: "Pared: 2,90 x 2,0m + Piso: 1,50 x 2,90", price: 141000 },
+  { id: "SH1525", width: 1.50, height: 2.5, description: "Pared Tela: 1,0m + Piso Neoprene: 1,50", price: 60000 },
+  { id: "SH1530", width: 1.50, height: 3.0, description: "Pared Tela: 1,5m + Piso Neoprene: 1,50", price: 70000 },
+  { id: "SH2935", width: 2.90, height: 3.5, description: "Pared Tela: 2,0m + Piso Neoprene: 1,50", price: 131000 },
+  { id: "SH2940", width: 2.90, height: 4.0, description: "Pared Tela: 2,0m + Piso Neoprene: 1,50", price: 141000 },
 ]
 
 const propertiesFloor: Array<propertiesProductsType> = [
   { id: "SF1515", width: 1.5, height: 1.50, price: 51000 },
-  { id: "SF1520", width: 2.0, height: 1.50, price: 61000 },
-  { id: "SF1525", width: 2.5, height: 1.50, price: 71000 },
   { id: "SF1530", width: 3.0, height: 1.50, price: 85000 },
   { id: "SF1535", width: 3.5, height: 1.50, price: 95000 },
   { id: "SF1540", width: 4.0, height: 1.50, price: 105000 },
-  { id: "SF1545", width: 4.5, height: 1.50, price: 115000 },
   { id: "SF1550", width: 5.0, height: 1.50, price: 125000 },
 ];
 
