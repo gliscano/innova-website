@@ -23,7 +23,7 @@ const cormorant = Cormorant_Garamond({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.innova54.com'),
+  metadataBase: new URL('https://innova54.com'),
   title: {
     default: 'Innova — Fondos Fotográficos y Backdrops para Fotógrafos, eventos y escenarios',
     template: '%s | Innova',

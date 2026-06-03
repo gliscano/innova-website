@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Innova Backdrops | Fondos fotográficos personalizados',
     description: 'Fondos fotográficos de alta definición para fotógrafos, eventos y escenarios.',
-    url: 'https://www.innova54.com',
+    url: 'https://innova54.com',
     images: [
       {
         url: '/og-image.png',
