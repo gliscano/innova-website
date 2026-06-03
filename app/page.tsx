@@ -14,12 +14,20 @@ import LeadCaptureSection from './components/LeadCaptureSection'
 import TestimonialsSection from './components/TestimonialsSection'
 
 export const metadata: Metadata = {
-  title: 'Fondos Fotográficos y Backdrops para Fotógrafos',
-  description: 'Fondos fotográficos (backdrops) y props de diseño exclusivo para fotógrafos y decoradores en Argentina. Más de 10.000 diseños. Producción a medida.',
+  title: 'Fondos Fotográficos y Backdrops para Fotógrafos, eventos y escenarios',
+  description: 'Fondos fotográficos de alta definición para fotógrafos, eventos y escenarios.',
   openGraph: {
     title: 'Innova Backdrops | Fondos fotográficos personalizados',
-    description: 'Diseñamos fondos fotográficos de alta definición para fotógrafos, eventos y estudios creativos.',
+    description: 'Fondos fotográficos de alta definición para fotógrafos, eventos y escenarios.',
     url: 'https://www.innova54.com',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Innova Backdrops | Fondos fotográficos de alta definición',
+      },
+    ],
   },
 }
 

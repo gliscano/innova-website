@@ -25,7 +25,7 @@ const cormorant = Cormorant_Garamond({
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.innova54.com'),
   title: {
-    default: 'Innova — Backdrops e Insumos de Fotografía',
+    default: 'Innova — Fondos Fotográficos y Backdrops para Fotógrafos, eventos y escenarios',
     template: '%s | Innova',
   },
   description: 'Fondos fotográficos (backdrops) y props para crear una experiencia de otro nivel. Diseños exclusivos para fotógrafos y decoradores en Argentina.',
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Innova — Backdrops e Insumos de Fotografía',
+        alt: 'Innova — Fondos Fotográficos y Backdrops para Fotógrafos, eventos y escenarios',
       },
     ],
   },
