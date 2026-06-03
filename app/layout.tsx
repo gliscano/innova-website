@@ -35,9 +35,9 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/svg/innova-logo.svg',
-        width: 512,
-        height: 512,
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
         alt: 'Innova — Backdrops e Insumos de Fotografía',
       },
     ],

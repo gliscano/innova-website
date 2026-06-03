@@ -17,8 +17,8 @@ export const metadata: Metadata = {
   title: 'Fondos Fotográficos y Backdrops para Fotógrafos',
   description: 'Fondos fotográficos (backdrops) y props de diseño exclusivo para fotógrafos y decoradores en Argentina. Más de 10.000 diseños. Producción a medida.',
   openGraph: {
-    title: 'Innova — Fondos Fotográficos y Backdrops',
-    description: 'Diseños exclusivos para fotógrafos y decoradores. Producción a medida en Argentina.',
+    title: 'Innova Backdrops | Fondos fotográficos personalizados',
+    description: 'Diseñamos fondos fotográficos de alta definición para fotógrafos, eventos y estudios creativos.',
     url: 'https://www.innova54.com',
   },
 }
