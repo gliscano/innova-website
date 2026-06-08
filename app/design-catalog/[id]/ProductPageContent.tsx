@@ -11,9 +11,13 @@ import { useSelectedSize } from "@/app/context/SelectedSizeContext"
 import { SizeSelectorCompact } from "@/app/components/SizeSelectorCompact"
 import { trackViewContent } from "@/app/utils/tracking"
 import { formatFolderName } from "@/app/utils/catalogUtils"
+import { CollectionGallery } from "@/app/components/gallery/CollectionGallery"
+import type { CloudinarySubfolder } from "@/app/types/catalog"
 
 interface ProductPageContentProps {
   id: string
+  subfolders?: CloudinarySubfolder[]
+  isCollection?: boolean
 }
 
 function StickyProductBar({ title }: { title: string }) {
@@ -107,7 +111,7 @@ function SelectedSizeBanner() {
   )
 }
 
-export default function ProductPageContent({ id }: ProductPageContentProps) {
+export default function ProductPageContent({ id, subfolders = [], isCollection = false }: ProductPageContentProps) {
   const folderName = decodeURIComponent(id)
   const title = formatFolderName(folderName)
 
@@ -152,14 +156,18 @@ export default function ProductPageContent({ id }: ProductPageContentProps) {
 
         <section id="catalog" className="min-h-screen flex flex-col">
           <SelectedSizeBanner />
-          <div className="flex-grow">
-            <Gallery
-              searchTerm={folderName}
-              folder={folderName}
-              tags={[]}
-              itemsPerPage={100}
-            />
-          </div>
+          {isCollection && subfolders.length > 0 ? (
+            <CollectionGallery subfolders={subfolders} />
+          ) : (
+            <div className="flex-grow">
+              <Gallery
+                searchTerm={folderName}
+                folder={folderName}
+                tags={[]}
+                itemsPerPage={100}
+              />
+            </div>
+          )}
         </section>
 
         <div id="information" className="bg-white rounded-lg p-4">

@@ -69,7 +69,8 @@ interface CloudinaryResponse {
 }
 
 // Validaciones y sanitización básica para evitar inyección en expresiones de Cloudinary
-const FOLDER_REGEX = /^[A-Za-z0-9_\/-]{1,200}$/
+// Permite letras (incluyendo acentos latinos), números, espacios, guiones, guiones bajos y barras
+const FOLDER_REGEX = /^[A-Za-zÀ-ÿ0-9 _\/-]{1,200}$/
 const SEARCH_TERM_REGEX = /^[A-Za-z0-9 _.-]{1,100}$/
 const CURSOR_REGEX = /^[A-Za-z0-9_.-]{1,512}$/
 
@@ -104,10 +105,9 @@ function buildExpression(params: { searchTerm?: string; folder?: string }) {
   const { folder } = params
   let expression = 'resource_type:image'
 
-  // Si hay folder, filtrar primero por carpeta exacta
+  // Si hay folder, filtrar primero por carpeta exacta (con comillas para soportar espacios)
   if (folder) {
-    // Usar coincidencia exacta de carpeta (sin asterisco para evitar subcarpetas)
-    expression += ` AND folder:${folder}`
+    expression += ` AND folder:"${folder}"`
   }
 
   return expression

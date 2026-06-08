@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useRef } from 'react'
 import { GalleryProps } from '../../types/gallery'
 import { useGalleryImages } from '../../hooks/useGalleryImages'
 import { useGalleryModal } from '../../hooks/useGalleryModal'
@@ -9,6 +10,8 @@ import GallerySkeleton from './GallerySkeleton'
 import GalleryError from './GalleryError'
 
 export default function Gallery(props: GalleryProps) {
+  const completedRef = useRef(false)
+
   const {
     images,
     isLoading,
@@ -29,6 +32,14 @@ export default function Gallery(props: GalleryProps) {
     goToNext,
     goToPrevious,
   } = useGalleryModal(images)
+
+  // Notificar al padre una sola vez cuando se cargan todas las imágenes
+  useEffect(() => {
+    if (!isLoading && !hasMore && images.length > 0 && !completedRef.current) {
+      completedRef.current = true
+      props.onComplete?.()
+    }
+  }, [isLoading, hasMore, images.length, props])
 
   const handleImageClick = (index: number) => {
     openModal(index)

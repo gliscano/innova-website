@@ -23,6 +23,7 @@ export interface GalleryProps {
   collection?: string
   itemsPerPage?: number
   showTags?: boolean
+  onComplete?: () => void
 }
 
 export interface GallerySearchResponse {

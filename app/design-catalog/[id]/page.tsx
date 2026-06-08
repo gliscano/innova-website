@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { formatFolderName } from '@/app/utils/catalogUtils'
+import { COLLECTION_FOLDERS, getCachedSubfolders } from '@/app/lib/cloudinaryFolders'
 import ProductPageContent from './ProductPageContent'
 
 interface Props {
@@ -22,5 +23,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductPage({ params }: Props) {
   const { id } = await params
-  return <ProductPageContent id={id} />
+  const folderName = decodeURIComponent(id)
+  const isCollection = COLLECTION_FOLDERS.has(folderName)
+  const subfolders = isCollection ? await getCachedSubfolders(folderName) : []
+  return <ProductPageContent id={id} subfolders={subfolders} isCollection={isCollection} />
 }

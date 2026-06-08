@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'res.cloudinary.com', pathname: '/innova54/**' },
+      { protocol: 'https', hostname: 'd22fxaf9t8d39k.cloudfront.net' },
     ],
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [420, 640, 750, 828, 1080, 1200, 1920],

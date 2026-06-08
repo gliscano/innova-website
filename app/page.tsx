@@ -3,7 +3,6 @@ import type { Metadata } from 'next'
 import AnimatedCards from './components/AnimatedCards'
 import Footer from './components/Footer'
 import FAQ from './components/FAQ'
-import ProductCategoryMenu from './components/ProductCategoryMenu'
 import DesignCatalog from './components/gallery/DesignCatalog'
 import { getCachedFolders } from './lib/cloudinaryFolders'
 import HeroProps from './components/HeroProps'
@@ -12,6 +11,7 @@ import { HomeSizePickerWithPrices } from './components/HomeSizePickerWithPrices'
 import { InspirationSection } from './components/inspiracion'
 import LeadCaptureSection from './components/LeadCaptureSection'
 import TestimonialsSection from './components/TestimonialsSection'
+import StockPreview from './components/StockPreview'
 
 export const metadata: Metadata = {
   title: 'Fondos Fotográficos y Backdrops para Fotógrafos, eventos y escenarios',
@@ -41,8 +41,8 @@ export default async function Home() {
         <InspirationSection />
         <DesignCatalog initialFolders={folders} />
         <HomeSizePickerWithPrices />
+        <StockPreview />
         <HeroProps />
-        <ProductCategoryMenu />
         <Suspense fallback={null}>
           <TestimonialsSection />
         </Suspense>

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
+import { Star } from "lucide-react"
 import { useProductSearch } from "../../hooks/useProductSearch"
 import { trackSearch } from "@/app/utils/tracking"
 import type { CloudinaryFolder } from "@/app/types/catalog"
@@ -20,6 +21,8 @@ export default function InnovaCatalog({ initialFolders }: Props) {
   const sortRef = useRef<HTMLDivElement>(null)
   const searchTrackedRef = useRef(false)
   const [sortOpen, setSortOpen] = useState(false)
+  const [expanded, setExpanded] = useState(false)
+  const [visibleCount, setVisibleCount] = useState(Infinity)
 
   const {
     searchTerm,
@@ -42,6 +45,13 @@ export default function InnovaCatalog({ initialFolders }: Props) {
     document.addEventListener("mousedown", onDoc)
     return () => document.removeEventListener("mousedown", onDoc)
   }, [sortOpen])
+
+  useEffect(() => {
+    const update = () => setVisibleCount(window.innerWidth < 640 ? 12 : 24)
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [])
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
@@ -161,34 +171,98 @@ export default function InnovaCatalog({ initialFolders }: Props) {
         </p>
 
         {/* Grid */}
-        {filteredProducts.length > 0 ? (
-          <div
-            role="grid"
-            aria-label={`Catálogo de diseños fotográficos. ${filteredProducts.length} catálogos encontrados`}
-            className="grid gap-3 grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4"
-          >
-            {filteredProducts.map((folder) => (
-              <CardCatalog key={folder.folderName} folder={folder} />
-            ))}
-          </div>
-        ) : (
-          <div
-            role="status"
-            aria-live="polite"
-            className="border border-dashed border-[#D9CEBC] rounded-[18px] bg-white py-[60px] px-5 text-center"
-          >
-            <p className="text-[15px] text-[#6B5F52] mb-3">
-              No encontramos catálogos para &ldquo;<strong className="text-[#1F1A14]">{searchTerm}</strong>&rdquo;.
-            </p>
-            <button
-              onClick={clearFilters}
-              aria-label="Limpiar búsqueda y ver todos los catálogos"
-              className="bg-[#1F1A14] text-white rounded-full px-[18px] py-[10px] text-[13px] font-semibold hover:bg-[#C8543D] transition-colors"
-            >
-              Limpiar búsqueda
-            </button>
-          </div>
-        )}
+        {(() => {
+          const isSearching = searchTerm.trim().length > 0
+
+          // Búsqueda: mostrar todos los resultados filtrados sin límite
+          if (isSearching) {
+            if (filteredProducts.length === 0) {
+              return (
+                <div
+                  role="status"
+                  aria-live="polite"
+                  className="border border-dashed border-[#D9CEBC] rounded-[18px] bg-white py-[60px] px-5 text-center"
+                >
+                  <p className="text-[15px] text-[#6B5F52] mb-3">
+                    No encontramos catálogos para &ldquo;<strong className="text-[#1F1A14]">{searchTerm}</strong>&rdquo;.
+                  </p>
+                  <button
+                    onClick={clearFilters}
+                    aria-label="Limpiar búsqueda y ver todos los catálogos"
+                    className="bg-[#1F1A14] text-white rounded-full px-[18px] py-[10px] text-[13px] font-semibold hover:bg-[#C8543D] transition-colors"
+                  >
+                    Limpiar búsqueda
+                  </button>
+                </div>
+              )
+            }
+            return (
+              <div
+                role="grid"
+                aria-label={`Catálogo de diseños fotográficos. ${filteredProducts.length} catálogos encontrados`}
+                className="grid gap-3 grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4"
+              >
+                {filteredProducts.map((folder) => (
+                  <CardCatalog key={folder.folderName} folder={folder} />
+                ))}
+              </div>
+            )
+          }
+
+          // Navegación sin búsqueda: destacados siempre visibles, límite solo en regulares
+          const allFeatured = filteredProducts.filter(f => f.featured)
+          const allRegular = filteredProducts.filter(f => !f.featured)
+          const featuredFolders = allFeatured
+          const regularFolders = expanded ? allRegular : allRegular.slice(0, visibleCount)
+          const hasHiddenItems = !expanded && allRegular.length > visibleCount
+
+          return (
+            <>
+              {featuredFolders.length > 0 && (
+                <div className="mb-10">
+                  <h3 className="text-[11px] font-semibold tracking-[.18em] uppercase text-[#C8543D] mb-4 flex items-center gap-2">
+                    <Star className="w-3.5 h-3.5 fill-[#C8543D]" />
+                    Destacados
+                  </h3>
+                  <div className="grid gap-3 grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+                    {featuredFolders.map((folder) => (
+                      <CardCatalog key={folder.folderName} folder={folder} />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {regularFolders.length > 0 && (
+                <div>
+                  {featuredFolders.length > 0 && (
+                    <h3 className="text-[11px] font-semibold tracking-[.18em] uppercase text-[#9C8E7C] mb-4">
+                      Todos los catálogos
+                    </h3>
+                  )}
+                  <div className="grid gap-3 grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+                    {regularFolders.map((folder) => (
+                      <CardCatalog key={folder.folderName} folder={folder} />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {hasHiddenItems && (
+                <div className="mt-8 flex justify-center">
+                  <button
+                    onClick={() => setExpanded(true)}
+                    className="flex items-center gap-2 px-6 py-3 rounded-full border border-[#D9CEBC] bg-white text-[14px] font-semibold text-[#1F1A14] hover:bg-[#F4EEE3] hover:border-[#C8543D] transition-colors"
+                  >
+                    Ver más catálogos
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                      <path d="M3 5.5 L7 9.5 L11 5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+                </div>
+              )}
+            </>
+          )
+        })()}
       </div>
     </section>
   )

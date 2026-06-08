@@ -2,9 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  overflow-x: hidden;
+}
+
 body {
   /* Custom gradient - Download PNG */
-  background: linear-gradient(91deg, #cab896, #ffffff, #dedcda, #cab896)
+  background: linear-gradient(91deg, #cab896, #ffffff, #dedcda, #cab896);
+  overflow-x: hidden;
 }
 
 .header-innova {

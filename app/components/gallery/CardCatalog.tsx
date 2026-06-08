@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { Star } from "lucide-react"
 import type { CloudinaryFolder } from "@/app/types/catalog"
 
 interface CardCatalogProps {
@@ -12,7 +13,7 @@ export default function CardCatalog({ folder }: CardCatalogProps) {
   return (
     <Link
       href={`/design-catalog/${encodeURIComponent(folder.folderName)}`}
-      aria-label={`${folder.title} — ${folder.imageCount} diseños`}
+      aria-label={folder.isCollection ? folder.title : `${folder.title} — ${folder.imageCount} diseños`}
       className="group relative flex rounded-3xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 aspect-[3/4] focus:outline-none focus:ring-2 focus:ring-white/50"
     >
       {/* Imagen de fondo */}
@@ -31,12 +32,24 @@ export default function CardCatalog({ folder }: CardCatalogProps) {
       {/* Gradient inferior */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
 
-      {/* Badge con cantidad — esquina superior derecha */}
-      {folder.imageCount > 0 && (
+      {/* Badge Destacado — esquina superior izquierda */}
+      {folder.featured && (
+        <div className="absolute top-3 left-3 bg-amber-400/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm flex items-center gap-1">
+          <Star className="w-3 h-3 fill-white" />
+          <span className="hidden sm:inline">Destacado</span>
+        </div>
+      )}
+
+      {/* Badge — esquina superior derecha */}
+      {folder.isCollection ? (
+        <div className="absolute top-3 right-3 bg-black/75 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">
+          Subcategorías
+        </div>
+      ) : folder.imageCount > 0 ? (
         <div className="absolute top-3 right-3 bg-black/75 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">
           {folder.imageCount} diseños
         </div>
-      )}
+      ) : null}
 
       {/* Título y CTA superpuestos en el gradient */}
       <div className="absolute bottom-0 left-0 right-0 px-4 pb-5 space-y-1">

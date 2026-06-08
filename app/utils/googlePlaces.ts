@@ -37,12 +37,12 @@ export async function getPlaceReviews(): Promise<GoogleReview[] | null> {
     }
 
     if (data.status !== 'OK' || !data.result?.reviews) {
-      console.error('[GooglePlaces] API error:', data.status, data.error_message ?? '')
+      console.warn('[GooglePlaces] API error:', data.status, data.error_message ?? '')
       return null
     }
 
-    // Only show reviews with text and at least 4 stars
-    return data.result.reviews.filter((r) => r.text?.trim() && r.rating >= 4)
+    const filtered = data.result.reviews.filter((r) => r.text?.trim() && r.rating >= 4)
+    return filtered.sort(() => Math.random() - 0.5)
   } catch {
     return null
   }
