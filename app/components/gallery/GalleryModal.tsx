@@ -187,7 +187,7 @@ export default function GalleryModal({
           {/* ── PANEL INFO ──
               Portrait:  order-2 → siempre debajo de la imagen (descripción + footer)
               Landscape: order-2 → columna derecha fija (w-64), con scroll propio */}
-          <div className="flex flex-col flex-shrink-0 order-2 mob-landscape:w-64 mob-landscape:h-full mob-landscape:overflow-y-auto mob-landscape:border-l mob-landscape:border-white/10 mob-landscape:bg-black/60">
+          <div className="flex flex-col flex-shrink-0 order-2 max-h-[50vh] overflow-y-auto mob-landscape:max-h-none mob-landscape:w-64 mob-landscape:h-full mob-landscape:overflow-y-auto mob-landscape:border-l mob-landscape:border-white/10 mob-landscape:bg-black/60">
 
             {/* Título + contador — solo visible en landscape (en portrait va como overlay sobre la imagen) */}
             <div className="hidden mob-landscape:flex items-start text-white px-4 py-3 pr-12 flex-shrink-0">
@@ -207,7 +207,7 @@ export default function GalleryModal({
                 {description.colors && (
                   <div className="flex flex-wrap items-center gap-1.5">
                     <span className="text-gray-500 text-xs font-medium uppercase tracking-wider mr-1">Colores</span>
-                    {description.colors.map((color) => (
+                    {description.colors.slice(0, 3).map((color) => (
                       <span
                         key={color}
                         className="px-2 py-0.5 text-xs rounded-full bg-white/10 text-gray-300"
@@ -244,17 +244,11 @@ export default function GalleryModal({
             )}
 
             {/* Footer — size selector + WhatsApp */}
-            <div className="flex-shrink-0 px-4 pb-4 pt-1">
-              <p className="text-gray-400 text-xs mb-2">
-                Elegí un tamaño para agilizar tu pedido o consulta
-              </p>
+            <div className="flex-shrink-0 px-4 pb-4 pt-2 sticky bottom-0 z-10 bg-[#111] border-t border-white/10 mob-landscape:static mob-landscape:bg-transparent mob-landscape:border-t-0">
 
-              {/* Selector siempre visible */}
-              <SizeSelectorCompact onSelect={setSelectedSize} variant="dark" />
-
-              {/* Chip de confirmación — aparece debajo del selector cuando hay selección */}
-              {selectedSize && (
-                <div className="flex items-center gap-2 bg-amber-400/20 border border-amber-400/40 rounded-xl px-4 h-11 w-full mt-3">
+              {selectedSize ? (
+                /* Medida confirmada: solo chip + WhatsApp */
+                <div className="flex items-center gap-2 bg-amber-400/20 border border-amber-400/40 rounded-xl px-4 h-11 w-full mb-3">
                   <svg className="w-4 h-4 text-amber-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
@@ -269,12 +263,20 @@ export default function GalleryModal({
                     cambiar
                   </button>
                 </div>
+              ) : (
+                /* Sin medida: selector completo */
+                <>
+                  <p className="text-gray-400 text-xs mb-2">
+                    Elegí un tamaño para agilizar tu pedido o consulta
+                  </p>
+                  <SizeSelectorCompact onSelect={setSelectedSize} variant="dark" />
+                </>
               )}
 
               {/* Botón WhatsApp */}
-              <div className="mt-3">
+              <div className={selectedSize ? '' : 'mt-3'}>
                 <WhatsAppDropdown
-                  buttonText={selectedSize ? 'Quiero este diseño' : 'Consultar'}
+                  buttonText={selectedSize ? `Quiero este diseño · ${selectedSize.label}` : 'Consultar'}
                   message={whatsappMessage}
                   className={`w-full px-5 h-11 text-white font-semibold rounded-xl flex items-center justify-center gap-2 transition-colors ${
                     selectedSize

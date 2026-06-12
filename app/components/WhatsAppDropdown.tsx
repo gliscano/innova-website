@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, type CSSProperties } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { trackWhatsAppClick } from '@/app/utils/tracking'
@@ -35,27 +35,42 @@ export default function WhatsAppDropdown({
   iconClassName = '',
 }: WhatsAppDropdownProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const [dropdownStyle, setDropdownStyle] = useState<CSSProperties>({})
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
 
-  // Cerrar dropdown al hacer clic fuera
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false)
       }
     }
+    const handleScroll = () => setIsOpen(false)
 
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside)
+      window.addEventListener('scroll', handleScroll, true)
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
+      window.removeEventListener('scroll', handleScroll, true)
     }
   }, [isOpen])
 
   const toggleDropdown = () => {
-    setIsOpen(!isOpen)
+    if (!isOpen && triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect()
+      const dropdownH = defaultOptions.length * 52
+      const spaceAbove = rect.top
+
+      if (spaceAbove >= dropdownH) {
+        setDropdownStyle({ position: 'fixed', bottom: window.innerHeight - rect.top + 8, left: rect.left + rect.width / 2 - 112, width: 224, zIndex: 9999 })
+      } else {
+        setDropdownStyle({ position: 'fixed', top: rect.bottom + 8, left: rect.left + rect.width / 2 - 112, width: 224, zIndex: 9999 })
+      }
+    }
+    setIsOpen(v => !v)
   }
 
   const handleOptionClick = (label: string) => {
@@ -64,8 +79,9 @@ export default function WhatsAppDropdown({
   }
 
   return (
-    <div className={`relative ${className}`} ref={dropdownRef}>
+    <div className="relative w-full" ref={dropdownRef}>
       <button
+        ref={triggerRef}
         onClick={toggleDropdown}
         className={className}
         aria-label={buttonText}
@@ -91,7 +107,7 @@ export default function WhatsAppDropdown({
       </button>
 
       {isOpen && (
-        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden z-50">
+        <div style={dropdownStyle} className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
           {defaultOptions.map((option, index) => (
             <Link
               key={index}

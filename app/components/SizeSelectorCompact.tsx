@@ -202,6 +202,13 @@ export function SizeSelectorCompact({ onSelect, variant = 'light' }: SizeSelecto
     setCustomHeight('')
   }, [widthValue])
 
+  useEffect(() => {
+    if (!isCustomWidth && !isCustomHeight && canConfirm) {
+      handleConfirm()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [heightValue])
+
   const handleConfirm = () => {
     if (!canConfirm) return
     onSelect({
@@ -329,12 +336,14 @@ export function SizeSelectorCompact({ onSelect, variant = 'light' }: SizeSelecto
               </>
             )}
           </div>
-          <button
-            onClick={handleConfirm}
-            className="shrink-0 px-4 py-2 bg-amber-400 hover:bg-amber-500 active:scale-95 text-white text-sm font-bold rounded-xl transition-all shadow-sm shadow-amber-200"
-          >
-            Confirmar
-          </button>
+          {(isCustomWidth || isCustomHeight) && (
+            <button
+              onClick={handleConfirm}
+              className="shrink-0 px-4 py-2 bg-amber-400 hover:bg-amber-500 active:scale-95 text-white text-sm font-bold rounded-xl transition-all shadow-sm shadow-amber-200"
+            >
+              Confirmar
+            </button>
+          )}
         </div>
       )}
     </div>

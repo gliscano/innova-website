@@ -52,7 +52,7 @@ function StickyProductBar({ title }: { title: string }) {
 
 function SelectedSizeBanner() {
   const { selectedSize, setSelectedSize } = useSelectedSize()
-  const [expanded, setExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(true)
 
   if (selectedSize) {
     return (
@@ -92,8 +92,8 @@ function SelectedSizeBanner() {
         className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
       >
         <div className="flex flex-col text-left">
-          <span className="text-sm text-gray-700 font-semibold">Elegí la medida de tu fondo</span>
-          <span className="text-xs text-gray-400 leading-none mt-0.5">Te mostramos el precio al instante</span>
+          <span className="text-sm text-[#4a3a2a] font-semibold">Elegí la medida de tu fondo</span>
+          <span className="text-xs text-[#9B8E82] leading-none mt-0.5">Te mostramos el precio al instante</span>
         </div>
         <svg
           className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`}
@@ -111,9 +111,18 @@ function SelectedSizeBanner() {
   )
 }
 
+const PURCHASE_STEPS = [
+  { mobile: 'Elegí medida', desktop: 'Elegí medida'     },
+  { mobile: 'Elegí Diseño',       desktop: 'Elegí diseño'     },
+  { mobile: 'WhatsApp',           desktop: 'WhatsApp'         },
+  { mobile: 'Listo!',        desktop: '¡Tu fondo listo!' },
+] as const
+
 export default function ProductPageContent({ id, subfolders = [], isCollection = false }: ProductPageContentProps) {
   const folderName = decodeURIComponent(id)
   const title = formatFolderName(folderName)
+  const { selectedSize, isModalOpen } = useSelectedSize()
+  const activeStep = !selectedSize ? 1 : isModalOpen ? 3 : 2
 
   useEffect(() => {
     trackViewContent(title, folderName)
@@ -132,30 +141,39 @@ export default function ProductPageContent({ id, subfolders = [], isCollection =
           <span className="text-[#1F1A14] font-medium">{title}</span>
         </nav>
 
-        {/* Título + CTAs */}
+        {/* Título + pasos */}
         <div className="mb-5">
-          <h1 className="copperplate-bold-font text-2xl sm:text-3xl font-bold text-[#4a3a2a] leading-tight mb-4">
+          <h1 className="copperplate-bold-font text-2xl sm:text-3xl font-bold text-[#4a3a2a] leading-tight mb-2">
             {title}
           </h1>
-
-          <div className="flex flex-col gap-2">
-            <Link
-              href="#information"
-              className="w-full gradient-green-colors text-black px-4 py-3 rounded-md font-semibold flex items-center justify-center gap-2 text-center"
-            >
-              Información y cómo comprar
-            </Link>
-            <Link
-              href="#prices"
-              className="text-center text-sm text-[#6B5F52] underline underline-offset-2 hover:text-[#1F1A14] transition-colors py-1"
-            >
-              Ver precios y medidas →
-            </Link>
+          <div className="flex items-center gap-1.5 sm:gap-2 text-sm select-none">
+            {PURCHASE_STEPS.map(({ mobile, desktop }, i, arr) => (
+              <React.Fragment key={desktop}>
+                <span className={`font-semibold whitespace-nowrap ${activeStep === i + 1 ? 'text-[#4a3a2a]' : 'text-[#9B8E82]'}`}>
+                  <span className="sm:hidden">{mobile}</span>
+                  <span className="hidden sm:inline">{desktop}</span>
+                </span>
+                {i < arr.length - 1 && (
+                  <span className="text-[#C4B5A8]">→</span>
+                )}
+              </React.Fragment>
+            ))}
           </div>
         </div>
 
         <section id="catalog" className="min-h-screen flex flex-col">
-          <SelectedSizeBanner />
+          <p className="text-xs text-[#9B8E82] flex items-center gap-2 mb-3">
+            <Link href="#information" className="underline underline-offset-2 hover:text-[#1F1A14] transition-colors">
+              Información y cómo comprar
+            </Link>
+            <span>·</span>
+            <Link href="#prices" className="underline underline-offset-2 hover:text-[#1F1A14] transition-colors">
+              Ver precios →
+            </Link>
+          </p>
+          <div className="lg:max-w-[580px]">
+            <SelectedSizeBanner />
+          </div>
           {isCollection && subfolders.length > 0 ? (
             <CollectionGallery subfolders={subfolders} />
           ) : (
@@ -181,7 +199,10 @@ export default function ProductPageContent({ id, subfolders = [], isCollection =
                 </svg>
                 <div>
                   <h3 className="text-md font-semibold text-gray-900">Tiempo de entrega</h3>
-                  <p className="text-gray-600">12 días hábiles</p>
+                  <p className="text-gray-600">
+                    Fondos en stock: entrega inmediata.<br/>
+                    Encargos a medida: 12 días hábiles.
+                  </p>
                 </div>
               </div>
 
@@ -241,8 +262,11 @@ export default function ProductPageContent({ id, subfolders = [], isCollection =
                 <div>
                   <h3 className="text-md font-semibold text-gray-900">¿Cómo compras? Super fácil</h3>
                   <ol className="text-gray-600 list-decimal ml-4 space-y-1">
-                    <li>Elegí un diseño del catálogo o envíanos una referencia</li>
-                    <li>Escríbenos para definir el diseño y las opciones de piso</li>
+                    <li><strong className="text-gray-900">Elegí la medida</strong> con el selector (el precio aparece al instante)</li>
+                    <li><strong className="text-gray-900">Elegí un diseño</strong> del catálogo o envianos una referencia propia</li>
+                    <li><strong className="text-gray-900">Escribinos por WhatsApp</strong> — confirmamos detalles y las opciones de piso (incluidas sin costo)</li>
+                    <li><strong className="text-gray-900">Abonás una seña</strong> para iniciar la producción</li>
+                    <li><strong className="text-gray-900">¡Recibís tu fondo!</strong> Fondos en stock: entrega inmediata · Encargos: 12 días hábiles</li>
                   </ol>
                 </div>
               </div>

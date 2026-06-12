@@ -116,9 +116,10 @@ export function SubcategoryPills({ subfolders, activeSubfolder, onSelect }: Subc
           onClick={() => setExpanded(v => !v)}
           aria-label={expanded ? 'Ocultar todas las subcategorías' : 'Ver todas las subcategorías'}
           aria-expanded={expanded}
-          className="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-full border border-stone-200 bg-white text-stone-500 transition-all duration-200 hover:border-[#c19d83] hover:text-[#c19d83]"
+          className="flex-shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium border border-stone-200 bg-white text-[#c19d83] hover:border-[#c19d83] transition-all duration-200 whitespace-nowrap"
         >
-          {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          {expanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+          {expanded ? 'Ocultar' : 'Ver todas'}
         </button>
       </div>
 

@@ -41,6 +41,17 @@ export const DEFAULT_SIZES: SizeOption[] = [
     badges: ['Decoradores', 'Set Profesional'],
   },
   {
+    id: 'S2950',
+    label: '2.9m × 5m',
+    widthM: 2.9,
+    heightM: 5.0,
+    fromPrice: 128000,
+    bestFor: ['Salón de fiestas', 'Decoración amplia', 'Grupos grandes', 'Pared completa'],
+    depthLevel: 'Alta',
+    lightingHint: 'Flash con difusor o iluminación múltiple',
+    badges: ['Gran formato', 'Para eventos'],
+  },
+  {
     id: 'S1520',
     label: '1.5m × 2m',
     widthM: 1.5,
