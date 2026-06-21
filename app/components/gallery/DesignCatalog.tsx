@@ -68,27 +68,23 @@ export default function InnovaCatalog({ initialFolders }: Props) {
   }
 
   return (
-    <section id="catalog" className="py-10 sm:py-16">
+    <section id="catalog" className="py-4">
       <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}
         <header className="mb-8 max-w-[720px]">
           <span className="block text-[11px] font-semibold tracking-[.18em] uppercase text-[#C8543D] mb-3">
-            Inspiración
+            Inspirate y Elegí tu diseño
           </span>
           <h2
             className="leading-none tracking-tight mb-3 text-[#1F1A14]"
             style={{
-              fontFamily: "var(--font-cormorant), 'Times New Roman', serif",
               fontWeight: 500,
               fontSize: "clamp(36px, 7.5vw, 64px)",
             }}
           >
-            Catálogo <em className="italic text-[#6B5F52] font-[400]">de</em> Diseños
+            Catálogo de <span className="font-bold text-[#C8543D]">Diseños</span>
           </h2>
-          <p className="text-[15px] text-[#6B5F52] leading-[1.55] max-w-[36ch]">
-            Elegí un diseño y hacelo parte de tu próxima historia.
-          </p>
         </header>
 
         {/* Controls */}
@@ -166,7 +162,7 @@ export default function InnovaCatalog({ initialFolders }: Props) {
           <strong className="text-[#1F1A14] font-semibold">{filteredProducts.length}</strong>
           {filteredProducts.length === 1 ? "catálogo" : "catálogos"}
           <span className="text-[#9C8E7C]">·</span>
-          <strong className="text-[#1F1A14] font-semibold">{totalDesigns.toLocaleString("es-AR")}+</strong>
+          <strong className="text-[#1F1A14] font-semibold">+4500</strong>
           diseños en total
         </p>
 

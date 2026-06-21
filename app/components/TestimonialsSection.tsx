@@ -7,13 +7,13 @@ export default async function TestimonialsSection() {
   if (!reviews || reviews.length === 0) return null
 
   return (
-    <section className="py-14 px-4 bg-gray-50">
+    <section className="py-14 px-4" style={{ background: 'var(--surface-2)' }}>
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-10">
-          <p className="text-xs font-semibold tracking-widest uppercase text-gray-400 mb-2">
+          <p className="text-xs font-semibold tracking-widest uppercase mb-2" style={{ color: 'var(--ink-faint)' }}>
             Reseñas en Google
           </p>
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
+          <h2 className="text-2xl sm:text-3xl" style={{ color: 'var(--ink)' }}>
             Lo que dicen nuestros clientes
           </h2>
         </div>
@@ -29,7 +29,8 @@ export default async function TestimonialsSection() {
             href="https://maps.app.goo.gl/umYECNsdo57obniE6"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 transition-colors"
+            className="inline-flex items-center gap-2 text-sm transition-colors"
+            style={{ color: 'var(--ink-soft)' }}
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
               <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />

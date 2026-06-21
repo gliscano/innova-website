@@ -32,9 +32,9 @@ export const contentSets: ContentSet[] = [
     secondaryButtonText: "Quiero entrega inmediata",
     secondaryButtonUrl: "https://store.innova54.com",
     stats: [
-      { value: "+10k", label: "Diseños" },
+      { value: "+4.5k", label: "Diseños" },
       { value: "+50", label: "Estilos" },
-      { value: "5.0", label: "+75 Reseñas" },
+      { value: "5.0", label: "85 Reseñas" },
     ],
     gradientFrom: "from-amber-500",
     gradientVia: "via-orange-400",

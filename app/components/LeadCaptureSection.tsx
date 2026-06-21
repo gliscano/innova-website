@@ -33,21 +33,21 @@ export default function LeadCaptureSection() {
   }
 
   return (
-    <section className="py-14 px-4 bg-gradient-to-br from-[var(--rose-gold)] to-[var(--yellow-gold)] bg-opacity-10">
+    <section className="py-14 px-4" style={{ background: 'var(--surface-2)' }}>
       <div className="max-w-xl mx-auto text-center">
-        <p className="text-xs font-semibold tracking-widest uppercase text-gray-500 mb-2">
+        <p className="text-xs font-semibold tracking-widest uppercase mb-2" style={{ color: 'var(--ink-soft)' }}>
           Comunidad Innova
         </p>
-        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
+        <h2 className="text-2xl sm:text-3xl mb-3" style={{ color: 'var(--ink)' }}>
           Recibí novedades y diseños exclusivos
         </h2>
-        <p className="text-gray-600 mb-8 text-sm sm:text-base">
+        <p className="mb-8 text-sm sm:text-base" style={{ color: 'var(--ink-soft)' }}>
           Suscribite y enterate primero de colecciones nuevas, promociones y tips para fotógrafos y decoradores.
         </p>
 
         {status === 'success' ? (
-          <div className="bg-green-50 border border-green-200 rounded-2xl px-6 py-8">
-            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+          <div className="rounded-2xl px-6 py-8" style={{ background: 'var(--surface)', border: '1px solid var(--line)' }}>
+            <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 bg-green-100">
               <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
               </svg>
@@ -66,7 +66,13 @@ export default function LeadCaptureSection() {
                 required
                 maxLength={100}
                 disabled={status === 'submitting'}
-                className="flex-1 px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-transparent disabled:opacity-60 text-sm"
+                className="flex-1 px-4 py-3 rounded-xl text-sm disabled:opacity-60 focus:outline-none focus:ring-2"
+                style={{
+                  border: '1px solid var(--line)',
+                  background: 'var(--surface)',
+                  color: 'var(--ink)',
+                  '--tw-ring-color': 'color-mix(in oklab, var(--accent) 30%, transparent)',
+                } as React.CSSProperties}
               />
               <input
                 type="email"
@@ -76,25 +82,32 @@ export default function LeadCaptureSection() {
                 required
                 maxLength={254}
                 disabled={status === 'submitting'}
-                className="flex-1 px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-transparent disabled:opacity-60 text-sm"
+                className="flex-1 px-4 py-3 rounded-xl text-sm disabled:opacity-60 focus:outline-none focus:ring-2"
+                style={{
+                  border: '1px solid var(--line)',
+                  background: 'var(--surface)',
+                  color: 'var(--ink)',
+                  '--tw-ring-color': 'color-mix(in oklab, var(--accent) 30%, transparent)',
+                } as React.CSSProperties}
               />
             </div>
 
             <button
               type="submit"
               disabled={status === 'submitting'}
-              className="gradient-orange-colors text-black font-semibold px-6 py-3 rounded-xl transition-all hover:opacity-90 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed text-sm"
+              className="text-white font-semibold px-6 py-3 rounded-xl transition-all hover:opacity-90 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed text-sm"
+              style={{ background: 'var(--accent)' }}
             >
               {status === 'submitting' ? 'Enviando...' : 'Suscribirme gratis'}
             </button>
 
             {status === 'error' && (
-              <p className="text-white text-sm">
+              <p className="text-sm" style={{ color: 'var(--ink-soft)' }}>
                 Hubo un problema al suscribirte. Intentá de nuevo o escribinos por WhatsApp.
               </p>
             )}
 
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs mt-1" style={{ color: 'var(--ink-faint)' }}>
               Sin spam. Podés darte de baja cuando quieras.
             </p>
           </form>

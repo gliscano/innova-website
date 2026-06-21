@@ -38,10 +38,9 @@ export default async function Home() {
       <main className="flex-grow">
         <HeroGallery />
         <AnimatedCards />
+        <StockPreview />
         <InspirationSection />
         <DesignCatalog initialFolders={folders} />
-        <HomeSizePickerWithPrices />
-        <StockPreview />
         <HeroProps />
         <Suspense fallback={null}>
           <TestimonialsSection />

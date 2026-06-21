@@ -1,6 +1,6 @@
 import './globals.css'
 import './fonts.css'
-import { Inter, Cormorant_Garamond } from 'next/font/google'
+import { Inter, Marcellus } from 'next/font/google'
 import Script from 'next/script'
 import type { Metadata } from 'next'
 import WhatsAppFloat from './components/WhatsAppFloat'
@@ -14,12 +14,11 @@ const inter = Inter({
   fallback: ['system-ui', 'arial'],
 })
 
-const cormorant = Cormorant_Garamond({
+const marcellus = Marcellus({
   subsets: ['latin'],
-  weight: ['400', '500', '600'],
-  style: ['normal', 'italic'],
+  weight: '400',
   display: 'swap',
-  variable: '--font-cormorant',
+  variable: '--font-marcellus',
 })
 
 export const metadata: Metadata = {
@@ -58,8 +57,6 @@ export default function RootLayout({
         {/* Preconnect a dominios externos para reducir latencia */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://use.typekit.net" />
-        <link rel="preconnect" href="https://p.typekit.net" />
         
         {/* Google Analytics */}
         <Script async src="https://www.googletagmanager.com/gtag/js?id=G-EZ8J02VNPE"></Script>
@@ -92,7 +89,7 @@ export default function RootLayout({
         {/* End Meta Pixel Facebook */}
       </head>
       <body
-        className={`${inter.className} ${cormorant.variable}`}
+        className={`${inter.className} ${marcellus.variable}`}
          cz-shortcut-listen="true"
       >
         {/* Meta Pixel noscript fallback - img nativo (no next/image) para tracking */}

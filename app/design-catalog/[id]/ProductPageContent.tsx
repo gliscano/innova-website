@@ -295,7 +295,6 @@ export default function ProductPageContent({ id, subfolders = [], isCollection =
           </div>
         </div>
       </div>
-      <HomeSizePickerWithPrices sectionId="prices" />
     </div>
   )
 }

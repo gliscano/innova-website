@@ -27,7 +27,7 @@ export default async function StockPreview() {
   }
 
   return (
-    <section className="py-14 px-4 bg-rose-gold-light/30">
+    <section className="my-2 py-14 px-4 bg-rose-gold-light/30">
       <div className="max-w-6xl mx-auto">
 
         {/* Header */}

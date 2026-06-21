@@ -220,7 +220,7 @@ export function HeroGallery() {
           </div>
 
           {/* Right Gallery Grid with Animated Images */}
-          <div className="grid grid-cols-3 gap-3 lg:gap-4">
+          <div id="hero-gallery-grid" className="hidden lg:grid grid-cols-3 gap-3 lg:gap-4">
             {/* Column 1 */}
             <div className="flex flex-col gap-3 lg:gap-4 pt-12">
               {column1.map((image, index) => (

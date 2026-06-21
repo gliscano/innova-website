@@ -107,7 +107,15 @@ export default function WhatsAppDropdown({
       </button>
 
       {isOpen && (
-        <div style={dropdownStyle} className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
+        <div
+          style={{
+            ...dropdownStyle,
+            background: 'var(--surface)',
+            border: '1px solid var(--line)',
+            boxShadow: 'var(--shadow-md)',
+          }}
+          className="rounded-lg overflow-hidden"
+        >
           {defaultOptions.map((option, index) => (
             <Link
               key={index}
@@ -115,7 +123,8 @@ export default function WhatsAppDropdown({
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => handleOptionClick(option.label)}
-              className="block px-4 py-3 text-black hover:bg-gray-100 transition-colors duration-150 text-left border-b border-gray-100 last:border-b-0"
+              style={{ color: 'var(--ink)', borderBottom: index < defaultOptions.length - 1 ? '1px solid var(--line)' : undefined }}
+              className="block px-4 py-3 transition-colors duration-150 text-left hover:bg-[var(--surface-2)]"
             >
               {option.label}
             </Link>

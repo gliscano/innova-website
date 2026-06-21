@@ -43,7 +43,7 @@ export default function AnimatedCards() {
               <DynamicIcon name={item.icon} size={20} className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
             </div>
             <div className="text-center text-xs text-uppercase lg:text-lg">
-              <h4 className="leading-tight">{item.title}</h4>
+              <h4 className="leading-tight text-white font-bold">{item.title}</h4>
             </div>
           </a>
         ))}

@@ -70,12 +70,12 @@ export default function TerminosYCondiciones() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-grow bg-gray-50">
+      <main className="flex-grow" style={{ background: 'var(--surface-2)' }}>
         <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:py-20 lg:px-8">
           <div className="lg:grid lg:grid-cols-3 lg:gap-8">
             <div>
-              <h2 className="text-3xl font-extrabold text-gray-900">Términos y Condiciones</h2>
-              <p className="mt-4 text-lg text-gray-500">
+              <h2 className="text-3xl font-extrabold" style={{ color: 'var(--ink)' }}>Términos y Condiciones</h2>
+              <p className="mt-4 text-lg" style={{ color: 'var(--ink-soft)' }}>
                 Información importante sobre nuestras políticas y procedimientos.
               </p>
               <div className="mt-6 space-y-4">
@@ -84,13 +84,14 @@ export default function TerminosYCondiciones() {
                     <Link
                       key={section.id}
                       href={`#${section.id}`}
-                      className="flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:bg-gray-50 hover:text-gray-900"
+                      className="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors"
+                      style={{ color: 'var(--ink-soft)' }}
                     >
                       <Image
                         aria-hidden
                         src={`svg/${section.icon}.svg`}
                         alt={`${section.icon} icon`}
-                        className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 text-gray-400"
+                        className="flex-shrink-0 -ml-1 mr-3 h-5 w-5"
                         width={20}
                         height={20}
                       />
@@ -104,20 +105,20 @@ export default function TerminosYCondiciones() {
               <div className="space-y-12">
                 {sections.map((section) => (
                   <div key={section.id} id={section.id} className="scroll-mt-20">
-                    <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+                    <div className="shadow overflow-hidden sm:rounded-lg" style={{ background: 'var(--surface)' }}>
                       <div className="px-4 py-5 sm:px-6 flex items-center">
-                      <Image
-                        aria-hidden
-                        src={`svg/${section.icon}.svg`}
-                        alt={`${section.icon} icon`}
-                        className="flex-shrink-0 mr-3 h-6 w-6 text-rose-800"
-                        width={24}
-                        height={24}
-                      />
-                        <h3 className="text-lg leading-6 font-medium text-gray-900">{section.title}</h3>
+                        <Image
+                          aria-hidden
+                          src={`svg/${section.icon}.svg`}
+                          alt={`${section.icon} icon`}
+                          className="flex-shrink-0 mr-3 h-6 w-6"
+                          width={24}
+                          height={24}
+                        />
+                        <h3 className="text-lg leading-6 font-medium" style={{ color: 'var(--ink)' }}>{section.title}</h3>
                       </div>
-                      <div className="border-t border-gray-200 px-4 py-5 sm:p-6">
-                        <p className="text-base text-gray-700 leading-relaxed">{section.content}</p>
+                      <div className="px-4 py-5 sm:p-6" style={{ borderTop: '1px solid var(--line)' }}>
+                        <p className="text-base leading-relaxed" style={{ color: 'var(--ink-soft)' }}>{section.content}</p>
                       </div>
                     </div>
                   </div>
@@ -126,7 +127,8 @@ export default function TerminosYCondiciones() {
               <div className="mt-8 flex justify-center">
                 <Link
                   href="/"
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2"
+                  style={{ background: 'var(--accent)' }}
                 >
                   Volver al inicio
                 </Link>

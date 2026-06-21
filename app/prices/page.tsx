@@ -1,7 +1,9 @@
+import './prices.css'
 import type { Metadata } from 'next'
-import PriceList from '../components/PriceList'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
+import PriceList from '../components/PriceList'
+import { getCachedFolders } from '../lib/cloudinaryFolders'
 
 export const metadata: Metadata = {
   title: 'Precios y Medidas',
@@ -13,12 +15,13 @@ export const metadata: Metadata = {
   },
 }
 
-export default function PricesPage() {
+export default async function PricesPage() {
+  const folders = await getCachedFolders()
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-grow">
-        <PriceList />
+      <main className="flex-grow prices-page">
+        <PriceList initialFolders={folders} />
       </main>
       <Footer />
     </div>
