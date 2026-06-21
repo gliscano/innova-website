@@ -53,7 +53,7 @@ export function HeroGallery() {
   const content = contentSets[currentSet]
 
   return (
-    <section className="relative min-h-screen hero-background overflow-hidden">
+    <section className="relative lg:min-h-screen hero-background overflow-hidden">
       {/* Sol de Mayo — marca de agua tenue de fondo */}
       <SolDeMayo className="pointer-events-none absolute -right-24 -top-24 z-0 w-[400px] h-[400px] lg:w-[560px] lg:h-[560px] opacity-[0.08]" />
 
