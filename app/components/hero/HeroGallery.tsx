@@ -173,7 +173,7 @@ export function HeroGallery() {
                     color: "#ffffff",
                     backgroundColor: "#2d6da6",
                     backgroundImage:
-                      "linear-gradient(123deg, rgba(2, 40, 115, 1) 0%, rgb(45, 109, 166) 22%, rgba(22, 135, 45, 1) 55%, rgba(200, 18, 18, 1) 95%)",
+                      "linear-gradient(123deg, rgba(2, 40, 115, 1) 0%, rgb(45, 109, 166) 55%,rgba(2, 40, 115, 1) 85%)",
                     boxShadow: "0 4px 12px rgba(2, 40, 115, 0.35)",
                   }}
                   whileHover={{ scale: 1.02 }}

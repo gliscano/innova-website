@@ -123,7 +123,7 @@ export default function GuidedPicker({
                   className={'pk-td-sel' + (isOn ? ' on' : '')}
                   style={isOn ? { background: accent, color: '#fff', borderColor: accent } : undefined}
                 >
-                  {isOn ? 'Seleccionado ✓' : 'Seleccionar'}
+                  {isOn ? 'Elegido ✓' : 'Elegir'}
                 </span>
               </button>
             )

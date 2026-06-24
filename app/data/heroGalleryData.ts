@@ -24,11 +24,11 @@ export interface ImageSet {
 
 export const contentSets: ContentSet[] = [
   {
-    title: "Tu backdrop",
+    title: "Tu fondo fotográfico",
     highlight: "personalizado",
     subtitle: "en dos semanas.",
     description: "Alta definición · Impresión RGB real.",
-    buttonText: "Inspirarme con diseños",
+    buttonText: "Catálogo de Diseños",
     secondaryButtonText: "Quiero entrega inmediata",
     secondaryButtonUrl: "https://store.innova54.com",
     stats: [
