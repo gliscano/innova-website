@@ -30,10 +30,10 @@ const propertiesBackdrops: Array<propertiesProductsType> = [
 ];
 
 const propertiesHybridBackdrops: Array<propertiesProductsType> = [
-  { id: "SH1525", width: 1.50, height: 2.5, description: "Pared Tela: 1,0m + Piso Neoprene: 1,50", price: 60000 },
-  { id: "SH1530", width: 1.50, height: 3.0, description: "Pared Tela: 1,5m + Piso Neoprene: 1,50", price: 70000 },
-  { id: "SH2935", width: 2.90, height: 3.5, description: "Pared Tela: 2,0m + Piso Neoprene: 1,50", price: 131000 },
-  { id: "SH2940", width: 2.90, height: 4.0, description: "Pared Tela: 2,0m + Piso Neoprene: 1,50", price: 141000 },
+  { id: "SH1525", width: 1.50, height: 3.0, description: "Pared Tela: 1,5m + Piso Neoprene: 1,50", price: 85000 },
+  { id: "SH2030", width: 2.0, height: 3.0, description: "Pared Tela: 1,5m + Piso Neoprene: 1,50", price: 100000 },
+  { id: "SH2935", width: 2.90, height: 3.5, description: "Pared Tela: 2,0m + Piso Neoprene: 1,50", price: 146000 },
+  { id: "SH2940", width: 2.90, height: 4.0, description: "Pared Tela: 2,5m + Piso Neoprene: 1,50", price: 157000 },
 ]
 
 const propertiesFloor: Array<propertiesProductsType> = [
