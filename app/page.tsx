@@ -7,7 +7,7 @@ import DesignCatalog from './components/gallery/DesignCatalog'
 import { getCachedFolders } from './lib/cloudinaryFolders'
 import HeroProps from './components/HeroProps'
 import { HeroGallery } from './components/hero/HeroGallery'
-// import { InspirationSection } from './components/inspiracion'
+import { InspirationSection } from './components/inspiracion'
 import LeadCaptureSection from './components/LeadCaptureSection'
 import TestimonialsSection from './components/TestimonialsSection'
 import StockPreview from './components/StockPreview'
@@ -38,7 +38,7 @@ export default async function Home() {
         <HeroGallery />
         <AnimatedCards />
         <StockPreview />
-        {/* <InspirationSection /> */}
+        <InspirationSection />
         <DesignCatalog initialFolders={folders} />
         <HeroProps />
         <Suspense fallback={null}>

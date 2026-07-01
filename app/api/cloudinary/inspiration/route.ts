@@ -1,6 +1,6 @@
 import cloudinary from '@/app/utils/cloudinary'
 import { NextRequest, NextResponse } from 'next/server'
-import { getLatestFolderNames } from '@/app/lib/cloudinaryFolders'
+import { getLatestFolderNames, isExcludedFolder } from '@/app/lib/cloudinaryFolders'
 
 // ─── Rate limiter: sliding window en memoria (mismo patrón que search/route.ts) ───
 const RATE_LIMIT = 30
@@ -207,11 +207,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         )
       }
 
-      folderStates = folderNames.map((name) => ({
-        name,
-        cursor: null,
-        hasMore: true,
-      }))
+      folderStates = folderNames
+        .filter((name) => !isExcludedFolder(name))
+        .map((name) => ({
+          name,
+          cursor: null,
+          hasMore: true,
+        }))
     }
 
     // Solo fetchar folders que aún tienen imágenes disponibles

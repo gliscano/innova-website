@@ -4,9 +4,20 @@ import { formatFolderName } from '@/app/utils/catalogUtils'
 import { catalogData } from '@/app/data/catalogData'
 import type { CloudinaryFolder, CloudinarySubfolder } from '@/app/types/catalog'
 
-const EXCLUDED_FOLDERS = new Set(['latest-creations', 'innova-brand'])
+export const EXCLUDED_FOLDERS = new Set(['latest-creations', 'innova-brand'])
 
 export const COLLECTION_FOLDERS = new Set(['mundo-infantil'])
+
+/**
+ * En dynamic folder mode, `asset_folder` puede ser una ruta anidada
+ * (ej. "latest-creations/Navidad-2026/tradición Argentina"). Excluimos si el
+ * primer segmento — o la ruta completa — está en EXCLUDED_FOLDERS, para que un
+ * match exacto no deje pasar las subcarpetas.
+ */
+export function isExcludedFolder(folderPath: string | undefined | null): boolean {
+  if (!folderPath) return false
+  return EXCLUDED_FOLDERS.has(folderPath.split('/')[0]) || EXCLUDED_FOLDERS.has(folderPath)
+}
 
 async function fetchSubfolders(parent: string): Promise<CloudinarySubfolder[]> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -39,7 +50,7 @@ export const getCachedSubfolders = (parent: string) =>
 async function fetchFolders(): Promise<CloudinaryFolder[]> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { folders } = await (cloudinary.api.root_folders as any)({ max_results: 500 })
-  const filtered = (folders as { name: string }[]).filter(f => !EXCLUDED_FOLDERS.has(f.name))
+  const filtered = (folders as { name: string }[]).filter(f => !isExcludedFolder(f.name))
 
   // ── DESARROLLO: datos estáticos de catalogData, sin llamadas extra ─────────
   if (process.env.NODE_ENV !== 'production') {
@@ -113,7 +124,7 @@ async function fetchFolders(): Promise<CloudinaryFolder[]> {
 }
 
 export const getCachedFolders = unstable_cache(fetchFolders, ['cloudinary-folders'], {
-  revalidate: 172800, // 48h en producción
+  revalidate: 86400, // 24h en producción
 })
 
 async function fetchLatestFolderNames(n: number): Promise<string[]> {
@@ -133,7 +144,7 @@ async function fetchLatestFolderNames(n: number): Promise<string[]> {
 
   for (const resource of result.resources ?? []) {
     const name = resource.folder ?? resource.asset_folder
-    if (name && !EXCLUDED_FOLDERS.has(name) && !seen.has(name)) {
+    if (name && !isExcludedFolder(name) && !seen.has(name)) {
       seen.add(name)
       latestFolders.push(name)
       if (latestFolders.length >= n) break
