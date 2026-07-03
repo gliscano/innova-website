@@ -1,0 +1,468 @@
+/* ===== Paleta y tokens scopeados — solo para /navidad. No toca app/globals.css ===== */
+.navidad-theme {
+  --nv-negro: #1a0a00;
+  --nv-crema: #f9f4ee;
+  --nv-madera: #2c1810;
+  --nv-rojo: #c8393a;
+  --nv-oro: #d4a24c;
+  --nv-wa: #25d366;
+
+  --nv-font-display: var(--font-navidad-display), Georgia, serif;
+  --nv-font-body: var(--font-navidad-body), system-ui, sans-serif;
+
+  --nv-t-eyebrow: 9px;
+  --nv-t-cat: 24px;
+  --nv-t-hero: 36px;
+  --nv-t-body: 11px;
+
+  --nv-r-sm: 2px;
+  --nv-r-img: 4px;
+  --nv-r-pill: 20px;
+
+  font-family: var(--nv-font-body);
+  background: var(--nv-negro);
+  overflow-x: hidden;
+}
+
+@media (min-width: 1024px) {
+  .navidad-theme {
+    --nv-t-cat: 32px;
+    --nv-t-hero: 56px;
+    --nv-t-body: 13px;
+  }
+}
+
+/* ===== Nav ===== */
+.navidad-theme .nv-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px 14px;
+  background: var(--nv-negro);
+}
+.navidad-theme .nv-nav-logo {
+  font-family: var(--nv-font-display);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--nv-crema);
+  letter-spacing: 0.1em;
+  text-decoration: none;
+}
+.navidad-theme .nv-nav-link {
+  font-family: var(--nv-font-body);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(249, 244, 238, 0.6);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+.navidad-theme .nv-nav-link:hover {
+  color: var(--nv-oro);
+}
+
+/* ===== Hero ===== */
+.navidad-theme .nv-hero {
+  height: 80svh;
+  min-height: 448px;
+  position: relative;
+  overflow: hidden;
+  background: var(--nv-negro);
+}
+.navidad-theme .nv-hero-grid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(3, 1fr);
+  gap: 2px;
+}
+.navidad-theme .nv-hero-img {
+  position: relative;
+  overflow: hidden;
+}
+.navidad-theme .nv-hero-img img,
+.navidad-theme .nv-hero-video {
+  object-fit: cover;
+  opacity: 0.55;
+}
+.navidad-theme .nv-hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.navidad-theme .nv-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    175deg,
+    rgba(26, 10, 0, 0.1) 0%,
+    rgba(26, 10, 0, 0.55) 45%,
+    rgba(26, 10, 0, 0.93) 100%
+  );
+}
+.navidad-theme .nv-hero-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0 24px 40px;
+  text-align: center;
+}
+.navidad-theme .nv-hero-eyebrow {
+  font-family: var(--nv-font-body);
+  font-size: var(--nv-t-eyebrow);
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  color: var(--nv-oro);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.navidad-theme .nv-hero-title {
+  font-family: var(--nv-font-display);
+  font-size: var(--nv-t-hero);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.1;
+  color: var(--nv-crema);
+  margin: 0 0 8px;
+}
+.navidad-theme .nv-hero-title strong {
+  font-style: normal;
+  font-weight: 700;
+  color: #fff;
+}
+.navidad-theme .nv-hero-sub {
+  font-size: 12px;
+  color: rgba(249, 244, 238, 0.6);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+.navidad-theme .nv-hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--nv-rojo);
+  color: #fff;
+  font-family: var(--nv-font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 13px 26px;
+  border-radius: var(--nv-r-sm);
+  transition: background 0.3s;
+  border: 0;
+  cursor: pointer;
+}
+.navidad-theme .nv-hero-cta:hover {
+  background: #a52d2e;
+}
+.navidad-theme .nv-wa-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--nv-wa);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+@media (min-width: 1024px) {
+  .navidad-theme .nv-hero-grid {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr 1fr;
+  }
+  .navidad-theme .nv-hero-content {
+    max-width: 600px;
+    margin: 0 auto;
+    padding-bottom: 60px;
+  }
+}
+
+/* ===== Intro ===== */
+.navidad-theme .nv-intro {
+  background: var(--nv-negro);
+  padding: 28px 24px 26px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.navidad-theme .nv-intro-lottie {
+  width: 95px;
+  height: 95px;
+  flex-shrink: 0;
+}
+.navidad-theme .nv-intro-label {
+  font-family: var(--nv-font-display);
+  font-size: 12px;
+  font-style: italic;
+  color: rgba(249, 244, 238, 0.4);
+  margin-bottom: 12px;
+  letter-spacing: 0.04em;
+}
+.navidad-theme .nv-anchors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.navidad-theme .nv-pill {
+  border: 0.5px solid rgba(212, 162, 76, 0.35);
+  color: var(--nv-oro);
+  font-family: var(--nv-font-body);
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: var(--nv-r-pill);
+  transition: background 0.3s, border-color 0.3s;
+}
+.navidad-theme .nv-pill:hover {
+  background: rgba(212, 162, 76, 0.1);
+  border-color: var(--nv-oro);
+}
+
+/* ===== Category sections ===== */
+.navidad-theme .nv-cat {
+  overflow: hidden;
+  scroll-margin-top: 24px;
+}
+.navidad-theme .nv-cat--claro {
+  background: var(--nv-crema);
+}
+.navidad-theme .nv-cat--oscuro {
+  background: var(--nv-madera);
+}
+.navidad-theme .nv-cat__header {
+  padding: 32px 24px 18px;
+}
+.navidad-theme .nv-cat__eyebrow {
+  font-family: var(--nv-font-body);
+  font-size: var(--nv-t-eyebrow);
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.navidad-theme .nv-cat--claro .nv-cat__eyebrow {
+  color: var(--nv-rojo);
+}
+.navidad-theme .nv-cat--oscuro .nv-cat__eyebrow {
+  color: var(--nv-oro);
+}
+.navidad-theme .nv-cat__name {
+  font-family: var(--nv-font-display);
+  font-size: var(--nv-t-cat);
+  font-weight: 700;
+  line-height: 1.12;
+  margin-bottom: 10px;
+}
+.navidad-theme .nv-cat--claro .nv-cat__name {
+  color: var(--nv-negro);
+}
+.navidad-theme .nv-cat--oscuro .nv-cat__name {
+  color: var(--nv-crema);
+}
+.navidad-theme .nv-cat__desc {
+  font-family: var(--nv-font-body);
+  font-size: var(--nv-t-body);
+  line-height: 1.65;
+  max-width: 46ch;
+}
+.navidad-theme .nv-cat--claro .nv-cat__desc {
+  color: rgba(26, 10, 0, 0.5);
+}
+.navidad-theme .nv-cat--oscuro .nv-cat__desc {
+  color: rgba(249, 244, 238, 0.45);
+}
+
+.navidad-theme .nv-cat__lottie {
+  width: 90px;
+  height: 54px;
+  margin: -12px 16px 4px auto;
+  position: relative;
+  z-index: 2;
+}
+
+.navidad-theme .nv-cat__masonry-wrap {
+  padding: 0 12px;
+}
+.navidad-theme .nv-cat__masonry {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.navidad-theme .nv-cat__col {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.navidad-theme .nv-cat__tile {
+  display: block;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 0;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.navidad-theme .nv-cat__tile:active {
+  transform: scale(0.98);
+}
+.navidad-theme .nv-cat__tile-img {
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.navidad-theme .nv-cat__tile:hover .nv-cat__tile-img {
+  transform: scale(1.03);
+}
+
+.navidad-theme .nv-cat__snow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.navidad-theme .nv-ver-mas-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: calc(100% - 48px);
+  margin: 14px 24px 0;
+  border-radius: var(--nv-r-sm);
+  padding: 11px;
+  font-family: var(--nv-font-body);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  background: transparent;
+  transition: background 0.3s;
+}
+.navidad-theme .nv-cat--claro .nv-ver-mas-btn {
+  border: 0.5px solid rgba(26, 10, 0, 0.18);
+  color: rgba(26, 10, 0, 0.5);
+}
+.navidad-theme .nv-cat--oscuro .nv-ver-mas-btn {
+  border: 0.5px solid rgba(249, 244, 238, 0.18);
+  color: rgba(249, 244, 238, 0.45);
+}
+.navidad-theme .nv-cat--claro .nv-ver-mas-btn:hover {
+  background: rgba(26, 10, 0, 0.05);
+}
+.navidad-theme .nv-cat--oscuro .nv-ver-mas-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+.navidad-theme .nv-ver-mas-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.navidad-theme .nv-cat__spacer {
+  height: 28px;
+}
+
+@media (min-width: 1024px) {
+  .navidad-theme .nv-cat__header {
+    padding: 52px 64px 24px;
+  }
+  .navidad-theme .nv-cat__masonry-wrap {
+    padding: 0 64px;
+  }
+  .navidad-theme .nv-ver-mas-btn {
+    margin: 16px 64px 0;
+    width: calc(100% - 128px);
+  }
+}
+
+/* ===== Cierre ===== */
+.navidad-theme .nv-cierre {
+  background: var(--nv-negro);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.navidad-theme .nv-cierre__lottie {
+  width: 100%;
+  height: 200px;
+}
+.navidad-theme .nv-cierre__content {
+  padding: 8px 32px 52px;
+  background: linear-gradient(to bottom, transparent, var(--nv-negro) 30%);
+  margin-top: -40px;
+  position: relative;
+  z-index: 2;
+}
+.navidad-theme .nv-cierre__label {
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  color: var(--nv-oro);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.navidad-theme .nv-cierre__title {
+  font-family: var(--nv-font-display);
+  font-size: 24px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--nv-crema);
+  line-height: 1.25;
+  margin-bottom: 12px;
+}
+.navidad-theme .nv-cierre__sub {
+  font-size: 12px;
+  color: rgba(249, 244, 238, 0.4);
+  line-height: 1.65;
+  margin-bottom: 26px;
+}
+.navidad-theme .nv-cierre__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0.5px solid rgba(212, 162, 76, 0.45);
+  color: var(--nv-oro);
+  font-family: var(--nv-font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 13px 26px;
+  border-radius: var(--nv-r-sm);
+  transition: background 0.3s;
+  background: transparent;
+  cursor: pointer;
+}
+.navidad-theme .nv-cierre__cta:hover {
+  background: rgba(212, 162, 76, 0.08);
+}
+
+@media (min-width: 1024px) {
+  .navidad-theme .nv-cierre__lottie {
+    height: 280px;
+  }
+  .navidad-theme .nv-cierre__title {
+    font-size: 32px;
+  }
+}
+
+/* ===== Reduced motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  .navidad-theme * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

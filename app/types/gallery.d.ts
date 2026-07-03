@@ -51,6 +51,8 @@ export interface GalleryItemProps {
   image: GalleryImage
   onClick: () => void
   index: number
+  /** Aspect ratio (ancho/alto) acotado para el masonry; define el alto de la tarjeta. */
+  ratio: number
 }
 
 export interface GalleryGridProps {
