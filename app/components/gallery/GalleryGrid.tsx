@@ -1,7 +1,12 @@
 'use client'
 
 import { GalleryGridProps } from '../../types/gallery'
+import { useMasonryColumns } from '../../hooks/useMasonryColumns'
+import { distributeIntoColumns } from '../../utils/masonry'
 import GalleryItem from './GalleryItem'
+
+// Aspect ratios variados para los placeholders de "cargar más" (espejo del skeleton de Navidad).
+const SKELETON_RATIOS = [0.8, 1.25, 1]
 
 export default function GalleryGrid({
   images,
@@ -29,27 +34,34 @@ export default function GalleryGrid({
     )
   }
 
+  const columns = useMasonryColumns()
+  const columnCells = distributeIntoColumns(images, columns)
+
   return (
     <div className="space-y-6">
-      {/* Grid de imágenes */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        {images.map((image, index) => (
-          <GalleryItem
-            key={image.id}
-            image={image}
-            onClick={() => onImageClick(index)}
-            index={index}
-          />
-        ))}
+      {/* Masonry de columnas balanceadas (mismo mecanismo que la sección Navidad) */}
+      <div className="flex items-start gap-2">
+        {columnCells.map((cells, col) => (
+          <div key={col} className="flex-1 min-w-0 flex flex-col gap-2">
+            {cells.map((cell) => (
+              <GalleryItem
+                key={cell.image.id}
+                image={cell.image}
+                onClick={() => onImageClick(cell.index)}
+                index={cell.index}
+                ratio={cell.ratio}
+              />
+            ))}
 
-        {/* Skeletons inline mientras carga más */}
-        {isLoadingMore &&
-          Array.from({ length: 8 }).map((_, i) => (
-            <div
-              key={`skeleton-${i}`}
-              className="aspect-square bg-gray-200 rounded-lg animate-pulse"
-            />
-          ))}
+            {/* Skeletons mientras carga más: uno por columna, con alturas variadas */}
+            {isLoadingMore && (
+              <div
+                className="w-full bg-black/[0.06] rounded-[14px] animate-pulse"
+                style={{ aspectRatio: SKELETON_RATIOS[col % SKELETON_RATIOS.length] }}
+              />
+            )}
+          </div>
+        ))}
       </div>
 
       {/* Botón "Ver más diseños" */}

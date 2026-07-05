@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react'
 import { CldImage } from 'next-cloudinary'
 import { GalleryItemProps } from '../../types/gallery'
 
-export default function GalleryItem({ image, onClick, index }: GalleryItemProps) {
+export default function GalleryItem({ image, onClick, index, ratio }: GalleryItemProps) {
   const [isLoaded, setIsLoaded] = useState(false)
   const [hasError, setHasError] = useState(false)
 
@@ -34,7 +34,8 @@ export default function GalleryItem({ image, onClick, index }: GalleryItemProps)
 
   return (
     <div
-      className="group cursor-pointer overflow-hidden rounded-lg bg-white shadow-sm transition-all duration-300 md:hover:shadow-lg md:hover:scale-[1.02]"
+      className="group cursor-pointer relative overflow-hidden rounded-[14px] bg-black/[0.06] transition-transform duration-150 active:scale-[0.98]"
+      style={{ aspectRatio: ratio }}
       onClick={handleClick}
       role="button"
       tabIndex={0}
@@ -45,24 +46,24 @@ export default function GalleryItem({ image, onClick, index }: GalleryItemProps)
         }
       }}
     >
-      {/* Contenedor de imagen con ratio 3:2 */}
-      <div className="aspect-[3/2] relative overflow-hidden bg-gray-100">
+      {/* Contenedor de imagen con el aspect ratio natural del diseño */}
+      <div className="absolute inset-0 overflow-hidden">
         {!hasError && (
           <CldImage
             src={image.id}
             width={640}
-            height={426} // 3:2
+            height={Math.round(640 / ratio)}
             alt={`Imagen ${index + 1}`}
             crop="fill"
             gravity="auto"
             format="webp"
             quality="auto:good"
-            sizes="(max-width: 639px) 50vw, 25vw"
+            sizes="(max-width: 767px) 50vw, (max-width: 1023px) 33vw, 25vw"
             priority={isPriority}
             loading={isPriority ? 'eager' : 'lazy'}
             onLoad={handleImageLoad}
             onError={handleImageError}
-            className={`object-cover transition-opacity duration-300 ${
+            className={`h-full w-full object-cover transition-[opacity,transform] duration-300 md:group-hover:scale-[1.03] ${
               isLoaded ? 'opacity-100' : 'opacity-0'
             }`}
           />

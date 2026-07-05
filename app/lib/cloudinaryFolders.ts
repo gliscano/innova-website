@@ -4,7 +4,7 @@ import { formatFolderName } from '@/app/utils/catalogUtils'
 import { catalogData } from '@/app/data/catalogData'
 import type { CloudinaryFolder, CloudinarySubfolder } from '@/app/types/catalog'
 
-export const EXCLUDED_FOLDERS = new Set(['latest-creations', 'innova-brand'])
+export const EXCLUDED_FOLDERS = new Set(['latest-creations', 'innova-brand', 'Navidad-2026'])
 
 export const COLLECTION_FOLDERS = new Set(['mundo-infantil'])
 
