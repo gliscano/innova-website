@@ -32,62 +32,42 @@
   }
 }
 
-/* ===== Nav ===== */
-.navidad-theme .nv-nav {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 24px 14px;
-  background: var(--nv-negro);
-}
-.navidad-theme .nv-nav-logo {
-  font-family: var(--nv-font-display);
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--nv-crema);
-  letter-spacing: 0.1em;
-  text-decoration: none;
-}
-.navidad-theme .nv-nav-link {
-  font-family: var(--nv-font-body);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(249, 244, 238, 0.6);
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-.navidad-theme .nv-nav-link:hover {
-  color: var(--nv-oro);
-}
-
 /* ===== Hero ===== */
 .navidad-theme .nv-hero {
-  height: 80svh;
-  min-height: 448px;
+  height: 100svh;
+  min-height: 600px;
   position: relative;
   overflow: hidden;
   background: var(--nv-negro);
+  cursor: grab;
 }
-.navidad-theme .nv-hero-grid {
+.navidad-theme .nv-hero:active {
+  cursor: grabbing;
+}
+.navidad-theme .nv-hero-logo {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  z-index: 3;
+  line-height: 0;
+}
+.navidad-theme .nv-hero-track {
   position: absolute;
   inset: 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: repeat(3, 1fr);
-  gap: 2px;
+  z-index: 0;
 }
-.navidad-theme .nv-hero-img {
-  position: relative;
-  overflow: hidden;
+.navidad-theme .nv-hero-videoLayer {
+  position: absolute;
+  inset: 0;
 }
-.navidad-theme .nv-hero-img img,
-.navidad-theme .nv-hero-video {
+.navidad-theme .nv-hero-slide {
+  position: absolute;
+  inset: 0;
+}
+.navidad-theme .nv-hero-video,
+.navidad-theme .nv-hero-fallback-img {
   object-fit: cover;
-  opacity: 0.55;
+  object-position: center;
 }
 .navidad-theme .nv-hero-video {
   position: absolute;
@@ -98,89 +78,208 @@
 .navidad-theme .nv-hero-overlay {
   position: absolute;
   inset: 0;
+  z-index: 1;
   background: linear-gradient(
-    175deg,
-    rgba(26, 10, 0, 0.1) 0%,
-    rgba(26, 10, 0, 0.55) 45%,
-    rgba(26, 10, 0, 0.93) 100%
+    to top,
+    rgba(26, 10, 0, 0.92) 0%,
+    rgba(26, 10, 0, 0.45) 40%,
+    rgba(26, 10, 0, 0.1) 100%
   );
 }
-.navidad-theme .nv-hero-content {
+.navidad-theme .nv-hero-contentWrap {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 0 24px 40px;
-  text-align: center;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 24px 80px;
 }
 .navidad-theme .nv-hero-eyebrow {
   font-family: var(--nv-font-body);
   font-size: var(--nv-t-eyebrow);
   font-weight: 500;
   letter-spacing: 0.24em;
-  color: var(--nv-oro);
+  color: rgba(249, 244, 238, 0.65);
   text-transform: uppercase;
   margin-bottom: 12px;
 }
-.navidad-theme .nv-hero-title {
+.navidad-theme .nv-hero-eyebrowAccent {
+  display: inline-block;
+  width: 18px;
+  height: 2px;
+  border-radius: 1px;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+.navidad-theme .nv-hero-headline {
   font-family: var(--nv-font-display);
-  font-size: var(--nv-t-hero);
-  font-weight: 400;
-  font-style: italic;
-  line-height: 1.1;
-  color: var(--nv-crema);
-  margin: 0 0 8px;
-}
-.navidad-theme .nv-hero-title strong {
-  font-style: normal;
+  font-size: clamp(52px, 14vw, 80px);
   font-weight: 700;
-  color: #fff;
+  font-style: italic;
+  line-height: 0.95;
+  color: var(--nv-crema);
+  margin: 0 0 6px;
+  overflow: hidden;
 }
-.navidad-theme .nv-hero-sub {
-  font-size: 12px;
-  color: rgba(249, 244, 238, 0.6);
-  line-height: 1.6;
-  margin-bottom: 24px;
+.navidad-theme .nv-hero-headlineLine {
+  display: block;
+  overflow: hidden;
 }
-.navidad-theme .nv-hero-cta {
+.navidad-theme .nv-hero-ctaRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+.navidad-theme .nv-hero-ctaPrimary {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  background: var(--nv-rojo);
-  color: #fff;
+  gap: 10px;
   font-family: var(--nv-font-body);
   font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   text-decoration: none;
-  padding: 13px 26px;
+  color: #fff;
+  padding: 13px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
   border-radius: var(--nv-r-sm);
-  transition: background 0.3s;
+  transition: background 0.2s, border-color 0.2s;
+}
+.navidad-theme .nv-hero-ctaPrimary:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+.navidad-theme .nv-hero-ctaWA {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--nv-font-body);
+  font-size: 11px;
+  font-weight: 400;
+  color: rgba(249, 244, 238, 0.6);
+  letter-spacing: 0.04em;
+  transition: color 0.2s;
+  background: transparent;
   border: 0;
   cursor: pointer;
 }
-.navidad-theme .nv-hero-cta:hover {
-  background: #a52d2e;
+.navidad-theme .nv-hero-ctaWA:hover {
+  color: #fff;
 }
-.navidad-theme .nv-wa-dot {
-  width: 7px;
-  height: 7px;
-  background: var(--nv-wa);
+.navidad-theme .nv-hero-slideCounter {
+  font-family: var(--nv-font-body);
+  font-size: 11px;
+  color: rgba(249, 244, 238, 0.35);
+  letter-spacing: 0.08em;
+  margin-top: 20px;
+}
+.navidad-theme .nv-hero-slideCounterCurrent {
+  color: rgba(249, 244, 238, 0.8);
+  font-weight: 500;
+}
+.navidad-theme .nv-hero-progressBar {
+  position: absolute;
+  bottom: 56px;
+  left: 24px;
+  right: 24px;
+  z-index: 3;
+  height: 1.5px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 1px;
+  overflow: hidden;
+}
+.navidad-theme .nv-hero-progressFill {
+  height: 100%;
+  border-radius: 1px;
+}
+.navidad-theme .nv-hero-dots {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.navidad-theme .nv-hero-dot {
   border-radius: 50%;
-  flex-shrink: 0;
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+.navidad-theme .nv-hero-dot:hover {
+  border-color: rgba(255, 255, 255, 0.9);
+}
+.navidad-theme .nv-hero-scrollDown {
+  position: absolute;
+  bottom: 90px;
+  right: 20px;
+  z-index: 3;
+  width: 36px;
+  height: 36px;
+  opacity: 0.85;
+  pointer-events: none;
 }
 
 @media (min-width: 1024px) {
-  .navidad-theme .nv-hero-grid {
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: 1fr 1fr;
+  .navidad-theme .nv-hero-logo {
+    top: 32px;
+    left: 40px;
   }
-  .navidad-theme .nv-hero-content {
-    max-width: 600px;
-    margin: 0 auto;
-    padding-bottom: 60px;
+  .navidad-theme .nv-hero-overlay {
+    background:
+      linear-gradient(
+        to right,
+        rgba(26, 10, 0, 0.85) 0%,
+        rgba(26, 10, 0, 0.4) 50%,
+        rgba(26, 10, 0, 0) 100%
+      ),
+      linear-gradient(
+        to top,
+        rgba(26, 10, 0, 0.7) 0%,
+        rgba(26, 10, 0, 0.15) 50%,
+        rgba(26, 10, 0, 0) 100%
+      );
   }
+  .navidad-theme .nv-hero-contentWrap {
+    justify-content: center;
+    padding: 0 80px;
+    max-width: 720px;
+  }
+  .navidad-theme .nv-hero-headline {
+    font-size: clamp(72px, 8vw, 120px);
+    line-height: 0.92;
+  }
+  .navidad-theme .nv-hero-progressBar {
+    bottom: 32px;
+    left: 80px;
+    right: auto;
+    width: 200px;
+  }
+  .navidad-theme .nv-hero-dots {
+    bottom: auto;
+    top: 50%;
+    right: 40px;
+    left: auto;
+    transform: translateY(-50%);
+    flex-direction: column;
+    gap: 10px;
+  }
+  .navidad-theme .nv-hero-scrollDown {
+    bottom: 40px;
+    right: 40px;
+    width: 48px;
+    height: 48px;
+  }
+}
+
+/* ===== Purchase info (steps + size banner) ===== */
+.navidad-theme .nv-purchase-info {
+  background: var(--nv-crema);
 }
 
 /* ===== Intro ===== */
@@ -190,11 +289,14 @@
   display: flex;
   gap: 16px;
   align-items: center;
+  position: relative;
+  overflow: hidden;
 }
-.navidad-theme .nv-intro-lottie {
-  width: 95px;
-  height: 95px;
-  flex-shrink: 0;
+.navidad-theme .nv-intro-snow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
 }
 .navidad-theme .nv-intro-label {
   font-family: var(--nv-font-display);

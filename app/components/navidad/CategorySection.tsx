@@ -12,11 +12,11 @@ import { SnowCanvas } from './SnowCanvas'
 import { LottiePlayer } from './LottiePlayer'
 import { getNavidadFolderPath, type NavidadCategory, type NavidadRevealAnimation } from '@/app/data/navidadCategoriesData'
 
-const VIEWPORT = { once: true, amount: 0.15 } as const
+const VIEWPORT = { once: true, amount: 0.3 } as const
 const ITEMS_PER_PAGE = 9
 
 const titleVariants: Record<NavidadRevealAnimation, Variants> = {
-  reveal: { hidden: { clipPath: 'inset(100% 0 0 0)' }, visible: { clipPath: 'inset(0% 0 0 0)', transition: { duration: 0.9, ease: [0.76, 0, 0.24, 1] } } },
+  reveal: { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 5, transition: { duration: 0.9, ease: [0.76, 0, 0.24, 1] } } },
   'fade-up': { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7 } } },
   'slide-left': { hidden: { opacity: 0, x: -40 }, visible: { opacity: 1, x: 0, transition: { duration: 0.7 } } },
   bounce: { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.34, 1.56, 0.64, 1] } } },

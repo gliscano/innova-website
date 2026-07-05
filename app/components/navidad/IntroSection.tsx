@@ -1,11 +1,12 @@
 'use client'
 
 import { navidadCategories } from '@/app/data/navidadCategoriesData'
-import { LottiePlayer } from './LottiePlayer'
+import { SnowCanvas } from './SnowCanvas'
 
 export function IntroSection() {
   return (
     <section className="nv-intro" aria-label="Categorías del catálogo">
+      <SnowCanvas className="nv-intro-snow" />
       <div>
         <p className="nv-intro-label">Explorá las categorías</p>
         <nav className="nv-anchors" aria-label="Navegación por categoría">
@@ -16,7 +17,6 @@ export function IntroSection() {
           ))}
         </nav>
       </div>
-      <LottiePlayer src="/animations/hero-tree-animation.json" className="nv-intro-lottie" active />
     </section>
   )
 }

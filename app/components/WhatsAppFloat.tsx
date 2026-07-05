@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { defaultOptions } from './WhatsAppDropdown'
@@ -11,8 +12,10 @@ const DEFAULT_MESSAGE = "Hola! Quiero consultar sobre sus fondos fotográficos"
 
 export default function WhatsAppFloat() {
   const [isOpen, setIsOpen] = useState(false)
+  const [hiddenForHero, setHiddenForHero] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const { isModalOpen } = useSelectedSize()
+  const pathname = usePathname()
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -24,7 +27,21 @@ export default function WhatsAppFloat() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [isOpen])
 
-  if (isModalOpen) return null
+  useEffect(() => {
+    const heroEl = document.querySelector('.nv-hero')
+    if (!heroEl) {
+      setHiddenForHero(false)
+      return
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => setHiddenForHero(entry.isIntersecting),
+      { threshold: 0 }
+    )
+    observer.observe(heroEl)
+    return () => observer.disconnect()
+  }, [pathname])
+
+  if (isModalOpen || hiddenForHero) return null
 
   return (
     <div ref={ref} className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
