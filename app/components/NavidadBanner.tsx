@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default function NavidadBanner() {
   return (
-    <div className="max-w-[1320px] mx-auto my-8 px-4 sm:px-6 lg:px-8">
+    <div id="navidad-banner" className="max-w-[1320px] mx-auto my-8 px-4 sm:px-6 lg:px-8">
       <Link
         href="/navidad"
         className="group relative flex overflow-hidden rounded-3xl min-h-[280px] sm:min-h-[360px] lg:min-h-[440px]"

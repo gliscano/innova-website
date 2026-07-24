@@ -85,7 +85,7 @@ export default function ProductPageContent({ id, subfolders = [], isCollection =
               Información y cómo comprar
             </Link>
             <span>·</span>
-            <Link href="#prices" className="underline underline-offset-2 hover:text-[#1F1A14] transition-colors">
+            <Link href="/prices" className="underline underline-offset-2 hover:text-[#1F1A14] transition-colors">
               Ver precios →
             </Link>
           </p>
