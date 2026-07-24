@@ -9,20 +9,38 @@ export default async function StockPreview() {
 
   if (!products.length) {
     return (
-      <a
-        href="https://store.innova54.com/"
-        target="_self"
-        rel="noopener noreferrer"
-        className="relative block overflow-hidden min-h-[280px] sm:min-h-[360px] lg:min-h-[440px] cursor-pointer group max-w-7xl mx-auto"
-      >
-        <Image
-          src="/images/innova/background-store.png"
-          alt="Ver todos los productos en la tienda Innova"
-          fill
-          sizes="100vw"
-          className="object-cover object-left transition-transform duration-500 group-hover:scale-105"
-        />
-      </a>
+      <div className="max-w-[1320px] mx-auto my-8 px-4 sm:px-6 lg:px-8">
+        <a
+          href="https://store.innova54.com/"
+          target="_self"
+          rel="noopener noreferrer"
+          className="group relative flex overflow-hidden rounded-3xl min-h-[280px] sm:min-h-[360px] lg:min-h-[440px]"
+        >
+          <Image
+            src="/images/innova/background-store.png"
+            alt="Ver todos los productos en la tienda Innova"
+            fill
+            sizes="100vw"
+            className="object-cover object-left transition-transform duration-500 group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+          <div className="relative z-10 flex flex-col justify-end w-full px-6 pb-8 lg:px-12 lg:pb-12">
+            <span
+              className="inline-flex items-center gap-2 mb-2 sm:mb-3 px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-xs uppercase tracking-widest font-semibold self-start copperplate-bold-font"
+              style={{ background: 'var(--surface)', color: 'var(--accent)' }}
+            >
+              <Zap className="w-3 h-3 fill-current" />
+              Tienda Online
+            </span>
+            <h2 className="copperplate-bold-font text-white text-3xl sm:text-4xl lg:text-5xl font-bold drop-shadow-lg mb-5">
+              Productos disponibles
+            </h2>
+            <span className="btn-accent inline-flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold px-4 py-2 sm:px-6 sm:py-3 rounded-full shadow-md group-hover:shadow-lg transition-shadow duration-200 self-start w-fit">
+              Ver productos <ArrowRight className="w-4 h-4" />
+            </span>
+          </div>
+        </a>
+      </div>
     )
   }
 

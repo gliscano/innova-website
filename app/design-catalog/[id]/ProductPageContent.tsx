@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import Header from "@/app/components/Header"
@@ -93,7 +93,9 @@ export default function ProductPageContent({ id, subfolders = [], isCollection =
             <SelectedSizeBanner />
           </div>
           {isCollection && subfolders.length > 0 ? (
-            <CollectionGallery subfolders={subfolders} />
+            <Suspense fallback={null}>
+              <CollectionGallery subfolders={subfolders} />
+            </Suspense>
           ) : (
             <div className="flex-grow">
               <Gallery

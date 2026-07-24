@@ -4,11 +4,9 @@ import React from "react"
 import Image from "next/image"
 import { useState, useEffect, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Sparkles, Star } from "lucide-react"
+import { Sparkles } from "lucide-react"
 import { contentSets, imageSets, type ImageSet } from "@/app/data/heroGalleryData"
 import { GalleryCard } from "./GalleryCard"
-import { Confetti } from "./Confetti"
-import { SolDeMayo } from "./SolDeMayo"
 
 // Función para seleccionar 9 imágenes aleatorias sin repetir
 const getRandomImages = (allImages: ImageSet[], count: number = 9): ImageSet[] => {
@@ -53,13 +51,7 @@ export function HeroGallery() {
   const content = contentSets[currentSet]
 
   return (
-    <section className="relative lg:min-h-screen hero-background overflow-hidden">
-      {/* Sol de Mayo — marca de agua tenue de fondo */}
-      <SolDeMayo className="pointer-events-none absolute -right-24 -top-24 z-0 w-[400px] h-[400px] lg:w-[560px] lg:h-[560px] opacity-[0.08]" />
-
-      {/* Confeti de celebración (cae una sola vez al cargar) */}
-      <Confetti />
-
+    <section className="relative lg:min-h-[50vh] overflow-hidden">
       {/* Glassmorphism overlay container */}
       <div className="relative z-10 container mx-auto px-4 py-1 lg:py-10">
         <div className="p-8 lg:p-12">
@@ -67,7 +59,7 @@ export function HeroGallery() {
           {/* Left Content */}
           <div className="sticky top-10 pt-4 lg:pt-16">
             <motion.div
-              className="py-1"
+              className="py-1 mb-6"
               initial={{ y: -520, opacity: 0 }}
               animate={{
                 y: [-520, 0, -120, 0, -52, 0, -18, 0],
@@ -83,27 +75,14 @@ export function HeroGallery() {
               style={{ transformOrigin: "bottom center", width: "fit-content" }}
             >
               <Image
-                src="/images/innova-backdrops-mundial.png"
-                alt="Innova Backdrops Mundial"
+                src="/svg/innova-logo.svg"
+                alt="Innova Logo"
                 width={150}
-                height={150}
+                height={37}
                 priority
                 style={{ height: "auto" }}
               />
             </motion.div>
-            {/* 3 estrellas doradas — campeón del mundo */}
-            <div className="flex gap-1.5 mb-4">
-              {[0, 1, 2].map((i) => (
-                <motion.span
-                  key={i}
-                  initial={{ scale: 0, opacity: 0, y: -8 }}
-                  animate={{ scale: 1, opacity: 1, y: 0 }}
-                  transition={{ delay: 1.6 + i * 0.15, type: "spring", stiffness: 400, damping: 12 }}
-                >
-                  <Star className="w-5 h-5 text-[#f2b705] fill-[#f2b705] drop-shadow-[0_1px_1px_rgba(11,46,99,0.4)]" />
-                </motion.span>
-              ))}
-            </div>
             {/* Animated Headline */}
             <AnimatePresence mode="wait">
               <motion.h1
@@ -112,18 +91,14 @@ export function HeroGallery() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.5 }}
-                className="copperplate-bold-font text-3xl md:text-4xl lg:text-5xl font-bold text-[#0b2e63] leading-tight mb-6 text-balance"
+                className="copperplate-bold-font text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-6 text-balance"
               >
-                <span className="text-2xl md:text-4xl lg:text-5xl font-bold text-[#0b2e63] leading-tight mb-6 text-balance">
+                <span className="text-2xl md:text-4xl lg:text-5xl font-bold leading-tight mb-6 text-balance">
                   {content.title}
                 </span>
                 <br />
                 <span
-                  className="bg-clip-text text-transparent"
-                  style={{
-                    backgroundImage:
-                      "linear-gradient(123deg, rgba(2, 40, 115, 1) 0%, rgb(45, 109, 166) 22%, rgba(22, 135, 45, 1) 55%, rgba(200, 18, 18, 1) 95%)",
-                  }}
+                  className={`bg-clip-text text-transparent bg-gradient-to-r ${content.gradientFrom} ${content.gradientVia} ${content.gradientTo}`}
                 >
                   {content.highlight}
                 </span>
@@ -140,18 +115,18 @@ export function HeroGallery() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 1, delay: 0.1 }}
-                className="text-[#1f3a5f] text-lg md:text-xl max-w-xl mb-8 leading-relaxed"
+                className="sm:block text-[var(--ink-soft)] text-base md:text-xl max-w-xl mb-4 leading-relaxed"
               >
                 {content.description}
               </motion.p>
             </AnimatePresence>
 
             {/* Process explanation */}
-            <div className="hidden lg:flex items-center gap-2 text-sm text-[#2c4a73] mb-6 flex-wrap">
+            <div className="hidden lg:flex items-center gap-2 text-sm text-[var(--ink-soft)] mb-6 flex-wrap">
               <span className="font-medium">Elegís el diseño</span>
-              <span className="text-[#75aadb]">→</span>
+              <span className="text-[var(--accent)]">→</span>
               <span className="font-medium">Lo producimos con calidad premium</span>
-              <span className="text-[#75aadb]">→</span>
+              <span className="text-[var(--accent)]">→</span>
               <span className="font-medium">Lo recibís en tu estudio o evento</span>
             </div>
 
@@ -163,19 +138,12 @@ export function HeroGallery() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.3 }}
-                className="flex flex-wrap gap-3"
+                className="hidden sm:flex flex-wrap gap-3"
               >
                 <motion.button
                   onClick={handleViewDesigns}
                   aria-label={content.buttonText}
                   className="inline-flex items-center justify-center px-6 py-3 rounded-full btn-cta-style"
-                  style={{
-                    color: "#ffffff",
-                    backgroundColor: "#2d6da6",
-                    backgroundImage:
-                      "linear-gradient(123deg, rgba(2, 40, 115, 1) 0%, rgb(45, 109, 166) 55%,rgba(2, 40, 115, 1) 85%)",
-                    boxShadow: "0 4px 12px rgba(2, 40, 115, 0.35)",
-                  }}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -189,7 +157,7 @@ export function HeroGallery() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={content.secondaryButtonText}
-                    className="inline-flex items-center justify-center px-6 py-3 rounded-full border border-[#0b2e63] text-[#0b2e63] hover:bg-[#75aadb]/20 transition-colors"
+                    className="inline-flex items-center justify-center px-6 py-3 rounded-full border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)]/10 transition-colors"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -207,12 +175,12 @@ export function HeroGallery() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="flex gap-8 mt-6 pt-4 border-t border-[#75aadb]/40"
+                className="hidden sm:flex gap-8 mt-6 pt-4 border-t border-[var(--line)]"
               >
                 {content.stats.map((stat, index) => (
                   <div key={index}>
-                    <p className="text-3xl font-bold text-[#0b2e63]">{stat.value}</p>
-                    <p className="text-[#2c4a73] text-sm">{stat.label}</p>
+                    <p className="text-3xl font-bold text-[var(--ink)]">{stat.value}</p>
+                    <p className="text-[var(--ink-soft)] text-sm">{stat.label}</p>
                   </div>
                 ))}
               </motion.div>

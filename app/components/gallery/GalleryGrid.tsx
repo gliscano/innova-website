@@ -16,6 +16,10 @@ export default function GalleryGrid({
   hasMore,
   onLoadMore,
 }: GalleryGridProps) {
+  // Los hooks deben llamarse siempre, antes de cualquier return condicional
+  // (si no, el componente pasa de 0 a 1 hooks llamados entre renders y rompe React).
+  const columns = useMasonryColumns()
+
   if (images.length === 0 && !isLoading) {
     return (
       <div className="text-center py-12">
@@ -34,7 +38,6 @@ export default function GalleryGrid({
     )
   }
 
-  const columns = useMasonryColumns()
   const columnCells = distributeIntoColumns(images, columns)
 
   return (

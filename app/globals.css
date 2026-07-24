@@ -44,15 +44,6 @@ h1, h2, h3, h4 {
   border-bottom: 1px solid var(--line);
 }
 
-.hero-background {
-  /* Temática Mundial — Albiceleste Argentina */
-  background: #aacbe8;
-  background:
-    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0px, rgba(255, 255, 255, 0.06) 2px, transparent 2px, transparent 22px),
-    radial-gradient(800px 400px at 80% 12%, rgba(242, 183, 5, 0.18) 0%, rgba(242, 183, 5, 0) 60%),
-    linear-gradient(160deg, #75aadb 0%, #aacbe8 40%, #eaf3fb 70%, #ffffff 100%);
-}
-
 .btn-cta-style {
   background: var(--accent);
   color: #fff;
