@@ -42,3 +42,6 @@ next-env.d.ts
 # claude
 /.claude
 /.agents
+
+# fuentes de media sin comprimir (originales previos al re-encode de public/video)
+/media-src

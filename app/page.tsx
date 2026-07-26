@@ -9,7 +9,7 @@ import { getCachedFolders } from './lib/cloudinaryFolders'
 import HeroProps from './components/HeroProps'
 import { HeroGallery } from './components/hero/HeroGallery'
 // import { InspirationSection } from './components/inspiracion'
-import LeadCaptureSection from './components/LeadCaptureSection'
+// import LeadCaptureSection from './components/LeadCaptureSection'
 import TestimonialsSection from './components/TestimonialsSection'
 import StockPreview from './components/StockPreview'
 
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     url: 'https://innova54.com',
     images: [
       {
-        url: '/og-image.png',
+        url: '/og-image.jpg',
         width: 1200,
         height: 630,
         alt: 'Innova Backdrops | Fondos fotográficos de alta definición',
@@ -47,7 +47,7 @@ export default async function Home() {
           <TestimonialsSection />
         </Suspense>
         <FAQ />
-        <LeadCaptureSection />
+        {/* <LeadCaptureSection /> */}
       </main>
       <Footer />
     </div>

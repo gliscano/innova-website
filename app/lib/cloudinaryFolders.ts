@@ -1,6 +1,6 @@
 import { unstable_cache } from 'next/cache'
 import cloudinary from '@/app/utils/cloudinary'
-import { formatFolderName } from '@/app/utils/catalogUtils'
+import { formatFolderName, publicIdFromCloudinaryUrl } from '@/app/utils/catalogUtils'
 import { catalogData } from '@/app/data/catalogData'
 import type { CloudinaryFolder, CloudinarySubfolder } from '@/app/types/catalog'
 
@@ -30,11 +30,12 @@ async function fetchSubfolders(parent: string): Promise<CloudinarySubfolder[]> {
           max_results: 3,
           resource_type: 'image',
         })
-        const imgs = ((res as unknown as Record<string, unknown>).resources as { secure_url: string }[]) ?? []
-        const thumbnailUrl = imgs.length > 0 ? imgs[Math.floor(Math.random() * imgs.length)].secure_url : null
-        return { name: sub.name, path: sub.path, thumbnailUrl }
+        const imgs = ((res as unknown as Record<string, unknown>).resources as { public_id: string }[]) ?? []
+        // Determinista a propósito: elegirlo al azar rotaba el thumbnail en cada refresh de
+        // unstable_cache (24h) e invalidaba el caché de derivadas de Cloudinary sin motivo.
+        return { name: sub.name, path: sub.path, thumbnailId: imgs[0]?.public_id ?? null }
       } catch {
-        return { name: sub.name, path: sub.path, thumbnailUrl: null }
+        return { name: sub.name, path: sub.path, thumbnailId: null }
       }
     })
   )
@@ -60,7 +61,7 @@ async function fetchFolders(): Promise<CloudinaryFolder[]> {
       return {
         folderName: folder.name,
         title: formatFolderName(folder.name),
-        thumbnailUrl: catalogItem?.thumbnailUrl ?? null,
+        thumbnailId: publicIdFromCloudinaryUrl(catalogItem?.thumbnailUrl),
         imageCount: catalogItem?.imageCount ?? 0,
         isCollection,
         featured: catalogItem?.featured ?? false,
@@ -75,22 +76,24 @@ async function fetchFolders(): Promise<CloudinaryFolder[]> {
       const catalogItem = catalogData.find(c => c.category === folder.name)
       const isFeatured = catalogItem?.featured ?? false
 
+      const fallbackId = publicIdFromCloudinaryUrl(catalogItem?.thumbnailUrl)
+
       if (isCollection) {
-        if (catalogItem?.thumbnailUrl) {
-          return { folderName: folder.name, title: formatFolderName(folder.name), thumbnailUrl: catalogItem.thumbnailUrl, imageCount: 0, isCollection: true, featured: isFeatured }
+        if (fallbackId) {
+          return { folderName: folder.name, title: formatFolderName(folder.name), thumbnailId: fallbackId, imageCount: 0, isCollection: true, featured: isFeatured }
         }
         try {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const { folders: subs } = await (cloudinary.api.sub_folders as any)(folder.name) as { folders: { name: string; path: string }[] }
-          let thumbnailUrl: string | null = null
+          let thumbnailId: string | null = null
           if (subs.length > 0) {
             const res = await cloudinary.api.resources_by_asset_folder(subs[0].path, { max_results: 3, resource_type: 'image' })
-            const imgs = ((res as unknown as Record<string, unknown>).resources as { secure_url: string }[]) ?? []
-            thumbnailUrl = imgs.length > 0 ? imgs[Math.floor(Math.random() * imgs.length)].secure_url : null
+            const imgs = ((res as unknown as Record<string, unknown>).resources as { public_id: string }[]) ?? []
+            thumbnailId = imgs[0]?.public_id ?? null
           }
-          return { folderName: folder.name, title: formatFolderName(folder.name), thumbnailUrl, imageCount: 0, isCollection: true, featured: isFeatured }
+          return { folderName: folder.name, title: formatFolderName(folder.name), thumbnailId, imageCount: 0, isCollection: true, featured: isFeatured }
         } catch {
-          return { folderName: folder.name, title: formatFolderName(folder.name), thumbnailUrl: null, imageCount: 0, isCollection: true, featured: isFeatured }
+          return { folderName: folder.name, title: formatFolderName(folder.name), thumbnailId: null, imageCount: 0, isCollection: true, featured: isFeatured }
         }
       }
 
@@ -100,11 +103,11 @@ async function fetchFolders(): Promise<CloudinaryFolder[]> {
           max_results: 500,
           resource_type: 'image',
         })
-        const resources = ((res as unknown as Record<string, unknown>).resources as { secure_url: string }[]) ?? []
+        const resources = ((res as unknown as Record<string, unknown>).resources as { public_id: string }[]) ?? []
         return {
           folderName: folder.name,
           title: formatFolderName(folder.name),
-          thumbnailUrl: resources[0]?.secure_url ?? catalogItem?.thumbnailUrl ?? null,
+          thumbnailId: resources[0]?.public_id ?? fallbackId,
           imageCount: resources.length,
           isCollection: false,
           featured: isFeatured,
@@ -113,7 +116,7 @@ async function fetchFolders(): Promise<CloudinaryFolder[]> {
         return {
           folderName: folder.name,
           title: formatFolderName(folder.name),
-          thumbnailUrl: catalogItem?.thumbnailUrl ?? null,
+          thumbnailId: fallbackId,
           imageCount: catalogItem?.imageCount ?? 0,
           isCollection: false,
           featured: isFeatured,

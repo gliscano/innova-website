@@ -56,11 +56,9 @@ export default function GalleryItem({ image, onClick, index, ratio }: GalleryIte
             alt={`Imagen ${index + 1}`}
             crop="fill"
             gravity="auto"
-            format="webp"
             quality="auto:good"
             sizes="(max-width: 767px) 50vw, (max-width: 1023px) 33vw, 25vw"
             priority={isPriority}
-            loading={isPriority ? 'eager' : 'lazy'}
             onLoad={handleImageLoad}
             onError={handleImageError}
             className={`h-full w-full object-cover transition-[opacity,transform] duration-300 md:group-hover:scale-[1.03] ${

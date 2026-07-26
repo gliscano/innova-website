@@ -2,14 +2,26 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    remotePatterns: [
-      { protocol: 'https', hostname: 'res.cloudinary.com', pathname: '/innova54/**' },
-      { protocol: 'https', hostname: 'd22fxaf9t8d39k.cloudfront.net' },
-    ],
+    // Sin remotePatterns a propósito: todo lo remoto se sirve por Cloudinary vía CldImage
+    // (loader propio, no pasa por /_next/image). Si alguien vuelve a meter un <Image> de
+    // next/image apuntando a res.cloudinary.com, Next falla en vez de facturar en silencio
+    // una re-optimización en Vercel de algo que Cloudinary ya optimizó.
     formats: ['image/avif', 'image/webp'],
-    deviceSizes: [420, 640, 750, 828, 1080, 1200, 1920],
-    imageSizes: [64, 128, 256, 384],  
-    minimumCacheTTL: 60,
+    // CldImage envuelve next/image, así que esta grilla también gobierna el srcset que se
+    // pide a Cloudinary: cada ancho de más es un derived asset de más en ambos proveedores.
+    deviceSizes: [640, 828, 1200, 1920],
+    imageSizes: [128, 384],
+    // Solo afecta a los rasters de /public: lo de Cloudinary no pasa por /_next/image.
+    // 60s (el valor viejo) re-optimizaba la misma fuente casi en cada request — el default
+    // de Next son 4h. Ojo con subirlo más: este número se emite tal cual al navegador como
+    // `Cache-Control: public, max-age=<TTL>, must-revalidate`, y los archivos de /public NO
+    // llevan hash en el nombre (hero/0X.webp, logo-navidad.png, background-store.png...),
+    // así que reemplazar uno in-place deja a los visitantes con la versión vieja hasta que
+    // expire, sin forma de purgarlo. 30 días cubre el ahorro; el salto a 1 año ahorraba
+    // ~750 transformaciones/año (nada) a cambio de 11 meses más de caché no purgable.
+    // Si hace falta más, migrar esos archivos a `import` estático: Next les pone hash en
+    // /_next/static/media y ahí sí sirve `immutable` sin riesgo.
+    minimumCacheTTL: 2592000,
   },
   async headers() {
     return [

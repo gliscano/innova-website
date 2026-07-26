@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import Image from 'next/image'
+import { CldImage, getCldImageUrl } from 'next-cloudinary'
 import { motion, type Variants } from 'framer-motion'
 import { useGalleryImages } from '@/app/hooks/useGalleryImages'
 import { getNavidadFolderPath, type NavidadCategory } from '@/app/data/navidadCategoriesData'
@@ -36,6 +36,12 @@ export function HeroSlide({ category, priority, reduceMotion }: HeroSlideProps) 
   const { images } = useGalleryImages({ folder: getNavidadFolderPath(category), itemsPerPage: 1 })
   const fallbackImage = images[0]
 
+  // `image.url` es el secure_url del original sin transformar (varios MB). Como poster
+  // alcanza una derivada chica: se ve unos milisegundos antes de que arranque el video.
+  const posterUrl = fallbackImage
+    ? getCldImageUrl({ src: fallbackImage.id, width: 1280, quality: 'auto:eco' })
+    : undefined
+
   useEffect(() => {
     videoRef.current?.play().catch(() => setShowFallback(true))
   }, [])
@@ -56,18 +62,19 @@ export function HeroSlide({ category, priority, reduceMotion }: HeroSlideProps) 
         muted
         playsInline
         preload={priority ? 'auto' : 'none'}
-        poster={fallbackImage?.url}
+        poster={posterUrl}
         onError={() => setShowFallback(true)}
         className="nv-hero-video"
         style={{ display: showFallback ? 'none' : 'block' }}
         aria-hidden="true"
       />
       {showFallback && fallbackImage && (
-        <Image
-          src={fallbackImage.url}
+        <CldImage
+          src={fallbackImage.id}
           alt=""
           fill
           sizes="100vw"
+          quality="auto:good"
           priority={priority}
           className="nv-hero-fallback-img"
         />

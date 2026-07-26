@@ -1,24 +1,36 @@
+'use client'
+
+import { useState } from 'react'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 
 export default function NavidadBanner() {
+  // El banner vive debajo del fold. `autoPlay` ignora `preload="none"` y descarga el video
+  // igual, así que recién montamos el `src` cuando la sección entra en viewport.
+  const [active, setActive] = useState(false)
+
   return (
-    <div id="navidad-banner" className="max-w-[1320px] mx-auto my-8 px-4 sm:px-6 lg:px-8">
+    <motion.div
+      id="navidad-banner"
+      className="max-w-[1320px] mx-auto my-8 px-4 sm:px-6 lg:px-8"
+      onViewportEnter={() => setActive(true)}
+      viewport={{ once: true, amount: 0.25 }}
+    >
       <Link
         href="/navidad"
         className="group relative flex overflow-hidden rounded-3xl min-h-[280px] sm:min-h-[360px] lg:min-h-[440px]"
       >
         <video
+          src={active ? '/video/banner-navidad.mp4' : undefined}
           autoPlay
           loop
           muted
           playsInline
-          preload="auto"
-          poster="/images/innova/navidad/navidad-1.png"
+          preload="none"
+          poster="/images/innova/navidad/navidad-1.webp"
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           aria-hidden="true"
-        >
-          <source src="/video/banner-navidad.mov" />
-        </video>
+        />
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
@@ -39,6 +51,6 @@ export default function NavidadBanner() {
           </span>
         </div>
       </Link>
-    </div>
+    </motion.div>
   )
 }

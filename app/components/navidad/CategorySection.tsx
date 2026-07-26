@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
+import { CldImage } from 'next-cloudinary'
 import { motion, type Variants } from 'framer-motion'
 import { useGalleryImages } from '@/app/hooks/useGalleryImages'
 import { useGalleryModal } from '@/app/hooks/useGalleryModal'
@@ -55,11 +55,12 @@ function CategoryTile({ cell, animation, priority, onOpen }: CategoryTileProps) 
       variants={tileVariants[animation]}
       aria-label={`Ver diseño ${image.display_name}`}
     >
-      <Image
-        src={image.url}
+      <CldImage
+        src={image.id}
         alt={image.display_name}
         fill
         sizes="(max-width: 767px) 50vw, (max-width: 1023px) 33vw, 25vw"
+        quality="auto:good"
         className="nv-cat__tile-img"
         priority={priority}
       />

@@ -37,7 +37,6 @@ No test suite is configured.
 | `/design-catalog` | Catalog listing |
 | `/design-catalog/[id]` | Dynamic product detail |
 | `/navidad` | Christmas section |
-| `/pets` | Pets section |
 | `/prices` | Pricing page |
 | `/preguntas-frecuentes` | FAQ |
 | `/terminos-y-condiciones` | Terms & conditions |

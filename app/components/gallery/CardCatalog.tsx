@@ -1,6 +1,6 @@
 "use client"
 
-import Image from "next/image"
+import { CldImage } from "next-cloudinary"
 import Link from "next/link"
 import { Star } from "lucide-react"
 import type { CloudinaryFolder } from "@/app/types/catalog"
@@ -17,12 +17,13 @@ export default function CardCatalog({ folder }: CardCatalogProps) {
       className="group relative flex rounded-3xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 aspect-[3/4] focus:outline-none focus:ring-2 focus:ring-white/50"
     >
       {/* Imagen de fondo */}
-      {folder.thumbnailUrl ? (
-        <Image
-          src={folder.thumbnailUrl}
+      {folder.thumbnailId ? (
+        <CldImage
+          src={folder.thumbnailId}
           alt={folder.title}
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          quality="auto:good"
           className="object-cover group-hover:scale-105 transition-transform duration-500"
         />
       ) : (
