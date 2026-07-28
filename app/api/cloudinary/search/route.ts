@@ -107,7 +107,7 @@ function buildExpression(params: { searchTerm?: string; folder?: string }) {
 
   // Si hay folder, filtrar primero por carpeta exacta (con comillas para soportar espacios)
   if (folder) {
-    expression += ` AND folder:"${folder}"`
+    expression += ` AND asset_folder:"${folder}"`
   }
 
   return expression

@@ -33,11 +33,20 @@ export default function CardCatalog({ folder }: CardCatalogProps) {
       {/* Gradient inferior */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
 
-      {/* Badge Destacado — esquina superior izquierda */}
-      {folder.featured && (
-        <div className="absolute top-3 left-3 bg-amber-400/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm flex items-center gap-1">
-          <Star className="w-3 h-3 fill-white" />
-          <span className="hidden sm:inline">Destacado</span>
+      {/* Badges Destacado / Nueva — esquina superior izquierda */}
+      {(folder.featured || folder.isNew) && (
+        <div className="absolute top-3 left-3 flex flex-col items-start gap-1">
+          {folder.featured && (
+            <div className="bg-amber-400/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm flex items-center gap-1">
+              <Star className="w-3 h-3 fill-white" />
+              <span className="hidden sm:inline">Destacado</span>
+            </div>
+          )}
+          {folder.isNew && (
+            <div className="bg-emerald-500/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm">
+              Nueva
+            </div>
+          )}
         </div>
       )}
 

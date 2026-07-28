@@ -6,10 +6,8 @@ export function getCatalogItemByCategory(category: string) {
 }
 
 export function formatFolderName(name: string): string {
-  return name
-    .replace(/[_-]/g, ' ')
-    .replace(/\b\w/g, c => c.toUpperCase())
-    .trim()
+  const withSpaces = name.replace(/[_-]/g, ' ').trim().toLowerCase()
+  return withSpaces.charAt(0).toUpperCase() + withSpaces.slice(1)
 }
 
 /** `decodeURIComponent` tolerante: una secuencia mal formada devuelve el segmento intacto. */

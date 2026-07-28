@@ -8,6 +8,35 @@ export const EXCLUDED_FOLDERS = new Set(['latest-creations', 'innova-brand', 'Na
 
 export const COLLECTION_FOLDERS = new Set(['mundo-infantil'])
 
+/** Ventana en días para considerar una carpeta como "Nueva" en el catálogo. */
+export const NEW_FOLDER_DAYS = 30
+
+/**
+ * `search_folders` (distinto de `root_folders`) sí expone `created_at` por carpeta.
+ * Sin expression, Cloudinary devuelve las carpetas más recientes primero — pedimos
+ * el máximo de resultados para tener created_at de todas las carpetas relevantes.
+ */
+async function fetchFolderCreatedAtMap(): Promise<Map<string, string>> {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = await (cloudinary.api.search_folders as any)({ max_results: 500 }) as { folders: { path: string; created_at: string }[] }
+
+    const map = new Map<string, string>()
+    for (const folder of result.folders ?? []) {
+      map.set(folder.path, folder.created_at)
+    }
+    return map
+  } catch {
+    return new Map()
+  }
+}
+
+function isWithinNewWindow(createdAt: string | null): boolean {
+  if (!createdAt) return false
+  const ageMs = Date.now() - new Date(createdAt).getTime()
+  return ageMs >= 0 && ageMs < NEW_FOLDER_DAYS * 24 * 60 * 60 * 1000
+}
+
 /**
  * En dynamic folder mode, `asset_folder` puede ser una ruta anidada
  * (ej. "latest-creations/Navidad-2026/tradición Argentina"). Excluimos si el
@@ -70,6 +99,8 @@ async function fetchFolders(): Promise<CloudinaryFolder[]> {
   }
 
   // ── PRODUCCIÓN: thumbnails y conteos frescos de Cloudinary ────────────────
+  const createdAtMap = await fetchFolderCreatedAtMap()
+
   return Promise.all(
     filtered.map(async (folder): Promise<CloudinaryFolder> => {
       const isCollection = COLLECTION_FOLDERS.has(folder.name)
@@ -78,9 +109,12 @@ async function fetchFolders(): Promise<CloudinaryFolder[]> {
 
       const fallbackId = publicIdFromCloudinaryUrl(catalogItem?.thumbnailUrl)
 
+      const createdAt = createdAtMap.get(folder.name) ?? null
+      const isNew = isWithinNewWindow(createdAt)
+
       if (isCollection) {
         if (fallbackId) {
-          return { folderName: folder.name, title: formatFolderName(folder.name), thumbnailId: fallbackId, imageCount: 0, isCollection: true, featured: isFeatured }
+          return { folderName: folder.name, title: formatFolderName(folder.name), thumbnailId: fallbackId, imageCount: 0, isCollection: true, featured: isFeatured, createdAt, isNew }
         }
         try {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -91,9 +125,9 @@ async function fetchFolders(): Promise<CloudinaryFolder[]> {
             const imgs = ((res as unknown as Record<string, unknown>).resources as { public_id: string }[]) ?? []
             thumbnailId = imgs[0]?.public_id ?? null
           }
-          return { folderName: folder.name, title: formatFolderName(folder.name), thumbnailId, imageCount: 0, isCollection: true, featured: isFeatured }
+          return { folderName: folder.name, title: formatFolderName(folder.name), thumbnailId, imageCount: 0, isCollection: true, featured: isFeatured, createdAt, isNew }
         } catch {
-          return { folderName: folder.name, title: formatFolderName(folder.name), thumbnailId: null, imageCount: 0, isCollection: true, featured: isFeatured }
+          return { folderName: folder.name, title: formatFolderName(folder.name), thumbnailId: null, imageCount: 0, isCollection: true, featured: isFeatured, createdAt, isNew }
         }
       }
 
@@ -111,6 +145,8 @@ async function fetchFolders(): Promise<CloudinaryFolder[]> {
           imageCount: resources.length,
           isCollection: false,
           featured: isFeatured,
+          createdAt,
+          isNew,
         }
       } catch {
         return {
@@ -120,6 +156,8 @@ async function fetchFolders(): Promise<CloudinaryFolder[]> {
           imageCount: catalogItem?.imageCount ?? 0,
           isCollection: false,
           featured: isFeatured,
+          createdAt,
+          isNew,
         }
       }
     })

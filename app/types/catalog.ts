@@ -14,4 +14,8 @@ export interface CloudinaryFolder {
   isCollection?: boolean
   subfolders?: CloudinarySubfolder[]
   featured?: boolean
+  /** Fecha de creación de la carpeta en Cloudinary (ISO), vía `search_folders`. `null` si no se pudo determinar. */
+  createdAt?: string | null
+  /** true si la carpeta fue creada dentro de la ventana de "Nueva" (ver `NEW_FOLDER_DAYS`). */
+  isNew?: boolean
 }

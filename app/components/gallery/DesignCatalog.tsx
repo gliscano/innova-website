@@ -205,10 +205,12 @@ export default function InnovaCatalog({ initialFolders }: Props) {
             )
           }
 
-          // Navegación sin búsqueda: destacados siempre visibles, límite solo en regulares
+          // Navegación sin búsqueda: destacados y nuevos siempre visibles, límite solo en regulares
           const allFeatured = filteredProducts.filter(f => f.featured)
-          const allRegular = filteredProducts.filter(f => !f.featured)
+          const allNew = filteredProducts.filter(f => f.isNew && !f.featured)
+          const allRegular = filteredProducts.filter(f => !f.featured && !f.isNew)
           const featuredFolders = allFeatured
+          const newFolders = allNew
           const regularFolders = expanded ? allRegular : allRegular.slice(0, visibleCount)
           const hasHiddenItems = !expanded && allRegular.length > visibleCount
 
@@ -228,9 +230,22 @@ export default function InnovaCatalog({ initialFolders }: Props) {
                 </div>
               )}
 
+              {newFolders.length > 0 && (
+                <div className="mb-10">
+                  <h3 className="text-[11px] font-semibold tracking-[.18em] uppercase text-emerald-600 mb-4">
+                    Nuevos
+                  </h3>
+                  <div className="grid gap-3 grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+                    {newFolders.map((folder) => (
+                      <CardCatalog key={folder.folderName} folder={folder} />
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {regularFolders.length > 0 && (
                 <div>
-                  {featuredFolders.length > 0 && (
+                  {(featuredFolders.length > 0 || newFolders.length > 0) && (
                     <h3 className="text-[11px] font-semibold tracking-[.18em] uppercase text-[#9C8E7C] mb-4">
                       Todos los catálogos
                     </h3>
