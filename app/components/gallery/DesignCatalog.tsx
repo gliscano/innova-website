@@ -33,8 +33,6 @@ export default function InnovaCatalog({ initialFolders }: Props) {
     clearFilters,
   } = useProductSearch(initialFolders)
 
-  const totalDesigns = initialFolders.reduce((s, f) => s + f.imageCount, 0)
-
   useEffect(() => {
     if (!sortOpen) return
     const onDoc = (e: MouseEvent) => {
@@ -162,7 +160,7 @@ export default function InnovaCatalog({ initialFolders }: Props) {
           <strong className="text-[#1F1A14] font-semibold">{filteredProducts.length}</strong>
           {filteredProducts.length === 1 ? "catálogo" : "catálogos"}
           <span className="text-[#9C8E7C]">·</span>
-          <strong className="text-[#1F1A14] font-semibold">+4500</strong>
+          <strong className="text-[#1F1A14] font-semibold">+5500</strong>
           diseños en total
         </p>
 

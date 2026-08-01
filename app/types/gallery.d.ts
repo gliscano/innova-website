@@ -42,6 +42,8 @@ export interface GalleryModalProps {
   context?: {
     Description?: string
   }
+  /** Carpeta de la galería contenedora, para el snapshot de favoritos. */
+  folderHint?: string
   onClose: () => void
   goToNext: () => void
   goToPrevious: () => void
@@ -53,6 +55,8 @@ export interface GalleryItemProps {
   index: number
   /** Aspect ratio (ancho/alto) acotado para el masonry; define el alto de la tarjeta. */
   ratio: number
+  /** Carpeta de la galería contenedora, para el snapshot de favoritos. */
+  folderHint?: string
 }
 
 export interface GalleryGridProps {
@@ -62,6 +66,10 @@ export interface GalleryGridProps {
   isLoadingMore: boolean
   hasMore: boolean
   onLoadMore: () => void
+  /** Carpeta de la galería contenedora, para el snapshot de favoritos. */
+  folderHint?: string
+  /** Reemplaza el estado vacío por defecto (lo usa el filtro "solo favoritos",
+   *  que necesita un mensaje distinto a "no se encontraron imágenes"). */
 }
 
 export interface GallerySkeletonProps {

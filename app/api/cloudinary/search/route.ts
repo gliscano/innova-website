@@ -47,6 +47,8 @@ interface CloudinaryImage {
   created_at: string
   tags: string[]
   folder?: string
+  /** En dynamic folder mode la Admin API devuelve la ruta acá, no en `folder`. */
+  asset_folder?: string
   display_name: string
   aspect_ratio: number
   bytes?: number
@@ -122,7 +124,7 @@ function transformResources(resources: CloudinaryImage[]) {
     format: img.format,
     createdAt: img.created_at,
     tags: img.tags || [],
-    folder: img.folder,
+    folder: img.asset_folder ?? img.folder,
     display_name: img.display_name,
     aspect_ratio: img.aspect_ratio,
     collection: img.context?.custom?.collection,

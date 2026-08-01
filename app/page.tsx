@@ -12,6 +12,7 @@ import { HeroGallery } from './components/hero/HeroGallery'
 // import LeadCaptureSection from './components/LeadCaptureSection'
 import TestimonialsSection from './components/TestimonialsSection'
 import StockPreview from './components/StockPreview'
+import FavoritesHomeSection from './components/favorites/FavoritesHomeSection'
 
 export const metadata: Metadata = {
   title: 'Fondos Fotográficos y Backdrops para Fotógrafos, eventos y escenarios',
@@ -41,6 +42,7 @@ export default async function Home() {
         <StockPreview />
         {/* <InspirationSection /> */}
         <NavidadBanner />
+        <FavoritesHomeSection />
         <DesignCatalog initialFolders={folders} />
         <HeroProps />
         <Suspense fallback={null}>

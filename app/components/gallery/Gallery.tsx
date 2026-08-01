@@ -13,7 +13,7 @@ export default function Gallery(props: GalleryProps) {
   const completedRef = useRef(false)
 
   const {
-    images,
+    images: allImages,
     isLoading,
     isLoadingMore,
     error,
@@ -23,6 +23,8 @@ export default function Gallery(props: GalleryProps) {
     refresh,
   } = useGalleryImages(props)
 
+  // El modal navega por índice sobre este mismo array. `allImages` solo crece
+  // (loadMore appendea), así que los índices ya emitidos nunca se corren.
   const {
     isOpen: isModalOpen,
     currentIndex: modalIndex,
@@ -31,15 +33,15 @@ export default function Gallery(props: GalleryProps) {
     closeModal,
     goToNext,
     goToPrevious,
-  } = useGalleryModal(images)
+  } = useGalleryModal(allImages)
 
-  // Notificar al padre una sola vez cuando se cargan todas las imágenes
+  // Notificar al padre una sola vez cuando se cargan todas las imágenes.
   useEffect(() => {
-    if (!isLoading && !hasMore && images.length > 0 && !completedRef.current) {
+    if (!isLoading && !hasMore && allImages.length > 0 && !completedRef.current) {
       completedRef.current = true
       props.onComplete?.()
     }
-  }, [isLoading, hasMore, images.length, props])
+  }, [isLoading, hasMore, allImages.length, props])
 
   const handleImageClick = (index: number) => {
     openModal(index)
@@ -50,7 +52,7 @@ export default function Gallery(props: GalleryProps) {
   }
 
   // Mostrar skeleton durante la carga inicial
-  if (isLoading && images.length === 0) {
+  if (isLoading && allImages.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -125,12 +127,13 @@ export default function Gallery(props: GalleryProps) {
 
         {/* Grid de imágenes */}
         <GalleryGrid
-          images={images}
+          images={allImages}
           onImageClick={handleImageClick}
           isLoading={isLoading}
           isLoadingMore={isLoadingMore}
           hasMore={hasMore}
           onLoadMore={loadMore}
+          folderHint={props.folder}
         />
 
         {/* Modal */}
@@ -138,11 +141,12 @@ export default function Gallery(props: GalleryProps) {
           <GalleryModal
             isOpen={isModalOpen}
             onClose={handleModalClose}
-            images={images}
+            images={allImages}
             initialIndex={modalIndex}
             goToNext={goToNext}
             goToPrevious={goToPrevious}
             category={props.searchTerm}
+            folderHint={props.folder}
           />
         )}
       </div>

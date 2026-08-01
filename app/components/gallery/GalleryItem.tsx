@@ -3,8 +3,9 @@
 import { useCallback, useState } from 'react'
 import { CldImage } from 'next-cloudinary'
 import { GalleryItemProps } from '../../types/gallery'
+import FavoriteButton from '../favorites/FavoriteButton'
 
-export default function GalleryItem({ image, onClick, index, ratio }: GalleryItemProps) {
+export default function GalleryItem({ image, onClick, index, ratio, folderHint }: GalleryItemProps) {
   const [isLoaded, setIsLoaded] = useState(false)
   const [hasError, setHasError] = useState(false)
 
@@ -91,6 +92,15 @@ export default function GalleryItem({ image, onClick, index, ratio }: GalleryIte
         </div>
       </div>
 
+      {/* Corazón: siempre visible (en mobile no hay hover) y por encima del
+          overlay `absolute inset-0`, de ahí el z-10. */}
+      {!hasError && (
+        <FavoriteButton
+          image={image}
+          folderHint={folderHint}
+          className="absolute top-2 right-2 z-10 opacity-90 md:group-hover:opacity-100"
+        />
+      )}
     </div>
   )
 }

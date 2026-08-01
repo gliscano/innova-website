@@ -65,7 +65,16 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://p.typekit.net",
               "img-src 'self' data: https: blob:",
               "font-src 'self' data: https://fonts.gstatic.com https://use.typekit.net",
-              "connect-src 'self' https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://*.googletagmanager.com https://www.google.com https://res.cloudinary.com https://use.typekit.net https://p.typekit.net https://connect.facebook.net https://www.facebook.com https://capig.stape.ma https://maps.googleapis.com https://*.api.mailchimp.com https://*.a.run.app https://*.conversionsapigateway.com",
+              // `stats.g.doubleclick.net` y `www.google.com.ar`: los pide GA4 cuando
+              // Google Signals está activo (datos cross-device y remarketing). El
+              // primero recibe el /g/collect; el segundo es el ping de audiencias,
+              // que usa el TLD del país del visitante — `www.google.com` solo no
+              // alcanza para el tráfico argentino.
+              // Sin estos dos, el navegador bloquea las llamadas y parte de la
+              // telemetría de GA4 nunca llega. Si se prefiere no mandar nada a
+              // doubleclick, la alternativa es desactivar Google Signals en el
+              // panel de GA4 y quitar ambos de acá.
+              "connect-src 'self' https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://*.googletagmanager.com https://www.google.com https://www.google.com.ar https://stats.g.doubleclick.net https://res.cloudinary.com https://use.typekit.net https://p.typekit.net https://connect.facebook.net https://www.facebook.com https://capig.stape.ma https://maps.googleapis.com https://*.api.mailchimp.com https://*.a.run.app https://*.conversionsapigateway.com",
               "frame-src 'self'",
               "object-src 'none'",
               "base-uri 'self'",

@@ -5,6 +5,9 @@ import Script from 'next/script'
 import type { Metadata } from 'next'
 import WhatsAppFloat from './components/WhatsAppFloat'
 import { SelectedSizeProvider } from './context/SelectedSizeContext'
+import FavoritesInit from './components/favorites/FavoritesInit'
+import FavoritesFab from './components/favorites/FavoritesFab'
+import FavoritesToast from './components/favorites/FavoritesToast'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -103,8 +106,11 @@ export default function RootLayout({
           />
         </noscript>
         <SelectedSizeProvider>
+          <FavoritesInit />
           {children}
           <WhatsAppFloat />
+          <FavoritesFab />
+          <FavoritesToast />
         </SelectedSizeProvider>
       </body>
     </html>

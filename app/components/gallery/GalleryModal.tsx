@@ -7,6 +7,7 @@ import { GalleryModalProps } from '../../types/gallery'
 import WhatsAppDropdown from '../WhatsAppDropdown'
 import { useSelectedSize } from '../../context/SelectedSizeContext'
 import { SizeSelectorCompact } from '../SizeSelectorCompact'
+import FavoriteButton from '../favorites/FavoriteButton'
 
 function parseDescription(img?: GalleryModalProps['images'][number]) {
   const raw = typeof img?.description === 'string' && img.description.trim() !== ''
@@ -42,6 +43,7 @@ export default function GalleryModal({
   goToNext,
   goToPrevious,
   category,
+  folderHint,
 }: GalleryModalProps) {
   const modalRef = useRef<HTMLDivElement>(null)
   const [hasError, setHasError] = useState(false)
@@ -188,6 +190,20 @@ export default function GalleryModal({
               Portrait:  order-2 → siempre debajo de la imagen (descripción + footer)
               Landscape: order-2 → columna derecha fija (w-64), con scroll propio */}
           <div className="flex flex-col flex-shrink-0 order-2 max-h-[50vh] overflow-y-auto mob-landscape:max-h-none mob-landscape:w-64 mob-landscape:h-full mob-landscape:overflow-y-auto mob-landscape:border-l mob-landscape:border-white/10 mob-landscape:bg-black/60">
+
+            {/* Acción "Guardar" — primer elemento del panel, alineada a la
+                izquierda, al estilo Instagram/Pinterest.
+                Portrait:  el panel va debajo de la imagen → queda justo abajo.
+                Landscape: el panel es la columna derecha → queda arriba a la
+                izquierda, sin chocar con el cerrar (que es top-right). */}
+            <div className="flex items-center px-4 pt-3 pb-1 flex-shrink-0">
+              <FavoriteButton
+                image={currentImage}
+                folderHint={folderHint}
+                variant="modal"
+                showLabel
+              />
+            </div>
 
             {/* Título + contador — solo visible en landscape (en portrait va como overlay sobre la imagen) */}
             <div className="hidden mob-landscape:flex items-start text-white px-4 py-3 pr-12 flex-shrink-0">
