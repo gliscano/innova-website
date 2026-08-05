@@ -14,29 +14,49 @@ function decodeHtmlEntities(text: string): string {
 
 function parseStockProducts(html: string): StockProduct[] {
   const products: StockProduct[] = []
+  const seen = new Set<string>()
 
-  // Match the product card's own image anchor (class="products-feed__product-link").
-  // Empretienda inserts a "10% OFF" badge <span> between the <a> and <img> on some products,
-  // so allow that optional span rather than requiring the <img> to follow immediately —
-  // but keep the anchor's class scoped so this can't skip past unrelated nav/menu <a> tags.
-  const productPattern =
-    /<a\s+href="(https:\/\/innova54store\.empretienda\.com\.ar\/productos-en-stock\/[^"]+)"\s+class="products-feed__product-link">(?:\s*<span[^>]*>[\s\S]*?<\/span>)?\s*<img\s[^>]*src="(https:\/\/d22fxaf9t8d39k\.cloudfront\.net\/[^"]+)"[^>]*alt="Producto\s*-\s*([^"]+)"[^>]*\/?>\s*<\/a>/g
+  // Each product is one `products-feed__product` card. Inside it, Empretienda renders a
+  // preview carousel with one <a class="products-feed__product-link"> per gallery image —
+  // all pointing at the same product URL — so parsing per-image would yield N cards per
+  // product. Split by card first, then take a single image from each.
+  // The trailing \s in the class match keeps `products-feed__products` (the grid container)
+  // and `products-feed__product-wrapper` from being treated as cards.
+  const cards = html.split(/<div\s+class="products-feed__product\s/).slice(1)
 
-  let match
-  while ((match = productPattern.exec(html)) !== null) {
-    const url = match[1]
-    const image = match[2]
-    const name = decodeHtmlEntities(match[3].trim())
+  for (const card of cards) {
+    const urlMatch = card.match(
+      /<a\s+href="(https:\/\/innova54store\.empretienda\.com\.ar\/productos-en-stock\/[^"]+)"\s+class="products-feed__product-link"/
+    )
+    if (!urlMatch) continue
+    const url = urlMatch[1]
 
-    // Price lives in a dedicated "products-feed__product-price" block shortly after the card,
-    // which may also contain a struck-through <del> original price — take the last $ amount,
-    // which is always the current price.
-    const remainder = html.slice(match.index + match[0].length, match.index + match[0].length + 1000)
-    const priceBlockMatch = remainder.match(/products-feed__product-price[^>]*>([\s\S]*?)<\/p>/)
-    const priceSource = priceBlockMatch ? priceBlockMatch[1] : remainder.slice(0, 600)
-    const priceMatches = priceSource.match(/\$[\d.,]+/g)
+    // Skip duplicates in case the feed repeats a product across sections.
+    if (seen.has(url)) continue
+
+    // First carousel image is the product's cover (the `is-active` slide).
+    const imageMatch = card.match(
+      /<img\s[^>]*class="products-feed__product-image"[^>]*src="(https:\/\/d22fxaf9t8d39k\.cloudfront\.net\/[^"]+)"/
+    )
+    if (!imageMatch) continue
+    const image = imageMatch[1]
+
+    // Prefer the card's own name heading — the <img alt> carries a " - 0" gallery index suffix.
+    const nameMatch = card.match(
+      /products-feed__product-name[^>]*>\s*<a[^>]*>([\s\S]*?)<\/a>/
+    )
+    const altMatch = card.match(/<img\s[^>]*alt="Producto\s*-\s*([^"]+?)(?:\s*-\s*\d+)?"/)
+    const rawName = nameMatch?.[1] ?? altMatch?.[1] ?? ''
+    const name = decodeHtmlEntities(rawName.replace(/\s+/g, ' ').trim())
+    if (!name) continue
+
+    // Price lives in a dedicated "products-feed__product-price" block, which may also contain
+    // a struck-through <del> original price — take the last $ amount, which is the current one.
+    const priceBlockMatch = card.match(/products-feed__product-price[^>]*>([\s\S]*?)<\/p>/)
+    const priceMatches = priceBlockMatch ? priceBlockMatch[1].match(/\$[\d.,]+/g) : null
     const price = priceMatches ? priceMatches[priceMatches.length - 1] : ''
 
+    seen.add(url)
     products.push({ url, image, name, price })
   }
 
