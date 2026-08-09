@@ -179,7 +179,7 @@ export const FAMILIES: Family[] = [
     nombre: 'Fundas para Paneles',
     ancho: null,
     eyebrow: 'Impresas ambas caras',
-    desc: 'Las mejores para decoración de eventos. Impresas por ambas caras y listas para instalar.',
+    desc: 'Las mejores fundas para decoración de eventos. Impresas por ambas caras y listas para instalar.',
     finishes: ['unico'],
     nuevo: true,
     thumb: { ancho: 1, largo: 2 },
