@@ -65,16 +65,24 @@
 .prices-page .pk-desc { font-size: 14.5px; color: var(--ink-soft); margin-top: -2px; }
 
 /* tipo cards */
-.prices-page .tipo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.prices-page .tipo-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
 .prices-page .tipo-card {
+  position: relative;
   border: 1.5px solid var(--line); border-radius: var(--radius); background: var(--bg);
   padding: 18px 14px 16px; display: flex; flex-direction: column; align-items: center; gap: 8px;
   text-align: center; transition: border-color .15s, transform .12s, box-shadow .15s;
 }
 .prices-page .tipo-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
 .prices-page .tipo-card.on { background: var(--surface); box-shadow: var(--shadow-md); }
-.prices-page .tipo-name { font-weight: 700; font-size: 15px; }
+.prices-page .tipo-name { font-weight: 700; font-size: 14px; text-wrap: balance; }
 .prices-page .tipo-eye { font-size: 12px; color: var(--ink-faint); }
+.prices-page .tipo-badge {
+  position: absolute; top: 8px; right: 8px;
+  background: var(--accent); color: #fff;
+  font-size: 10px; font-weight: 800; line-height: 1.5;
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 999px;
+}
 
 /* proportion diagram */
 .prices-page .prop { display: grid; place-items: center; }
@@ -246,7 +254,7 @@
 }
 
 @media (max-width: 860px) {
-  .prices-page .tipo-grid { grid-template-columns: repeat(2, 1fr); }
+  .prices-page .tipo-grid { grid-template-columns: repeat(3, 1fr); }
   .prices-page .result { grid-template-columns: 1fr; text-align: center; justify-items: center; gap: 14px; }
   .prices-page .result-body { align-items: center; }
   .prices-page .result-price { text-align: center; }
@@ -282,6 +290,7 @@
   .prices-page .pk-td-price { grid-area: price; text-align: right; padding-right: 0; align-self: center; }
   .prices-page .pk-td-sel { grid-area: sel; justify-self: end; align-self: center; padding: 7px 14px; font-size: 12.5px; }
 
+  .prices-page .tipo-grid { grid-template-columns: repeat(2, 1fr); }
   .prices-page section { padding-inline: 16px; }
   .prices-page .picker { padding: 20px; }
   .prices-page .hero-title { font-size: 34px; }

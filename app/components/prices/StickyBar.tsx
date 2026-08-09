@@ -19,7 +19,8 @@ export default function StickyBar({
   const item = family.largos[sel.largoIndex]
   const finish: Finish = family.finishes[0] === 'unico' ? 'unico' : sel.finish
   const price = finish === 'unico' ? item.unico! : (item[finish] ?? 0)
-  const waText = `Hola! Me interesa un fondo ${dimLabel(family, item)} (${FINISH_LABEL[finish]}) — ${ars(price)}. Quiero ver diseños.`
+  const acabado = finish === 'unico' ? '' : ` (${FINISH_LABEL[finish]})`
+  const waText = `Hola! Me interesa ${family.articulo ?? 'un fondo'} ${dimLabel(family, item)}${acabado} — ${ars(price)}. Quiero ver diseños.`
 
   return (
     <div className="sticky">

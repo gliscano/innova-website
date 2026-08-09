@@ -46,8 +46,8 @@ export default function GuidedPicker({
         <div className="pk-label"><span className="pk-num">1</span> ¿Qué tipo de fondo buscas?</div>
         <div className="tipo-grid">
           {FAMILIES.map(f => {
-            const tipAncho = f.ancho ?? (f.id === 'piso' ? 3 : 1.5)
-            const tipLargo = f.ancho != null ? 3 : 1.5
+            const tipAncho = f.thumb?.ancho ?? f.ancho ?? 1.5
+            const tipLargo = f.thumb?.largo ?? (f.ancho != null ? 3 : 1.5)
             const isOn = f.id === sel.familyId
             return (
               <button
@@ -56,6 +56,7 @@ export default function GuidedPicker({
                 onClick={() => pickFamily(f.id)}
                 style={isOn ? { borderColor: accent } : undefined}
               >
+                {f.nuevo && <span className="tipo-badge">Nuevo</span>}
                 <Proportion
                   ancho={tipAncho}
                   largo={tipLargo}

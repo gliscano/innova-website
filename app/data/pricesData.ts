@@ -44,10 +44,17 @@ const propertiesFloor: Array<propertiesProductsType> = [
   { id: "SF1550", width: 5.0, height: 1.50, price: 125000 },
 ];
 
+const propertiesPanelCovers: Array<propertiesProductsType> = [
+  { id: "FP0720", width: 0.7, height: 2.0, price: 39000 },
+  { id: "FP1020", width: 1.0, height: 2.0, price: 65000 },
+  { id: "FP1520", width: 1.5, height: 2.0, price: 69000 },
+];
+
 export {
   propertiesBackdrops,
   propertiesFloor,
   propertiesHybridBackdrops,
+  propertiesPanelCovers,
 }
 
 // ─── Tipos del picker de precios ─────────────────────────────────────────────
@@ -73,6 +80,12 @@ export interface Family {
   desc: string
   finishes: Finish[]
   largos: FamilyItem[]
+  /** Muestra la pill "Nuevo" en la tarjeta del picker */
+  nuevo?: boolean
+  /** Proporción del diagrama de la tarjeta cuando no se deduce de ancho/largo */
+  thumb?: { ancho: number; largo: number }
+  /** Sustantivo para el mensaje de WhatsApp (default: 'un fondo') */
+  articulo?: string
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -152,11 +165,31 @@ export const FAMILIES: Family[] = [
     eyebrow: 'Piso 1.50m prof.',
     desc: 'Superficie suave y flexible. Ideal para combinar con cualquier fondo.',
     finishes: ['unico'],
+    thumb: { ancho: 3, largo: 1.5 },
     largos: propertiesFloor.map(p => ({
       dim: `${p.width.toString().replace('.', ',')} × ${p.height.toString().replace('.', ',')}`,
       largo: p.height,
       ancho: p.width,
       area: parseFloat((p.width * p.height).toFixed(1)),
+      unico: p.price,
+    })),
+  },
+  {
+    id: 'fundas',
+    nombre: 'Fundas para Paneles',
+    ancho: null,
+    eyebrow: 'Impresas ambas caras',
+    desc: 'Las mejores para decoración de eventos. Impresas por ambas caras y listas para instalar.',
+    finishes: ['unico'],
+    nuevo: true,
+    thumb: { ancho: 1, largo: 2 },
+    articulo: 'una funda para panel',
+    largos: propertiesPanelCovers.map(p => ({
+      dim: `${p.width.toString().replace('.', ',')} × ${p.height.toString().replace('.', ',')}`,
+      largo: p.height,
+      ancho: p.width,
+      area: parseFloat((p.width * p.height).toFixed(1)),
+      detalle: 'Impresa por ambas caras · lista para instalar',
       unico: p.price,
     })),
   },
