@@ -4,8 +4,14 @@ import { getStockProducts } from '@/app/lib/empretiendaProducts'
 
 const STORE_URL = 'https://innova54store.empretienda.com.ar/productos'
 
+// Products shown before the "ver todos" CTA. The extra two are rendered but hidden
+// below `sm` so the mobile grid (2 columns) closes at 3 clean rows.
+const MOBILE_LIMIT = 6
+const DESKTOP_LIMIT = 8
+
 export default async function StockPreview() {
-  const products = await getStockProducts()
+  const allProducts = await getStockProducts()
+  const products = allProducts.slice(0, DESKTOP_LIMIT)
 
   if (!products.length) {
     return (
@@ -64,13 +70,15 @@ export default async function StockPreview() {
 
         {/* Product grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {products.map((product) => (
+          {products.map((product, index) => (
             <a
               key={product.url}
               href={product.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200"
+              className={`group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 ${
+                index >= MOBILE_LIMIT ? 'hidden sm:block' : ''
+              }`}
             >
               <div className="aspect-square overflow-hidden bg-gray-100">
                 {/* eslint-disable-next-line @next/next/no-img-element */}

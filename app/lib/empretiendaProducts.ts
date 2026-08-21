@@ -78,7 +78,8 @@ export async function getStockProducts(): Promise<StockProduct[]> {
     if (!res.ok) return []
 
     const html = await res.text()
-    return parseStockProducts(html)
+    // The feed renders oldest-first; reverse it so the newest products come first.
+    return parseStockProducts(html).reverse()
   } catch {
     return []
   }
