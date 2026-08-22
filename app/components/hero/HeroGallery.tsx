@@ -2,51 +2,41 @@
 
 import React from "react"
 import Image from "next/image"
-import { useState, useEffect, useMemo } from "react"
+import Link from "next/link"
+import { useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Sparkles } from "lucide-react"
-import { contentSets, imageSets, type ImageSet } from "@/app/data/heroGalleryData"
+import { contentSets, imageSets } from "@/app/data/heroGalleryData"
+import { trackHeroCta } from "@/app/utils/tracking"
 import { GalleryCard } from "./GalleryCard"
 
-// Función para seleccionar 9 imágenes aleatorias sin repetir
-const getRandomImages = (allImages: ImageSet[], count: number = 9): ImageSet[] => {
-  const shuffled = [...allImages].sort(() => Math.random() - 0.5)
-  return shuffled.slice(0, count)
-}
+const MotionLink = motion.create(Link)
 
 export function HeroGallery() {
-  const secondsToChangeSet = 12000
-  const [currentSet, setCurrentSet] = useState(0)
-  
-  const allImages = useMemo(() => imageSets.flat(), [])
-  
-  const [selectedImages, setSelectedImages] = useState(() => allImages.slice(0, 9))
+  // Sólo existe un contentSet; el `setInterval` de rotación que había acá nunca llegaba a
+  // dispararse (su guard era `contentSets.length > 1`) y arrastraba estado sin uso.
+  const currentSet = 0
 
-  const handleViewDesigns = () => {
+  // `imageSets` tiene exactamente 9 imágenes y la grilla muestra 9, así que el shuffle que había
+  // acá no elegía un subconjunto: sólo permutaba el orden. Corría en un useEffect post-montaje, de
+  // modo que las imágenes se reacomodaban después de la hidratación y el elemento LCP del desktop
+  // cambiaba en cada carga. Orden fijo: mismo contenido, LCP estable.
+  const images = useMemo(() => imageSets.flat(), [])
+
+  const column1 = images.slice(0, 3)
+  const column2 = images.slice(3, 6)
+  const column3 = images.slice(6, 9)
+
+  // El CTA primario ahora es un <Link> real (rastreable). En la home, donde la sección #catalog
+  // está en la misma página, se intercepta para conservar el scroll suave.
+  const handleViewDesigns = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    trackHeroCta('catalog')
     const catalogSection = document.getElementById('catalog')
     if (catalogSection) {
+      e.preventDefault()
       catalogSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
   }
-  
-  useEffect(() => {
-    setSelectedImages(getRandomImages(allImages, 9))
-  }, [allImages])
-  
-  // Distribuir en 3 columnas de 3 imágenes cada una
-  const column1 = selectedImages.slice(0, 3)
-  const column2 = selectedImages.slice(3, 6)
-  const column3 = selectedImages.slice(6, 9)
-
-  useEffect(() => {
-    if (contentSets.length > 1) {
-      const interval = setInterval(() => {
-        setCurrentSet((prev) => (prev + 1) % 2)
-      }, secondsToChangeSet)
-
-      return () => clearInterval(interval)
-    }
-  }, [])
 
   const content = contentSets[currentSet]
 
@@ -138,9 +128,11 @@ export function HeroGallery() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.3 }}
-                className="hidden sm:flex flex-wrap gap-3"
+                /* Estaba en `hidden sm:flex`: los dos CTA del hero eran invisibles en mobile. */
+                className="flex flex-wrap gap-3"
               >
-                <motion.button
+                <MotionLink
+                  href="/design-catalog"
                   onClick={handleViewDesigns}
                   aria-label={content.buttonText}
                   className="inline-flex items-center justify-center px-6 py-3 rounded-full btn-cta-style"
@@ -149,7 +141,7 @@ export function HeroGallery() {
                 >
                   <Sparkles className="w-5 h-5 mr-2" />
                   {content.buttonText}
-                </motion.button>
+                </MotionLink>
 
                 {content.secondaryButtonText && content.secondaryButtonUrl && (
                   <motion.a
@@ -157,6 +149,7 @@ export function HeroGallery() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={content.secondaryButtonText}
+                    onClick={() => trackHeroCta('stock')}
                     className="inline-flex items-center justify-center px-6 py-3 rounded-full border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)]/10 transition-colors"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}

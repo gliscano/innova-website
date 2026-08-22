@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { GalleryImage, GallerySearchResponse, GalleryProps } from '../types/gallery'
+import { trackGallerySearch } from '../utils/tracking'
 
 interface UseGalleryImagesReturn {
   images: GalleryImage[]
@@ -14,18 +15,29 @@ interface UseGalleryImagesReturn {
   refresh: () => void
 }
 
+/** Identifica el conjunto de parámetros con el que se pidió una tanda de imágenes. */
+function paramsKey(props: Pick<GalleryProps, 'searchTerm' | 'folder' | 'itemsPerPage'>): string {
+  return `${props.searchTerm ?? ''}|${props.folder ?? ''}|${props.itemsPerPage ?? ''}`
+}
+
 export function useGalleryImages(props: GalleryProps): UseGalleryImagesReturn {
-  const [images, setImages] = useState<GalleryImage[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const seeded = Boolean(props.initialImages?.length)
+
+  const [images, setImages] = useState<GalleryImage[]>(props.initialImages ?? [])
+  const [isLoading, setIsLoading] = useState(!seeded)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [hasMore, setHasMore] = useState(true)
-  const [totalCount, setTotalCount] = useState(0)
-  const [nextCursor, setNextCursor] = useState<string | null>(null)
+  const [hasMore, setHasMore] = useState(props.initialHasMore ?? true)
+  const [totalCount, setTotalCount] = useState(props.initialTotalCount ?? 0)
+  const [nextCursor, setNextCursor] = useState<string | null>(props.initialCursor ?? null)
 
   const abortControllerRef = useRef<AbortController | null>(null)
   const isLoadingMoreRef = useRef(false)
   const propsRef = useRef(props)
+
+  // Clave con la que el servidor sembró el estado inicial, y marca de si ya se consumió.
+  const seedKeyRef = useRef(seeded ? paramsKey(props) : null)
+  const seedConsumedRef = useRef(false)
 
   // Mantener props actualizados en ref para evitar dependencias circulares
   useEffect(() => {
@@ -83,13 +95,10 @@ export function useGalleryImages(props: GalleryProps): UseGalleryImagesReturn {
       setHasMore(data.hasMore)
       setTotalCount(data.totalCount)
 
-      // Trackear en Google Analytics
-      if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', 'gallery_search', {
-          event_category: 'gallery',
-          event_label: 'gallery_search',
-          value: currentProps.searchTerm,
-        })
+      // Sólo la búsqueda inicial cuenta como búsqueda: antes esto vivía fuera del guard y se
+      // disparaba también en cada "cargar más", inflando el conteo de búsquedas en GA4.
+      if (!isLoadMore && currentProps.searchTerm) {
+        trackGallerySearch(currentProps.searchTerm, currentProps.folder)
       }
     } catch (err) {
       if (err instanceof Error && err.name === 'AbortError') {
@@ -116,8 +125,24 @@ export function useGalleryImages(props: GalleryProps): UseGalleryImagesReturn {
     searchImages(false)
   }, [searchImages])
 
-  // Búsqueda inicial y cuando cambien los parámetros
+  // Búsqueda inicial y cuando cambien los parámetros.
+  //
+  // Cuando la página ya sembró las imágenes desde el servidor, la primera corrida no debe
+  // resetear ni volver a pedir lo mismo. El guard compara claves en vez de limitarse a "es el
+  // primer render" para no romper el reset ante cambio de props del que depende CollectionGallery
+  // al cambiar de subcarpeta.
   useEffect(() => {
+    const key = paramsKey({
+      searchTerm: props.searchTerm,
+      folder: props.folder,
+      itemsPerPage: props.itemsPerPage,
+    })
+
+    if (!seedConsumedRef.current && seedKeyRef.current === key) {
+      seedConsumedRef.current = true
+      return
+    }
+
     setImages([])
     setNextCursor(null)
     setHasMore(true)

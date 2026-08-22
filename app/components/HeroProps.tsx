@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { Leaf, Camera, Heart } from 'lucide-react'
+import StoreExitLink from './StoreExitLink'
 
 const features = [
   { icon: Leaf,   label: 'Texturas\nsuaves' },
@@ -37,7 +38,7 @@ export default function HeroProps() {
         </span>
 
         <h2 className="text-3xl sm:text-4xl leading-tight mb-3 max-w-sm" style={{ color: 'var(--ink)' }}>
-          Crea composiciones llenas de ternura
+          Creá composiciones llenas de ternura
         </h2>
 
         <hr className="w-12 border-0 border-t my-3" style={{ borderColor: 'color-mix(in oklab, var(--accent) 40%, transparent)' }} />
@@ -67,14 +68,14 @@ export default function HeroProps() {
           ))}
         </div>
 
-        <a
+        <StoreExitLink
           href="https://innova54store.empretienda.com.ar/linea-new-born"
+          ctaLocation="hero_props_newborn"
           target="_self"
-          rel="noopener noreferrer"
           className="btn-accent inline-flex items-center gap-2 text-sm font-semibold px-6 py-3 rounded-full shadow-md hover:shadow-lg transition-shadow duration-200 self-start"
         >
           Ver accesorios newborn →
-        </a>
+        </StoreExitLink>
 
       </div>
     </section>

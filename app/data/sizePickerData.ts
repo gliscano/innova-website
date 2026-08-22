@@ -4,6 +4,23 @@
  */
 
 import type { SizeOption, QuizConfig } from '../components/SizePickerHomeSection/types'
+import { propertiesBackdrops } from './pricesData'
+
+/**
+ * Precio del backdrop estándar con ese id, tomado de `pricesData` en vez de repetirlo acá.
+ * Los `fromPrice` de abajo estaban copiados a mano, así que un cambio de precio requería editar
+ * dos archivos y era fácil que quedaran desincronizados.
+ *
+ * Si un id deja de existir en `pricesData` esto rompe el build, que es preferible a publicar
+ * "Precio desde $0" en la home.
+ */
+function basePriceFor(id: string): number {
+  const match = propertiesBackdrops.find((p) => p.id === id)
+  if (!match) {
+    throw new Error(`sizePickerData: no hay precio para "${id}" en propertiesBackdrops (pricesData)`)
+  }
+  return match.price
+}
 
 /** Tamaños populares (fondos 2.90m y 1.50m más vendidos) */
 export const DEFAULT_SIZES: SizeOption[] = [
@@ -12,7 +29,7 @@ export const DEFAULT_SIZES: SizeOption[] = [
     label: '2.9m × 2m',
     widthM: 2.9,
     heightM: 2.0,
-    fromPrice: 61000,
+    fromPrice: basePriceFor('S2920'),
     bestFor: ['Estudio chico', 'Newborn', 'Infantil', 'Retratos', 'Home studio'],
     depthLevel: 'Baja',
     lightingHint: 'Flash de estudio o luz continua',
@@ -23,7 +40,7 @@ export const DEFAULT_SIZES: SizeOption[] = [
     label: '2.9m × 3m',
     widthM: 2.9,
     heightM: 3.0,
-    fromPrice: 87000,
+    fromPrice: basePriceFor('S2930'),
     bestFor: ['Sesiones familiares', 'Smash cake', 'Cumpleaños', 'Parejas', 'Decoración'],
     depthLevel: 'Media',
     lightingHint: 'Flash o luz natural lateral',
@@ -34,7 +51,7 @@ export const DEFAULT_SIZES: SizeOption[] = [
     label: '2.9m × 4m',
     widthM: 2.9,
     heightM: 4.0,
-    fromPrice: 108000,
+    fromPrice: basePriceFor('S2940'),
     bestFor: ['Decoración de eventos', 'Cumpleaños temáticos', 'Salón de fiestas', 'Set pared + piso', 'Grupos'],
     depthLevel: 'Alta',
     lightingHint: 'Flash con difusor o luz natural',
@@ -45,7 +62,7 @@ export const DEFAULT_SIZES: SizeOption[] = [
     label: '2.9m × 5m',
     widthM: 2.9,
     heightM: 5.0,
-    fromPrice: 128000,
+    fromPrice: basePriceFor('S2950'),
     bestFor: ['Salón de fiestas', 'Decoración amplia', 'Grupos grandes', 'Pared completa'],
     depthLevel: 'Alta',
     lightingHint: 'Flash con difusor o iluminación múltiple',
@@ -56,7 +73,7 @@ export const DEFAULT_SIZES: SizeOption[] = [
     label: '1.5m × 2m',
     widthM: 1.5,
     heightM: 2.0,
-    fromPrice: 39000,
+    fromPrice: basePriceFor('S1520'),
     bestFor: ['Retratos', 'Newborn', 'Fotografía de producto', 'Home studio'],
     depthLevel: 'Baja',
     lightingHint: 'Flash de estudio o luz continua',

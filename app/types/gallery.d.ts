@@ -24,6 +24,19 @@ export interface GalleryProps {
   itemsPerPage?: number
   showTags?: boolean
   onComplete?: () => void
+  /**
+   * Nombre legible de la categoría, usado para construir el `alt` de cada diseño. Si se omite se
+   * deriva de `folder`/`searchTerm`.
+   */
+  categoryTitle?: string
+  /**
+   * Primera página resuelta en el servidor. Si viene, la galería se pinta ya renderizada en el
+   * HTML inicial y el hook saltea el primer fetch.
+   */
+  initialImages?: GalleryImage[]
+  initialCursor?: string | null
+  initialTotalCount?: number
+  initialHasMore?: boolean
 }
 
 export interface GallerySearchResponse {
@@ -53,6 +66,8 @@ export interface GalleryItemProps {
   index: number
   /** Aspect ratio (ancho/alto) acotado para el masonry; define el alto de la tarjeta. */
   ratio: number
+  /** Nombre legible de la categoría, para el texto alternativo del diseño. */
+  categoryTitle?: string
 }
 
 export interface GalleryGridProps {
@@ -62,6 +77,7 @@ export interface GalleryGridProps {
   isLoadingMore: boolean
   hasMore: boolean
   onLoadMore: () => void
+  categoryTitle?: string
 }
 
 export interface GallerySkeletonProps {

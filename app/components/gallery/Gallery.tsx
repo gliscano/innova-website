@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import { GalleryProps } from '../../types/gallery'
+import { formatFolderName } from '../../utils/catalogUtils'
 import { useGalleryImages } from '../../hooks/useGalleryImages'
 import { useGalleryModal } from '../../hooks/useGalleryModal'
 import GalleryGrid from './GalleryGrid'
@@ -11,6 +12,12 @@ import GalleryError from './GalleryError'
 
 export default function Gallery(props: GalleryProps) {
   const completedRef = useRef(false)
+
+  // Para colecciones el folder viene anidado ("mundo-infantil/frozen"); el alt describe mejor la
+  // hoja que la raíz, así que se usa el último segmento.
+  const categoryTitle =
+    props.categoryTitle ??
+    formatFolderName((props.folder ?? props.searchTerm ?? '').split('/').pop() ?? '')
 
   const {
     images,
@@ -131,6 +138,7 @@ export default function Gallery(props: GalleryProps) {
           isLoadingMore={isLoadingMore}
           hasMore={hasMore}
           onLoadMore={loadMore}
+          categoryTitle={categoryTitle}
         />
 
         {/* Modal */}

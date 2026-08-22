@@ -5,6 +5,8 @@ import Script from 'next/script'
 import type { Metadata } from 'next'
 import WhatsAppFloat from './components/WhatsAppFloat'
 import { SelectedSizeProvider } from './context/SelectedSizeContext'
+import { SITE_URL } from './lib/siteUrl'
+import JsonLd, { organizationSchema, webSiteSchema } from './components/JsonLd'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -22,7 +24,7 @@ const marcellus = Marcellus({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://innova54.com'),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: 'Innova — Fondos Fotográficos y Backdrops para Fotógrafos, eventos y escenarios',
     template: '%s | Innova',
@@ -87,6 +89,10 @@ export default function RootLayout({
           `}
         </Script>
         {/* End Meta Pixel Facebook */}
+
+        {/* Datos estructurados de sitio, presentes en todas las rutas */}
+        <JsonLd data={organizationSchema()} />
+        <JsonLd data={webSiteSchema()} />
       </head>
       <body
         className={`${inter.className} ${marcellus.variable}`}

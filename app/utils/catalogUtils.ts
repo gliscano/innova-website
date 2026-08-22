@@ -5,9 +5,36 @@ export function getCatalogItemByCategory(category: string) {
   return catalogData.find((item) => item.category === category) as CatalogItem | undefined
 }
 
+/** Conectores que quedan en minúscula cuando no abren el título ("Dia de la Niñez"). */
+const SMALL_WORDS = new Set(['de', 'del', 'la', 'las', 'el', 'los', 'y', 'e', 'en', 'a', 'con', 'para', 'por'])
+
+/**
+ * Nombre de carpeta de Cloudinary → título legible. Es display puro: la identidad de la carpeta
+ * siempre viaja como `folder.name` crudo.
+ *
+ * La versión anterior hacía `.toLowerCase()` de todo el string y capitalizaba solo el primer
+ * carácter, así que degradaba los 36 H1 y `<title>` del catálogo: "BabyShower" salía "Babyshower",
+ * "san_valentin" salía "San valentin" y "comics - superheroes" conservaba el espacio triple.
+ *
+ *   BabyShower           -> Baby Shower
+ *   san_valentin         -> San Valentin
+ *   comics - superheroes -> Comics Superheroes
+ *   dia-de-la-niñez      -> Dia de la Niñez
+ *   guerreras-KPop       -> Guerreras KPop
+ */
 export function formatFolderName(name: string): string {
-  const withSpaces = name.replace(/[_-]/g, ' ').trim().toLowerCase()
-  return withSpaces.charAt(0).toUpperCase() + withSpaces.slice(1)
+  return name
+    .replace(/([a-z\d])([A-Z])/g, '$1 $2') // separa camelCase antes de tocar los separadores
+    .replace(/[_-]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .split(' ')
+    .map((word, i) => {
+      if (i > 0 && SMALL_WORDS.has(word.toLowerCase())) return word.toLowerCase()
+      // Solo se toca la inicial: aplanar el resto rompería mayúsculas internas legítimas (KPop, 3D).
+      return word.charAt(0).toUpperCase() + word.slice(1)
+    })
+    .join(' ')
 }
 
 /** `decodeURIComponent` tolerante: una secuencia mal formada devuelve el segmento intacto. */

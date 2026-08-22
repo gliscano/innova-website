@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { ShoppingBag, ArrowRight, Zap } from 'lucide-react'
 import { getStockProducts } from '@/app/lib/empretiendaProducts'
+import StoreExitLink from './StoreExitLink'
 
 const STORE_URL = 'https://innova54store.empretienda.com.ar/productos'
 
@@ -16,10 +17,10 @@ export default async function StockPreview() {
   if (!products.length) {
     return (
       <div className="max-w-[1320px] mx-auto my-8 px-4 sm:px-6 lg:px-8">
-        <a
+        <StoreExitLink
           href="https://store.innova54.com/"
+          ctaLocation="stock_empty_banner"
           target="_self"
-          rel="noopener noreferrer"
           className="group relative flex overflow-hidden rounded-3xl min-h-[280px] sm:min-h-[360px] lg:min-h-[440px]"
         >
           <Image
@@ -45,7 +46,7 @@ export default async function StockPreview() {
               Ver productos <ArrowRight className="w-4 h-4" />
             </span>
           </div>
-        </a>
+        </StoreExitLink>
       </div>
     )
   }
@@ -71,9 +72,10 @@ export default async function StockPreview() {
         {/* Product grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {products.map((product, index) => (
-            <a
+            <StoreExitLink
               key={product.url}
               href={product.url}
+              ctaLocation="stock_grid"
               target="_blank"
               rel="noopener noreferrer"
               className={`group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 ${
@@ -99,14 +101,15 @@ export default async function StockPreview() {
                   </p>
                 )}
               </div>
-            </a>
+            </StoreExitLink>
           ))}
         </div>
 
         {/* CTA */}
         <div className="text-center mt-10">
-          <a
+          <StoreExitLink
             href={STORE_URL}
+            ctaLocation="stock_ver_todos"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 bg-rose-gold hover:bg-rose-gold-dark text-white font-semibold text-sm px-6 py-3 rounded-full transition-colors duration-200"
@@ -114,7 +117,7 @@ export default async function StockPreview() {
             <ShoppingBag className="w-4 h-4" />
             Ver todos los productos en stock
             <ArrowRight className="w-4 h-4" />
-          </a>
+          </StoreExitLink>
         </div>
       </div>
     </section>

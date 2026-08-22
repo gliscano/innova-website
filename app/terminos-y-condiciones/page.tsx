@@ -4,13 +4,16 @@ import Image from 'next/image'
 
 import Header from "../components/Header"
 import Footer from "../components/Footer"
+import { absoluteUrl } from '../lib/siteUrl'
 
 export const metadata: Metadata = {
   title: 'Términos y Condiciones',
   description: 'Conocé los términos y condiciones de compra de Innova. Políticas de producción, envío y devolución.',
+  alternates: { canonical: absoluteUrl('/terminos-y-condiciones') },
   openGraph: {
     title: 'Términos y Condiciones | Innova',
-    url: 'https://www.innova54.com/terminos-y-condiciones',
+    description: 'Políticas de producción, envío y devolución de Innova.',
+    url: absoluteUrl('/terminos-y-condiciones'),
   },
 }
 
