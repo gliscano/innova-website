@@ -27,7 +27,7 @@ export const contentSets: ContentSet[] = [
     title: "Tu fondo fotográfico",
     highlight: "personalizado",
     subtitle: "en dos semanas.",
-    description: "Alta definición · Impresión RGB real.",
+    description: "Más de 4.500 diseños HD para fotógrafía y eventos",
     buttonText: "Catálogo de Diseños",
     secondaryButtonText: "Quiero entrega inmediata",
     secondaryButtonUrl: "https://store.innova54.com",
