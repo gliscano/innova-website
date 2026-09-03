@@ -5,6 +5,8 @@ export interface ContentSet {
   highlight: string
   subtitle: string
   description: string
+  /** Tira de beneficios que va debajo de los CTA (ítem 1 del plan de experiencia). */
+  benefits: string[]
   buttonText: string
   secondaryButtonText?: string
   secondaryButtonUrl?: string
@@ -24,12 +26,18 @@ export interface ImageSet {
 
 export const contentSets: ContentSet[] = [
   {
-    title: "Tu fondo fotográfico",
-    highlight: "personalizado",
-    subtitle: "en dos semanas.",
-    description: "Más de 4.500 diseños HD para fotógrafía y eventos",
-    buttonText: "Catálogo de Diseños",
-    secondaryButtonText: "Quiero entrega inmediata",
+    // Copy del ítem 1 del plan de experiencia. El mensaje anterior ("Tu fondo fotográfico
+    // personalizado en dos semanas") cargaba todo el peso en los personalizados, que son una parte
+    // del catálogo; el H1 se arma con estas tres piezas en tres líneas, con el gradiente sobre
+    // "transforman". "Impresión RGB real" sale del hero por pedido explícito del plan.
+    title: "Fondos que",
+    highlight: "transforman",
+    subtitle: "tu fotografía.",
+    description:
+      "Más de 4.500 diseños en alta definición, distintas medidas y fondos personalizados para fotógrafos y eventos.",
+    benefits: ["Alta definición", "Tela mate", "Diseños personalizados", "Envíos a todo el país"],
+    buttonText: "Explorar diseños",
+    secondaryButtonText: "Ver fondos en stock",
     secondaryButtonUrl: "https://store.innova54.com",
     stats: [
       { value: "+4.5k", label: "Diseños" },

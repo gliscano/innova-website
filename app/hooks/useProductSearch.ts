@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef, useCallback } from "react"
+import { useState, useEffect, useMemo, useCallback } from "react"
 import type { CloudinaryFolder } from "../types/catalog"
 import { catalogData } from "../data/catalogData"
 
@@ -6,6 +6,16 @@ interface SearchMatch {
   categories: string[]
   type: "exact"
 }
+
+/**
+ * Cache de normalización a nivel de módulo, no `useRef`.
+ *
+ * `normalizeText` se llama desde el `useMemo` de `filteredProducts`, es decir, durante el render.
+ * Con la cache en un ref eso era una lectura de `ref.current` en render (lo que marca
+ * `react-hooks/refs`). Como la normalización es una función pura del string, la cache no es estado
+ * del componente: compartirla entre montajes es correcto y además evita recalcular al remontar.
+ */
+const normalizationCache = new Map<string, string>()
 
 export const useProductSearch = (folders: CloudinaryFolder[]) => {
   const [searchTerm, setSearchTerm] = useState("")
@@ -15,7 +25,6 @@ export const useProductSearch = (folders: CloudinaryFolder[]) => {
   const [isSearching, setIsSearching] = useState(false)
   const [searchResult, setSearchResult] = useState<SearchMatch | null>(null)
 
-  const normalizationCache = useRef(new Map<string, string>())
 
   const categoriesFromData = useMemo(() => {
     return [...folders]
@@ -24,14 +33,14 @@ export const useProductSearch = (folders: CloudinaryFolder[]) => {
   }, [folders])
 
   const normalizeText = useCallback((text: string): string => {
-    const cached = normalizationCache.current.get(text)
-    if (cached) return cached
+    const cached = normalizationCache.get(text)
+    if (cached !== undefined) return cached
     const normalized = text
       .toLowerCase()
       .normalize("NFD")
       .replace(/[̀-ͯ]/g, "")
       .trim()
-    normalizationCache.current.set(text, normalized)
+    normalizationCache.set(text, normalized)
     return normalized
   }, [])
 

@@ -7,11 +7,28 @@ export interface GoogleReview {
 }
 
 /**
+ * La API key está restringida por referer, así que Google solo autoriza la llamada desde el
+ * dominio desplegado: en una máquina de desarrollo siempre devuelve
+ * `REQUEST_DENIED: API keys with referer restrictions cannot be used with this API`.
+ * No es un bug — es la restricción funcionando — pero ensuciaba la consola de `dev` y de cada
+ * `build` local con un error que parecía real.
+ *
+ * Vercel define `VERCEL=1` en build y en runtime de todos sus entornos, así que sirve de señal de
+ * "esto no es una máquina local". Deliberadamente no se usa `NODE_ENV`: un `next build` local
+ * también corre con `NODE_ENV=production` y volvería a disparar la llamada.
+ */
+function isDeployedEnvironment(): boolean {
+  return Boolean(process.env.VERCEL)
+}
+
+/**
  * Fetches up to 5 Google Places reviews for the configured Place ID.
  * Server-side only — reads env vars directly.
- * Returns null gracefully if env vars are missing or the request fails.
+ * Returns null gracefully outside of Vercel, if env vars are missing, or if the request fails.
  */
 export async function getPlaceReviews(): Promise<GoogleReview[] | null> {
+  if (!isDeployedEnvironment()) return null
+
   const apiKey = process.env.GOOGLE_PLACES_API_KEY
   const placeId = process.env.GOOGLE_PLACE_ID
 

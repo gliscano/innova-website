@@ -91,3 +91,11 @@ export function trackGallerySearch(searchTerm: string, folder?: string): void {
     folder: folder ?? '',
   })
 }
+
+/** Card del feed de inspiración. Última llamada inline a `gtag` que quedaba fuera de este módulo. */
+export function trackInspirationCardClick(displayName?: string): void {
+  gaEvent('inspiration_card_click', {
+    event_category: 'inspiration',
+    event_label: displayName || 'unknown',
+  })
+}

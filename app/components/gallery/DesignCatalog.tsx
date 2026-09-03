@@ -40,7 +40,6 @@ export default function InnovaCatalog({ initialFolders, headingLevel = "h2" }: P
     clearFilters,
   } = useProductSearch(initialFolders)
 
-  const totalDesigns = initialFolders.reduce((s, f) => s + f.imageCount, 0)
 
   useEffect(() => {
     if (!sortOpen) return

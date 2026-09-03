@@ -111,15 +111,6 @@ export function HeroGallery() {
               </motion.p>
             </AnimatePresence>
 
-            {/* Process explanation */}
-            <div className="hidden lg:flex items-center gap-2 text-sm text-[var(--ink-soft)] mb-6 flex-wrap">
-              <span className="font-medium">Elegís el diseño</span>
-              <span className="text-[var(--accent)]">→</span>
-              <span className="font-medium">Lo producimos con calidad premium</span>
-              <span className="text-[var(--accent)]">→</span>
-              <span className="font-medium">Lo recibís en tu estudio o evento</span>
-            </div>
-
             {/* CTA Buttons */}
             <AnimatePresence mode="wait">
               <motion.div
@@ -159,6 +150,17 @@ export function HeroGallery() {
                 )}
               </motion.div>
             </AnimatePresence>
+
+            {/* Beneficios: van debajo de los CTA para no empujar el CTA principal fuera del
+                viewport en mobile, que es un criterio explícito del plan. */}
+            <ul className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-4 text-sm text-[var(--ink-soft)]">
+              {content.benefits.map((benefit, index) => (
+                <li key={benefit} className="flex items-center gap-3">
+                  {index > 0 && <span aria-hidden className="text-[var(--accent)]">·</span>}
+                  <span className="font-medium">{benefit}</span>
+                </li>
+              ))}
+            </ul>
 
             {/* Animated Stats */}
             <AnimatePresence mode="wait">
