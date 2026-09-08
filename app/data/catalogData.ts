@@ -356,7 +356,7 @@ export const catalogData: CatalogItem[] = [
     imageCount: 237,
     description: "Elegancia atemporal que nunca pasa de moda",
     tags: ["clásico", "clasico", "dorado", "elegante", "lujo", "pared decorada", "salón", "moda", "evento formal", "antiguo", "muro", "paneles", "decorado", "fondo neutro", "interior", "minimal", "detalle", "textura"],
-    featured: false,
+    featured: true,
     recommendedUse: ["moda", "eventos", "retrato formal", "producciones de lujo"],
     isFluo: false,
     isRealistic: true,
