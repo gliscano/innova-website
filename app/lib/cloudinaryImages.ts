@@ -96,9 +96,35 @@ export async function fetchFolderImages(
   }
 }
 
+/**
+ * Sanitización del nombre de carpeta. Vive acá, en el sink, y no en el llamador.
+ *
+ * `buildExpression` interpola la carpeta dentro de un término entrecomillado de la Search API de
+ * Cloudinary. Cuando esta función estaba sólo en `app/api/cloudinary/search/route.ts`, la página
+ * de categoría —que importa `getCachedGalleryImages` directo y nunca pasa por la route— llegaba
+ * al sink con el segmento de URL crudo: un `/design-catalog/x" OR format:"jpg` cerraba la comilla
+ * y escapaba del `asset_folder`, permitiendo enumerar toda la biblioteca de medios. Teniéndola en
+ * el sink, la route y cualquier llamador futuro la heredan.
+ *
+ * Permite letras (incluyendo acentos latinos), números, espacios, guiones, guiones bajos y barras.
+ */
+const FOLDER_REGEX = /^[A-Za-zÀ-ÿ0-9 _\/-]{1,200}$/
+
+export function sanitizeFolder(value?: string): string | undefined {
+  if (!value) return undefined
+  const trimmed = value.trim()
+  if (!FOLDER_REGEX.test(trimmed)) return undefined
+  if (trimmed.includes('..') || trimmed.includes('//')) return undefined
+  return trimmed
+}
+
 function buildExpression(folder?: string): string {
   let expression = 'resource_type:image'
-  if (folder) expression += ` AND asset_folder:"${folder}"`
+  // `folder` ya viene sanitizado por `fetchGalleryImages`; el chequeo se repite acá para que la
+  // interpolación no dependa de quién llame a esta función.
+  const safe = sanitizeFolder(folder)
+  if (folder && !safe) throw new Error('cloudinaryImages: nombre de carpeta inválido')
+  if (safe) expression += ` AND asset_folder:"${safe}"`
   return expression
 }
 
@@ -117,7 +143,14 @@ export interface GalleryQuery {
  * devuelven las imágenes en orden distinto y las páginas de categoría pasan ambos parámetros.
  */
 export async function fetchGalleryImages(params: GalleryQuery): Promise<FolderImagesResult> {
-  const { searchTerm, folder, nextCursor, maxResults = 20, ttlSeconds } = params
+  const { searchTerm, folder: rawFolder, nextCursor, maxResults = 20, ttlSeconds } = params
+
+  // Falla cerrado: un nombre de carpeta que no pasa el filtro no se consulta, en vez de llegar
+  // a la expresión de búsqueda.
+  const folder = sanitizeFolder(rawFolder)
+  if (rawFolder && !folder) {
+    throw new Error('cloudinaryImages: nombre de carpeta inválido')
+  }
 
   if (folder && !searchTerm) {
     return fetchFolderImages(folder, maxResults, nextCursor)

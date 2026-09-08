@@ -9,7 +9,7 @@ import WhatsAppDropdown from "@/app/components/WhatsAppDropdown"
 import SelectedSizeBanner from "@/app/components/SelectedSizeBanner"
 import { PurchaseSteps } from "@/app/components/PurchaseSteps"
 import { trackViewContent } from "@/app/utils/tracking"
-import { formatFolderName } from "@/app/utils/catalogUtils"
+import { decodeSegment, formatFolderName } from "@/app/utils/catalogUtils"
 import StoreExitLink from "@/app/components/StoreExitLink"
 import { CollectionGallery } from "@/app/components/gallery/CollectionGallery"
 import type { CloudinarySubfolder } from "@/app/types/catalog"
@@ -54,7 +54,9 @@ function StickyProductBar({ title }: { title: string }) {
 }
 
 export default function ProductPageContent({ id, subfolders = [], isCollection = false, initialGallery = null }: ProductPageContentProps) {
-  const folderName = decodeURIComponent(id)
+  // Tolerante igual que en el server component: `decodeURIComponent` crudo rompe el render del
+  // cliente ante un segmento mal formado.
+  const folderName = decodeSegment(id)
   const title = formatFolderName(folderName)
 
   useEffect(() => {

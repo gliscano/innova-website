@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
-import { formatFolderName, getCatalogItemByCategory } from '@/app/utils/catalogUtils'
+import { notFound } from 'next/navigation'
+import { decodeSegment, formatFolderName, getCatalogItemByCategory } from '@/app/utils/catalogUtils'
 import { COLLECTION_FOLDERS, getCachedFolders, getCachedSubfolders } from '@/app/lib/cloudinaryFolders'
 import { SITE_URL, absoluteUrl, catalogUrl } from '@/app/lib/siteUrl'
 import JsonLd, { breadcrumbSchema } from '@/app/components/JsonLd'
@@ -21,7 +22,9 @@ function clampDescription(text: string, max = 158): string {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
-  const folderName = decodeURIComponent(id)
+  // `decodeSegment` en vez de `decodeURIComponent`: un segmento mal formado como `%E0%A4%A`
+  // hacía throw y devolvía un 500 en vez del 404 que corresponde.
+  const folderName = decodeSegment(id)
   const title = formatFolderName(folderName)
 
   // Copy curado por categoría cuando existe; si no, una fórmula que al menos nombra la categoría.
@@ -63,9 +66,30 @@ export async function generateStaticParams() {
   }
 }
 
+/**
+ * `generateStaticParams` prerenderiza las categorías conocidas, pero `dynamicParams` es `true` por
+ * defecto: cualquier segmento arbitrario igual se renderiza bajo demanda. Sin este chequeo, el
+ * nombre de carpeta crudo llegaba hasta la expresión de búsqueda de Cloudinary.
+ *
+ * Si Cloudinary no responde se deja pasar a propósito: la sanitización del sink
+ * (`sanitizeFolder` en `cloudinaryImages`) ya impide la inyección, así que acá conviene priorizar
+ * disponibilidad antes que devolver 404 en categorías legítimas durante una caída.
+ */
+async function isKnownFolder(folderName: string): Promise<boolean> {
+  if (COLLECTION_FOLDERS.has(folderName)) return true
+  try {
+    const folders = await getCachedFolders()
+    return folders.some((folder) => folder.folderName === folderName)
+  } catch {
+    return true
+  }
+}
+
 export default async function ProductPage({ params }: Props) {
   const { id } = await params
-  const folderName = decodeURIComponent(id)
+  const folderName = decodeSegment(id)
+  if (!(await isKnownFolder(folderName))) notFound()
+
   const isCollection = COLLECTION_FOLDERS.has(folderName)
   const subfolders = isCollection ? await getCachedSubfolders(folderName) : []
 

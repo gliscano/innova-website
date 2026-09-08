@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { fetchGalleryImages, type GalleryQuery } from '@/app/lib/cloudinaryImages'
+import { fetchGalleryImages, sanitizeFolder, type GalleryQuery } from '@/app/lib/cloudinaryImages'
 
 // Rate limiter: sliding window en memoria
 // 30 requests por IP cada 60 segundos
@@ -38,9 +38,10 @@ interface SearchParams {
   maxResults?: number
 }
 
-// Validaciones y sanitización básica para evitar inyección en expresiones de Cloudinary
-// Permite letras (incluyendo acentos latinos), números, espacios, guiones, guiones bajos y barras
-const FOLDER_REGEX = /^[A-Za-zÀ-ÿ0-9 _\/-]{1,200}$/
+// Validaciones y sanitización básica para evitar inyección en expresiones de Cloudinary.
+// `sanitizeFolder` ya no vive acá: se movió a `@/app/lib/cloudinaryImages`, junto al sink que
+// construye la expresión, para que la página de categoría —que no pasa por esta route— también
+// la aplique. Estas dos siguen siendo específicas de la route.
 const SEARCH_TERM_REGEX = /^[A-Za-z0-9 _.-]{1,100}$/
 const CURSOR_REGEX = /^[A-Za-z0-9_.-]{1,512}$/
 
@@ -48,14 +49,6 @@ function sanitizeSearchTerm(value?: string): string | undefined {
   if (!value) return undefined
   const trimmed = value.trim().replace(/\s+/g, ' ')
   if (!SEARCH_TERM_REGEX.test(trimmed)) return undefined
-  return trimmed
-}
-
-function sanitizeFolder(value?: string): string | undefined {
-  if (!value) return undefined
-  const trimmed = value.trim()
-  if (!FOLDER_REGEX.test(trimmed)) return undefined
-  if (trimmed.includes('..') || trimmed.includes('//')) return undefined
   return trimmed
 }
 

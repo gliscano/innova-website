@@ -38,7 +38,7 @@ export function formatFolderName(name: string): string {
 }
 
 /** `decodeURIComponent` tolerante: una secuencia mal formada devuelve el segmento intacto. */
-function decodeSegment(segment: string): string {
+export function decodeSegment(segment: string): string {
   try {
     return decodeURIComponent(segment)
   } catch {
