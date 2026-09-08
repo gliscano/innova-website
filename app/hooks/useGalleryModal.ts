@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from 'react'
 import { GalleryImage } from '../types/gallery'
+import { trackGalleryModalOpen } from '../utils/tracking'
 
 interface UseGalleryModalReturn {
   isOpen: boolean
@@ -22,15 +23,9 @@ export function useGalleryModal(images: GalleryImage[]): UseGalleryModalReturn {
   const openModal = useCallback((index: number) => {
     setCurrentIndex(index)
     setIsOpen(true)
-    
-    // Trackear apertura del modal en Google Analytics
-    if (typeof window !== 'undefined' && window.gtag && images[index]) {
-      window.gtag('event', 'gallery_modal_open', {
-        event_category: 'gallery_modal_open',
-        event_label: 'openImageModal',
-        value: images[index].display_name || 'unknown',
-      })
-    }
+
+    const image = images[index]
+    if (image) trackGalleryModalOpen(image.folder || 'unknown')
   }, [images])
 
   const closeModal = useCallback(() => {

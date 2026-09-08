@@ -106,7 +106,7 @@ export const faqCategories: FaqCategory[] = [
         id: "contacto",
         question: "¿Cómo puedo contactarlos?",
         answer:
-          "Escríbenos por WhatsApp y con gusto atenderemos cualquier duda o consulta",
+          "Escribinos por WhatsApp y con gusto atenderemos cualquier duda o consulta",
       },
     ],
   },

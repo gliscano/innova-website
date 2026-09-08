@@ -15,6 +15,7 @@ export default function GalleryGrid({
   isLoadingMore,
   hasMore,
   onLoadMore,
+  categoryTitle,
 }: GalleryGridProps) {
   // Los hooks deben llamarse siempre, antes de cualquier return condicional
   // (si no, el componente pasa de 0 a 1 hooks llamados entre renders y rompe React).
@@ -53,6 +54,7 @@ export default function GalleryGrid({
                 onClick={() => onImageClick(cell.index)}
                 index={cell.index}
                 ratio={cell.ratio}
+                categoryTitle={categoryTitle}
               />
             ))}
 

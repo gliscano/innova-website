@@ -112,7 +112,10 @@ export const FAMILIES: Family[] = [
     id: 'p150',
     nombre: 'Fondo 1.50m',
     ancho: 1.5,
-    eyebrow: 'Ancho 1.50m',
+    // El eyebrow decía "Ancho 1.50m", que repetía el nombre de la tarjeta ("Fondo 1.50m") sin
+    // agregar nada. Como en mobile la descripción de la familia queda oculta, este es el único
+    // lugar donde el usuario ve para qué sirve cada fondo.
+    eyebrow: 'Individual',
     desc: 'Sesiones individuales, parejas, newborn y decoración de tiendas.',
     finishes: ['hd', 'neon'],
     largos: propertiesBackdrops
@@ -129,7 +132,7 @@ export const FAMILIES: Family[] = [
     id: 'p290',
     nombre: 'Fondo 2.90m',
     ancho: 2.9,
-    eyebrow: 'Ancho 2.90m',
+    eyebrow: 'Grupos',
     desc: 'Grupos, sesiones familiares, smash cake y decoración de eventos.',
     finishes: ['hd', 'neon'],
     largos: propertiesBackdrops

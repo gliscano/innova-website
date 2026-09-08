@@ -60,7 +60,6 @@ export default function GuidedPicker({
                 <Proportion
                   ancho={tipAncho}
                   largo={tipLargo}
-                  max={64}
                   accent={isOn ? accent : 'var(--line-strong)'}
                 />
                 <div className="tipo-name">{f.nombre}</div>
@@ -138,7 +137,7 @@ export default function GuidedPicker({
           <div className="result-empty">Seleccioná una medida para ver el precio.</div>
         ) : (
           <>
-            <Proportion ancho={anchoVal} largo={item.largo} max={112} accent={accent} />
+            <Proportion ancho={anchoVal} largo={item.largo} accent={accent} />
             <div className="result-body">
               <div className="result-dim">{dimLabel(family, item)}</div>
               <div className="result-meta">

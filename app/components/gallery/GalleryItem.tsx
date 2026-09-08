@@ -3,8 +3,25 @@
 import { useCallback, useState } from 'react'
 import { CldImage } from 'next-cloudinary'
 import { GalleryItemProps } from '../../types/gallery'
+import { trackGalleryImageClick } from '@/app/utils/tracking'
 
-export default function GalleryItem({ image, onClick, index, ratio }: GalleryItemProps) {
+/**
+ * Texto alternativo del diseño. El `alt` anterior era `Imagen ${index + 1}` en el grueso de las
+ * imágenes del sitio: no describía nada y cambiaba según la posición en el masonry.
+ *
+ * `context.custom.Description` de Cloudinary ya viaja en la respuesta del endpoint de búsqueda,
+ * pero hoy está vacío en prácticamente todos los assets, así que se usa el nombre de la categoría
+ * como base. Cuando se pueblen las descripciones en Cloudinary, ganan sin tocar este componente.
+ */
+function buildAlt(description: string | undefined, categoryTitle: string | undefined, index: number): string {
+  const curated = description?.trim()
+  if (curated) return curated
+  return categoryTitle
+    ? `Fondo fotográfico ${categoryTitle} — diseño ${index + 1}`
+    : `Diseño de fondo fotográfico ${index + 1}`
+}
+
+export default function GalleryItem({ image, onClick, index, ratio, categoryTitle }: GalleryItemProps) {
   const [isLoaded, setIsLoaded] = useState(false)
   const [hasError, setHasError] = useState(false)
 
@@ -19,16 +36,9 @@ export default function GalleryItem({ image, onClick, index, ratio }: GalleryIte
   }, [])
 
   const handleClick = useCallback(() => {
-    // Trackear clic en imagen en Google Analytics
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'gallery_image_click', {
-        event_category: 'gallery',
-        event_label: 'galleryselected',
-        value: image.display_name || 'unknown',
-      })
-    }
+    trackGalleryImageClick(image.folder || categoryTitle || 'unknown', index)
     onClick()
-  }, [image.display_name, onClick])
+  }, [image.folder, categoryTitle, index, onClick])
 
   const isPriority = index < 4
 
@@ -53,7 +63,7 @@ export default function GalleryItem({ image, onClick, index, ratio }: GalleryIte
             src={image.id}
             width={640}
             height={Math.round(640 / ratio)}
-            alt={`Imagen ${index + 1}`}
+            alt={buildAlt(image.description, categoryTitle, index)}
             crop="fill"
             gravity="auto"
             quality="auto:good"

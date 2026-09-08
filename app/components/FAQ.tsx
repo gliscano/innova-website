@@ -9,6 +9,12 @@ type Props = {
   title?: string;
   subtitle?: string;
   categories?: FaqCategory[];
+  /**
+   * El componente se monta en la home (que ya tiene su H1 en el hero) y también como contenido
+   * principal de /preguntas-frecuentes, donde tiene que aportar el H1 de la página. Por eso el
+   * nivel es configurable en vez de fijo, con "h2" como default seguro para la home.
+   */
+  headingLevel?: "h1" | "h2";
 };
 
 function classNames(...classes: Array<string | false | undefined>): string {
@@ -66,10 +72,11 @@ function renderAnswer(answer: string, link?: string) {
 
 export default function FAQ({
   title = "Preguntas Frecuentes",
-  subtitle =
-    "Nuestra plataforma se adapta a tus necesidades y te ayuda a lograr tus objetivos.",
+  subtitle = "Todo lo que necesitás saber antes de elegir tu fondo.",
   categories = faqCategories,
+  headingLevel = "h2",
 }: Props) {
+  const Heading = headingLevel;
   const [activeCategoryId, setActiveCategoryId] = useState<string>(
     categories[0]?.id || ""
   );
@@ -85,9 +92,9 @@ export default function FAQ({
     <section className="relative w-full">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:py-16 lg:py-24">
         <div className="text-center mb-8 sm:mb-12">
-          <h2 className="text-3xl sm:text-4xl tracking-tight" style={{ color: 'var(--ink)' }}>
+          <Heading className="text-3xl sm:text-4xl tracking-tight" style={{ color: 'var(--ink)' }}>
             {title}
-          </h2>
+          </Heading>
           <p className="mt-3 text-sm sm:text-base max-w-2xl mx-auto" style={{ color: 'var(--ink-soft)' }}>
             {subtitle}
           </p>

@@ -9,6 +9,12 @@ import CardCatalog from "./CardCatalog"
 
 interface Props {
   initialFolders: CloudinaryFolder[]
+  /**
+   * El catálogo se monta en la home (que ya tiene su H1 en el hero), en /prices y como contenido
+   * principal de /design-catalog, donde tiene que aportar el H1. Default "h2" para no generar un
+   * segundo H1 en la home.
+   */
+  headingLevel?: "h1" | "h2"
 }
 
 const sortLabels: Record<string, string> = {
@@ -17,7 +23,8 @@ const sortLabels: Record<string, string> = {
   count: "Más diseños",
 }
 
-export default function InnovaCatalog({ initialFolders }: Props) {
+export default function InnovaCatalog({ initialFolders, headingLevel = "h2" }: Props) {
+  const Heading = headingLevel
   const sortRef = useRef<HTMLDivElement>(null)
   const searchTrackedRef = useRef(false)
   const [sortOpen, setSortOpen] = useState(false)
@@ -33,7 +40,6 @@ export default function InnovaCatalog({ initialFolders }: Props) {
     clearFilters,
   } = useProductSearch(initialFolders)
 
-  const totalDesigns = initialFolders.reduce((s, f) => s + f.imageCount, 0)
 
   useEffect(() => {
     if (!sortOpen) return
@@ -76,7 +82,7 @@ export default function InnovaCatalog({ initialFolders }: Props) {
           <span className="block text-[11px] font-semibold tracking-[.18em] uppercase text-[#C8543D] mb-3">
             Inspirate y Elegí tu diseño
           </span>
-          <h2
+          <Heading
             className="leading-none tracking-tight mb-3 text-[#1F1A14]"
             style={{
               fontWeight: 500,
@@ -84,7 +90,7 @@ export default function InnovaCatalog({ initialFolders }: Props) {
             }}
           >
             Catálogo de <span className="font-bold text-[#C8543D]">Diseños</span>
-          </h2>
+          </Heading>
         </header>
 
         {/* Controls */}

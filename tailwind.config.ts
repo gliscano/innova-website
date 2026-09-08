@@ -1,7 +1,8 @@
-/** @type {import('tailwindcss').Config} */
-const plugin = require('tailwindcss/plugin')
+import type { Config } from 'tailwindcss'
+import plugin from 'tailwindcss/plugin'
+import animate from 'tailwindcss-animate'
 
-module.exports = {
+const config: Config = {
   darkMode: ['class'],
   
   // Optimizado: Solo escanea la carpeta app (Next.js App Router)
@@ -97,9 +98,10 @@ module.exports = {
   },
   
   plugins: [
-    require("tailwindcss-animate"),
+    animate,
     plugin(function({ addVariant }: { addVariant: (name: string, definition: string) => void }) {
       addVariant('mob-landscape', '@media (orientation: landscape) and (max-height: 500px)')
     }),
   ],
 }
+export default config

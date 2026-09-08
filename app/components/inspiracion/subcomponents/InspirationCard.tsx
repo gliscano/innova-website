@@ -3,6 +3,7 @@
 import { useCallback, useState } from 'react'
 import { CldImage } from 'next-cloudinary'
 import { GalleryImage } from '../../../types/gallery'
+import { trackInspirationCardClick } from '@/app/utils/tracking'
 
 interface InspirationCardProps {
   image: GalleryImage
@@ -17,12 +18,7 @@ export function InspirationCard({ image, onClick, index }: InspirationCardProps)
   const isPriority = index < 8
 
   const handleClick = useCallback(() => {
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'inspiration_card_click', {
-        event_category: 'inspiration',
-        event_label: image.display_name || 'unknown',
-      })
-    }
+    trackInspirationCardClick(image.display_name)
     onClick()
   }, [image.display_name, onClick])
 

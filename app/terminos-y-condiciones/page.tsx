@@ -4,13 +4,16 @@ import Image from 'next/image'
 
 import Header from "../components/Header"
 import Footer from "../components/Footer"
+import { absoluteUrl } from '../lib/siteUrl'
 
 export const metadata: Metadata = {
   title: 'Términos y Condiciones',
   description: 'Conocé los términos y condiciones de compra de Innova. Políticas de producción, envío y devolución.',
+  alternates: { canonical: absoluteUrl('/terminos-y-condiciones') },
   openGraph: {
     title: 'Términos y Condiciones | Innova',
-    url: 'https://www.innova54.com/terminos-y-condiciones',
+    description: 'Políticas de producción, envío y devolución de Innova.',
+    url: absoluteUrl('/terminos-y-condiciones'),
   },
 }
 
@@ -74,7 +77,10 @@ export default function TerminosYCondiciones() {
         <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:py-20 lg:px-8">
           <div className="lg:grid lg:grid-cols-3 lg:gap-8">
             <div>
-              <h2 className="text-3xl font-extrabold" style={{ color: 'var(--ink)' }}>Términos y Condiciones</h2>
+              {/* Era un <h2>: la página quedaba sin H1, el mismo defecto que §C.2 corrigió en
+                  /design-catalog y /preguntas-frecuentes. El heading es propio de esta página,
+                  así que no hay componente compartido que se rompa. */}
+              <h1 className="text-3xl font-extrabold" style={{ color: 'var(--ink)' }}>Términos y Condiciones</h1>
               <p className="mt-4 text-lg" style={{ color: 'var(--ink-soft)' }}>
                 Información importante sobre nuestras políticas y procedimientos.
               </p>

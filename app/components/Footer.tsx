@@ -137,7 +137,7 @@ export default function Footer() {
         <div className="mt-12 pt-8" style={{ borderTop: '1px solid var(--line)' }}>
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-base copperplate-condensed-ligth-font" style={{ color: 'var(--ink-faint)' }}>
-              &copy; 2025 Innova Tech. Todos los derechos reservados.
+              &copy; 2026 Innova Tech. Todos los derechos reservados.
             </p>
             <div className="mt-4 md:mt-0">
               <Link href="/terminos-y-condiciones" className="text-sm copperplate-condensed-ligth-font" style={{ color: 'var(--ink-soft)' }}>

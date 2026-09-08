@@ -4,20 +4,23 @@ import { useState, useEffect, Suspense } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import Header from "@/app/components/Header"
-import { HomeSizePickerWithPrices } from "@/app/components/HomeSizePickerWithPrices"
 import Gallery from "@/app/components/gallery/Gallery"
 import WhatsAppDropdown from "@/app/components/WhatsAppDropdown"
 import SelectedSizeBanner from "@/app/components/SelectedSizeBanner"
 import { PurchaseSteps } from "@/app/components/PurchaseSteps"
 import { trackViewContent } from "@/app/utils/tracking"
-import { formatFolderName } from "@/app/utils/catalogUtils"
+import { decodeSegment, formatFolderName } from "@/app/utils/catalogUtils"
+import StoreExitLink from "@/app/components/StoreExitLink"
 import { CollectionGallery } from "@/app/components/gallery/CollectionGallery"
 import type { CloudinarySubfolder } from "@/app/types/catalog"
+import type { FolderImagesResult } from "@/app/lib/cloudinaryImages"
 
 interface ProductPageContentProps {
   id: string
   subfolders?: CloudinarySubfolder[]
   isCollection?: boolean
+  /** Primera página de la galería resuelta en el servidor; null si Cloudinary no respondió. */
+  initialGallery?: FolderImagesResult | null
 }
 
 function StickyProductBar({ title }: { title: string }) {
@@ -50,8 +53,10 @@ function StickyProductBar({ title }: { title: string }) {
   )
 }
 
-export default function ProductPageContent({ id, subfolders = [], isCollection = false }: ProductPageContentProps) {
-  const folderName = decodeURIComponent(id)
+export default function ProductPageContent({ id, subfolders = [], isCollection = false, initialGallery = null }: ProductPageContentProps) {
+  // Tolerante igual que en el server component: `decodeURIComponent` crudo rompe el render del
+  // cliente ante un segmento mal formado.
+  const folderName = decodeSegment(id)
   const title = formatFolderName(folderName)
 
   useEffect(() => {
@@ -103,6 +108,11 @@ export default function ProductPageContent({ id, subfolders = [], isCollection =
                 folder={folderName}
                 tags={[]}
                 itemsPerPage={100}
+                categoryTitle={title}
+                initialImages={initialGallery?.images}
+                initialCursor={initialGallery?.nextCursor}
+                initialTotalCount={initialGallery?.totalCount}
+                initialHasMore={initialGallery?.hasMore}
               />
             </div>
           )}
@@ -133,8 +143,9 @@ export default function ProductPageContent({ id, subfolders = [], isCollection =
                 <div>
                   <h3 className="text-md font-semibold text-gray-900">¿Lo necesitás antes?</h3>
                   <p className="text-gray-600 mb-2">Mirá nuestros Fondos en Stock, con entrega inmediata.</p>
-                  <Link
+                  <StoreExitLink
                     href="https://innova54store.empretienda.com.ar/productos-en-stock"
+                    ctaLocation="product_page_stock"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group"
@@ -143,7 +154,7 @@ export default function ProductPageContent({ id, subfolders = [], isCollection =
                     <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
-                  </Link>
+                  </StoreExitLink>
                 </div>
               </div>
 
