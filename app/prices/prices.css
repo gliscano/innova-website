@@ -85,7 +85,14 @@
 }
 
 /* proportion diagram */
-.prices-page .prop { display: grid; place-items: center; }
+.prices-page .prop {
+  display: grid; place-items: center;
+  width: var(--prop-size, 104px); height: var(--prop-size, 104px);
+}
+/* El lado del diagrama es decisión del contexto, no del componente: así la media query de mobile
+   puede achicarlo. */
+.prices-page .tipo-card .prop { --prop-size: 64px; }
+.prices-page .result .prop { --prop-size: 112px; }
 .prices-page .prop-rect {
   border: 2px solid var(--line-strong); border-radius: 5px;
   background: repeating-linear-gradient(135deg, transparent 0 6px, color-mix(in oklab, var(--accent) 8%, transparent) 6px 7px);
@@ -290,10 +297,66 @@
   .prices-page .pk-td-price { grid-area: price; text-align: right; padding-right: 0; align-self: center; }
   .prices-page .pk-td-sel { grid-area: sel; justify-self: end; align-self: center; padding: 7px 14px; font-size: 12.5px; }
 
-  .prices-page .tipo-grid { grid-template-columns: repeat(2, 1fr); }
+  /* ----- Compactar el paso 1 para que la tabla de precios entre en el fold -----
+     Medido en 390×740: la grilla vertical de 5 tarjetas ocupaba 528px y empujaba la primera fila
+     de precio hasta los 1154px — 414px por debajo del fold. El usuario elegía un tipo de fondo,
+     no veía nada más y mandaba una captura por WhatsApp diciendo "que sea de esta medida".
+     Acá la tarjeta pasa de columna a una grilla de 2 columnas (diagrama | texto). */
+  .prices-page .tipo-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .prices-page .tipo-card {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr);
+    grid-template-areas: "prop name" "prop eye";
+    align-items: center; gap: 0 10px;
+    padding: 9px 11px; text-align: left;
+  }
+  .prices-page .tipo-card .prop { grid-area: prop; --prop-size: 28px; }
+  /* A 28px las cotas se saldrían de la tarjeta: `.prop-w` cuelga 15px arriba y `.prop-h` 16px
+     al costado, más que el propio diagrama. */
+  .prices-page .tipo-card .prop-w,
+  .prices-page .tipo-card .prop-h { display: none; }
+  .prices-page .tipo-name { grid-area: name; font-size: 13px; line-height: 1.25; }
+  .prices-page .tipo-eye { grid-area: eye; font-size: 11px; line-height: 1.3; }
+  .prices-page .tipo-badge {
+    top: 50%; right: 8px; bottom: auto; transform: translateY(-50%);
+    font-size: 9px; letter-spacing: .06em; padding: 1px 6px;
+  }
+  /* Sólo la tarjeta con badge cede el ancho; si no, las otras cuatro perderían espacio de texto. */
+  .prices-page .tipo-card:has(.tipo-badge) .tipo-name,
+  .prices-page .tipo-card:has(.tipo-badge) .tipo-eye { padding-right: 42px; }
+  /* Son 5 familias en 2 columnas: la última queda sola en su fila y, con el ancho de media
+     tarjeta, "Fundas para Paneles" envolvía a 3 líneas (112px contra 67 de las otras). A ancho
+     completo entra en una. El selector sólo aplica cuando la última es impar, así que con un
+     número par de familias no hace nada. */
+  .prices-page .tipo-grid > .tipo-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
+
+  /* Chrome del picker: los gaps de 30/16px sumaban casi 60px entre la grilla y la tabla. */
+  .prices-page .picker { padding: 18px; gap: 18px; }
+  .prices-page .pk-step { gap: 12px; }
+  /* La descripción de la familia se oculta en mobile: en una pantalla donde hay que decidir, es
+     texto que se lee después de haber elegido. El `eyebrow` de cada tarjeta ya dice para qué
+     sirve. En desktop, donde no compite por espacio, se mantiene. */
+  .prices-page .pk-desc { display: none; }
+  .prices-page .pk-step-row { gap: 10px; }
+  .prices-page .finish-row { gap: 10px; }
+  /* "Mostrar precio de" hacía que el toggle no entrara al lado del label y envolviera a una
+     segunda línea (90px de alto). Los dos botones dicen "Color Vivo HD" y "Neón", así que el
+     rótulo es redundante acá; en desktop se mantiene. No se achican los botones: ya están por
+     debajo del target táctil de 44px y reducirlos más sería peor. */
+  .prices-page .finish-cap { display: none; }
+  .prices-page .seg { padding: 3px; }
+  .prices-page .seg-btn { padding: 6px 12px; font-size: 12.5px; }
+
+  /* El hero se llevaba 419px antes de la primera tarjeta; con lo de arriba solo, la tabla seguía
+     quedando fuera del fold. */
   .prices-page section { padding-inline: 16px; }
-  .prices-page .picker { padding: 20px; }
+  .prices-page .hero { padding-top: 28px; padding-bottom: 24px; }
+  .prices-page .hero-eyebrow { margin-bottom: 18px; }
   .prices-page .hero-title { font-size: 34px; }
+  /* "Miles de diseños en decenas de catálogos…" repite lo que el catálogo ya demuestra más abajo
+     y son dos líneas antes de la primera decisión. Se mantiene en desktop. */
+  .prices-page .hero-sub { display: none; }
+  .prices-page .picker-sec { padding-top: 16px; }
   .prices-page .cat-sechead { flex-direction: column; align-items: flex-start; }
   .prices-page .cat-medida { align-items: flex-start; }
   .prices-page .sticky {
@@ -305,4 +368,20 @@
   .prices-page .sticky-wa,
   .prices-page .sticky-cta { flex: 1; justify-content: center; }
   .prices-page .sticky-info { justify-content: center; }
+}
+
+/* En pantallas cortas (360×640 y parecidas) la compactación de arriba deja la tabla 65px por
+   debajo del fold: hay 100px menos de alto y, al ser más angostas, el texto de las tarjetas
+   envuelve más. Se ajusta sólo el espaciado y la escala tipográfica — no se oculta contenido. */
+@media (max-width: 560px) and (max-height: 700px) {
+  .prices-page .hero { padding-top: 12px; padding-bottom: 12px; }
+  .prices-page .hero-eyebrow { margin-bottom: 10px; }
+  /* Escala con el ancho: a 28px fijos el título envolvía a tres líneas en 320px y volvía a
+     empujar la tabla fuera del fold. */
+  .prices-page .hero-title { font-size: clamp(25px, 7vw, 30px); }
+  .prices-page .picker-sec { padding-top: 6px; }
+  .prices-page .picker { padding: 14px; }
+  .prices-page .pk-step { gap: 10px; }
+  .prices-page .tipo-grid { gap: 8px; }
+  .prices-page .tipo-card { padding: 7px 9px; }
 }
