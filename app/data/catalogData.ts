@@ -24,7 +24,7 @@ export const catalogData: CatalogItem[] = [
     imageCount: 15,
     description: "Backdrops más cinematográfico y emotivo de la colección mundialista. Fondos épicos con estadio repleto, podio de campeones y copa del mundo dorada iluminada. Camiseta albiceleste flotante, estrellas, banderas y confeti dorado en atmósfera nocturna.",
     tags: ["estadio lleno","podio campeón","cuatro estrellas","hinchada argentina","copa dorada","confeti celeste","camiseta albiceleste","banderas argentinas","épico deportivo","nocturno fútbol","gloría mundialista","selección argentina","campeones 2026","backdrop fútbol","photocall deportivo","editorial sport","FIFA 2026","AFA","festejo campeonato","producción audiovisual"],
-    featured: true,
+    featured: false,
     recommendedUse: ["Fotografía editorial deportiva","Campañas publicitarias de marcas","Retratos de jugadores o figuras","Contenido redes sociales","Lanzamiento productos deportivos","Thumbnails YouTube y streaming","Moda streetwear","Galas y ceremonias temáticas"],
     isFluo: false,
     isRealistic: false,
@@ -281,7 +281,7 @@ export const catalogData: CatalogItem[] = [
     imageCount: 152,
     description: "Misterio y diversión en cada rincón espeluznante",
     tags: ["halloween", "calabazas", "otoño", "murciélagos", "murcielagos", "noche", "misterio", "hojas secas", "linterna", "espeluznante", "Disfraz", "Fantasma", "Bruja", "Vampiro", "Telarañas", "Murciélago", "Gato negro", "Truco o trato", "Aterrador", "noche de brujas", "terror", "fantasmas", "naranja", "disfraces", "sustos"],
-    featured: false,
+    featured: true,
     recommendedUse: ["fotografía infantil", "temáticas halloween", "decoración de temporada"],
     isFluo: false,
     isRealistic: true,
@@ -305,9 +305,6 @@ export const catalogData: CatalogItem[] = [
   {
     id: 18,
     title: "Comunión y Bautismo",
-    // La carpeta de Cloudinary se renombró de "Bautismo" a "Religioso" y esta entrada quedó
-    // huérfana: el thumbnail siguió resolviendo (Cloudinary sirve por public_id, no por carpeta),
-    // así que la desconexión pasó inadvertida mientras la categoría perdía description y tags.
     category: "Religioso",
     image: "/images/innova/catalog/15.webp",
     thumbnailUrl: "https://res.cloudinary.com/innova54/image/upload/v1759357964/Comuni%C3%B3n_10_mtdcqv.jpg",
@@ -509,16 +506,12 @@ export const catalogData: CatalogItem[] = [
     imageCount: 29,
     description: "Celebración de la riqueza cultural argentina que inspira nuevas historias",
     tags: ["argentina", "cultura argentina", "folklore", "tango", "gaucho", "mate", "asado", "fiesta nacional", "tradición argentina", "paisajes argentinos", "arte argentino"],
-    featured: true,
+    featured: false,
     recommendedUse: ["educación", "eventos culturales", "fotografía temática argentina"],
     isFluo: false,
     isRealistic: true,
     catalogURL: null,
   },
-  // Las entradas siguientes cubren carpetas de Cloudinary que existían sin metadata: sin ellas
-  // la categoría queda fuera del buscador (useProductSearch solo indexa `description` y `tags`)
-  // y sin meta description propia. Los tags no repiten variantes con y sin tilde: `normalizeText`
-  // ya descompone acentos antes de comparar.
   {
     id: 34,
     title: "Granja y Far West",
