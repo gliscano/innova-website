@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { decodeSegment, formatFolderName, getCatalogItemByCategory } from '@/app/utils/catalogUtils'
 import { COLLECTION_FOLDERS, getCachedFolders, getCachedSubfolders } from '@/app/lib/cloudinaryFolders'
-import { SITE_URL, absoluteUrl, catalogUrl } from '@/app/lib/siteUrl'
+import { SITE_URL, absoluteUrl, catalogUrl, DESIGN_CATALOG_OG_IMAGE } from '@/app/lib/siteUrl'
 import JsonLd, { breadcrumbSchema } from '@/app/components/JsonLd'
 import { getCachedGalleryImages } from '@/app/lib/cloudinaryImages'
 import ProductPageContent from './ProductPageContent'
@@ -48,6 +48,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${pageTitle} | Innova`,
       description,
       url,
+      images: [DESIGN_CATALOG_OG_IMAGE],
     },
   }
 }

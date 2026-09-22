@@ -4,7 +4,7 @@ import Footer from '../components/Footer'
 import FAQ from '../components/FAQ'
 import JsonLd, { breadcrumbSchema, faqPageSchema } from '../components/JsonLd'
 import { faqCategories } from '../data/faqsData'
-import { SITE_URL, absoluteUrl } from '../lib/siteUrl'
+import { SITE_URL, absoluteUrl, DEFAULT_OG_IMAGE } from '../lib/siteUrl'
 
 export const metadata: Metadata = {
   title: 'Preguntas Frecuentes',
@@ -14,6 +14,7 @@ export const metadata: Metadata = {
     title: 'Preguntas Frecuentes | Innova',
     description: 'Todo lo que necesitás saber sobre nuestros fondos fotográficos.',
     url: absoluteUrl('/preguntas-frecuentes'),
+    images: [DEFAULT_OG_IMAGE],
   },
 }
 

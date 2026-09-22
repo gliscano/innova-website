@@ -26,10 +26,10 @@ const marcellus = Marcellus({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'Innova — Fondos Fotográficos y Backdrops para Fotógrafos, eventos y escenarios',
+    default: 'Innova - Fondos Fotográficos y Backdrops para Fotógrafos, eventos y marcas',
     template: '%s | Innova',
   },
-  description: 'Fondos fotográficos (backdrops) y props para crear una experiencia de otro nivel. Diseños exclusivos para fotógrafos y decoradores en Argentina.',
+  description: 'Fondos fotográficos (backdrops) y props para crear una experiencia de otro nivel. Diseños exclusivos para fotógrafos y decoradores, con envíos a Argentina y otros países.',
   openGraph: {
     siteName: 'Innova',
     locale: 'es_AR',
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Innova — Fondos Fotográficos y Backdrops para Fotógrafos, eventos y escenarios',
+        alt: 'Innova — Fondos Fotográficos y Backdrops para Fotógrafos, eventos y marcas',
       },
     ],
   },

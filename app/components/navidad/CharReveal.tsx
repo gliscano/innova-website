@@ -32,7 +32,7 @@ export function CharReveal({ text, delay = 0, className }: CharRevealProps) {
       {text.split('').map((char, i) => (
         <span key={i} style={{ display: 'inline-block', overflow: 'hidden' }} aria-hidden="true">
           <motion.span
-            style={{ display: 'inline-block' }}
+            style={{ display: 'inline-block', willChange: 'transform' }}
             custom={{ i, delay }}
             initial="hidden"
             animate="visible"

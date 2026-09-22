@@ -47,7 +47,7 @@ export function HeroContent({ category, index, total, reduceMotion }: HeroConten
         <Link
           href={`#${category.id}`}
           className="nv-hero-ctaPrimary"
-          style={{ borderLeftColor: category.accentColor, borderLeftWidth: '3px' }}
+          style={{ backgroundColor: `color-mix(in srgb, ${category.accentColor} 70%, black)` }}
           aria-label={`Ver colección ${category.title}`}
         >
           Ver colección

@@ -4,7 +4,7 @@ import Image from 'next/image'
 
 import Header from "../components/Header"
 import Footer from "../components/Footer"
-import { absoluteUrl } from '../lib/siteUrl'
+import { absoluteUrl, DEFAULT_OG_IMAGE } from '../lib/siteUrl'
 
 export const metadata: Metadata = {
   title: 'Términos y Condiciones',
@@ -14,6 +14,7 @@ export const metadata: Metadata = {
     title: 'Términos y Condiciones | Innova',
     description: 'Políticas de producción, envío y devolución de Innova.',
     url: absoluteUrl('/terminos-y-condiciones'),
+    images: [DEFAULT_OG_IMAGE],
   },
 }
 

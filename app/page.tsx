@@ -15,10 +15,9 @@ import TestimonialsSection from './components/TestimonialsSection'
 import StockPreview from './components/StockPreview'
 
 export const metadata: Metadata = {
-  // El sufijo va escrito acá a propósito: `title.template` del layout no aplica al mismo segmento
-  // donde se define, y la home comparte segmento con el layout raíz. El título anterior duplicaba
-  // casi textualmente el default del layout y se truncaba en resultados con sus ~90 caracteres.
-  title: 'Fondos Fotográficos y Backdrops en Argentina | Innova',
+  // El título va escrito completo acá a propósito: `title.template` del layout no aplica al mismo
+  // segmento donde se define, y la home comparte segmento con el layout raíz.
+  title: 'Innova - Fondos Fotográficos y Backdrops para Fotógrafos, eventos y marcas',
   description: 'Más de 4.500 diseños de fondos fotográficos en alta definición, distintas medidas y fondos personalizados para fotógrafos y eventos.',
   alternates: { canonical: SITE_URL },
   openGraph: {

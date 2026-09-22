@@ -165,14 +165,22 @@ export function CategorySection({ category }: CategorySectionProps) {
       </div>
 
       {hasMore && (
-        <button
-          type="button"
-          className="nv-ver-mas-btn"
-          onClick={loadMore}
-          disabled={isLoadingMore}
-        >
-          <span>{isLoadingMore ? 'Cargando…' : '+ Ver más diseños'}</span>
-        </button>
+        <div className="nv-cat__cta-wrap">
+          <button
+            type="button"
+            className="nv-ver-mas-btn"
+            onClick={loadMore}
+            disabled={isLoadingMore}
+            aria-label={isLoadingMore ? 'Cargando más diseños' : 'Ver más diseños'}
+          >
+            <span>{isLoadingMore ? 'Cargando…' : 'Ver más diseños'}</span>
+            {isLoadingMore ? (
+              <span className="nv-ver-mas-btn__spinner" aria-hidden="true" />
+            ) : (
+              <span className="nv-ver-mas-btn__icon" aria-hidden="true">↓</span>
+            )}
+          </button>
+        </div>
       )}
 
       <div className="nv-cat__spacer" aria-hidden="true" />

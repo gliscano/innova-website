@@ -7,12 +7,12 @@ import { PurchaseInfoSection } from '@/app/components/navidad/PurchaseInfoSectio
 import { IntroSection } from '@/app/components/navidad/IntroSection'
 import { CategorySection } from '@/app/components/navidad/CategorySection'
 import { CierreSection } from '@/app/components/navidad/CierreSection'
-import { navidadDisplayFont, navidadBodyFont } from './navidad-fonts'
+import { navidadBodyFont } from './navidad-fonts'
 import './navidad-theme.css'
 
 export default function NavidadPageContent() {
   return (
-    <div className={`navidad-theme ${navidadDisplayFont.variable} ${navidadBodyFont.variable}`}>
+    <div className={`navidad-theme ${navidadBodyFont.variable}`}>
       <HeroSection />
       <PurchaseInfoSection />
       <IntroSection />

@@ -7,7 +7,7 @@
   --nv-oro: #d4a24c;
   --nv-wa: #25d366;
 
-  --nv-font-display: var(--font-navidad-display), Georgia, serif;
+  --nv-font-display: var(--font-marcellus), Georgia, serif;
   --nv-font-body: var(--font-navidad-body), system-ui, sans-serif;
 
   --nv-t-eyebrow: 9px;
@@ -93,7 +93,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 0 24px 80px;
+  padding: 0 24px 92px;
 }
 .navidad-theme .nv-hero-eyebrow {
   font-family: var(--nv-font-body);
@@ -115,16 +115,14 @@
 .navidad-theme .nv-hero-headline {
   font-family: var(--nv-font-display);
   font-size: clamp(52px, 14vw, 80px);
-  font-weight: 700;
-  font-style: italic;
-  line-height: 0.95;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.1;
   color: var(--nv-crema);
   margin: 0 0 6px;
-  overflow: hidden;
 }
 .navidad-theme .nv-hero-headlineLine {
   display: block;
-  overflow: hidden;
 }
 .navidad-theme .nv-hero-ctaRow {
   display: flex;
@@ -139,18 +137,26 @@
   gap: 10px;
   font-family: var(--nv-font-body);
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   text-decoration: none;
   color: #fff;
-  padding: 13px 24px;
-  border: 1px solid rgba(255, 255, 255, 0.85);
-  border-radius: var(--nv-r-sm);
-  transition: background 0.2s, border-color 0.2s;
+  padding: 14px 28px;
+  border: none;
+  border-radius: var(--nv-r-pill);
+  background-color: var(--nv-rojo);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 .navidad-theme .nv-hero-ctaPrimary:hover {
-  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  filter: brightness(1.08);
+}
+.navidad-theme .nv-hero-ctaPrimary:active {
+  transform: translateY(0);
+  filter: brightness(0.96);
 }
 .navidad-theme .nv-hero-ctaWA {
   display: inline-flex;
@@ -158,7 +164,7 @@
   font-family: var(--nv-font-body);
   font-size: 11px;
   font-weight: 400;
-  color: rgba(249, 244, 238, 0.6);
+  color: rgba(249, 244, 238, 0.8);
   letter-spacing: 0.04em;
   transition: color 0.2s;
   background: transparent;
@@ -252,7 +258,7 @@
   }
   .navidad-theme .nv-hero-headline {
     font-size: clamp(72px, 8vw, 120px);
-    line-height: 0.92;
+    line-height: 1.1;
   }
   .navidad-theme .nv-hero-progressBar {
     bottom: 32px;
@@ -301,7 +307,7 @@
 .navidad-theme .nv-intro-label {
   font-family: var(--nv-font-display);
   font-size: 12px;
-  font-style: italic;
+  font-style: normal;
   color: rgba(249, 244, 238, 0.4);
   margin-bottom: 12px;
   letter-spacing: 0.04em;
@@ -360,8 +366,8 @@
 .navidad-theme .nv-cat__name {
   font-family: var(--nv-font-display);
   font-size: var(--nv-t-cat);
-  font-weight: 700;
-  line-height: 1.12;
+  font-weight: 400;
+  line-height: 1.15;
   margin-bottom: 10px;
 }
 .navidad-theme .nv-cat--claro .nv-cat__name {
@@ -436,41 +442,73 @@
   z-index: 4;
 }
 
-.navidad-theme .nv-ver-mas-btn {
+.navidad-theme .nv-cat__cta-wrap {
   display: flex;
+  justify-content: center;
+  padding: 20px 24px 0;
+}
+
+.navidad-theme .nv-ver-mas-btn {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  width: calc(100% - 48px);
-  margin: 14px 24px 0;
-  border-radius: var(--nv-r-sm);
-  padding: 11px;
+  gap: 8px;
+  min-height: 44px;
+  padding: 12px 26px;
+  border-radius: var(--nv-r-pill);
+  border: none;
   font-family: var(--nv-font-body);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   cursor: pointer;
-  background: transparent;
-  transition: background 0.3s;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 .navidad-theme .nv-cat--claro .nv-ver-mas-btn {
-  border: 0.5px solid rgba(26, 10, 0, 0.18);
-  color: rgba(26, 10, 0, 0.5);
-}
-.navidad-theme .nv-cat--oscuro .nv-ver-mas-btn {
-  border: 0.5px solid rgba(249, 244, 238, 0.18);
-  color: rgba(249, 244, 238, 0.45);
+  background: var(--nv-rojo);
+  color: #fff;
 }
 .navidad-theme .nv-cat--claro .nv-ver-mas-btn:hover {
-  background: rgba(26, 10, 0, 0.05);
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+.navidad-theme .nv-cat--oscuro .nv-ver-mas-btn {
+  background: var(--nv-oro);
+  color: var(--nv-madera);
 }
 .navidad-theme .nv-cat--oscuro .nv-ver-mas-btn:hover {
-  background: rgba(255, 255, 255, 0.05);
+  filter: brightness(1.08);
+  transform: translateY(-1px);
 }
 .navidad-theme .nv-ver-mas-btn:disabled {
   opacity: 0.6;
   cursor: default;
+  transform: none;
+  filter: none;
+}
+
+.navidad-theme .nv-ver-mas-btn__icon {
+  display: inline-block;
+  font-size: 13px;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+.navidad-theme .nv-ver-mas-btn:hover .nv-ver-mas-btn__icon {
+  transform: translateY(2px);
+}
+.navidad-theme .nv-ver-mas-btn__spinner {
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  opacity: 0.7;
+  animation: nv-spin 0.6s linear infinite;
+}
+@keyframes nv-spin {
+  to { transform: rotate(360deg); }
 }
 
 .navidad-theme .nv-cat__spacer {
@@ -484,9 +522,8 @@
   .navidad-theme .nv-cat__masonry-wrap {
     padding: 0 64px;
   }
-  .navidad-theme .nv-ver-mas-btn {
-    margin: 16px 64px 0;
-    width: calc(100% - 128px);
+  .navidad-theme .nv-cat__cta-wrap {
+    padding: 24px 64px 0;
   }
 }
 
@@ -519,7 +556,7 @@
   font-family: var(--nv-font-display);
   font-size: 24px;
   font-weight: 400;
-  font-style: italic;
+  font-style: normal;
   color: var(--nv-crema);
   line-height: 1.25;
   margin-bottom: 12px;

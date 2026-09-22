@@ -5,7 +5,7 @@ import Footer from '../components/Footer'
 import PriceList from '../components/PriceList'
 import JsonLd, { breadcrumbSchema, priceProductsSchema } from '../components/JsonLd'
 import { getCachedFolders } from '../lib/cloudinaryFolders'
-import { SITE_URL, absoluteUrl } from '../lib/siteUrl'
+import { SITE_URL, absoluteUrl, DEFAULT_OG_IMAGE } from '../lib/siteUrl'
 
 export const metadata: Metadata = {
   title: 'Precios y Medidas',
@@ -15,6 +15,7 @@ export const metadata: Metadata = {
     title: 'Precios y Medidas | Innova',
     description: 'Fondos fotográficos en todos los tamaños. Consultá precios actualizados.',
     url: absoluteUrl('/prices'),
+    images: [DEFAULT_OG_IMAGE],
   },
 }
 

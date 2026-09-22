@@ -4,7 +4,7 @@ import Footer from '../components/Footer'
 import DesignCatalog from '../components/gallery/DesignCatalog'
 import JsonLd, { breadcrumbSchema, catalogItemListSchema } from '../components/JsonLd'
 import { getCachedFolders } from '../lib/cloudinaryFolders'
-import { SITE_URL, absoluteUrl } from '../lib/siteUrl'
+import { SITE_URL, absoluteUrl, DESIGN_CATALOG_OG_IMAGE } from '../lib/siteUrl'
 
 export const metadata: Metadata = {
   title: 'Catálogo de Diseños',
@@ -14,6 +14,7 @@ export const metadata: Metadata = {
     title: 'Catálogo de Diseños | Innova',
     description: 'Más de 10.000 fondos fotográficos para cada tipo de sesión.',
     url: absoluteUrl('/design-catalog'),
+    images: [DESIGN_CATALOG_OG_IMAGE],
   },
 }
 
