@@ -19,7 +19,7 @@ export function HeroSection() {
   const [index, setIndex] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
   const shouldReduceMotion = useReducedMotion()
-  const resumeTimerRef = useRef<ReturnType<typeof setTimeout>>()
+  const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   const total = navidadCategories.length
   const category = navidadCategories[index]

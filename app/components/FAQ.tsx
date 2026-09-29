@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type JSX } from "react";
 import Link from "next/link";
 import type { FaqCategory } from "@/app/data/faqsData";
 import { faqCategories } from "@/app/data/faqsData";

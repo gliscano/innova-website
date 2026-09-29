@@ -63,7 +63,9 @@ All product images are hosted on Cloudinary (cloud name: `innova54`). The `next.
 
 ### Tech stack summary
 
-- **Framework**: Next.js 16, React 19, TypeScript 5 (strict mode)
+- **Framework**: Next.js 16, React 19, TypeScript 6 (strict mode) — Node 24 LTS (`.nvmrc`), `engines` >=22.12
+- **Pinned majors**: ESLint stays on 9 (eslint-plugin-react/import/jsx-a11y don't support 10), TypeScript
+  on 6.0.x (typescript-eslint requires <6.1; TS 7 not supported), Tailwind on 3 (v4 is a config rewrite)
 - **Styling**: Tailwind CSS 3 + tailwindcss-animate
 - **Animations**: Framer Motion, Lottie Web
 - **Images**: Cloudinary + next-cloudinary

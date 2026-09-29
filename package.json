@@ -2,6 +2,9 @@
   "name": "innova-web",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,25 +12,24 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@next/third-parties": "^16.2.3",
-    "cloudinary": "^2.7.0",
-    "framer-motion": "^12.23.12",
-    "lottie-web": "^5.12.2",
-    "lucide-react": "^0.562.0",
-    "next": "^16.2.3",
-    "next-cloudinary": "^6.17.4",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "cloudinary": "^2.11.0",
+    "framer-motion": "^13.4.5",
+    "lottie-web": "^5.13.0",
+    "lucide-react": "^1.48.0",
+    "next": "^16.3.7",
+    "next-cloudinary": "^6.19.3",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "eslint": "^9",
-    "eslint-config-next": "^16.2.12",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "@types/node": "^24.19.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.3.7",
+    "postcss": "^8.5.28",
+    "tailwindcss": "^3.4.19",
+    "typescript": "~6.0.3"
   }
 }

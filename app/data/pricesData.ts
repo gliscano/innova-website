@@ -38,6 +38,7 @@ const propertiesHybridBackdrops: Array<propertiesProductsType> = [
 
 const propertiesFloor: Array<propertiesProductsType> = [
   { id: "SF1515", width: 1.5, height: 1.50, price: 51000 },
+  { id: "SF1520", width: 2.0, height: 1.50, price: 68000 },
   { id: "SF1530", width: 3.0, height: 1.50, price: 85000 },
   { id: "SF1535", width: 3.5, height: 1.50, price: 95000 },
   { id: "SF1540", width: 4.0, height: 1.50, price: 105000 },
