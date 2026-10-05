@@ -49,8 +49,8 @@ export function trackSearch(searchString: string): void {
 }
 
 /** CTA principal/secundario del hero de la home. */
-export function trackHeroCta(target: 'catalog' | 'stock'): void {
-  gaEvent(target === 'catalog' ? 'hero_catalog_click' : 'hero_stock_click', {
+export function trackHeroCta(target: 'catalog' | 'stock' | 'prices'): void {
+  gaEvent(`hero_${target}_click`, {
     event_category: 'hero',
     event_label: target,
   })

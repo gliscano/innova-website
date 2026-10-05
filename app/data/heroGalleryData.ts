@@ -1,70 +1,89 @@
-import { Camera, Palette, Sparkles, Wand2, Brush, Layers } from "lucide-react"
-
 export interface ContentSet {
   title: string
   highlight: string
   subtitle: string
-  description: string
-  /** Tira de beneficios que va debajo de los CTA (ítem 1 del plan de experiencia). */
-  benefits: string[]
+  /** Línea corta debajo del H1; reemplaza al párrafo largo que había antes. */
+  tagline: string
   buttonText: string
-  secondaryButtonText?: string
-  secondaryButtonUrl?: string
-  stats: Array<{ value: string; label: string }>
-  gradientFrom: string
-  gradientVia: string
-  gradientTo: string
+  secondaryButtonText: string
+  secondaryButtonUrl: string
+  reviews: { rating: string; count: number; url: string }
 }
 
 export interface ImageSet {
   src: string
   alt: string
-  icon: React.ComponentType<{ className?: string }>
-  column: number
-  height: string
+  /** Carpeta de Cloudinary a la que lleva la imagen (`/design-catalog/[folder]`). */
+  folder: string
+  /** Etiqueta visible sobre la imagen. */
+  category: string
 }
+
+export interface HeroLink {
+  label: string
+  /** Etiqueta corta para el menú de la computadora. */
+  short?: string
+  href: string
+  /** true si sale del sitio (tienda externa): abre en otra pestaña y emite `store_exit`. */
+  external?: boolean
+}
+
+/** Redirige a innova54store.empretienda.com.ar. */
+export const STORE_URL = "https://store.innova54.com"
+export const NAVIDAD_URL = "/navidad"
+
+/** Mismo formato de ruta que `CardCatalog`. */
+export const catalogHref = (folder: string) => `/design-catalog/${encodeURIComponent(folder)}`
 
 export const contentSets: ContentSet[] = [
   {
-    // Copy del ítem 1 del plan de experiencia. El mensaje anterior ("Tu fondo fotográfico
-    // personalizado en dos semanas") cargaba todo el peso en los personalizados, que son una parte
-    // del catálogo; el H1 se arma con estas tres piezas en tres líneas, con el gradiente sobre
-    // "transforman". "Impresión RGB real" sale del hero por pedido explícito del plan.
+    // H1 en dos líneas: "Fondos que transforman" / "tu fotografía.", con "transforman" en el acento.
     title: "Fondos que",
     highlight: "transforman",
     subtitle: "tu fotografía.",
-    description:
-      "Más de 4.500 diseños en alta definición, distintas medidas y fondos personalizados para fotógrafos y eventos.",
-    benefits: ["Alta definición", "Tela mate", "Diseños personalizados", "Envíos a todo el país"],
+    tagline: "+4.500 diseños en alta definición",
     buttonText: "Explorar diseños",
-    secondaryButtonText: "Ver fondos en stock",
-    secondaryButtonUrl: "https://store.innova54.com",
-    stats: [
-      { value: "+4.5k", label: "Diseños" },
-      { value: "+50", label: "Estilos" },
-      { value: "5.0", label: "85 Reseñas" },
-    ],
-    gradientFrom: "from-amber-500",
-    gradientVia: "via-orange-400",
-    gradientTo: "to-rose-400",
+    secondaryButtonText: "Consultar precios",
+    secondaryButtonUrl: "/prices",
+    reviews: { rating: "5.0", count: 85, url: "https://maps.app.goo.gl/umYECNsdo57obniE6" },
   }
 ]
 
-// Image sets for iterations
-// El `alt` de cada imagen se usa dos veces: como texto alternativo y como caption visible en el
-// hover de la card (ver GalleryCard). Estaban todos vacíos, así que las cards tampoco mostraban
-// nada al pasar el mouse.
+/** Menú de la barra superior de la portada. */
+export const heroMenuLinks: HeroLink[] = [
+  { label: "Catálogo", href: "/design-catalog" },
+  { label: "En stock", href: STORE_URL, external: true },
+  { label: "Navidad 2026", href: NAVIDAD_URL },
+  { label: "Precios y medidas", short: "Precios", href: "/prices" },
+  { label: "Preguntas frecuentes", short: "Preguntas", href: "/preguntas-frecuentes" },
+]
+
+/** Chips de temáticas: la temporada primero, "En stock" al final. */
+export const heroChips: HeroLink[] = [
+  { label: "Navidad 2026", href: NAVIDAD_URL },
+  { label: "Halloween", href: catalogHref("Halloween") },
+  { label: "Newborn", href: catalogHref("Newborn") },
+  { label: "Egresados", href: catalogHref("Egresados") },
+  { label: "Mundo Infantil", href: catalogHref("mundo-infantil") },
+  { label: "Boho", href: catalogHref("Boho") },
+  { label: "Texturas", href: catalogHref("Texturas") },
+  { label: "Globos", href: catalogHref("Globos") },
+  { label: "Baby Shower", href: catalogHref("BabyShower") },
+  { label: "En stock", href: STORE_URL, external: true },
+]
+
+// Collage de la computadora (3×3). El `alt` se usa como texto alternativo y como `title` del
+// enlace; cada imagen lleva a la categoría de su `folder`.
 export const imageSets: ImageSet[][] = [
-  // Set 1
   [
-    { src: "/images/innova/hero/03.webp", alt: "Escenografía submarina en tonos pastel con caracolas y estrellas de mar", icon: Camera, column: 1, height: "h-36" },
-    { src: "/images/innova/hero/02.webp", alt: "Fondo de textura pictórica en ocres envejecidos", icon: Sparkles, column: 1, height: "h-32" },
-    { src: "/images/innova/hero/06.webp", alt: "Set temático de abejitas con panal, margaritas y globos amarillos", icon: Palette, column: 1, height: "h-28" },
-    { src: "/images/innova/hero/07.webp", alt: "Telón de tela azul petróleo con piso de baldosas", icon: Wand2, column: 2, height: "h-32" },
-    { src: "/images/innova/hero/05.webp", alt: "Fondo de textura pintada a mano en verde oliva", icon: Layers, column: 2, height: "h-28" },
-    { src: "/images/innova/hero/01.webp", alt: "Arco de globos dorados y perlados con pampas sobre fondo negro", icon: Brush, column: 2, height: "h-[104px]" },
-    { src: "/images/innova/hero/04.webp", alt: "Arco de globos plateados con cortina de flecos metálicos y bolas de espejos", icon: Palette, column: 3, height: "h-32" },
-    { src: "/images/innova/hero/08.webp", alt: "Set primaveral de margaritas blancas y globos durazno", icon: Sparkles, column: 3, height: "h-[104px]" },
-    { src: "/images/innova/hero/09.webp", alt: "Sesión de primer añito en un set rosa con globos y flores", icon: Camera, column: 3, height: "h-32" },
+    { src: "/images/innova/hero/01.webp", alt: "Arco de globos dorados y perlados con pampas sobre fondo negro", folder: "Globos", category: "Globos" },
+    { src: "/images/innova/hero/02.webp", alt: "Fondo de textura pictórica en ocres envejecidos", folder: "Texturas", category: "Texturas" },
+    { src: "/images/innova/hero/06.webp", alt: "Set temático de abejitas con panal, margaritas y globos amarillos", folder: "mundo-infantil", category: "Mundo Infantil" },
+    { src: "/images/innova/hero/04.webp", alt: "Arco de globos plateados con cortina de flecos metálicos y bolas de espejos", folder: "Glitter", category: "Glitter" },
+    { src: "/images/innova/hero/07.webp", alt: "Telón de tela azul petróleo con piso de baldosas", folder: "Paredes", category: "Paredes" },
+    { src: "/images/innova/hero/05.webp", alt: "Fondo de textura pintada a mano en verde oliva", folder: "Texturas", category: "Texturas" },
+    { src: "/images/innova/hero/08.webp", alt: "Set primaveral de margaritas blancas y globos durazno", folder: "Margaritas", category: "Margaritas" },
+    { src: "/images/innova/hero/03.webp", alt: "Escenografía submarina en tonos pastel con caracolas y estrellas de mar", folder: "mundo-infantil", category: "Mundo Infantil" },
+    { src: "/images/innova/hero/09.webp", alt: "Sesión de primer añito en un set rosa con globos y flores", folder: "Globos", category: "Globos" },
   ]
 ]

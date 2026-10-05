@@ -9,6 +9,7 @@ import { getCachedFolders } from './lib/cloudinaryFolders'
 import { SITE_URL } from './lib/siteUrl'
 import HeroProps from './components/HeroProps'
 import { HeroGallery } from './components/hero/HeroGallery'
+import { HeroTopBar } from './components/hero/HeroTopBar'
 // import { InspirationSection } from './components/inspiracion'
 // import LeadCaptureSection from './components/LeadCaptureSection'
 import TestimonialsSection from './components/TestimonialsSection'
@@ -37,10 +38,18 @@ export const metadata: Metadata = {
 
 export default async function Home() {
   const folders = await getCachedFolders()
+  // El buscador de la barra solo necesita nombre, título y conteo de cada carpeta.
+  const searchFolders = folders.map(({ folderName, title, imageCount, isCollection }) => ({
+    folderName,
+    title,
+    imageCount,
+    isCollection,
+  }))
   return (
     <div className="min-h-screen flex flex-col">
+      <HeroTopBar folders={searchFolders} />
       <main className="flex-grow">
-        <HeroGallery />
+        <HeroGallery folders={folders} />
         <AnimatedCards />
         <StockPreview />
         {/* <InspirationSection /> */}

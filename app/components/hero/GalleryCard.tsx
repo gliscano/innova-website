@@ -1,54 +1,24 @@
-"use client"
-
 import React from "react"
 import Image from "next/image"
-import { motion } from "framer-motion"
-
-const floatAnimation = {
-  y: [0, -8, 0],
-}
+import Link from "next/link"
+import { catalogHref, type ImageSet } from "@/app/data/heroGalleryData"
 
 interface GalleryCardProps {
-  image: {
-    src: string
-    alt: string
-    icon: React.ComponentType<{ className?: string }>
-    column: number
-    height: string
-  }
-  delay?: number
+  image: ImageSet
 }
 
-export const GalleryCard = React.memo(function GalleryCard({ image, delay = 0 }: GalleryCardProps) {
+/** Imagen del collage de la computadora: lleva a su categoría y muestra la etiqueta. */
+export const GalleryCard = React.memo(function GalleryCard({ image }: GalleryCardProps) {
   return (
-    <motion.div
-      animate={floatAnimation}
-      transition={{ 
-        y: { 
-          duration: 3.5, 
-          repeat: Infinity, 
-          ease: "easeInOut", 
-          delay 
-        },
-      }}
-      whileHover={{ y: -5 }}
-      className={`relative ${image.height} rounded-2xl overflow-hidden group cursor-pointer`}
+    <Link
+      href={catalogHref(image.folder)}
+      title={image.alt}
+      className="relative block aspect-square rounded-xl overflow-hidden bg-[var(--surface-2)] transition-transform duration-200 hover:-translate-y-[3px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2"
     >
-      <Image
-        src={image.src || "/placeholder.svg"}
-        alt={image.alt}
-        fill
-        sizes="(max-width: 1024px) 33vw, 16vw"
-        className="object-cover transition-transform duration-500 group-hover:scale-110"
-      />
-
-      {/* Overlay gradient */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      <div className="absolute inset-0 flex items-end p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <p className="text-white text-sm font-medium drop-shadow-lg">
-          {image.alt}
-        </p>
-      </div>
-    </motion.div>
+      <Image src={image.src} alt={image.alt} fill sizes="200px" className="object-cover" />
+      <span className="absolute left-2 bottom-2 px-2.5 py-0.5 rounded-full text-xs font-medium text-[var(--ink)] bg-[var(--surface)]">
+        {image.category}
+      </span>
+    </Link>
   )
 })
