@@ -2,12 +2,12 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react"
 import { Menu, Search, X } from "lucide-react"
 import WhatsAppDropdown from "@/app/components/WhatsAppDropdown"
 import { heroMenuLinks } from "@/app/data/heroGalleryData"
 import { searchThemes, type HeroSearchFolder } from "@/app/utils/heroSearch"
-import { trackSearch } from "@/app/utils/tracking"
+import { useSearchTracking } from "@/app/hooks/useSearchTracking"
 import { HeroLink } from "./HeroLink"
 
 interface HeroTopBarProps {
@@ -28,13 +28,22 @@ export function HeroTopBar({ folders }: HeroTopBarProps) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+  const searchButtonRef = useRef<HTMLButtonElement>(null)
+
+  const closeSearch = () => {
+    setSearchOpen(false)
+    searchButtonRef.current?.focus()
+  }
 
   useEffect(() => {
     if (!menuOpen && !searchOpen) return
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setMenuOpen(false)
-        setSearchOpen(false)
+        if (searchOpen) {
+          setSearchOpen(false)
+          searchButtonRef.current?.focus()
+        }
       }
     }
     const onDown = (e: MouseEvent) => {
@@ -90,6 +99,7 @@ export function HeroTopBar({ folders }: HeroTopBarProps) {
           {/* Celular: lupa y menú */}
           <div ref={menuRef} className="lg:hidden flex gap-0.5 relative">
             <button
+              ref={searchButtonRef}
               type="button"
               aria-label="Buscar una temática"
               className={iconButton}
@@ -135,27 +145,46 @@ export function HeroTopBar({ folders }: HeroTopBarProps) {
       {/* Reserva el alto de la barra fija en el celular */}
       <div aria-hidden className="h-14 lg:hidden" />
 
-      {searchOpen && <SearchOverlay folders={folders} onClose={() => setSearchOpen(false)} />}
+      {searchOpen && <SearchOverlay folders={folders} onClose={closeSearch} />}
     </>
   )
 }
 
 function SearchOverlay({ folders, onClose }: { folders: HeroSearchFolder[]; onClose: () => void }) {
   const [q, setQ] = useState("")
-  const tracked = useRef(false)
+  const dialogRef = useRef<HTMLDivElement>(null)
   const results = useMemo(() => searchThemes(folders, q), [folders, q])
+  useSearchTracking(q, "hero_mobile")
 
-  const onChange = (value: string) => {
-    setQ(value)
-    if (value.trim().length >= 3 && !tracked.current) {
-      trackSearch(value)
-      tracked.current = true
+  // Mientras el buscador está abierto la página de fondo no scrollea.
+  useEffect(() => {
+    const prev = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    return () => {
+      document.body.style.overflow = prev
     }
-    if (!value) tracked.current = false
+  }, [])
+
+  // Mantiene el foco del teclado dentro del diálogo.
+  const trapFocus = (e: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== "Tab" || !dialogRef.current) return
+    const focusable = dialogRef.current.querySelectorAll<HTMLElement>("input, button, a[href]")
+    if (focusable.length === 0) return
+    const first = focusable[0]
+    const last = focusable[focusable.length - 1]
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault()
+      last.focus()
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault()
+      first.focus()
+    }
   }
 
   return (
     <div
+      ref={dialogRef}
+      onKeyDown={trapFocus}
       role="dialog"
       aria-modal="true"
       aria-label="Buscar una temática"
@@ -166,7 +195,7 @@ function SearchOverlay({ folders, onClose }: { folders: HeroSearchFolder[]; onCl
           autoFocus
           type="search"
           value={q}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => setQ(e.target.value)}
           placeholder="Buscá una temática: newborn, globos…"
           aria-label="Buscá una temática"
           className="flex-1 min-w-0 h-10 px-3 rounded-[10px] border border-[var(--line-strong)] bg-[var(--surface)] text-[var(--ink)] text-base placeholder:text-[var(--ink-faint)] outline-none focus:border-[var(--accent)]"
@@ -220,14 +249,18 @@ export function SearchResults({
 export function NoResults({ query }: { query: string }) {
   return (
     <div className="px-3 py-3 text-sm text-[var(--ink-soft)] leading-relaxed">
-      <p className="mb-2">No encontramos esa temática.</p>
-      <div className="max-w-[260px]">
-        <WhatsAppDropdown
-          message={`Hola! Busco un fondo de "${query.trim()}" y no lo encontré en el catálogo.`}
-          buttonText="Pedilo personalizado por WhatsApp"
-          className="flex items-center gap-1 text-[var(--accent-dark)] font-medium underline underline-offset-2 min-h-11"
-        />
-      </div>
+      <p className="text-[var(--ink)]">
+        No encontramos &ldquo;<strong className="font-semibold">{query.trim()}</strong>&rdquo;.
+      </p>
+      <p className="mt-1 mb-3">
+        Probá con una palabra más general o relacionada, o escribinos y te ayudamos de forma
+        personalizada.
+      </p>
+      <WhatsAppDropdown
+        message={`Hola! Busco un fondo de "${query.trim()}" y no lo encontré en el catálogo.`}
+        buttonText="Pedilo personalizado por WhatsApp"
+        className="w-full min-h-11 px-3 flex items-center gap-1 rounded-[10px] border border-[var(--line-strong)] bg-[var(--surface)] text-[var(--accent-dark)] font-medium hover:bg-[var(--surface-2)] transition-colors [&>span]:flex-1 [&>span]:text-left"
+      />
     </div>
   )
 }

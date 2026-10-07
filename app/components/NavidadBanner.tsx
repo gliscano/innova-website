@@ -12,13 +12,13 @@ export default function NavidadBanner() {
   return (
     <motion.div
       id="navidad-banner"
-      className="max-w-[1320px] mx-auto my-8 px-4 sm:px-6 lg:px-8"
+      className="mb-3 sm:mb-6"
       onViewportEnter={() => setActive(true)}
       viewport={{ once: true, amount: 0.25 }}
     >
       <Link
         href="/navidad"
-        className="group relative flex overflow-hidden rounded-3xl min-h-[280px] sm:min-h-[360px] lg:min-h-[440px]"
+        className="group relative flex overflow-hidden rounded-3xl min-h-[202px] sm:min-h-[259px] lg:min-h-[317px]"
       >
         <video
           src={active ? '/video/banner-navidad.mp4' : undefined}

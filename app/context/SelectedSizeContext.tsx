@@ -9,6 +9,8 @@ export interface SelectedSize {
   heightM: number
   fromPrice?: number
   isExactPrice?: boolean
+  /** Terminación que cambia el precio (hoy solo Neón); sin valor es la tela estándar HD. */
+  finishLabel?: string
 }
 
 interface SelectedSizeContextValue {

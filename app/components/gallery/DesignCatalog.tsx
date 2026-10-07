@@ -6,6 +6,7 @@ import { useProductSearch } from "../../hooks/useProductSearch"
 import { trackSearch } from "@/app/utils/tracking"
 import type { CloudinaryFolder } from "@/app/types/catalog"
 import CardCatalog from "./CardCatalog"
+import NavidadBanner from "../NavidadBanner"
 
 interface Props {
   initialFolders: CloudinaryFolder[]
@@ -64,7 +65,7 @@ export default function InnovaCatalog({ initialFolders, headingLevel = "h2" }: P
     if (value.length <= 25) {
       setSearchTerm(value)
       if (value.length >= 3 && !searchTrackedRef.current) {
-        trackSearch(value)
+        trackSearch('catalog')
         searchTrackedRef.current = true
       }
       if (value.length === 0) {
@@ -74,7 +75,7 @@ export default function InnovaCatalog({ initialFolders, headingLevel = "h2" }: P
   }
 
   return (
-    <section id="catalog" className="py-4">
+    <section id="catalog" className="py-4 scroll-mt-14 lg:scroll-mt-0">
       <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}
@@ -228,6 +229,8 @@ export default function InnovaCatalog({ initialFolders, headingLevel = "h2" }: P
                     <Star className="w-3.5 h-3.5 fill-[#C8543D]" />
                     Destacados
                   </h3>
+                  {/* La colección de temporada encabeza los destacados */}
+                  <NavidadBanner />
                   <div className="grid gap-3 grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
                     {featuredFolders.map((folder) => (
                       <CardCatalog key={folder.folderName} folder={folder} />

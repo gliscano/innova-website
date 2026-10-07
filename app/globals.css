@@ -65,22 +65,6 @@ h1, h2, h3, h4 {
   background: var(--accent-dark);
 }
 
-.section-menu-buttons {
-  background: var(--surface);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid var(--line);
-  box-shadow: 0 -18px 40px rgba(0,0,0,.06);
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
-  width: calc(100% - 32px);
-  margin: -25px 16px 0 16px;
-  position: relative;
-  z-index: 2;
-}
-
 hero-front {
   background-image: url('/images/hero_front.webp') !important;
   background-size: cover;

@@ -36,6 +36,8 @@ export const SizeCard = memo(function SizeCard({
         widthM: size.widthM,
         heightM: size.heightM,
         fromPrice: size.fromPrice,
+        // `fromPrice` es el precio de tabla de esa medida (ver sizePickerData), no un mínimo.
+        isExactPrice: true,
       }
       setSelectedSize(selected)
     }

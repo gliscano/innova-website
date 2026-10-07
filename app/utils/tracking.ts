@@ -35,21 +35,36 @@ export function trackViewContent(contentName: string, contentCategory?: string):
   }
 }
 
-export function trackSearch(searchString: string): void {
+export type SearchLocation = 'catalog' | 'hero_mobile' | 'hero_desktop'
+
+/**
+ * Uso de un buscador. Solo registra dónde se buscó, nunca el texto: lo que escribe la persona
+ * puede ser un teléfono, un email o un nombre, y no debe llegar a GA ni a Meta.
+ */
+export function trackSearch(location: SearchLocation): void {
   if (typeof window === 'undefined') return
   if (window.gtag) {
     window.gtag('event', 'search', {
-      event_category: 'catalog',
-      event_label: searchString,
+      event_category: 'search',
+      search_location: location,
     })
   }
   if (window.fbq) {
-    window.fbq('track', 'Search', { search_string: searchString })
+    window.fbq('track', 'Search')
   }
 }
 
+/** Clic en una categoría de /navidad: `location` distingue las tarjetas de la barra fija. */
+export function trackNavidadCategoryClick(categoryId: string, location: 'cards' | 'sticky_bar'): void {
+  gaEvent('navidad_category_click', {
+    event_category: 'navidad',
+    event_label: categoryId,
+    cta_location: location,
+  })
+}
+
 /** CTA principal/secundario del hero de la home. */
-export function trackHeroCta(target: 'catalog' | 'stock' | 'prices'): void {
+export function trackHeroCta(target: 'catalog' | 'prices'): void {
   gaEvent(`hero_${target}_click`, {
     event_category: 'hero',
     event_label: target,

@@ -5,9 +5,9 @@ import StoreExitLink from './StoreExitLink'
 
 const STORE_URL = 'https://innova54store.empretienda.com.ar/productos'
 
-// Products shown before the "ver todos" CTA. The extra two are rendered but hidden
-// below `sm` so the mobile grid (2 columns) closes at 3 clean rows.
-const MOBILE_LIMIT = 6
+// Products shown before the "ver todos" CTA: always 2 rows. Below `lg` the grid has 2 columns, so
+// the products past MOBILE_LIMIT are rendered but hidden; on `lg` it has 4 columns.
+const MOBILE_LIMIT = 4
 const DESKTOP_LIMIT = 8
 
 export default async function StockPreview() {
@@ -52,11 +52,11 @@ export default async function StockPreview() {
   }
 
   return (
-    <section className="my-2 py-14 px-4 bg-rose-gold-light/30">
+    <section className="my-2 py-8 px-4 bg-rose-gold-light/30">
       <div className="max-w-6xl mx-auto">
 
         {/* Header */}
-        <div className="text-center mb-10">
+        <div className="text-center mb-6">
           <div className="inline-flex items-center gap-2 bg-yellow-gold-light/40 text-yellow-gold-dark px-3 py-1 rounded-full text-xs font-semibold tracking-widest uppercase mb-4">
             <Zap className="w-3 h-3 fill-current" />
             En Stock
@@ -70,7 +70,7 @@ export default async function StockPreview() {
         </div>
 
         {/* Product grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {products.map((product, index) => (
             <StoreExitLink
               key={product.url}
@@ -79,7 +79,7 @@ export default async function StockPreview() {
               target="_blank"
               rel="noopener noreferrer"
               className={`group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 ${
-                index >= MOBILE_LIMIT ? 'hidden sm:block' : ''
+                index >= MOBILE_LIMIT ? 'hidden lg:block' : ''
               }`}
             >
               <div className="aspect-square overflow-hidden bg-gray-100">
@@ -106,13 +106,13 @@ export default async function StockPreview() {
         </div>
 
         {/* CTA */}
-        <div className="text-center mt-10">
+        <div className="text-center mt-6">
           <StoreExitLink
             href={STORE_URL}
             ctaLocation="stock_ver_todos"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-rose-gold hover:bg-rose-gold-dark text-white font-semibold text-sm px-6 py-3 rounded-full transition-colors duration-200"
+            className="btn-cta-style inline-flex items-center gap-2 text-sm px-6 py-3 rounded-full"
           >
             <ShoppingBag className="w-4 h-4" />
             Ver todos los productos en stock

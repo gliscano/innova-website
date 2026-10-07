@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { defaultOptions } from './WhatsAppDropdown'
 import { useSelectedSize } from '../context/SelectedSizeContext'
-import { dimLabel } from '@/app/data/pricesData'
+import { dimLabel, FINISH_LABEL } from '@/app/data/pricesData'
 import type { Sel, Family, FamilyItem, Finish } from './prices/types'
 import type { CloudinaryFolder } from '@/app/types/catalog'
 import PriceHero from './prices/PriceHero'
@@ -30,6 +30,8 @@ export default function PriceList({ initialFolders }: { initialFolders?: Cloudin
       heightM: item.largo,
       fromPrice: price,
       isExactPrice: true,
+      // Solo Neón: su precio es otro y sin aclararlo se confunde con el de la tela HD.
+      finishLabel: finish === 'neon' ? FINISH_LABEL.neon : undefined,
     })
   }
 

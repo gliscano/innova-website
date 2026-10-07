@@ -41,5 +41,10 @@ export function absoluteUrl(path = '/'): string {
  * de Next llegó encodeado o no.
  */
 export function catalogUrl(folderName: string): string {
-  return `${SITE_URL}/design-catalog/${encodeURIComponent(folderName)}`
+  return absoluteUrl(catalogHref(folderName))
+}
+
+/** Path relativo de una categoría del catálogo (`/design-catalog/[folder]`), para los `<Link>`. */
+export function catalogHref(folderName: string): string {
+  return `/design-catalog/${encodeURIComponent(folderName)}`
 }

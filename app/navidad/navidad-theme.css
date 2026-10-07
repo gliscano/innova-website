@@ -33,9 +33,10 @@
 }
 
 /* ===== Hero ===== */
+/* Media pantalla: que se vea que hay más contenido debajo y la gente scrollee. */
 .navidad-theme .nv-hero {
-  height: 100svh;
-  min-height: 600px;
+  height: 50svh;
+  min-height: 360px;
   position: relative;
   overflow: hidden;
   background: var(--nv-negro);
@@ -44,12 +45,17 @@
 .navidad-theme .nv-hero:active {
   cursor: grabbing;
 }
+/* Arriba a la derecha y chico: con el hero a media pantalla, a la izquierda tapaba el título. */
 .navidad-theme .nv-hero-logo {
   position: absolute;
-  top: 24px;
-  left: 24px;
+  top: 16px;
+  right: 16px;
   z-index: 3;
   line-height: 0;
+}
+.navidad-theme .nv-hero-logo img {
+  width: 52px;
+  height: auto;
 }
 .navidad-theme .nv-hero-track {
   position: absolute;
@@ -93,7 +99,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 0 24px 92px;
+  padding: 0 24px 72px;
 }
 .navidad-theme .nv-hero-eyebrow {
   font-family: var(--nv-font-body);
@@ -114,7 +120,7 @@
 }
 .navidad-theme .nv-hero-headline {
   font-family: var(--nv-font-display);
-  font-size: clamp(52px, 14vw, 80px);
+  font-size: clamp(36px, 10vw, 52px);
   font-weight: 400;
   font-style: normal;
   line-height: 1.1;
@@ -129,7 +135,7 @@
   align-items: center;
   gap: 16px;
   flex-wrap: wrap;
-  margin-top: 20px;
+  margin-top: 14px;
 }
 .navidad-theme .nv-hero-ctaPrimary {
   display: inline-flex;
@@ -179,7 +185,7 @@
   font-size: 11px;
   color: rgba(249, 244, 238, 0.35);
   letter-spacing: 0.08em;
-  margin-top: 20px;
+  margin-top: 12px;
 }
 .navidad-theme .nv-hero-slideCounterCurrent {
   color: rgba(249, 244, 238, 0.8);
@@ -233,8 +239,11 @@
 
 @media (min-width: 1024px) {
   .navidad-theme .nv-hero-logo {
-    top: 32px;
-    left: 40px;
+    top: 24px;
+    right: 40px;
+  }
+  .navidad-theme .nv-hero-logo img {
+    width: 64px;
   }
   .navidad-theme .nv-hero-overlay {
     background:
@@ -257,7 +266,7 @@
     max-width: 720px;
   }
   .navidad-theme .nv-hero-headline {
-    font-size: clamp(72px, 8vw, 120px);
+    font-size: clamp(48px, 5vw, 72px);
     line-height: 1.1;
   }
   .navidad-theme .nv-hero-progressBar {
@@ -288,13 +297,10 @@
   background: var(--nv-crema);
 }
 
-/* ===== Intro ===== */
+/* ===== Intro: "Elegí tu categoría" ===== */
 .navidad-theme .nv-intro {
   background: var(--nv-negro);
-  padding: 28px 24px 26px;
-  display: flex;
-  gap: 16px;
-  align-items: center;
+  padding: 28px 0;
   position: relative;
   overflow: hidden;
 }
@@ -304,41 +310,188 @@
   pointer-events: none;
   z-index: 1;
 }
-.navidad-theme .nv-intro-label {
+.navidad-theme .nv-intro-inner {
+  position: relative;
+  z-index: 2;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+.navidad-theme .nv-intro-title {
   font-family: var(--nv-font-display);
-  font-size: 12px;
-  font-style: normal;
-  color: rgba(249, 244, 238, 0.4);
-  margin-bottom: 12px;
-  letter-spacing: 0.04em;
-}
-.navidad-theme .nv-anchors {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-.navidad-theme .nv-pill {
-  border: 0.5px solid rgba(212, 162, 76, 0.35);
-  color: var(--nv-oro);
-  font-family: var(--nv-font-body);
-  font-size: 9px;
+  font-size: 24px;
   font-weight: 400;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  text-decoration: none;
-  padding: 5px 10px;
-  border-radius: var(--nv-r-pill);
-  transition: background 0.3s, border-color 0.3s;
+  color: var(--nv-crema);
+  margin: 0;
+  padding: 0 24px;
 }
-.navidad-theme .nv-pill:hover {
-  background: rgba(212, 162, 76, 0.1);
+.navidad-theme .nv-intro-sub {
+  font-family: var(--nv-font-body);
+  font-size: 13px;
+  color: rgba(249, 244, 238, 0.7);
+  margin: 4px 0 16px;
+  padding: 0 24px;
+}
+/* Celular: fila deslizable con dos tarjetas y media a la vista. */
+.navidad-theme .nv-catcards {
+  list-style: none;
+  margin: 0;
+  padding: 0 24px;
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 0 24px;
+  scrollbar-width: none;
+}
+.navidad-theme .nv-catcards::-webkit-scrollbar {
+  display: none;
+}
+.navidad-theme .nv-catcards > li {
+  flex: 0 0 40%;
+  scroll-snap-align: start;
+}
+.navidad-theme .nv-catcard {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 4;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--nv-cat-accent, var(--nv-madera));
+  text-decoration: none;
+  outline-offset: 3px;
+}
+.navidad-theme .nv-catcard:focus-visible {
+  outline: 2px solid var(--nv-oro);
+}
+.navidad-theme .nv-catcard__img {
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.navidad-theme .nv-catcard:hover .nv-catcard__img {
+  transform: scale(1.05);
+}
+.navidad-theme .nv-catcard__shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(26, 10, 0, 0.88) 0%, rgba(26, 10, 0, 0.2) 55%, transparent 100%);
+}
+.navidad-theme .nv-catcard__body {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.navidad-theme .nv-catcard__title {
+  font-family: var(--nv-font-display);
+  font-size: 17px;
+  line-height: 1.15;
+  color: var(--nv-crema);
+}
+.navidad-theme .nv-catcard__meta {
+  font-family: var(--nv-font-body);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--nv-oro);
+}
+@media (min-width: 1024px) {
+  .navidad-theme .nv-intro {
+    padding: 40px 0;
+  }
+  .navidad-theme .nv-intro-title {
+    font-size: 32px;
+    padding: 0 40px;
+  }
+  .navidad-theme .nv-intro-sub {
+    font-size: 15px;
+    padding: 0 40px;
+    margin-bottom: 20px;
+  }
+  .navidad-theme .nv-catcards {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 16px;
+    padding: 0 40px;
+    overflow: visible;
+  }
+  .navidad-theme .nv-catcard__title {
+    font-size: 19px;
+  }
+}
+
+/* ===== Barra fija de categorías (se muestra mientras se recorren las secciones) ===== */
+.navidad-theme .nv-catbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  background: rgba(26, 10, 0, 0.94);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(212, 162, 76, 0.25);
+  transform: translateY(-100%);
+  transition: transform 0.25s ease;
+}
+.navidad-theme .nv-catbar.is-visible {
+  transform: translateY(0);
+}
+.navidad-theme .nv-catbar__list {
+  list-style: none;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 8px 16px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.navidad-theme .nv-catbar__list::-webkit-scrollbar {
+  display: none;
+}
+.navidad-theme .nv-catbar__pill {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: var(--nv-r-pill);
+  border: 1px solid rgba(212, 162, 76, 0.4);
+  color: var(--nv-crema);
+  font-family: var(--nv-font-body);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.navidad-theme .nv-catbar__pill:hover {
   border-color: var(--nv-oro);
+}
+.navidad-theme .nv-catbar__pill[aria-current='true'] {
+  background: var(--nv-oro);
+  border-color: var(--nv-oro);
+  color: var(--nv-negro);
+}
+@media (prefers-reduced-motion: reduce) {
+  .navidad-theme .nv-catbar {
+    transition: none;
+  }
+}
+
+/* Los saltos a una categoría (tarjetas y barra) se desplazan suave. */
+@media (prefers-reduced-motion: no-preference) {
+  html:has(.navidad-theme) {
+    scroll-behavior: smooth;
+  }
 }
 
 /* ===== Category sections ===== */
 .navidad-theme .nv-cat {
   overflow: hidden;
-  scroll-margin-top: 24px;
+  /* Deja lugar a la barra fija de categorías (CategoryStickyBar). */
+  scroll-margin-top: 64px;
 }
 .navidad-theme .nv-cat--claro {
   background: var(--nv-crema);

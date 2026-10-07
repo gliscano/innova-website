@@ -7,6 +7,7 @@ import { GalleryModalProps } from '../../types/gallery'
 import WhatsAppDropdown from '../WhatsAppDropdown'
 import { useSelectedSize } from '../../context/SelectedSizeContext'
 import { SizeSelectorCompact } from '../SizeSelectorCompact'
+import { parseImageDescription } from '@/app/utils/imageDescription'
 
 function parseDescription(img?: GalleryModalProps['images'][number]) {
   const raw = typeof img?.description === 'string' && img.description.trim() !== ''
@@ -15,24 +16,11 @@ function parseDescription(img?: GalleryModalProps['images'][number]) {
     ? img.context.Description
     : ''
 
-  if (!raw.trim()) return null
-
-  const coloresRegex = /\n*\s*colores\s*:\s*/i
-  const match = raw.search(coloresRegex)
-
-  if (match === -1) {
-    return { text: raw.trim(), colors: null }
-  }
-
-  const text = raw.slice(0, match).trim()
-  const colorsRaw = raw.slice(match).replace(coloresRegex, '').trim()
-  const colors = colorsRaw
-    .split(/,\s*/)
-    .map(c => c.replace(/\.$/, '').trim())
-    .filter(Boolean)
-
-  return { text: text || null, colors: colors.length > 0 ? colors : null }
+  return parseImageDescription(raw)
 }
+
+/** Debajo de este largo la descripción entra en dos renglones y no hace falta "Ver más". */
+const DESCRIPTION_CLAMP_CHARS = 110
 
 export default function GalleryModal({
   isOpen,
@@ -84,9 +72,16 @@ export default function GalleryModal({
   const currentImage = images[initialIndex] ?? null
   const description = useMemo(() => parseDescription(currentImage), [currentImage])
 
+  // Con medida elegida el mensaje ya trae el precio cerrado, para que la charla arranque en la
+  // compra y no en "¿cuánto sale?". Solo una medida especial (fuera de la tabla) lo deja a confirmar.
+  // Medida y precio van en negrita de WhatsApp (*texto*) para que se lean de un vistazo.
+  const designLines = `Categoría: ${category || 'diseño'}\nDiseño: ${currentImage?.display_name}`
+  const priceLine = selectedSize?.fromPrice
+    ? `\n*Precio: $${selectedSize.fromPrice.toLocaleString('es-AR')}*${selectedSize.isExactPrice ? '' : ' (medida especial, a confirmar)'}`
+    : ''
   const whatsappMessage = selectedSize
-    ? `Hola! Me interesa este diseño:\nCategoría: ${category || 'diseño'}\nDiseño: ${currentImage?.display_name}\nTamaño elegido: ${selectedSize.label} — desde $${selectedSize.fromPrice?.toLocaleString('es-AR')}\nVer imagen: ${currentImage?.url}`
-    : `Hola, Quiero comprar o consultar sobre\nCategoría: ${category || 'diseño'}\nDiseño: ${currentImage?.display_name}\nVer imagen: ${currentImage?.url}`
+    ? `Hola! Quiero comprar este diseño:\n${designLines}\n*Medida: ${selectedSize.label}*${selectedSize.finishLabel ? `\nTerminación: ${selectedSize.finishLabel}` : ''}${priceLine}\nVer imagen: ${currentImage?.url}\n¿Cómo sigo con la compra?`
+    : `Hola! Quiero consultar por este diseño:\n${designLines}\nVer imagen: ${currentImage?.url}`
 
   if (!isOpen || !currentImage) return null
 
@@ -226,6 +221,7 @@ export default function GalleryModal({
                     >
                       {description.text}
                     </p>
+                    {description.text.length > DESCRIPTION_CLAMP_CHARS && (
                     <button
                       onClick={() => setShowDescription(prev => !prev)}
                       className="flex items-center gap-1 text-gray-500 hover:text-white transition-colors text-xs mt-1"
@@ -238,6 +234,7 @@ export default function GalleryModal({
                       </svg>
                       {showDescription ? 'Ver menos' : 'Ver más'}
                     </button>
+                    )}
                   </div>
                 )}
               </div>

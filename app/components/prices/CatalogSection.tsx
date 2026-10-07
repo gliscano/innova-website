@@ -2,7 +2,6 @@
 
 import { forwardRef } from 'react'
 import InnovaCatalog from '../gallery/DesignCatalog'
-import NavidadBanner from '../NavidadBanner'
 import type { Sel } from './types'
 import type { CloudinaryFolder } from '@/app/types/catalog'
 
@@ -24,7 +23,6 @@ const CatalogSection = forwardRef<HTMLDivElement, Props>(function CatalogSection
           </div>
         </div>
       </div>
-      <NavidadBanner />
       <InnovaCatalog initialFolders={initialFolders} />
     </div>
   )

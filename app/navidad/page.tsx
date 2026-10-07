@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import NavidadPageContent from './NavidadPageContent'
 import { absoluteUrl } from '../lib/siteUrl'
+import { getNavidadPreviews } from '../lib/navidadPreviews'
 
 export const metadata: Metadata = {
   title: 'Catálogo Navidad 2026',
@@ -10,10 +11,11 @@ export const metadata: Metadata = {
     title: 'Catálogo Navidad 2026 | Innova',
     description: 'Seis mundos para tu sesión perfecta. Fondos fotográficos de alta definición para Navidad 2026.',
     url: absoluteUrl('/navidad'),
-    images: [{ url: '/images/innova/navidad/1.jpg', width: 1200, height: 630, alt: 'Catálogo Navidad 2026 Innova' }],
+    images: [{ url: '/images/innova/navidad/og-navidad.jpg', width: 1200, height: 630, alt: 'Catálogo Navidad 2026 Innova' }],
   },
 }
 
-export default function NavidadPage() {
-  return <NavidadPageContent />
+export default async function NavidadPage() {
+  const previews = await getNavidadPreviews()
+  return <NavidadPageContent previews={previews} />
 }

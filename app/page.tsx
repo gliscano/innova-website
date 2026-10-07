@@ -1,10 +1,8 @@
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
-import AnimatedCards from './components/AnimatedCards'
 import Footer from './components/Footer'
 import FAQ from './components/FAQ'
 import DesignCatalog from './components/gallery/DesignCatalog'
-import NavidadBanner from './components/NavidadBanner'
 import { getCachedFolders } from './lib/cloudinaryFolders'
 import { SITE_URL } from './lib/siteUrl'
 import HeroProps from './components/HeroProps'
@@ -38,22 +36,26 @@ export const metadata: Metadata = {
 
 export default async function Home() {
   const folders = await getCachedFolders()
-  // El buscador de la barra solo necesita nombre, título y conteo de cada carpeta.
+  // El hero y la barra solo necesitan nombre, título y conteo de cada carpeta para el buscador;
+  // las carpetas completas van únicamente a DesignCatalog.
   const searchFolders = folders.map(({ folderName, title, imageCount, isCollection }) => ({
     folderName,
     title,
     imageCount,
     isCollection,
   }))
+  // Collage del hero: los destacados con miniatura, uno por categoría (cada carpeta es una).
+  const heroCollage = folders
+    .filter((f) => f.featured && f.thumbnailId)
+    .slice(0, 6)
+    .map(({ folderName, title, thumbnailId }) => ({ folderName, title, thumbnailId: thumbnailId as string }))
   return (
     <div className="min-h-screen flex flex-col">
       <HeroTopBar folders={searchFolders} />
       <main className="flex-grow">
-        <HeroGallery folders={folders} />
-        <AnimatedCards />
+        <HeroGallery folders={searchFolders} collage={heroCollage} />
         <StockPreview />
         {/* <InspirationSection /> */}
-        <NavidadBanner />
         <DesignCatalog initialFolders={folders} />
         <HeroProps />
         <Suspense fallback={null}>

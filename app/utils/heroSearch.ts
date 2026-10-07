@@ -1,5 +1,6 @@
 import { catalogData } from "@/app/data/catalogData"
-import { NAVIDAD_URL, catalogHref } from "@/app/data/heroGalleryData"
+import { NAVIDAD_URL } from "@/app/data/heroGalleryData"
+import { catalogHref } from "@/app/lib/siteUrl"
 
 /** Lo mínimo de cada carpeta que necesita el buscador de la portada. */
 export interface HeroSearchFolder {
@@ -16,17 +17,25 @@ export interface HeroSearchResult {
 }
 
 export const normalizeSearch = (text: string) =>
-  text.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").trim()
+  text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim()
 
-/** Términos que la gente escribe y no coinciden con el nombre de ninguna carpeta. */
+/**
+ * Términos que la gente escribe y que no aparecen en el nombre de ninguna carpeta. Se buscan
+ * además del término original (no en su lugar), así "bebe shower" no se pierde en "newborn".
+ */
 const SYNONYMS: Record<string, string> = {
   "recien nacido": "newborn",
   bebe: "newborn",
   cumple: "globos",
-  navida: "navidad",
-  egresado: "egresados",
-  pared: "paredes",
-  textura: "texturas",
+}
+
+/** El término más el equivalente de cada sinónimo que contiene o que está empezando a escribir. */
+function expandTerm(term: string): string[] {
+  const terms = [term]
+  for (const [k, v] of Object.entries(SYNONYMS)) {
+    if (term.startsWith(k) || (term.length >= 3 && k.startsWith(term))) terms.push(v)
+  }
+  return terms
 }
 
 const tagsByFolder = new Map(
@@ -46,21 +55,23 @@ export function searchThemes(folders: HeroSearchFolder[], query: string): HeroSe
     countLabel: f.isCollection ? "Subcategorías" : f.imageCount > 0 ? `${f.imageCount} diseños` : "",
   })
 
-  let term = normalizeSearch(query)
-  const sorted = [...folders].sort((a, b) => a.title.localeCompare(b.title, "es"))
+  const term = normalizeSearch(query)
+  // La carpeta `navidad` del catálogo ya está representada por la colección fija de /navidad.
+  const sorted = folders
+    .filter((f) => normalizeSearch(f.folderName) !== "navidad")
+    .sort((a, b) => a.title.localeCompare(b.title, "es"))
   if (!term) return [NAVIDAD, ...sorted.map(toResult)]
 
-  for (const [k, v] of Object.entries(SYNONYMS)) {
-    if (term.startsWith(k)) term = v
-  }
+  const terms = expandTerm(term)
+  const matches = (text: string) => terms.some((t) => text.includes(t))
 
   const byName: HeroSearchResult[] = []
   const byTag: HeroSearchResult[] = []
-  if (normalizeSearch(NAVIDAD.name).includes(term)) byName.push(NAVIDAD)
+  if (matches(normalizeSearch(NAVIDAD.name))) byName.push(NAVIDAD)
   for (const f of sorted) {
-    if (normalizeSearch(f.title).includes(term) || normalizeSearch(f.folderName).includes(term)) {
+    if (matches(normalizeSearch(f.title)) || matches(normalizeSearch(f.folderName))) {
       byName.push(toResult(f))
-    } else if (term.length >= 3 && tagsByFolder.get(f.folderName)?.some((t) => t.includes(term))) {
+    } else if (term.length >= 3 && tagsByFolder.get(f.folderName)?.some(matches)) {
       byTag.push(toResult(f))
     }
   }

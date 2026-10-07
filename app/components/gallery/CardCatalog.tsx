@@ -4,6 +4,7 @@ import { CldImage } from "next-cloudinary"
 import Link from "next/link"
 import { Star } from "lucide-react"
 import type { CloudinaryFolder } from "@/app/types/catalog"
+import { catalogHref } from "@/app/lib/siteUrl"
 
 interface CardCatalogProps {
   folder: CloudinaryFolder
@@ -12,7 +13,7 @@ interface CardCatalogProps {
 export default function CardCatalog({ folder }: CardCatalogProps) {
   return (
     <Link
-      href={`/design-catalog/${encodeURIComponent(folder.folderName)}`}
+      href={catalogHref(folder.folderName)}
       aria-label={folder.isCollection ? folder.title : `${folder.title} — ${folder.imageCount} diseños`}
       className="group relative flex rounded-3xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 aspect-[3/4] focus:outline-none focus:ring-2 focus:ring-white/50"
     >

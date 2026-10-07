@@ -4,6 +4,7 @@ import { useCallback, useState } from 'react'
 import { CldImage } from 'next-cloudinary'
 import { GalleryItemProps } from '../../types/gallery'
 import { trackGalleryImageClick } from '@/app/utils/tracking'
+import { parseImageDescription } from '@/app/utils/imageDescription'
 
 /**
  * Texto alternativo del diseño. El `alt` anterior era `Imagen ${index + 1}` en el grueso de las
@@ -14,7 +15,8 @@ import { trackGalleryImageClick } from '@/app/utils/tracking'
  * como base. Cuando se pueblen las descripciones en Cloudinary, ganan sin tocar este componente.
  */
 function buildAlt(description: string | undefined, categoryTitle: string | undefined, index: number): string {
-  const curated = description?.trim()
+  // Sin los campos para el buscador (Tags, Uso, Público…): solo la frase legible.
+  const curated = parseImageDescription(description)?.text
   if (curated) return curated
   return categoryTitle
     ? `Fondo fotográfico ${categoryTitle} — diseño ${index + 1}`

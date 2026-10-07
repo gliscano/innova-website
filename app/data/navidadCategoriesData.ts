@@ -139,6 +139,15 @@ export const navidadCategories: NavidadCategory[] = [
   },
 ]
 
+/** Miniatura y cantidad de diseños de cada categoría, para las tarjetas de "Elegí tu categoría". */
+export interface NavidadCategoryPreview {
+  /** public_id de la primera imagen de la carpeta; `null` si Cloudinary no respondió. */
+  thumbnailId: string | null
+  count: number
+}
+
+export type NavidadCategoryPreviews = Partial<Record<NavidadCategoryId, NavidadCategoryPreview>>
+
 export function getNavidadFolderPath(category: NavidadCategory): string {
   return `${NAVIDAD_2026_BASE_FOLDER}/${category.cloudinaryFolder}`
 }
