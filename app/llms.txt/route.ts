@@ -1,17 +1,15 @@
 import { FAMILIES, FINISH_LABEL, ars, type FamilyItem } from '@/app/data/pricesData'
 import { faqCategories, type FaqCategory } from '@/app/data/faqsData'
-import { getCachedFolders } from '@/app/lib/cloudinaryFolders'
 import { SITE_URL, absoluteUrl, catalogUrl } from '@/app/lib/siteUrl'
 import { faqAnswerToPlainText } from '@/app/components/JsonLd'
 
 /**
  * /llms.txt — resumen en Markdown pensado para agentes y buscadores de IA (formato llmstxt.org).
  *
- * Se genera desde las mismas fuentes que consume el sitio (`FAMILIES`, `faqCategories` y las
- * carpetas de Cloudinary), así precios, plazos y categorías no tienen un segundo lugar donde
- * actualizarse. Se revalida cada 24 h, igual que el sitemap.
+ * Se genera desde las mismas fuentes que consume el sitio (`FAMILIES` y `faqCategories`), así
+ * precios y plazos no tienen un segundo lugar donde actualizarse. Es estático: no consulta
+ * Cloudinary; las categorías se descubren navegando el catálogo.
  */
-export const revalidate = 86400
 
 const WHATSAPP_URL = 'https://wa.me/5491171142152'
 const CONTACT_EMAIL = 'store@innova54.com'
@@ -42,20 +40,7 @@ function faqSection(categories: FaqCategory[]): string {
     .join('\n')
 }
 
-async function catalogSection(): Promise<string> {
-  try {
-    const folders = await getCachedFolders()
-    if (folders.length === 0) return ''
-    return folders.map((folder) => `- [${folder.title}](${catalogUrl(folder.folderName)})`).join('\n')
-  } catch {
-    // Si Cloudinary no responde se sirve igual el resto del archivo.
-    return ''
-  }
-}
-
-export async function GET() {
-  const catalog = await catalogSection()
-
+export function GET() {
   const body = `# Innova Backdrops
 
 > Innova es una marca argentina (Vicente López, Buenos Aires) que diseña y fabrica fondos fotográficos (backdrops), pisos, fundas para paneles y props en alta definición para fotógrafos, estudios, productores y decoradores de eventos. Vende diseños de catálogo y fondos personalizados. Sitio en español (es-AR); precios en pesos argentinos (ARS).
@@ -84,15 +69,11 @@ ${faqSection(faqCategories)}
 - Email: ${CONTACT_EMAIL}
 - Showroom: Av. San Martín 1777 PB B, Vicente López, Buenos Aires, Argentina (con turno previo)
 - Sitio web: ${SITE_URL}
-${
-  catalog
-    ? `
+
 ## Categorías del catálogo
 
-${catalog}
+Las categorías de diseños están en ${absoluteUrl('/design-catalog')}. Cada categoría tiene su propia página con todos sus diseños, por ejemplo: ${catalogUrl('Abstractas')}
 `
-    : ''
-}`
 
   return new Response(body, {
     headers: {
