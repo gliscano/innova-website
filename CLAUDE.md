@@ -32,9 +32,12 @@ No test suite is configured.
   - `utils/` — Utility functions (`tracking.ts` is the single entry point for every GA4/Meta Pixel
     event — do not call `window.gtag` / `window.fbq` inline from components)
   - `lib/` — Server-side data access (`cloudinaryFolders`, `cloudinaryImages`, `siteUrl`,
-    `empretiendaProducts`), all cached with `unstable_cache`
+    `empretiendaProducts`), all cached with `unstable_cache`. Exception: `googleSheets` / `orders`
+    (order sheet, read with `no-store` because the sheet is edited by hand)
   - `api/cloudinary/search/` — API route that proxies Cloudinary search; it delegates to
     `lib/cloudinaryImages` so the server components and the route share one implementation
+- `apps-script/` — Google Apps Script pasted into the orders spreadsheet (not part of the Next build)
+- `docs/` — Operational guides (`pedidos-google-sheets.md`: order flow + setup)
 - `public/` — Static assets (animations, icons, images, SVGs)
 
 ### Routes
@@ -48,6 +51,18 @@ No test suite is configured.
 | `/prices` | Pricing page |
 | `/preguntas-frecuentes` | FAQ |
 | `/terminos-y-condiciones` | Terms & conditions |
+| `/pedido/[clave]` | Private per-customer order form (noindex). Reads the order from Google Sheets |
+
+### Orders (Google Sheets)
+
+Innova creates orders from the spreadsheet (`apps-script/Pedidos.gs`, menu "Innova"): one row in
+`Pedidos` + one row per product in `Items`, status `Esperando datos`, and a random 16-hex `Clave`.
+The customer opens `/pedido/<clave>`, fills personal/shipping data, and the server action writes
+only the customer columns and flips status to `Esperando pago`, then shows transfer details
+(`TRANSFER_*` env). The site authenticates with a service account (`GOOGLE_SA_*`, `GOOGLE_SHEET_ID`)
+via a hand-rolled JWT in `lib/googleSheets.ts` — no `googleapis` dependency. Column order is a
+contract duplicated in `lib/orderSchema.ts` and `Pedidos.gs`: change both. `ORDERS_MOCK=1` in dev
+serves sample orders (`/pedido/00000000000000a1`…`a4`).
 
 ### Image management
 
@@ -87,3 +102,13 @@ All product images are hosted on Cloudinary (cloud name: `innova54`). The `next.
   BreadcrumbList, ItemList, Product/Offer).
 - `/design-catalog/[id]` is prerendered via `generateStaticParams()` and seeds the first page of
   gallery images server-side, so the designs are in the served HTML.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

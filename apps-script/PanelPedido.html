@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <style>
+    :root { --accent: #b5532e; --ink: #2b2420; --soft: #6b625b; --line: #e5ddd3; --bg: #fbf8f4; }
+    * { box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; font-size: 13px; color: var(--ink); background: var(--bg); margin: 0; padding: 12px; }
+    h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--soft); margin: 18px 0 8px; }
+    label { display: block; font-weight: bold; margin: 8px 0 3px; }
+    input, select, textarea { width: 100%; padding: 7px 8px; border: 1px solid var(--line); border-radius: 6px; font: inherit; background: #fff; }
+    .row { display: flex; gap: 8px; }
+    .row > div { flex: 1; min-width: 0; }
+    .check { display: flex; align-items: center; gap: 6px; font-weight: bold; margin-top: 10px; }
+    .check input { width: auto; }
+    .item { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px 10px; margin-bottom: 8px; position: relative; }
+    .item .num { font-weight: bold; color: var(--accent); }
+    .quitar { position: absolute; top: 6px; right: 8px; border: 0; background: none; color: var(--soft); cursor: pointer; font-size: 16px; }
+    .subtotal { text-align: right; color: var(--soft); margin-top: 6px; }
+    button.primary { width: 100%; background: var(--accent); color: #fff; border: 0; border-radius: 8px; padding: 10px; font-weight: bold; cursor: pointer; margin-top: 14px; }
+    button.primary:disabled { opacity: .6; cursor: wait; }
+    button.sec { width: 100%; background: #fff; color: var(--accent); border: 1px dashed var(--accent); border-radius: 8px; padding: 8px; cursor: pointer; font-weight: bold; }
+    .total { display: flex; justify-content: space-between; font-size: 15px; font-weight: bold; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); }
+    .hint { color: var(--soft); font-size: 11px; margin-top: 3px; }
+    .error { color: #b91c1c; margin-top: 10px; }
+    .wa { display: block; text-align: center; background: #25D366; color: #fff; border-radius: 8px; padding: 10px; font-weight: bold; text-decoration: none; margin-top: 8px; }
+    #resultado textarea { height: 230px; font-size: 12px; }
+    .ok { background: #dcfce7; color: #166534; padding: 8px 10px; border-radius: 8px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div id="formulario">
+    <h2>Pedido</h2>
+    <div class="row">
+      <div><label for="fecha">Fecha</label><input type="date" id="fecha"></div>
+      <div><label for="semana">Semana de entrega</label><input id="semana" placeholder="Ej. 26/10"></div>
+    </div>
+    <label for="telefono">WhatsApp del cliente</label>
+    <input id="telefono" type="tel" placeholder="Ej. 11 1234 5678">
+    <div class="hint">Opcional. Sirve para abrir el chat y recontactar con un clic.</div>
+    <label class="check"><input type="checkbox" id="envio"> Se envía por encomienda</label>
+
+    <h2>Productos</h2>
+    <div id="items"></div>
+    <button type="button" class="sec" onclick="agregarItem()">+ Agregar producto</button>
+
+    <div class="total"><span>Total</span><span id="total">$0</span></div>
+    <label for="monto">Monto a transferir</label>
+    <input id="monto" type="number" min="0" step="1000" placeholder="Igual al total">
+    <div class="hint">Dejalo vacío para cobrar el total, o poné el valor de la seña.</div>
+
+    <div id="error" class="error"></div>
+    <button type="button" class="primary" id="guardar" onclick="guardar()">Guardar y generar mensaje</button>
+  </div>
+
+  <div id="resultado" style="display:none">
+    <p class="ok" id="okTexto"></p>
+    <label for="mensaje">Mensaje para el cliente</label>
+    <textarea id="mensaje" readonly></textarea>
+    <button type="button" class="primary" onclick="copiar('mensaje', this)">Copiar mensaje</button>
+    <a id="wa" class="wa" target="_blank">Abrir WhatsApp</a>
+    <button type="button" class="sec" style="margin-top:14px" onclick="reiniciar()">Cargar otro pedido</button>
+  </div>
+
+  <script>
+    var precios = [];
+    var contador = 0;
+
+    function pesos(n) {
+      return '$' + Math.round(n || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    function hoy() {
+      var d = new Date();
+      d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+      return d.toISOString().slice(0, 10);
+    }
+
+    function escapar(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+    }
+
+    function opcionesPrecios() {
+      var html = '<option value="">Elegí producto y medida…</option>';
+      precios.forEach(function (p, i) {
+        html += '<option value="' + i + '">' + escapar(p.producto + ' · ' + p.medidas + ' · ' + pesos(p.precio)) + '</option>';
+      });
+      return html + '<option value="otro">Otro / medida especial</option>';
+    }
+
+    function agregarItem() {
+      contador++;
+      var div = document.createElement('div');
+      div.className = 'item';
+      div.innerHTML =
+        '<span class="num">Producto</span>' +
+        '<button type="button" class="quitar" title="Quitar" onclick="quitarItem(this)">×</button>' +
+        '<label>Producto y medida</label><select class="lista" onchange="elegirPrecio(this)">' + opcionesPrecios() + '</select>' +
+        '<div class="libre" style="display:none"><div class="row">' +
+          '<div><label>Producto</label><input class="producto" placeholder="Ej. Fondo especial"></div>' +
+          '<div><label>Medidas</label><input class="medidas" placeholder="Ej. 3 x 2,5 m"></div>' +
+        '</div></div>' +
+        '<label>Modelo / diseño</label><input class="modelo" placeholder="Ej. Bosque encantado">' +
+        '<div class="row">' +
+          '<div><label>Precio</label><input class="precio" type="number" min="0" step="1000" oninput="recalcular()"></div>' +
+          '<div style="flex:0 0 70px"><label>Cant.</label><input class="cantidad" type="number" min="1" value="1" oninput="recalcular()"></div>' +
+        '</div>' +
+        '<label>Diseño de piso</label><input class="piso" placeholder="Opcional">' +
+        '<div class="subtotal"></div>';
+      document.getElementById('items').appendChild(div);
+      numerar();
+      recalcular();
+    }
+
+    function quitarItem(boton) {
+      boton.parentNode.remove();
+      if (!document.querySelectorAll('.item').length) agregarItem();
+      numerar();
+      recalcular();
+    }
+
+    function numerar() {
+      var items = document.querySelectorAll('.item');
+      items.forEach(function (el, i) { el.querySelector('.num').textContent = 'Producto ' + (i + 1); });
+    }
+
+    function elegirPrecio(select) {
+      var item = select.closest('.item');
+      var libre = item.querySelector('.libre');
+      if (select.value === 'otro') {
+        libre.style.display = '';
+        item.querySelector('.producto').value = '';
+        item.querySelector('.medidas').value = '';
+      } else {
+        libre.style.display = 'none';
+        var p = precios[Number(select.value)];
+        if (p) {
+          item.querySelector('.producto').value = p.producto;
+          item.querySelector('.medidas').value = p.medidas;
+          item.querySelector('.precio').value = p.precio;
+        }
+      }
+      recalcular();
+    }
+
+    function leerItems() {
+      return Array.prototype.map.call(document.querySelectorAll('.item'), function (el) {
+        return {
+          producto: el.querySelector('.producto').value,
+          medidas: el.querySelector('.medidas').value,
+          modelo: el.querySelector('.modelo').value,
+          precio: Number(el.querySelector('.precio').value) || 0,
+          cantidad: Number(el.querySelector('.cantidad').value) || 1,
+          piso: el.querySelector('.piso').value,
+        };
+      });
+    }
+
+    function recalcular() {
+      var total = 0;
+      document.querySelectorAll('.item').forEach(function (el) {
+        var sub = (Number(el.querySelector('.precio').value) || 0) * (Number(el.querySelector('.cantidad').value) || 1);
+        el.querySelector('.subtotal').textContent = 'Subtotal: ' + pesos(sub);
+        total += sub;
+      });
+      document.getElementById('total').textContent = pesos(total);
+      document.getElementById('monto').placeholder = 'Igual al total (' + pesos(total) + ')';
+    }
+
+    function guardar() {
+      var error = document.getElementById('error');
+      error.textContent = '';
+      var items = leerItems().filter(function (it) { return it.producto || it.modelo; });
+      if (!items.length) { error.textContent = 'Agregá al menos un producto.'; return; }
+      if (items.some(function (it) { return !it.precio; })) { error.textContent = 'Falta el precio de algún producto.'; return; }
+
+      var boton = document.getElementById('guardar');
+      boton.disabled = true;
+      boton.textContent = 'Guardando…';
+      google.script.run
+        .withSuccessHandler(function (r) {
+          document.getElementById('formulario').style.display = 'none';
+          document.getElementById('resultado').style.display = '';
+          document.getElementById('okTexto').textContent = '✓ Pedido ' + r.id + ' guardado en la planilla';
+          document.getElementById('mensaje').value = r.mensaje;
+          document.getElementById('wa').href = r.whatsapp;
+        })
+        .withFailureHandler(function (e) {
+          error.textContent = e.message || String(e);
+          boton.disabled = false;
+          boton.textContent = 'Guardar y generar mensaje';
+        })
+        .crearPedido({
+          fecha: document.getElementById('fecha').value,
+          semanaEntrega: document.getElementById('semana').value,
+          telefono: document.getElementById('telefono').value,
+          requiereEnvio: document.getElementById('envio').checked,
+          montoTransferir: Number(document.getElementById('monto').value) || 0,
+          items: items,
+        });
+    }
+
+    function copiar(id, boton) {
+      var campo = document.getElementById(id);
+      campo.select();
+      document.execCommand('copy');
+      var original = boton.textContent;
+      boton.textContent = '¡Copiado!';
+      setTimeout(function () { boton.textContent = original; }, 1500);
+    }
+
+    function reiniciar() {
+      document.getElementById('items').innerHTML = '';
+      ['semana', 'telefono', 'monto'].forEach(function (id) { document.getElementById(id).value = ''; });
+      document.getElementById('envio').checked = false;
+      var boton = document.getElementById('guardar');
+      boton.disabled = false;
+      boton.textContent = 'Guardar y generar mensaje';
+      document.getElementById('fecha').value = hoy();
+      agregarItem();
+      document.getElementById('resultado').style.display = 'none';
+      document.getElementById('formulario').style.display = '';
+    }
+
+    document.getElementById('fecha').value = hoy();
+    google.script.run
+      .withSuccessHandler(function (lista) { precios = lista || []; agregarItem(); })
+      .withFailureHandler(function () { agregarItem(); })
+      .obtenerPrecios();
+  </script>
+</body>
+</html>

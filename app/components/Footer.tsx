@@ -23,7 +23,7 @@ export default function Footer() {
                       <span className="sr-only">Instagram</span>
                       <Image
                         aria-hidden
-                        src="svg/ig.svg"
+                        src="/svg/ig.svg"
                         alt="instagram icon"
                         className="mr-2"
                         width={20}
@@ -37,7 +37,7 @@ export default function Footer() {
                       <span className="sr-only">Facebook</span>
                       <Image
                         aria-hidden
-                        src="svg/facebook-icon.svg"
+                        src="/svg/facebook-icon.svg"
                         alt="facebook icon"
                         className="mr-2"
                         width={20}
@@ -51,7 +51,7 @@ export default function Footer() {
                       <span className="sr-only">Tiktok</span>
                       <Image
                         aria-hidden
-                        src="svg/tiktok-icon.svg"
+                        src="/svg/tiktok-icon.svg"
                         alt="tiktok icon"
                         className="mr-2"
                         width={20}
@@ -65,7 +65,7 @@ export default function Footer() {
                       <span className="sr-only">pinterest</span>
                       <Image
                         aria-hidden
-                        src="svg/pinterest-icon.svg"
+                        src="/svg/pinterest-icon.svg"
                         alt="pinterest icon"
                         className="mr-2"
                         width={20}
@@ -101,7 +101,7 @@ export default function Footer() {
                     >
                       <Image
                         aria-hidden
-                        src="svg/whatsapp.svg"
+                        src="/svg/whatsapp.svg"
                         alt="Whatsapp icon"
                         className="mr-2"
                         width={20}
@@ -120,7 +120,7 @@ export default function Footer() {
                     >
                       <Image
                         aria-hidden
-                        src="svg/google-maps.svg"
+                        src="/svg/google-maps.svg"
                         alt="google maps icon"
                         className="mr-1"
                         width={30}

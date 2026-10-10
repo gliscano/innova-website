@@ -114,3 +114,20 @@ export function trackInspirationCardClick(displayName?: string): void {
     event_label: displayName || 'unknown',
   })
 }
+
+/**
+ * El cliente completó sus datos en `/pedido/[clave]` y quedó por transferir. Es el último paso
+ * medible antes del pago, que se confirma fuera del sitio.
+ */
+export function trackOrderDataSubmitted(value: number, numItems: number): void {
+  if (typeof window === 'undefined') return
+  gaEvent('order_data_submitted', {
+    event_category: 'checkout',
+    value,
+    currency: 'ARS',
+    num_items: numItems,
+  })
+  if (window.fbq) {
+    window.fbq('track', 'AddPaymentInfo', { value, currency: 'ARS', num_items: numItems })
+  }
+}
