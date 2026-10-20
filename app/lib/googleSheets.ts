@@ -57,8 +57,17 @@ async function getAccessToken(): Promise<string> {
   return data.access_token
 }
 
+/**
+ * Acepta el ID solo o la URL completa de la planilla (`…/spreadsheets/d/<ID>/edit…`): pegar la URL
+ * entera en la variable es el error más común al configurarla.
+ */
+function getSheetId(): string | undefined {
+  const raw = process.env.GOOGLE_SHEET_ID?.trim()
+  return raw?.match(/\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/)?.[1] ?? raw
+}
+
 async function sheetsFetch(path: string, init?: RequestInit): Promise<Response> {
-  const sheetId = process.env.GOOGLE_SHEET_ID
+  const sheetId = getSheetId()
   if (!sheetId) throw new Error('Falta GOOGLE_SHEET_ID')
 
   const token = await getAccessToken()
@@ -94,4 +103,33 @@ export async function batchUpdate(data: { range: string; values: SheetRows }[]):
     method: 'POST',
     body: JSON.stringify({ valueInputOption: 'RAW', data }),
   })
+}
+
+/**
+ * Agrega filas al final de una pestaña. A diferencia de escribir en "última fila + 1", la API
+ * resuelve la posición en el momento, así que dos clientes guardando a la vez no se pisan.
+ */
+export async function appendRows(sheet: string, values: SheetRows): Promise<void> {
+  const params = new URLSearchParams({ valueInputOption: 'RAW', insertDataOption: 'INSERT_ROWS' })
+  await sheetsFetch(`/values/${encodeURIComponent(`${quoteSheet(sheet)}!A1`)}:append?${params}`, {
+    method: 'POST',
+    body: JSON.stringify({ values }),
+  })
+}
+
+/** Nombre de pestaña para notación A1. Siempre entre comillas: "Envíos" lleva tilde. */
+export function quoteSheet(sheet: string): string {
+  return `'${sheet.replace(/'/g, "''")}'`
+}
+
+/** Letra de columna A1 a partir de un índice base 0: 0 → A, 25 → Z, 26 → AA. */
+export function columnLetter(index: number): string {
+  let n = index + 1
+  let letters = ''
+  while (n > 0) {
+    const rest = (n - 1) % 26
+    letters = String.fromCharCode(65 + rest) + letters
+    n = Math.floor((n - 1) / 26)
+  }
+  return letters
 }

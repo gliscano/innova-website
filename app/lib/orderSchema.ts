@@ -2,64 +2,91 @@
  * Forma de la planilla de pedidos. Es el contrato entre el sitio (que lee el pedido y completa los
  * datos del cliente) y `apps-script/Pedidos.gs` (que crea el pedido desde la planilla).
  *
- * Si se agrega, quita o reordena una columna, hay que cambiarla en los dos lados: el script tiene
- * su propia copia de estos encabezados en `COLUMNAS_PEDIDOS` / `COLUMNAS_ITEMS`.
+ * Las columnas se buscan por el **nombre del encabezado** (fila 1), no por su posición: se pueden
+ * reordenar o agregar columnas a mano en la planilla sin tocar código. El orden de estas listas es
+ * sólo el que usa `configurarPlanilla` al crear las pestañas. Lo que sí tiene que coincidir con el
+ * script (`COLUMNAS_*` en `Pedidos.gs`) son los nombres.
  */
 
 export const PEDIDOS_SHEET = 'Pedidos'
 export const ITEMS_SHEET = 'Items'
+export const CLIENTES_SHEET = 'Clientes'
+export const ENVIOS_SHEET = 'Envíos'
 
-/** Columnas de la pestaña Pedidos, en orden (A, B, C…). Una fila por compra. */
+/** Una fila por compra. */
 export const PEDIDOS_COLUMNS = [
   'ID',
-  'Clave',
   'Estado',
+  'Nombre',
+  'Teléfono',
+  'Total',
+  'Seña',
+  'Resta',
+  'Vendedora',
   'Fecha',
   'Semana de entrega',
   'Cant. productos',
-  'Total',
-  'Monto a transferir',
   'Requiere envío',
-  'Tel. WhatsApp',
-  'Nombre',
+  'Logística',
   'DNI',
   'Mail',
-  'Teléfono',
-  'Empresa de envío',
   'Calle y número',
   'Dpto',
   'Ciudad',
   'Provincia',
   'Código postal',
   'Sucursal/Domicilio',
+  'Link',
   'Link generado',
   'Datos completados',
-  'Link',
+  'Clave',
 ] as const
 
-/** Columnas de la pestaña Items, en orden. Una fila por producto de un pedido. */
+/** Una fila por producto de un pedido. */
 export const ITEMS_COLUMNS = [
   'ID pedido',
   'Producto',
   'Modelo',
-  'Medidas',
+  'Ancho',
+  'Alto',
+  'Incluye piso',
+  'Largo pared',
+  'Largo piso',
+  'Diseño de piso',
   'Precio unitario',
+  'Precio diseño',
   'Cantidad',
   'Subtotal',
-  'Diseño de piso',
 ] as const
 
-type PedidosColumn = (typeof PEDIDOS_COLUMNS)[number]
+/** Una fila por cliente, identificado por su teléfono normalizado (549…). */
+export const CLIENTES_COLUMNS = [
+  'Teléfono',
+  'Nombre',
+  'DNI',
+  'Mail',
+  'Primera compra',
+  'Última compra',
+  'Cant. pedidos',
+] as const
 
-/** Índice (base 0) de una columna de Pedidos. */
-export function pedidosIndex(column: PedidosColumn): number {
-  return PEDIDOS_COLUMNS.indexOf(column)
-}
+/** Una fila por dirección distinta de cada cliente (sólo Correo Argentino / Viacargo piden dirección). */
+export const ENVIOS_COLUMNS = [
+  'Teléfono',
+  'Logística',
+  'Sucursal/Domicilio',
+  'Calle y número',
+  'Dpto',
+  'Ciudad',
+  'Provincia',
+  'Código postal',
+  'Última vez usada',
+] as const
 
-/** Letra A1 de una columna de Pedidos (sólo hasta Z: alcanza para las 24 que hay). */
-export function pedidosLetter(column: PedidosColumn): string {
-  return String.fromCharCode(65 + pedidosIndex(column))
-}
+export type PedidosColumn = (typeof PEDIDOS_COLUMNS)[number]
+export type ItemsColumn = (typeof ITEMS_COLUMNS)[number]
+export type ClientesColumn = (typeof CLIENTES_COLUMNS)[number]
+export type EnviosColumn = (typeof ENVIOS_COLUMNS)[number]
 
 /**
  * Estados del pedido. Los dos primeros los escribe el sistema (el script y el sitio); el resto los
@@ -79,7 +106,11 @@ export type OrderStatus = (typeof ORDER_STATUS)[keyof typeof ORDER_STATUS]
 /** Estados en los que el cliente todavía puede cargar o corregir sus datos. */
 export const EDITABLE_STATUSES: readonly string[] = [ORDER_STATUS.esperandoDatos, ORDER_STATUS.esperandoPago]
 
-export const SHIPPING_COMPANIES = ['Andreani', 'Viacargo', 'Correo Argentino'] as const
+/** Formas de entrega que elige el cliente. */
+export const LOGISTICS = ['Andreani', 'Correo Argentino', 'Viacargo', 'Retiro en tienda'] as const
+export const PICKUP = 'Retiro en tienda'
+/** Logísticas para las que el cliente completa la dirección de envío en el formulario. */
+export const ADDRESS_LOGISTICS: readonly string[] = ['Correo Argentino', 'Viacargo']
 export const DELIVERY_MODES = ['Sucursal', 'Domicilio'] as const
 
 export const PROVINCIAS = [
@@ -109,16 +140,22 @@ export const PROVINCIAS = [
   'Tucumán',
 ] as const
 
+/**
+ * Lo que ve el cliente de cada producto. Sin precios a propósito: al cliente sólo se le muestra el
+ * total del pedido (el precio de diseño y los precios unitarios son internos).
+ */
 export interface OrderItem {
   /** Tipo de producto de la lista de precios, ej. "Fondo 2.90m Color Vivo HD". */
   producto: string
   /** Diseño elegido del catálogo. */
   modelo: string
-  medidas: string
-  precioUnitario: number
+  ancho: number
+  alto: number
   cantidad: number
-  subtotal: number
-  piso: string
+  incluyePiso: boolean
+  largoPared: number
+  largoPiso: number
+  pisoDiseno: string
 }
 
 /** Datos que completa el cliente en `/pedido/[clave]`. */
@@ -127,7 +164,8 @@ export interface CustomerData {
   dni: string
   mail: string
   telefono: string
-  empresaEnvio: string
+  /** Una de `LOGISTICS`. */
+  logistica: string
   calle: string
   dpto: string
   ciudad: string
@@ -137,15 +175,17 @@ export interface CustomerData {
 }
 
 export interface Order {
-  /** Fila (base 1) en la pestaña Pedidos, para poder actualizarla. */
-  row: number
   id: string
   estado: string
   fecha: string
   semanaEntrega: string
   total: number
-  montoTransferir: number
-  requiereEnvio: boolean
+  /** Lo que el cliente transfiere ahora. Igual al total si no se cobra seña. */
+  sena: number
+  resta: number
+  vendedora: string
   items: OrderItem[]
   cliente: CustomerData
+  /** Los datos del cliente vienen de una compra anterior (pestañas Clientes / Envíos), no de este pedido. */
+  prefilled: boolean
 }

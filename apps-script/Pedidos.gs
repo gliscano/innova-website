@@ -1,34 +1,62 @@
 /**
  * Innova — Pedidos
  *
- * Panel de carga de pedidos dentro de la planilla. Agrega el menú "Innova" con:
+ * Panel de carga de pedidos de la planilla. Se usa de dos formas:
+ *   - En la computadora, desde el menú "Innova" de la planilla (ventana flotante).
+ *   - En el celular, como App web (doGet): la misma pantalla en el navegador. Ver README.
+ *
+ * El menú agrega:
  *   - Nuevo pedido: carga los productos, guarda el pedido y arma el mensaje de WhatsApp con el link
  *     que el cliente usa para completar sus datos en innova54.com/pedido/<clave>.
  *   - Recontactar pedido seleccionado: arma un recordatorio según el estado del pedido.
+ *   - Abrir en el celular: muestra la dirección de la App web.
  *   - Configurar planilla: crea las pestañas, encabezados, desplegables y la lista de precios.
  *
- * El sitio lee y completa estas mismas columnas (app/lib/orderSchema.ts). Si se cambia el orden de
- * COLUMNAS_PEDIDOS o COLUMNAS_ITEMS hay que cambiarlo también allá.
+ * Las columnas se buscan por el nombre del encabezado (fila 1), no por su posición: se pueden
+ * reordenar a mano. El sitio usa los mismos nombres (app/lib/orderSchema.ts): si se renombra una
+ * columna, hay que cambiarla en los dos lados.
  *
- * Instalación: ver apps-script/README.md.
+ * Instalación: ver docs/pedidos-google-sheets.md.
  */
 
 const SITE_URL = 'https://innova54.com';
 const HOJA_PEDIDOS = 'Pedidos';
 const HOJA_ITEMS = 'Items';
+const HOJA_CLIENTES = 'Clientes';
+const HOJA_ENVIOS = 'Envíos';
 const HOJA_PRECIOS = 'Precios';
 
+/** Días hábiles (lunes a viernes) que se suman a hoy para precargar la entrega. */
+const DIAS_HABILES_ENTREGA = 12;
+
+/** Vendedoras: el nombre tiene que coincidir con el del sitio (botón "Escribir a …"). */
+const VENDEDORAS = [
+  { nombre: 'Daniela', telefono: '5491171419752' },
+  { nombre: 'Daimary', telefono: '5491171142152' },
+];
+
 const COLUMNAS_PEDIDOS = [
-  'ID', 'Clave', 'Estado', 'Fecha', 'Semana de entrega', 'Cant. productos', 'Total',
-  'Monto a transferir', 'Requiere envío', 'Tel. WhatsApp', 'Nombre', 'DNI', 'Mail', 'Teléfono',
-  'Empresa de envío', 'Calle y número', 'Dpto', 'Ciudad', 'Provincia', 'Código postal',
-  'Sucursal/Domicilio', 'Link generado', 'Datos completados', 'Link',
+  'ID', 'Estado', 'Nombre', 'Teléfono', 'Total', 'Seña', 'Resta', 'Vendedora', 'Fecha',
+  'Semana de entrega', 'Cant. productos', 'Requiere envío', 'Logística', 'DNI', 'Mail',
+  'Calle y número', 'Dpto', 'Ciudad', 'Provincia', 'Código postal', 'Sucursal/Domicilio', 'Link',
+  'Link generado', 'Datos completados', 'Clave',
 ];
 
 const COLUMNAS_ITEMS = [
-  'ID pedido', 'Producto', 'Modelo', 'Medidas', 'Precio unitario', 'Cantidad', 'Subtotal',
-  'Diseño de piso',
+  'ID pedido', 'Producto', 'Modelo', 'Ancho', 'Alto', 'Incluye piso', 'Largo pared', 'Largo piso',
+  'Diseño de piso', 'Precio unitario', 'Precio diseño', 'Cantidad', 'Subtotal',
 ];
+
+const COLUMNAS_CLIENTES = [
+  'Teléfono', 'Nombre', 'DNI', 'Mail', 'Primera compra', 'Última compra', 'Cant. pedidos',
+];
+
+const COLUMNAS_ENVIOS = [
+  'Teléfono', 'Logística', 'Sucursal/Domicilio', 'Calle y número', 'Dpto', 'Ciudad', 'Provincia',
+  'Código postal', 'Última vez usada',
+];
+
+const COLUMNAS_PRECIOS = ['Producto', 'Medidas', 'Precio'];
 
 const ESTADOS = ['Esperando datos', 'Esperando pago', 'Pagado', 'En producción', 'Entregado', 'Cancelado'];
 
@@ -92,28 +120,150 @@ const PRECIOS_INICIALES = [
   ['Fundas para Paneles', '1,5 x 2 m', 69000],
 ];
 
-// ─── Menú ────────────────────────────────────────────────────────────────────
+// ─── Menú y App web ──────────────────────────────────────────────────────────
 
 function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('Innova')
     .addItem('Nuevo pedido', 'nuevoPedido')
     .addItem('Recontactar pedido seleccionado', 'recontactar')
+    .addItem('Abrir en el celular', 'abrirEnCelular')
     .addSeparator()
-    .addItem('Configurar planilla (una sola vez)', 'configurarPlanilla')
+    .addItem('Configurar planilla', 'configurarPlanilla')
     .addToUi();
 }
 
+function panel(modo) {
+  const template = HtmlService.createTemplateFromFile('PanelPedido');
+  template.modo = modo;
+  return template.evaluate();
+}
+
+/**
+ * Ventana flotante y no un panel lateral: el lateral de Sheets tiene un ancho fijo de 300 px y no
+ * entraban los productos. Es "modeless", así que se puede seguir mirando la planilla detrás.
+ */
 function nuevoPedido() {
-  const html = HtmlService.createHtmlOutputFromFile('PanelPedido').setTitle('Nuevo pedido');
-  SpreadsheetApp.getUi().showSidebar(html);
+  guardarIdPlanilla();
+  SpreadsheetApp.getUi().showModelessDialog(panel('ventana').setWidth(1100).setHeight(700), 'Innova · Pedidos');
+}
+
+/**
+ * App web: la misma pantalla para usar desde el celular. Se implementa con "Ejecutar como: yo" y
+ * acceso "Solo usuarios de innova54.com", así que sólo entra quien tenga cuenta de Innova.
+ */
+function doGet() {
+  return panel('web')
+    .setTitle('Innova · Pedidos')
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1, maximum-scale=1');
+}
+
+function abrirEnCelular() {
+  const url = ScriptApp.getService().getUrl();
+  const ui = SpreadsheetApp.getUi();
+  if (!url) {
+    ui.alert(
+      'Todavía no está publicada la App web.\n\n' +
+      'En el editor de Apps Script: Implementar → Nueva implementación → tipo "App web", ' +
+      'Ejecutar como "Yo" y Quién tiene acceso "Solo usuarios de innova54.com". Ver docs/pedidos-google-sheets.md.'
+    );
+    return;
+  }
+  const html = HtmlService.createHtmlOutput(
+    '<div style="font-family:Arial,sans-serif;font-size:13px;line-height:1.5">' +
+      '<p>Abrí esta dirección en el celular (con la cuenta de Innova) y agregala a la pantalla de inicio:</p>' +
+      '<textarea style="width:100%;height:70px" readonly onclick="this.select()">' + escaparHtml(url) + '</textarea>' +
+      '<p><a href="' + escaparHtml(url) + '" target="_blank">Abrir</a></p>' +
+    '</div>'
+  ).setWidth(460).setHeight(220);
+  ui.showModalDialog(html, 'Innova en el celular');
+}
+
+/**
+ * La App web no tiene "planilla activa": se abre por ID. El ID se guarda cada vez que se usa el
+ * menú desde la planilla (y en configurarPlanilla).
+ */
+function libro() {
+  const activa = SpreadsheetApp.getActive();
+  if (activa) return activa;
+  const id = PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID');
+  if (!id) throw new Error('Abrí la planilla y ejecutá una vez "Innova → Configurar planilla".');
+  return SpreadsheetApp.openById(id);
+}
+
+function guardarIdPlanilla() {
+  const activa = SpreadsheetApp.getActive();
+  if (activa) PropertiesService.getScriptProperties().setProperty('SPREADSHEET_ID', activa.getId());
+}
+
+// ─── Columnas por nombre ─────────────────────────────────────────────────────
+
+/** { 'nombre de columna en minúsculas': número de columna (base 1) } según la fila 1. */
+function columnas(hoja, requeridas) {
+  const ultima = Math.max(hoja.getLastColumn(), 1);
+  const mapa = {};
+  hoja.getRange(1, 1, 1, ultima).getValues()[0].forEach(function (nombre, i) {
+    if (nombre !== '') mapa[String(nombre).trim().toLowerCase()] = i + 1;
+  });
+  const faltan = (requeridas || []).filter(function (c) { return !mapa[c.toLowerCase()]; });
+  if (faltan.length) {
+    throw new Error('Faltan columnas en "' + hoja.getName() + '": ' + faltan.join(', ') + '. Ejecutá Innova → Configurar planilla.');
+  }
+  return {
+    col: function (nombre) { return mapa[nombre.toLowerCase()]; },
+    ancho: ultima,
+  };
+}
+
+function hojaObligatoria(ss, nombre, requeridas) {
+  const hoja = ss.getSheetByName(nombre);
+  if (!hoja) throw new Error('Falta la pestaña "' + nombre + '": ejecutá Innova → Configurar planilla.');
+  return { hoja: hoja, c: columnas(hoja, requeridas) };
+}
+
+/** Lee las filas de datos como objetos { columna: valor }. */
+function leerFilas(hoja, c) {
+  if (hoja.getLastRow() < 2) return [];
+  const encabezados = hoja.getRange(1, 1, 1, c.ancho).getValues()[0];
+  return hoja.getRange(2, 1, hoja.getLastRow() - 1, c.ancho).getValues().map(function (valores, i) {
+    const fila = { _fila: i + 2 };
+    encabezados.forEach(function (nombre, j) { if (nombre !== '') fila[String(nombre).trim()] = valores[j]; });
+    return fila;
+  });
+}
+
+/**
+ * Agrega una fila poniendo cada valor en su columna. Las columnas de `comoTexto` se formatean como
+ * texto antes de escribir: si no, Sheets convierte teléfonos en números o una clave como "12e45…"
+ * en notación científica.
+ */
+function agregarFila(hoja, c, valores, comoTexto) {
+  const fila = [];
+  for (let i = 0; i < c.ancho; i++) fila.push('');
+  Object.keys(valores).forEach(function (nombre) {
+    const col = c.col(nombre);
+    if (col) fila[col - 1] = valores[nombre];
+  });
+  const numero = hoja.getLastRow() + 1;
+  if (numero > hoja.getMaxRows()) hoja.insertRowsAfter(hoja.getMaxRows(), 50);
+  (comoTexto || []).forEach(function (nombre) {
+    const col = c.col(nombre);
+    if (col) hoja.getRange(numero, col).setNumberFormat('@');
+  });
+  hoja.getRange(numero, 1, 1, c.ancho).setValues([fila]);
+  return numero;
 }
 
 // ─── Llamadas desde el panel ─────────────────────────────────────────────────
 
-/** Lista de precios para el selector del panel: [{ producto, medidas, precio }]. */
+/** Lo que el panel necesita al abrir. */
+function datosIniciales() {
+  return { precios: obtenerPrecios(), vendedoras: VENDEDORAS.map(function (v) { return v.nombre; }), diasHabiles: DIAS_HABILES_ENTREGA };
+}
+
+/** Lista de precios para el selector: [{ producto, medidas, precio }]. */
 function obtenerPrecios() {
-  const hoja = SpreadsheetApp.getActive().getSheetByName(HOJA_PRECIOS);
+  const hoja = libro().getSheetByName(HOJA_PRECIOS);
   if (!hoja || hoja.getLastRow() < 2) return [];
   return hoja
     .getRange(2, 1, hoja.getLastRow() - 1, 3)
@@ -122,83 +272,171 @@ function obtenerPrecios() {
     .map(function (r) { return { producto: String(r[0]), medidas: String(r[1]), precio: Number(r[2]) || 0 }; });
 }
 
+/** Cliente que ya compró, por teléfono. null si no está en Clientes. */
+function buscarCliente(telefono) {
+  const clave = normalizarTelefono(telefono);
+  if (!clave) return null;
+  const hoja = libro().getSheetByName(HOJA_CLIENTES);
+  if (!hoja) return null;
+  const c = columnas(hoja, ['Teléfono', 'Nombre']);
+  const cliente = leerFilas(hoja, c).filter(function (f) { return normalizarTelefono(f['Teléfono']) === clave; })[0];
+  if (!cliente) return null;
+  return {
+    nombre: String(cliente['Nombre'] || ''),
+    pedidos: Number(cliente['Cant. pedidos']) || 0,
+    ultimaCompra: String(cliente['Última compra'] || ''),
+  };
+}
+
+function numero(valor, minimo) {
+  const n = Number(String(valor === undefined ? '' : valor).replace(',', '.'));
+  return Number.isFinite(n) ? Math.max(minimo, n) : minimo;
+}
+
 /**
  * Guarda el pedido y devuelve el link y el mensaje para el cliente.
- * datos = { fecha: 'aaaa-mm-dd', semanaEntrega, requiereEnvio, telefono, montoTransferir,
- *           items: [{ producto, modelo, medidas, precio, cantidad, piso }] }
+ * La forma de entrega (logística) no se carga acá: la elige el cliente en el formulario.
+ * datos = { fecha: 'aaaa-mm-dd', semanaEntrega: 'aaaa-mm-dd', telefono, vendedora, sena,
+ *           items: [{ producto, modelo, ancho, alto, precio, precioDiseno, cantidad,
+ *                     incluyePiso, largoPared, largoPiso, piso }] }
  */
 function crearPedido(datos) {
   const items = (datos.items || [])
     .map(function (it) {
-      const precio = Math.max(0, Math.round(Number(it.precio) || 0));
-      const cantidad = Math.max(1, Math.round(Number(it.cantidad) || 1));
+      const precio = Math.round(numero(it.precio, 0));
+      const precioDiseno = Math.round(numero(it.precioDiseno, 0));
+      const cantidad = Math.max(1, Math.round(numero(it.cantidad, 1)));
+      const incluyePiso = Boolean(it.incluyePiso);
       return {
         producto: String(it.producto || '').trim(),
         modelo: String(it.modelo || '').trim(),
-        medidas: String(it.medidas || '').trim(),
+        ancho: numero(it.ancho, 0),
+        alto: numero(it.alto, 0),
         precio: precio,
+        precioDiseno: precioDiseno,
         cantidad: cantidad,
-        subtotal: precio * cantidad,
-        piso: String(it.piso || '').trim(),
+        subtotal: (precio + precioDiseno) * cantidad,
+        incluyePiso: incluyePiso,
+        largoPared: incluyePiso ? numero(it.largoPared, 0) : '',
+        largoPiso: incluyePiso ? numero(it.largoPiso, 0) : '',
+        piso: incluyePiso ? String(it.piso || '').trim() : '',
       };
     })
     .filter(function (it) { return it.producto || it.modelo; });
 
   if (items.length === 0) throw new Error('Agregá al menos un producto.');
+  const vendedora = VENDEDORAS.filter(function (v) { return v.nombre === datos.vendedora; })[0];
+  if (!vendedora) throw new Error('Elegí la vendedora.');
 
   const total = items.reduce(function (s, it) { return s + it.subtotal; }, 0);
-  const montoIngresado = Math.round(Number(datos.montoTransferir) || 0);
-  const montoTransferir = montoIngresado > 0 ? montoIngresado : total;
+  const senaIngresada = Math.round(numero(datos.sena, 0));
+  const sena = senaIngresada > 0 ? Math.min(senaIngresada, total) : total;
   const cantidadProductos = items.reduce(function (s, it) { return s + it.cantidad; }, 0);
   const telefono = normalizarTelefono(datos.telefono);
   const fecha = datos.fecha ? new Date(datos.fecha + 'T12:00:00') : new Date();
+  const entrega = datos.semanaEntrega ? new Date(datos.semanaEntrega + 'T12:00:00') : '';
+  const cliente = telefono ? buscarCliente(telefono) : null;
 
-  const ss = SpreadsheetApp.getActive();
-  const hojaPedidos = ss.getSheetByName(HOJA_PEDIDOS);
-  const hojaItems = ss.getSheetByName(HOJA_ITEMS);
-  if (!hojaPedidos || !hojaItems) throw new Error('Falta configurar la planilla: menú Innova → Configurar planilla.');
+  const ss = libro();
+  const pedidos = hojaObligatoria(ss, HOJA_PEDIDOS, COLUMNAS_PEDIDOS);
+  const itemsHoja = hojaObligatoria(ss, HOJA_ITEMS, COLUMNAS_ITEMS);
 
   // El lock evita que dos personas cargando a la vez obtengan el mismo número de pedido.
-  const lock = LockService.getDocumentLock();
+  const lock = LockService.getDocumentLock() || LockService.getScriptLock();
   lock.waitLock(20000);
   try {
-    const id = siguienteId(hojaPedidos);
+    const id = siguienteId(pedidos.hoja, pedidos.c);
     const clave = Utilities.getUuid().replace(/-/g, '').slice(0, 16);
     const link = SITE_URL + '/pedido/' + clave;
 
-    const fila = COLUMNAS_PEDIDOS.map(function () { return ''; });
-    const poner = function (columna, valor) { fila[COLUMNAS_PEDIDOS.indexOf(columna)] = valor; };
-    poner('ID', id);
-    poner('Clave', clave);
-    poner('Estado', 'Esperando datos');
-    poner('Fecha', fecha);
-    poner('Semana de entrega', String(datos.semanaEntrega || '').trim());
-    poner('Cant. productos', cantidadProductos);
-    poner('Total', total);
-    poner('Monto a transferir', montoTransferir);
-    poner('Requiere envío', datos.requiereEnvio ? 'Sí' : 'No');
-    poner('Tel. WhatsApp', telefono);
-    poner('Link generado', new Date());
-    poner('Link', link);
-    hojaPedidos.appendRow(fila);
+    agregarFila(pedidos.hoja, pedidos.c, {
+      'ID': id,
+      'Estado': 'Esperando datos',
+      'Nombre': cliente ? cliente.nombre : '',
+      'Teléfono': telefono,
+      'Total': total,
+      'Seña': sena,
+      'Resta': total - sena,
+      'Vendedora': vendedora.nombre,
+      'Fecha': fecha,
+      'Semana de entrega': entrega,
+      'Cant. productos': cantidadProductos,
+      'Link': link,
+      'Link generado': new Date(),
+      'Clave': clave,
+    }, ['Teléfono', 'Clave']);
 
-    const filasItems = items.map(function (it) {
-      return [id, it.producto, it.modelo, it.medidas, it.precio, it.cantidad, it.subtotal, it.piso];
+    items.forEach(function (it) {
+      agregarFila(itemsHoja.hoja, itemsHoja.c, {
+        'ID pedido': id,
+        'Producto': it.producto,
+        'Modelo': it.modelo,
+        'Ancho': it.ancho || '',
+        'Alto': it.alto || '',
+        'Incluye piso': it.incluyePiso ? 'Sí' : 'No',
+        'Largo pared': it.largoPared,
+        'Largo piso': it.largoPiso,
+        'Diseño de piso': it.piso,
+        'Precio unitario': it.precio,
+        'Precio diseño': it.precioDiseno,
+        'Cantidad': it.cantidad,
+        'Subtotal': it.subtotal,
+      });
     });
-    hojaItems
-      .getRange(hojaItems.getLastRow() + 1, 1, filasItems.length, COLUMNAS_ITEMS.length)
-      .setValues(filasItems);
 
     SpreadsheetApp.flush();
 
-    const mensaje = mensajePedido(id, items, total, montoTransferir, datos.semanaEntrega, link);
-    return { id: id, link: link, mensaje: mensaje, whatsapp: linkWhatsApp(telefono, mensaje) };
+    const mensaje = mensajePedido(id, items, total, sena, entrega, link);
+    return {
+      id: id,
+      link: link,
+      mensaje: mensaje,
+      whatsapp: telefono ? linkWhatsApp(telefono, mensaje) : '',
+      cliente: cliente ? cliente.nombre : '',
+    };
   } finally {
     lock.releaseLock();
   }
 }
 
+/** Pedidos que esperan algo del cliente, para la pestaña "Pendientes" del panel. */
+function listarPendientes() {
+  const pedidos = hojaObligatoria(libro(), HOJA_PEDIDOS, ['ID', 'Estado', 'Link']);
+  const hoy = new Date();
+  return leerFilas(pedidos.hoja, pedidos.c)
+    .filter(function (f) { return f['Estado'] === 'Esperando datos' || f['Estado'] === 'Esperando pago'; })
+    .map(function (f) {
+      const generado = f['Link generado'] instanceof Date ? f['Link generado'] : null;
+      const telefono = normalizarTelefono(f['Teléfono']);
+      const mensaje = mensajeRecordatorio(f);
+      return {
+        id: String(f['ID']),
+        estado: f['Estado'],
+        nombre: String(f['Nombre'] || ''),
+        vendedora: String(f['Vendedora'] || ''),
+        total: Number(f['Total']) || 0,
+        dias: generado ? Math.floor((hoy - generado) / 86400000) : null,
+        link: String(f['Link'] || ''),
+        mensaje: mensaje,
+        whatsapp: telefono ? linkWhatsApp(telefono, mensaje) : '',
+      };
+    })
+    .reverse();
+}
+
 // ─── Recontactar ─────────────────────────────────────────────────────────────
+
+function mensajeRecordatorio(f) {
+  const nombre = String(f['Nombre'] || '').split(' ')[0];
+  const saludo = (nombre ? '¡Hola ' + nombre + '!' : '¡Hola!') + ' Te escribimos de Innova por tu pedido ' + f['ID'] + ' 😊\n\n';
+  if (f['Estado'] === 'Esperando datos') {
+    return saludo + 'Te dejamos de nuevo el link para completar tus datos y avanzar con la producción:\n' + f['Link'];
+  }
+  return saludo +
+    'Para confirmarlo nos falta la transferencia de *' + pesos(f['Seña'] || f['Total']) + '*. ' +
+    'En este link tenés los datos para transferir:\n' + f['Link'] + '\n\n' +
+    'Cuando la hagas, envianos el comprobante por acá. ¡Gracias!';
+}
 
 function recontactar() {
   const ui = SpreadsheetApp.getUi();
@@ -207,92 +445,113 @@ function recontactar() {
     ui.alert('Seleccioná una fila de la pestaña "' + HOJA_PEDIDOS + '".');
     return;
   }
-  const filaActiva = hoja.getActiveRange().getRow();
-  if (filaActiva < 2) {
+  const numeroFila = hoja.getActiveRange().getRow();
+  if (numeroFila < 2) {
     ui.alert('Seleccioná la fila de un pedido.');
     return;
   }
 
-  const valores = hoja.getRange(filaActiva, 1, 1, COLUMNAS_PEDIDOS.length).getValues()[0];
-  const v = function (columna) { return valores[COLUMNAS_PEDIDOS.indexOf(columna)]; };
-  const id = v('ID');
-  const estado = v('Estado');
-  const nombre = String(v('Nombre') || '').split(' ')[0];
-  const saludo = nombre ? '¡Hola ' + nombre + '!' : '¡Hola!';
-  const telefono = normalizarTelefono(v('Tel. WhatsApp') || v('Teléfono'));
-
-  let mensaje;
-  if (estado === 'Esperando datos') {
-    mensaje = saludo + ' Te escribimos de Innova por tu pedido ' + id + ' 😊\n\n' +
-      'Te dejamos de nuevo el link para completar tus datos y avanzar con la producción:\n' + v('Link');
-  } else if (estado === 'Esperando pago') {
-    mensaje = saludo + ' Te escribimos de Innova por tu pedido ' + id + ' 😊\n\n' +
-      'Para confirmarlo nos falta la transferencia de *' + pesos(v('Monto a transferir')) + '*. ' +
-      'En este link tenés los datos para transferir:\n' + v('Link') + '\n\n' +
-      'Cuando la hagas, envianos el comprobante por acá. ¡Gracias!';
-  } else {
-    ui.alert('El pedido ' + id + ' está "' + estado + '": no hace falta recontactar.');
+  const c = columnas(hoja, ['ID', 'Estado', 'Link']);
+  const f = leerFilas(hoja, c)[numeroFila - 2];
+  if (f['Estado'] !== 'Esperando datos' && f['Estado'] !== 'Esperando pago') {
+    ui.alert('El pedido ' + f['ID'] + ' está "' + f['Estado'] + '": no hace falta recontactar.');
     return;
   }
-
-  mostrarLink('Recontactar ' + id, mensaje, linkWhatsApp(telefono, mensaje), Boolean(telefono));
+  const telefono = normalizarTelefono(f['Teléfono']);
+  const mensaje = mensajeRecordatorio(f);
+  mostrarLink('Recontactar ' + f['ID'], mensaje, telefono ? linkWhatsApp(telefono, mensaje) : '');
 }
 
-// ─── Configuración inicial ───────────────────────────────────────────────────
+// ─── Configuración ───────────────────────────────────────────────────────────
 
+/**
+ * Crea o actualiza las pestañas. Se puede ejecutar las veces que haga falta:
+ *   - Si una pestaña ya tiene todas las columnas, se deja como está (aunque estén en otro orden).
+ *   - Si está vacía, se le ponen los encabezados.
+ *   - Si tiene datos con otro formato (versión anterior), se renombra a "<nombre> (anterior)" y se
+ *     crea una nueva vacía. Los datos viejos quedan ahí para consultarlos.
+ */
 function configurarPlanilla() {
   const ss = SpreadsheetApp.getActive();
+  guardarIdPlanilla();
+  const renombradas = [];
 
-  const pedidos = obtenerHoja(ss, HOJA_PEDIDOS, COLUMNAS_PEDIDOS);
-  const items = obtenerHoja(ss, HOJA_ITEMS, COLUMNAS_ITEMS);
-  const precios = obtenerHoja(ss, HOJA_PRECIOS, ['Producto', 'Medidas', 'Precio']);
+  const pedidos = prepararHoja(ss, HOJA_PEDIDOS, COLUMNAS_PEDIDOS, renombradas);
+  const items = prepararHoja(ss, HOJA_ITEMS, COLUMNAS_ITEMS, renombradas);
+  const clientes = prepararHoja(ss, HOJA_CLIENTES, COLUMNAS_CLIENTES, renombradas);
+  const envios = prepararHoja(ss, HOJA_ENVIOS, COLUMNAS_ENVIOS, renombradas);
+  const precios = prepararHoja(ss, HOJA_PRECIOS, COLUMNAS_PRECIOS, renombradas);
 
   if (precios.getLastRow() < 2 && PRECIOS_INICIALES.length) {
     precios.getRange(2, 1, PRECIOS_INICIALES.length, 3).setValues(PRECIOS_INICIALES);
   }
 
-  const col = function (columna) { return COLUMNAS_PEDIDOS.indexOf(columna) + 1; };
+  const cp = columnas(pedidos, COLUMNAS_PEDIDOS);
   const filas = pedidos.getMaxRows() - 1;
+  const rango = function (hoja, c, nombre) { return hoja.getRange(2, c.col(nombre), hoja.getMaxRows() - 1, 1); };
 
-  // Desplegable de Estado + un color por estado.
-  const rangoEstado = pedidos.getRange(2, col('Estado'), filas, 1);
+  // Desplegables de Estado y Vendedora + un color por estado.
+  const rangoEstado = rango(pedidos, cp, 'Estado');
   rangoEstado.setDataValidation(
     SpreadsheetApp.newDataValidation().requireValueInList(ESTADOS, true).setAllowInvalid(false).build()
   );
-  const reglas = ESTADOS.map(function (estado) {
+  rango(pedidos, cp, 'Vendedora').setDataValidation(
+    SpreadsheetApp.newDataValidation()
+      .requireValueInList(VENDEDORAS.map(function (v) { return v.nombre; }), true)
+      .setAllowInvalid(true)
+      .build()
+  );
+  pedidos.setConditionalFormatRules(ESTADOS.map(function (estado) {
     return SpreadsheetApp.newConditionalFormatRule()
       .whenTextEqualTo(estado)
       .setBackground(COLORES_ESTADO[estado])
       .setRanges([rangoEstado])
       .build();
-  });
-  pedidos.setConditionalFormatRules(reglas);
+  }));
 
-  // DNI, teléfonos y código postal como texto, para no perder ceros ni formatearlos como número.
-  ['DNI', 'Teléfono', 'Tel. WhatsApp', 'Código postal', 'Clave'].forEach(function (c) {
-    pedidos.getRange(2, col(c), filas, 1).setNumberFormat('@');
-  });
-  pedidos.getRange(2, col('Fecha'), filas, 1).setNumberFormat('dd/mm/yyyy');
-  ['Link generado', 'Datos completados'].forEach(function (c) {
-    pedidos.getRange(2, col(c), filas, 1).setNumberFormat('dd/mm/yyyy hh:mm');
-  });
-  ['Total', 'Monto a transferir'].forEach(function (c) {
-    pedidos.getRange(2, col(c), filas, 1).setNumberFormat('$#,##0');
-  });
-  items.getRange(2, 5, items.getMaxRows() - 1, 1).setNumberFormat('$#,##0');
-  items.getRange(2, 7, items.getMaxRows() - 1, 1).setNumberFormat('$#,##0');
+  // Texto para no perder ceros ni convertir en número; fechas y montos con su formato.
+  ['DNI', 'Teléfono', 'Código postal', 'Clave'].forEach(function (n) { rango(pedidos, cp, n).setNumberFormat('@'); });
+  ['Fecha', 'Semana de entrega'].forEach(function (n) { rango(pedidos, cp, n).setNumberFormat('dd/mm/yyyy'); });
+  rango(pedidos, cp, 'Link generado').setNumberFormat('dd/mm/yyyy hh:mm');
+  ['Total', 'Seña', 'Resta'].forEach(function (n) { rango(pedidos, cp, n).setNumberFormat('$#,##0'); });
+
+  const ci = columnas(items, COLUMNAS_ITEMS);
+  ['Precio unitario', 'Precio diseño', 'Subtotal'].forEach(function (n) { rango(items, ci, n).setNumberFormat('$#,##0'); });
+
+  const cc = columnas(clientes, COLUMNAS_CLIENTES);
+  ['Teléfono', 'DNI'].forEach(function (n) { rango(clientes, cc, n).setNumberFormat('@'); });
+  const ce = columnas(envios, COLUMNAS_ENVIOS);
+  ['Teléfono', 'Código postal'].forEach(function (n) { rango(envios, ce, n).setNumberFormat('@'); });
   precios.getRange(2, 3, precios.getMaxRows() - 1, 1).setNumberFormat('$#,##0');
 
   // La clave es técnica: se oculta para que nadie la edite sin querer.
-  pedidos.hideColumns(col('Clave'));
+  pedidos.hideColumns(cp.col('Clave'));
+  if (filas > 0) pedidos.setFrozenColumns(1);
 
   SpreadsheetApp.getUi().alert(
-    'Listo. Recordá compartir la planilla (como Editor) con el mail de la cuenta de servicio.'
+    'Listo.' +
+    (renombradas.length ? '\n\nPestañas viejas guardadas como: ' + renombradas.join(', ') + '.' : '') +
+    '\n\nRecordá compartir la planilla (como Editor) con el mail de la cuenta de servicio.'
   );
 }
 
-function obtenerHoja(ss, nombre, encabezados) {
-  const hoja = ss.getSheetByName(nombre) || ss.insertSheet(nombre);
+function prepararHoja(ss, nombre, encabezados, renombradas) {
+  let hoja = ss.getSheetByName(nombre);
+  if (hoja) {
+    const actuales = hoja.getRange(1, 1, 1, Math.max(hoja.getLastColumn(), 1)).getValues()[0]
+      .map(function (h) { return String(h).trim().toLowerCase(); });
+    const completa = encabezados.every(function (h) { return actuales.indexOf(h.toLowerCase()) !== -1; });
+    if (completa) return hoja;
+    if (hoja.getLastRow() > 1) {
+      let viejo = nombre + ' (anterior)';
+      for (let n = 2; ss.getSheetByName(viejo); n++) viejo = nombre + ' (anterior ' + n + ')';
+      hoja.setName(viejo);
+      renombradas.push(viejo);
+      hoja = null;
+    }
+  }
+  if (!hoja) hoja = ss.insertSheet(nombre);
+  hoja.clear();
   hoja.getRange(1, 1, 1, encabezados.length).setValues([encabezados]).setFontWeight('bold');
   hoja.setFrozenRows(1);
   return hoja;
@@ -300,10 +559,10 @@ function obtenerHoja(ss, nombre, encabezados) {
 
 // ─── Utilidades ──────────────────────────────────────────────────────────────
 
-function siguienteId(hoja) {
+function siguienteId(hoja, c) {
   let max = 0;
   if (hoja.getLastRow() >= 2) {
-    hoja.getRange(2, 1, hoja.getLastRow() - 1, 1).getValues().forEach(function (r) {
+    hoja.getRange(2, c.col('ID'), hoja.getLastRow() - 1, 1).getValues().forEach(function (r) {
       const n = parseInt(String(r[0]).replace(/\D/g, ''), 10);
       if (n > max) max = n;
     });
@@ -314,6 +573,7 @@ function siguienteId(hoja) {
 /**
  * Deja el número en el formato que espera wa.me (549 + área + número). Acepta lo que se suele
  * copiar de WhatsApp: "+54 9 11 1234-5678", "011 15 1234 5678", "1112345678".
+ * Tiene que dar lo mismo que normalizePhone() de app/lib/phone.ts (es la clave de Clientes).
  */
 function normalizarTelefono(valor) {
   let d = String(valor || '').replace(/\D/g, '');
@@ -335,33 +595,48 @@ function pesos(n) {
   return '$' + Math.round(Number(n) || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 
-function mensajePedido(id, items, total, montoTransferir, semanaEntrega, link) {
+function metros(n) {
+  return String(Math.round(Number(n) * 100) / 100).replace('.', ',');
+}
+
+function fechaCorta(fecha) {
+  return fecha instanceof Date ? Utilities.formatDate(fecha, Session.getScriptTimeZone(), 'dd/MM/yyyy') : '';
+}
+
+/** Mensaje para el cliente. Sin precios por producto: al cliente sólo le llega el total. */
+function mensajePedido(id, items, total, sena, entrega, link) {
   const lineas = items.map(function (it) {
     const partes = [(it.cantidad > 1 ? it.cantidad + ' × ' : '') + (it.modelo || it.producto)];
     if (it.modelo && it.producto) partes.push(it.producto);
-    if (it.medidas) partes.push(it.medidas);
-    if (it.piso) partes.push('Piso: ' + it.piso);
-    return '• ' + partes.join(' — ') + ' — ' + pesos(it.subtotal);
+    if (it.ancho && it.alto) partes.push(metros(it.ancho) + ' x ' + metros(it.alto) + ' m');
+    if (it.incluyePiso) {
+      let piso = 'Con piso';
+      if (it.largoPared && it.largoPiso) piso += ' (pared ' + metros(it.largoPared) + ' m + piso ' + metros(it.largoPiso) + ' m)';
+      if (it.piso) piso += ': ' + it.piso;
+      partes.push(piso);
+    }
+    return '• ' + partes.join(' — ');
   });
 
   let texto = '¡Gracias por tu compra en Innova! ✨\n\n' +
     '*Pedido ' + id + '*\n' + lineas.join('\n') + '\n\n' +
     '*Total: ' + pesos(total) + '*';
-  if (montoTransferir < total) texto += '\nSeña a transferir: ' + pesos(montoTransferir);
-  if (semanaEntrega) texto += '\nEntrega estimada: ' + semanaEntrega;
+  if (sena < total) texto += '\nSeña a transferir: ' + pesos(sena) + '\nResta: ' + pesos(total - sena);
+  if (entrega) texto += '\nEntrega estimada: ' + fechaCorta(entrega);
   texto += '\n\nPara avanzar, completá tus datos acá 👇\n' + link +
     '\n\nAl terminar vas a ver los datos para hacer la transferencia.';
   return texto;
 }
 
-function mostrarLink(titulo, mensaje, url, conTelefono) {
+function mostrarLink(titulo, mensaje, url) {
   const html = HtmlService.createHtmlOutput(
     '<div style="font-family:Arial,sans-serif;font-size:13px">' +
       '<textarea style="width:100%;height:170px;font-size:12px" readonly>' + escaparHtml(mensaje) + '</textarea>' +
-      '<p><a href="' + escaparHtml(url) + '" target="_blank" ' +
-      'style="display:inline-block;background:#25D366;color:#fff;padding:8px 14px;border-radius:8px;text-decoration:none;font-weight:bold">' +
-      'Abrir WhatsApp</a></p>' +
-      (conTelefono ? '' : '<p style="color:#b45309">Este pedido no tiene teléfono: WhatsApp te va a pedir elegir el contacto.</p>') +
+      (url
+        ? '<p><a href="' + escaparHtml(url) + '" target="_blank" ' +
+          'style="display:inline-block;background:#25D366;color:#fff;padding:8px 14px;border-radius:8px;text-decoration:none;font-weight:bold">' +
+          'Abrir WhatsApp</a></p>'
+        : '<p style="color:#b45309">Este pedido no tiene teléfono: copiá el mensaje y pegalo en el chat.</p>') +
     '</div>'
   ).setWidth(420).setHeight(300);
   SpreadsheetApp.getUi().showModalDialog(html, titulo);

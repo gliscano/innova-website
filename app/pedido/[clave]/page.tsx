@@ -40,7 +40,10 @@ export default async function PedidoPage({ params }: { params: Promise<{ clave: 
     content = (
       <Notice title="Este link no está activo">
         <p className="mb-5">Puede que esté incompleto o que el pedido ya no esté vigente. Escribinos y lo revisamos.</p>
-        <ContactWhatsApp message="Hola! El link de mi pedido no funciona" />
+        <ContactWhatsApp
+          vendedora={lookup.status === 'found' ? lookup.order.vendedora : undefined}
+          message="Hola! El link de mi pedido no funciona"
+        />
       </Notice>
     )
   } else {
@@ -69,16 +72,17 @@ export default async function PedidoPage({ params }: { params: Promise<{ clave: 
             action={submitOrder.bind(null, clave)}
             orderId={order.id}
             estado={order.estado}
-            requiereEnvio={order.requiereEnvio}
             cliente={order.cliente}
-            montoTransferir={order.montoTransferir}
+            prefilled={order.prefilled}
+            sena={order.sena}
+            vendedora={order.vendedora}
             numItems={order.items.reduce((n, item) => n + item.cantidad, 0)}
             transfer={getTransferInfo()}
           />
         ) : (
           <Notice title={`Estado: ${order.estado}`}>
             <p className="mb-5">Ya recibimos tu pago. Cualquier consulta sobre tu pedido, escribinos.</p>
-            <ContactWhatsApp message={`Hola! Consulto por mi pedido ${order.id}`} />
+            <ContactWhatsApp vendedora={order.vendedora} message={`Hola! Consulto por mi pedido ${order.id}`} />
           </Notice>
         )}
       </>

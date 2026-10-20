@@ -11,9 +11,11 @@ interface Props {
   action: (prev: SubmitOrderState, formData: FormData) => Promise<SubmitOrderState>
   orderId: string
   estado: string
-  requiereEnvio: boolean
   cliente: CustomerData
-  montoTransferir: number
+  /** Los datos vienen de una compra anterior: el formulario lo avisa para que los revise. */
+  prefilled: boolean
+  sena: number
+  vendedora: string
   numItems: number
   transfer: TransferInfo | null
 }
@@ -29,9 +31,9 @@ export default function OrderClientArea({ estado, cliente, ...props }: Props) {
     return (
       <OrderForm
         action={props.action}
-        requiereEnvio={props.requiereEnvio}
         defaults={cliente}
-        montoTransferir={props.montoTransferir}
+        prefilled={props.prefilled}
+        sena={props.sena}
         numItems={props.numItems}
         onSaved={() => setEditing(false)}
       />
@@ -42,7 +44,8 @@ export default function OrderClientArea({ estado, cliente, ...props }: Props) {
     <PaymentInfo
       orderId={props.orderId}
       nombre={cliente.nombre}
-      montoTransferir={props.montoTransferir}
+      sena={props.sena}
+      vendedora={props.vendedora}
       transfer={props.transfer}
       onEdit={() => setEditing(true)}
     />

@@ -55,14 +55,20 @@ No test suite is configured.
 
 ### Orders (Google Sheets)
 
-Innova creates orders from the spreadsheet (`apps-script/Pedidos.gs`, menu "Innova"): one row in
-`Pedidos` + one row per product in `Items`, status `Esperando datos`, and a random 16-hex `Clave`.
-The customer opens `/pedido/<clave>`, fills personal/shipping data, and the server action writes
-only the customer columns and flips status to `Esperando pago`, then shows transfer details
-(`TRANSFER_*` env). The site authenticates with a service account (`GOOGLE_SA_*`, `GOOGLE_SHEET_ID`)
-via a hand-rolled JWT in `lib/googleSheets.ts` — no `googleapis` dependency. Column order is a
-contract duplicated in `lib/orderSchema.ts` and `Pedidos.gs`: change both. `ORDERS_MOCK=1` in dev
-serves sample orders (`/pedido/00000000000000a1`…`a4`).
+Sellers create orders from `apps-script/` (Apps Script bound to the orders spreadsheet; the same
+`PanelPedido.html` runs as a dialog from the "Innova" menu and as a domain-restricted web app via
+`doGet` for phones). An order is one row in `Pedidos` + one row per product in `Items`, status
+`Esperando datos`, a random 16-hex `Clave`, and a `Vendedora`. The customer opens `/pedido/<clave>`,
+fills personal data and picks a logistics option (`LOGISTICS`; only `ADDRESS_LOGISTICS` ask for an
+address). The server action writes only the customer columns, flips status to `Esperando pago`,
+upserts `Clientes` (keyed by `normalizePhone`, which must match the script's `normalizarTelefono`)
+and `Envíos`, then shows transfer details (`TRANSFER_*` env). A later order with the same phone is
+prefilled from those tabs. Item prices never reach the customer (only total / seña / resta).
+
+Columns are resolved **by header name** (row 1) on both sides, so they can be reordered in the sheet;
+names are the contract between `lib/orderSchema.ts` and `Pedidos.gs`. The site authenticates with a
+service account (`GOOGLE_SA_*`, `GOOGLE_SHEET_ID`) via a hand-rolled JWT in `lib/googleSheets.ts` —
+no `googleapis` dependency. `ORDERS_MOCK=1` in dev serves sample orders (`/pedido/00000000000000a1`…`a4`).
 
 ### Image management
 

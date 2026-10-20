@@ -9,36 +9,32 @@ export type SubmitOrderState =
   | { status: 'success' }
   | { status: 'error'; message: string; errors?: FieldErrors }
 
+const UNAVAILABLE = 'No pudimos guardar tus datos. Probá de nuevo en unos minutos.'
+
 export async function submitOrder(
   clave: string,
   _prev: SubmitOrderState,
   formData: FormData,
 ): Promise<SubmitOrderState> {
-  // Se vuelve a leer el pedido: el estado o el "requiere envío" pudo cambiar en la planilla
-  // desde que el cliente abrió la página.
+  // Se vuelve a leer el pedido: el estado pudo cambiar en la planilla desde que el cliente abrió
+  // la página, y hace falta saber en qué fila está hoy.
   const lookup = await findOrderByKey(clave)
-  if (lookup.status === 'unavailable') {
-    return { status: 'error', message: 'No pudimos guardar tus datos. Probá de nuevo en unos minutos.' }
-  }
+  if (lookup.status === 'unavailable') return { status: 'error', message: UNAVAILABLE }
   if (lookup.status === 'not-found') {
     return { status: 'error', message: 'No encontramos este pedido. Escribinos por WhatsApp.' }
   }
 
-  const { order } = lookup
-  if (!EDITABLE_STATUSES.includes(order.estado)) {
-    // Ya pagado, en producción o cancelado: no se pisan los datos. Al refrescar, la página
-    // muestra el estado real.
+  if (!EDITABLE_STATUSES.includes(lookup.order.estado)) {
+    // Ya pagado, en producción o cancelado: no se pisan los datos. Al refrescar, la página muestra
+    // el estado real.
     return { status: 'success' }
   }
 
-  const { data, errors } = parseCustomerData(formData, order.requiereEnvio)
+  const { data, errors } = parseCustomerData(formData)
   if (Object.keys(errors).length > 0) {
     return { status: 'error', message: 'Revisá los campos marcados.', errors }
   }
 
-  const saved = await saveCustomerData(order, data)
-  if (!saved) {
-    return { status: 'error', message: 'No pudimos guardar tus datos. Probá de nuevo en unos minutos.' }
-  }
-  return { status: 'success' }
+  const saved = await saveCustomerData(lookup.context, data)
+  return saved ? { status: 'success' } : { status: 'error', message: UNAVAILABLE }
 }

@@ -1,12 +1,23 @@
-import type { Order } from '@/app/lib/orderSchema'
+import type { Order, OrderItem } from '@/app/lib/orderSchema'
 
 function price(value: number): string {
   return `$${value.toLocaleString('es-AR')}`
 }
 
-/** Detalle de solo lectura de lo que cargó Innova: productos, total y entrega. */
+function meters(value: number): string {
+  return value.toLocaleString('es-AR', { maximumFractionDigits: 2 })
+}
+
+function sizeLabel(item: OrderItem): string {
+  return item.ancho && item.alto ? `${meters(item.ancho)} × ${meters(item.alto)} m` : ''
+}
+
+/**
+ * Detalle de solo lectura de lo que cargó Innova. A propósito no muestra precios por producto: al
+ * cliente sólo le llega el total (el precio de diseño y los unitarios son internos).
+ */
 export default function OrderSummary({ order }: { order: Order }) {
-  const hasDeposit = order.montoTransferir > 0 && order.montoTransferir < order.total
+  const hasDeposit = order.sena > 0 && order.sena < order.total
 
   return (
     <section
@@ -20,20 +31,22 @@ export default function OrderSummary({ order }: { order: Order }) {
 
       <ul className="divide-y" style={{ borderColor: 'var(--line)' }}>
         {order.items.map((item, i) => (
-          <li key={i} className="py-3 flex gap-4 justify-between" style={{ borderColor: 'var(--line)' }}>
-            <div className="min-w-0">
-              <p className="font-semibold" style={{ color: 'var(--ink)' }}>
-                {item.cantidad > 1 && <span>{item.cantidad} × </span>}
-                {item.modelo || item.producto || 'Producto'}
-              </p>
+          <li key={i} className="py-3" style={{ borderColor: 'var(--line)' }}>
+            <p className="font-semibold" style={{ color: 'var(--ink)' }}>
+              {item.cantidad > 1 && <span>{item.cantidad} × </span>}
+              {item.modelo || item.producto || 'Producto'}
+            </p>
+            <p className="text-sm" style={{ color: 'var(--ink-soft)' }}>
+              {[item.modelo && item.producto, sizeLabel(item)].filter(Boolean).join(' · ')}
+            </p>
+            {item.incluyePiso && (
               <p className="text-sm" style={{ color: 'var(--ink-soft)' }}>
-                {[item.modelo && item.producto, item.medidas].filter(Boolean).join(' · ')}
+                Con piso
+                {item.largoPared > 0 && item.largoPiso > 0 &&
+                  `: pared ${meters(item.largoPared)} m + piso ${meters(item.largoPiso)} m`}
+                {item.pisoDiseno && ` · Diseño de piso: ${item.pisoDiseno}`}
               </p>
-              {item.piso && (
-                <p className="text-sm" style={{ color: 'var(--ink-soft)' }}>Diseño de piso: {item.piso}</p>
-              )}
-            </div>
-            <p className="font-semibold whitespace-nowrap" style={{ color: 'var(--ink)' }}>{price(item.subtotal)}</p>
+            )}
           </li>
         ))}
       </ul>
@@ -44,10 +57,16 @@ export default function OrderSummary({ order }: { order: Order }) {
           <dd>{price(order.total)}</dd>
         </div>
         {hasDeposit && (
-          <div className="flex justify-between" style={{ color: 'var(--ink-soft)' }}>
-            <dt>Seña a transferir</dt>
-            <dd>{price(order.montoTransferir)}</dd>
-          </div>
+          <>
+            <div className="flex justify-between" style={{ color: 'var(--ink-soft)' }}>
+              <dt>Seña a transferir</dt>
+              <dd>{price(order.sena)}</dd>
+            </div>
+            <div className="flex justify-between" style={{ color: 'var(--ink-soft)' }}>
+              <dt>Resta</dt>
+              <dd>{price(order.resta)}</dd>
+            </div>
+          </>
         )}
         {order.fecha && (
           <div className="flex justify-between" style={{ color: 'var(--ink-soft)' }}>
@@ -61,10 +80,12 @@ export default function OrderSummary({ order }: { order: Order }) {
             <dd>{order.semanaEntrega}</dd>
           </div>
         )}
-        <div className="flex justify-between" style={{ color: 'var(--ink-soft)' }}>
-          <dt>Entrega</dt>
-          <dd>{order.requiereEnvio ? 'Envío por encomienda' : 'Retiro / entrega a coordinar'}</dd>
-        </div>
+        {order.cliente.logistica && !order.prefilled && (
+          <div className="flex justify-between" style={{ color: 'var(--ink-soft)' }}>
+            <dt>Entrega</dt>
+            <dd>{order.cliente.logistica}</dd>
+          </div>
+        )}
       </dl>
     </section>
   )

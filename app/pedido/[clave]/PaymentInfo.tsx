@@ -38,13 +38,15 @@ function CopyRow({ label, value }: { label: string; value: string }) {
 interface Props {
   orderId: string
   nombre: string
-  montoTransferir: number
+  /** Lo que transfiere ahora: la seña, o el total si no hay seña. */
+  sena: number
+  vendedora: string
   transfer: TransferInfo | null
   onEdit: () => void
 }
 
-export default function PaymentInfo({ orderId, nombre, montoTransferir, transfer, onEdit }: Props) {
-  const amount = `$${montoTransferir.toLocaleString('es-AR')}`
+export default function PaymentInfo({ orderId, nombre, sena, vendedora, transfer, onEdit }: Props) {
+  const amount = `$${sena.toLocaleString('es-AR')}`
   const firstName = nombre.split(' ')[0]
 
   return (
@@ -73,7 +75,7 @@ export default function PaymentInfo({ orderId, nombre, montoTransferir, transfer
         <div className="mb-5">
           {transfer.alias && <CopyRow label="Alias" value={transfer.alias} />}
           {transfer.cbu && <CopyRow label="CBU / CVU" value={transfer.cbu} />}
-          <CopyRow label="Monto" value={String(montoTransferir)} />
+          <CopyRow label="Monto" value={String(sena)} />
           {(transfer.titular || transfer.banco) && (
             <p className="text-sm pt-2.5" style={{ color: 'var(--ink-soft)' }}>
               {[transfer.titular && `Titular: ${transfer.titular}`, transfer.banco].filter(Boolean).join(' · ')}
@@ -88,6 +90,7 @@ export default function PaymentInfo({ orderId, nombre, montoTransferir, transfer
 
       <ContactWhatsApp
         label="Enviar comprobante a"
+        vendedora={vendedora}
         message={`Hola! Te envío el comprobante de transferencia del pedido ${orderId}.`}
       />
 

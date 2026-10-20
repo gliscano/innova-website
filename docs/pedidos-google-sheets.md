@@ -4,22 +4,45 @@ Cómo funciona el circuito de venta y cómo dejarlo andando. Se configura **una 
 
 ## Cómo funciona
 
-1. **Innova carga el pedido en la planilla.** Menú **Innova → Nuevo pedido** abre un panel a la derecha:
-   - fecha, semana de entrega y si va por encomienda;
-   - uno o más productos (producto y medida de la lista de precios, modelo, cantidad, piso);
-   - monto a transferir (vacío = el total; o la seña).
+1. **La vendedora carga el pedido** desde la computadora (menú **Innova → Nuevo pedido** de la
+   planilla) o desde el celular (App web, ver paso 1b). La pantalla pide:
+   - vendedora (Daniela o Daimary: su botón de WhatsApp es el que ve el cliente);
+   - teléfono del cliente (opcional; si ya compró, avisa "Cliente: …" y el link llega con sus datos);
+   - fecha y entrega estimada (precargada: hoy + 12 días hábiles, editable);
+   - uno o más productos: producto y medida de la lista de precios (o medida especial con ancho y
+     alto), modelo, precio, **precio de diseño**, cantidad y, si **incluye piso**, largo de pared,
+     largo de piso y diseño de piso;
+   - seña (vacío = se cobra el total). Total y resta se calculan solos.
 
    Al guardar se crea una fila en **Pedidos** (estado `Esperando datos`) y una fila por producto en
-   **Items**, y aparece el mensaje de WhatsApp listo para copiar con el link del cliente.
-2. **El cliente abre el link** (`innova54.com/pedido/…`): ve su pedido, completa sus datos personales
-   y, si corresponde, los de envío.
+   **Items**. El mensaje para el cliente lista los productos **sin precios**: sólo total, seña y
+   resta. "Enviar por WhatsApp" sólo se habilita si se cargó el teléfono; si no, se copia el mensaje.
+2. **El cliente abre el link** (`innova54.com/pedido/…`): ve su pedido, completa sus datos y elige
+   cómo recibirlo (Andreani, Correo Argentino, Viacargo o Retiro en tienda; sólo Correo Argentino y
+   Viacargo piden dirección). Si ya compró antes, el formulario llega precargado y lo puede corregir.
 3. **Al confirmar**, la fila se completa sola, pasa a `Esperando pago` y el cliente ve los datos para
-   transferir y un botón para mandar el comprobante por WhatsApp.
-4. **Seguimiento:** filtrá la columna *Estado*. Para un cliente que no terminó, seleccioná su fila y
-   usá **Innova → Recontactar pedido seleccionado**: arma el recordatorio que corresponde (completar
-   datos o transferir).
-5. Cuando llega el pago, cambiá el estado a mano: `Pagado` → `En producción` → `Entregado` (o
+   transferir y el botón para mandarle el comprobante **a su vendedora**. Además se actualizan
+   **Clientes** (una fila por teléfono) y **Envíos** (una fila por dirección usada).
+4. **Seguimiento:** pestaña **Pendientes** del panel (también en el celular), o seleccioná una fila y
+   usá **Innova → Recontactar pedido seleccionado**. Arma el recordatorio que corresponde.
+5. Cuando confirmás el pago, cambiá el estado a mano: `Pagado` → `En producción` → `Entregado` (o
    `Cancelado`, que desactiva el link).
+
+### Pestañas
+- **Pedidos**: ID · Estado · Nombre · Teléfono · Total · Seña · Resta · Vendedora · … (la clave del
+  link va oculta al final).
+- **Items**: un producto por fila, con ancho, alto, piso (pared/piso), precio y precio de diseño.
+- **Clientes** y **Envíos**: los completa el sitio; sirven para precargar la próxima compra.
+- **Precios**: la lista del selector. Editala ahí cuando cambien los precios.
+
+Las columnas se buscan **por nombre**: podés reordenarlas o agregar columnas propias. Lo que no hay
+que hacer es **renombrar** las existentes.
+
+> **Actualizar el script:** cuando cambien `Pedidos.gs` o `PanelPedido.html`, volvé a pegarlos en
+> el editor de Apps Script y ejecutá `configurarPlanilla` otra vez. Si una pestaña tiene el formato
+> de una versión anterior, la guarda como "Pedidos (anterior)" (o el nombre que corresponda) y crea
+> una nueva vacía: los links de esos pedidos viejos dejan de funcionar. Si ya está al día, no toca
+> nada.
 
 > El link no tiene datos adentro, sólo una clave aleatoria: el sitio siempre lee el pedido de la
 > planilla. Si corregís un precio en la planilla, el cliente ve el precio corregido.
@@ -31,13 +54,29 @@ Cómo funciona el circuito de venta y cómo dejarlo andando. Se configura **una 
 
 1. Creá una planilla nueva en Google Sheets (por ejemplo "Innova — Pedidos").
 2. **Extensiones → Apps Script.** Borrá el contenido de `Código.gs` y pegá
-   [`apps-script/Pedidos.gs`](../apps-script/Pedidos.gs).
+   [`apps-script/Pedidos.gs`](../apps-script/Pedidos.gs). Tiene que empezar con `/**`.
 3. En el editor: **+ → HTML**, llamalo `PanelPedido` (sin `.html`) y pegá
-   [`apps-script/PanelPedido.html`](../apps-script/PanelPedido.html).
+   [`apps-script/PanelPedido.html`](../apps-script/PanelPedido.html). Tiene que empezar con
+   `<!DOCTYPE html>`.
 4. Guardá, elegí la función `configurarPlanilla` y tocá **Ejecutar**. Google va a pedir permisos (es
    tu propio script): aceptalos.
-5. Volvé a la planilla y recargala: aparece el menú **Innova**. Se crearon las pestañas *Pedidos*,
-   *Items* y *Precios* (con la lista de precios actual del sitio; editala ahí cuando cambien).
+5. Volvé a la planilla y recargala: aparece el menú **Innova** y las pestañas *Pedidos*, *Items*,
+   *Clientes*, *Envíos* y *Precios*.
+
+## 1b. App web (para cargar pedidos desde el celular)
+
+El menú de la planilla no existe en la app de Sheets del celular, así que la misma pantalla se
+publica como página web privada de Google.
+
+1. En el editor de Apps Script: **Implementar → Nueva implementación**.
+2. Tipo (engranaje): **App web**. Ejecutar como: **Yo**. Quién tiene acceso: **Solo usuarios de
+   innova54.com** → **Implementar** (pide permisos la primera vez).
+3. Copiá la URL que termina en `/exec` (también la muestra **Innova → Abrir en el celular**).
+4. En el celular, abrila con la cuenta de Innova y usá **Agregar a pantalla de inicio**: queda como
+   una app.
+
+Cada vez que pegues una versión nueva del script: **Implementar → Administrar implementaciones →
+editar (lápiz) → Versión: Nueva versión → Implementar**. Así la URL no cambia.
 
 ## 2. Cuenta de servicio (para que el sitio lea y escriba)
 
@@ -70,20 +109,22 @@ Redeployá para que tomen efecto.
 
 ## 4. Probar
 
-1. **Innova → Nuevo pedido**, cargá dos productos y guardá.
-2. Abrí el link del mensaje, completá el formulario: la fila tiene que pasar a `Esperando pago` con
-   tus datos.
-3. Volvé a abrir el link: muestra los datos de transferencia. Borrá esa fila de prueba (y sus Items).
+1. **Innova → Nuevo pedido** (o la App web), cargá dos productos, uno con piso y precio de diseño,
+   con tu teléfono, y guardá.
+2. Abrí el link del mensaje y completá el formulario: la fila pasa a `Esperando pago` y aparecés en
+   **Clientes** (y en **Envíos** si elegiste Correo Argentino o Viacargo).
+3. Cargá otro pedido con el mismo teléfono: el panel avisa "Cliente: …" y el link llega precargado.
+4. Borrá las filas de prueba.
 
 ## Para desarrollo
 
 `ORDERS_MOCK=1 npm run dev` muestra pedidos de ejemplo sin credenciales de Google (nunca en
 producción):
 
-- `/pedido/00000000000000a1` — esperando datos, con envío
-- `/pedido/00000000000000a2` — esperando datos, sin envío
+- `/pedido/00000000000000a1` — esperando datos, cliente nuevo (vendedora Daniela)
+- `/pedido/00000000000000a2` — esperando datos, cliente que ya compró: datos precargados (Daimary)
 - `/pedido/00000000000000a3` — pagado
 - `/pedido/00000000000000a4` — cancelado
 
-Las columnas que comparten el sitio y el script están en `app/lib/orderSchema.ts` y al principio de
-`apps-script/Pedidos.gs`: si se cambia una, hay que cambiar la otra.
+Los nombres de columnas que comparten el sitio y el script están en `app/lib/orderSchema.ts` y al
+principio de `apps-script/Pedidos.gs`: si se renombra una, hay que cambiarla en los dos.

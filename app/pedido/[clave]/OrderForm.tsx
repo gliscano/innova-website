@@ -1,11 +1,15 @@
 'use client'
 
 import { startTransition, useActionState, useEffect, useState, type CSSProperties, type InputHTMLAttributes } from 'react'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { Store } from 'lucide-react'
 import {
+  ADDRESS_LOGISTICS,
   DELIVERY_MODES,
+  LOGISTICS,
+  PICKUP,
   PROVINCIAS,
-  SHIPPING_COMPANIES,
   type CustomerData,
 } from '@/app/lib/orderSchema'
 import type { CustomerField } from '@/app/lib/orderValidation'
@@ -21,16 +25,30 @@ const inputStyle = {
   '--tw-ring-color': 'color-mix(in oklab, var(--accent) 30%, transparent)',
 } as CSSProperties
 
+/** Logos en `public/shipping`. El retiro en tienda no tiene logo: usa un ícono. */
+const LOGISTICS_LOGOS: Record<string, string> = {
+  Andreani: '/shipping/andreani.svg',
+  'Correo Argentino': '/shipping/Correo_Argentino.webp',
+  Viacargo: '/shipping/viacargo.svg',
+}
+
+/** Qué pasa después según la logística, para las que no piden dirección en el formulario. */
+const LOGISTICS_NOTES: Record<string, string> = {
+  Andreani: 'Te escribimos por WhatsApp para coordinar el envío por Andreani.',
+  [PICKUP]: 'Te avisamos por WhatsApp cuando tu pedido esté listo para retirar.',
+}
+
 interface Props {
   action: (prev: SubmitOrderState, formData: FormData) => Promise<SubmitOrderState>
-  requiereEnvio: boolean
   defaults: CustomerData
-  montoTransferir: number
+  /** Los datos vienen de una compra anterior: se avisa para que el cliente los revise. */
+  prefilled: boolean
+  sena: number
   numItems: number
   onSaved: () => void
 }
 
-export default function OrderForm({ action, requiereEnvio, defaults, montoTransferir, numItems, onSaved }: Props) {
+export default function OrderForm({ action, defaults, prefilled, sena, numItems, onSaved }: Props) {
   const router = useRouter()
   const [state, formAction, pending] = useActionState(action, { status: 'idle' })
   // Inputs controlados y envío por onSubmit (no `<form action>`): React 19 resetea el formulario
@@ -40,11 +58,11 @@ export default function OrderForm({ action, requiereEnvio, defaults, montoTransf
 
   useEffect(() => {
     if (state.status !== 'success') return
-    trackOrderDataSubmitted(montoTransferir, numItems)
+    trackOrderDataSubmitted(sena, numItems)
     onSaved()
     // Vuelve a leer la planilla para que el resto de la página refleje el nuevo estado.
     router.refresh()
-  }, [state, montoTransferir, numItems, onSaved, router])
+  }, [state, sena, numItems, onSaved, router])
 
   const errors = state.status === 'error' ? state.errors ?? {} : {}
 
@@ -138,6 +156,56 @@ export default function OrderForm({ action, requiereEnvio, defaults, montoTransf
     </fieldset>
   )
 
+  const logisticsPicker = () => (
+    <fieldset>
+      <legend className="text-lg mb-3" style={{ color: 'var(--ink)' }}>¿Cómo querés recibir tu pedido?</legend>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+        {LOGISTICS.map((option) => {
+          const checked = values.logistica === option
+          const logo = LOGISTICS_LOGOS[option]
+          return (
+            <label
+              key={option}
+              className="cursor-pointer rounded-xl px-3 pt-4 pb-3 flex flex-col items-center justify-between gap-2 text-center transition-all focus-within:ring-2"
+              style={{
+                border: `${checked ? 2 : 1}px solid ${checked ? 'var(--accent)' : 'var(--line)'}`,
+                background: checked ? 'color-mix(in oklab, var(--accent) 7%, var(--surface))' : 'var(--surface)',
+                '--tw-ring-color': 'color-mix(in oklab, var(--accent) 30%, transparent)',
+              } as CSSProperties}
+            >
+              <input
+                type="radio"
+                name="logistica"
+                value={option}
+                checked={checked}
+                onChange={set('logistica')}
+                required
+                disabled={pending}
+                className="sr-only"
+              />
+              <span className="relative h-10 w-full flex items-center justify-center" aria-hidden>
+                {logo ? (
+                  <Image src={logo} alt="" fill sizes="160px" className="object-contain" />
+                ) : (
+                  <Store className="w-8 h-8" strokeWidth={1.5} style={{ color: checked ? 'var(--accent)' : 'var(--ink-soft)' }} />
+                )}
+              </span>
+              <span className="text-xs font-semibold" style={{ color: checked ? 'var(--accent-dark)' : 'var(--ink-soft)' }}>
+                {option}
+              </span>
+            </label>
+          )
+        })}
+      </div>
+      {errors.logistica && <p className="text-sm mt-2 text-red-600">{errors.logistica}</p>}
+      {LOGISTICS_NOTES[values.logistica] && (
+        <p className="text-sm mt-3" style={{ color: 'var(--ink-soft)' }}>{LOGISTICS_NOTES[values.logistica]}</p>
+      )}
+    </fieldset>
+  )
+
+  const needsAddress = ADDRESS_LOGISTICS.includes(values.logistica)
+
   return (
     <form
       onSubmit={(e) => {
@@ -148,6 +216,16 @@ export default function OrderForm({ action, requiereEnvio, defaults, montoTransf
       className="rounded-2xl p-5 sm:p-6 space-y-8"
       style={{ background: 'var(--surface)', border: '1px solid var(--line)' }}
     >
+      {prefilled && (
+        <p
+          className="text-sm rounded-xl px-4 py-3"
+          style={{ background: 'color-mix(in oklab, var(--accent) 8%, var(--surface))', color: 'var(--ink)' }}
+        >
+          👋 ¡Qué bueno verte de nuevo! Completamos tus datos con los de tu compra anterior. Revisalos y
+          corregí lo que haya cambiado.
+        </p>
+      )}
+
       <section className="space-y-4">
         <h2 className="text-lg" style={{ color: 'var(--ink)' }}>Datos personales</h2>
         {field({ name: 'nombre', label: 'Nombre y apellido', autoComplete: 'name', maxLength: 100 })}
@@ -158,27 +236,32 @@ export default function OrderForm({ action, requiereEnvio, defaults, montoTransf
         {field({ name: 'mail', label: 'Mail', type: 'email', inputMode: 'email', autoComplete: 'email', maxLength: 254 })}
       </section>
 
-      {requiereEnvio && (
-        <section className="space-y-4">
-          <h2 className="text-lg" style={{ color: 'var(--ink)' }}>📦 Información para el envío</h2>
-          {choice({ name: 'empresaEnvio', label: 'Empresa de envío', options: SHIPPING_COMPANIES })}
-          {choice({ name: 'modalidad', label: '¿Dónde lo recibís?', options: DELIVERY_MODES })}
-          <div className="grid sm:grid-cols-[1fr_8rem] gap-4">
-            {field({ name: 'calle', label: 'Calle y número', autoComplete: 'address-line1', maxLength: 120 })}
-            {field({ name: 'dpto', label: 'Dpto / Piso', optional: true, autoComplete: 'address-line2', maxLength: 30 })}
+      <section className="space-y-4">
+        {logisticsPicker()}
+
+        {needsAddress && (
+          <div className="space-y-4 pt-2">
+            <h3 className="text-base font-semibold" style={{ color: 'var(--ink)' }}>
+              📦 Datos para el envío por {values.logistica}
+            </h3>
+            {choice({ name: 'modalidad', label: '¿Dónde lo recibís?', options: DELIVERY_MODES })}
+            <div className="grid sm:grid-cols-[1fr_8rem] gap-4">
+              {field({ name: 'calle', label: 'Calle y número', autoComplete: 'address-line1', maxLength: 120 })}
+              {field({ name: 'dpto', label: 'Dpto / Piso', optional: true, autoComplete: 'address-line2', maxLength: 30 })}
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {field({ name: 'ciudad', label: 'Ciudad / Localidad', autoComplete: 'address-level2', maxLength: 80 })}
+              {field({ name: 'codigoPostal', label: 'Código postal', autoComplete: 'postal-code', maxLength: 8, placeholder: '1425' })}
+            </div>
+            {select({ name: 'provincia', label: 'Provincia', options: PROVINCIAS })}
+            {values.modalidad === 'Sucursal' && (
+              <p className="text-sm" style={{ color: 'var(--ink-soft)' }}>
+                Con tu dirección buscamos la sucursal de {values.logistica} más cercana.
+              </p>
+            )}
           </div>
-          <div className="grid sm:grid-cols-2 gap-4">
-            {field({ name: 'ciudad', label: 'Ciudad / Localidad', autoComplete: 'address-level2', maxLength: 80 })}
-            {field({ name: 'codigoPostal', label: 'Código postal', autoComplete: 'postal-code', maxLength: 8, placeholder: '1425' })}
-          </div>
-          {select({ name: 'provincia', label: 'Provincia', options: PROVINCIAS })}
-          {values.modalidad === 'Sucursal' && (
-            <p className="text-sm" style={{ color: 'var(--ink-soft)' }}>
-              Con tu dirección buscamos la sucursal de {values.empresaEnvio || 'la empresa'} más cercana.
-            </p>
-          )}
-        </section>
-      )}
+        )}
+      </section>
 
       <div>
         {state.status === 'error' && (
