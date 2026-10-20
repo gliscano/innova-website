@@ -346,7 +346,7 @@ function crearPedido(datos) {
   lock.waitLock(20000);
   try {
     const id = siguienteId(pedidos.hoja, pedidos.c);
-    const clave = Utilities.getUuid().replace(/-/g, '').slice(0, 16);
+    const clave = Utilities.getUuid().replace(/-/g, '');
     const link = SITE_URL + '/pedido/' + clave;
 
     agregarFila(pedidos.hoja, pedidos.c, {

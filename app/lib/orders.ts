@@ -54,10 +54,11 @@ export type OrderLookup =
   | { status: 'unavailable' }
 
 /**
- * La clave la genera el script con `Utilities.getUuid()`: 16 caracteres hexadecimales. Validar el
- * formato antes de ir a Google evita gastar una lectura en URLs inventadas.
+ * La clave la genera el script con `Utilities.getUuid()`: 32 caracteres hexadecimales (los pedidos
+ * anteriores tienen 16 y siguen andando). Validar el formato antes de ir a Google evita gastar una
+ * lectura en URLs inventadas.
  */
-const KEY_REGEX = /^[a-f0-9]{16}$/
+const KEY_REGEX = /^[a-f0-9]{16}(?:[a-f0-9]{16})?$/
 
 // ─── Columnas por nombre ─────────────────────────────────────────────────────
 

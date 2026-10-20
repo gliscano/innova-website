@@ -40,13 +40,15 @@ interface Props {
   nombre: string
   /** Lo que transfiere ahora: la seña, o el total si no hay seña. */
   sena: number
+  total: number
   vendedora: string
   transfer: TransferInfo | null
   onEdit: () => void
 }
 
-export default function PaymentInfo({ orderId, nombre, sena, vendedora, transfer, onEdit }: Props) {
+export default function PaymentInfo({ orderId, nombre, sena, total, vendedora, transfer, onEdit }: Props) {
   const amount = `$${sena.toLocaleString('es-AR')}`
+  const hasDeposit = sena < total
   const firstName = nombre.split(' ')[0]
 
   return (
@@ -67,8 +69,8 @@ export default function PaymentInfo({ orderId, nombre, sena, vendedora, transfer
       </div>
 
       <p className="text-sm sm:text-base mb-4" style={{ color: 'var(--ink-soft)' }}>
-        Para confirmar tu pedido, transferí <strong style={{ color: 'var(--ink)' }}>{amount}</strong> y envianos el
-        comprobante por WhatsApp.
+        Para confirmar tu pedido, transferí {hasDeposit && 'la seña de al menos '}
+        <strong style={{ color: 'var(--ink)' }}>{amount}</strong> y envianos el comprobante por WhatsApp.
       </p>
 
       {transfer ? (

@@ -69,14 +69,19 @@ export default function RootLayout({
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
 
-            gtag('config', 'G-EZ8J02VNPE');
+            // /pedido/<clave>: la clave es la llave del pedido (da acceso a los datos del cliente),
+            // así que nunca sale en la URL que recibe Analytics.
+            var pedido = location.pathname.indexOf('/pedido/') === 0;
+            gtag('config', 'G-EZ8J02VNPE', pedido ? { page_location: location.origin + '/pedido', page_path: '/pedido' } : {});
           `
           }
         </Script>
         {/* Meta Pixel Facebook */}
         <Script id='meta-pixel'>
           {
-          `!function(f,b,e,v,n,t,s) {
+          `// El Pixel manda la URL completa en cada evento y no se puede tapar: en /pedido no se carga.
+          if (location.pathname.indexOf('/pedido/') !== 0) {
+          !function(f,b,e,v,n,t,s) {
           if(f.fbq)return;n=f.fbq=function(){n.callMethod?
           n.callMethod.apply(n,arguments):n.queue.push(arguments)};
           if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
@@ -86,6 +91,7 @@ export default function RootLayout({
           'https://connect.facebook.net/en_US/fbevents.js');
           fbq('init', '2037570953478682');
           fbq('track', 'PageView');
+          }
           `}
         </Script>
         {/* End Meta Pixel Facebook */}

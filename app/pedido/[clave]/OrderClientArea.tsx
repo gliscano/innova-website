@@ -15,6 +15,7 @@ interface Props {
   /** Los datos vienen de una compra anterior: el formulario lo avisa para que los revise. */
   prefilled: boolean
   sena: number
+  total: number
   vendedora: string
   numItems: number
   transfer: TransferInfo | null
@@ -45,6 +46,7 @@ export default function OrderClientArea({ estado, cliente, ...props }: Props) {
       orderId={props.orderId}
       nombre={cliente.nombre}
       sena={props.sena}
+      total={props.total}
       vendedora={props.vendedora}
       transfer={props.transfer}
       onEdit={() => setEditing(true)}

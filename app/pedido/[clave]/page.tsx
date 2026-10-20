@@ -13,6 +13,8 @@ import ContactWhatsApp from './ContactWhatsApp'
 export const metadata: Metadata = {
   title: 'Tu pedido',
   robots: { index: false, follow: false },
+  // La URL lleva la clave del pedido: que no viaje como referrer a ninguna página, ni del sitio.
+  referrer: 'no-referrer',
 }
 
 function Notice({ title, children }: { title: string; children: React.ReactNode }) {
@@ -75,6 +77,7 @@ export default async function PedidoPage({ params }: { params: Promise<{ clave: 
             cliente={order.cliente}
             prefilled={order.prefilled}
             sena={order.sena}
+            total={order.total}
             vendedora={order.vendedora}
             numItems={order.items.reduce((n, item) => n + item.cantidad, 0)}
             transfer={getTransferInfo()}
