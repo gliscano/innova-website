@@ -58,12 +58,22 @@ No test suite is configured.
 Sellers create orders from `apps-script/` (Apps Script bound to the orders spreadsheet; the same
 `PanelPedido.html` runs as a dialog from the "Innova" menu and as a domain-restricted web app via
 `doGet` for phones). An order is one row in `Pedidos` + one row per product in `Items`, status
-`Esperando datos`, a random 16-hex `Clave`, and a `Vendedora`. The customer opens `/pedido/<clave>`,
+`Esperando datos`, a random 32-hex `Clave` (older 16-hex keys still resolve), and a `Vendedora`. If
+the seller enters a phone that already bought (`normalizarTelefono`, must match `normalizePhone`),
+the script stamps that client's `ID cliente` on the order. The customer opens `/pedido/<clave>`,
 fills personal data and picks a logistics option (`LOGISTICS`; only `ADDRESS_LOGISTICS` ask for an
 address). The server action writes only the customer columns, flips status to `Esperando pago`,
-upserts `Clientes` (keyed by `normalizePhone`, which must match the script's `normalizarTelefono`)
-and `Envíos`, then shows transfer details (`TRANSFER_*` env). A later order with the same phone is
-prefilled from those tabs. Item prices never reach the customer (only total / seña / resta).
+upserts `Clientes` and `Envíos` **by the order's `ID cliente`** (a UUID created on first save, never
+by the phone typed in the form), then shows transfer details (`TRANSFER_*` env). An order with an
+`ID cliente` is prefilled from those tabs, but the saved DNI and mail never reach the browser (only
+a masked hint; left blank, the action keeps the stored values). Item prices never reach the customer
+(only total / seña / resta).
+
+Payments are confirmed by hand: the seller types what hit the bank into `Cobrado`; the script's
+`onEdit` recomputes `Resta` and moves `Esperando pago` → `Seña recibida` / `Pagado`.
+
+The `Clave` is a bearer credential: `/pedido` sends GA a redacted `page_location`, skips the Meta
+Pixel entirely (it always posts the full URL), and uses `referrer: 'no-referrer'`.
 
 Columns are resolved **by header name** (row 1) on both sides, so they can be reordered in the sheet;
 names are the contract between `lib/orderSchema.ts` and `Pedidos.gs`. The site authenticates with a

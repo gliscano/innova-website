@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { ORDER_STATUS, type CustomerData } from '@/app/lib/orderSchema'
 import type { TransferInfo } from '@/app/lib/transferInfo'
 import type { SubmitOrderState } from './actions'
-import OrderForm from './OrderForm'
+import OrderForm, { type SavedHints } from './OrderForm'
 import PaymentInfo from './PaymentInfo'
 
 interface Props {
@@ -12,6 +12,8 @@ interface Props {
   orderId: string
   estado: string
   cliente: CustomerData
+  /** DNI y mail guardados, enmascarados (llegan vacíos en `cliente`). Sólo con datos precargados. */
+  saved?: SavedHints
   /** Los datos vienen de una compra anterior: el formulario lo avisa para que los revise. */
   prefilled: boolean
   sena: number
@@ -33,6 +35,7 @@ export default function OrderClientArea({ estado, cliente, ...props }: Props) {
       <OrderForm
         action={props.action}
         defaults={cliente}
+        saved={props.saved}
         prefilled={props.prefilled}
         sena={props.sena}
         numItems={props.numItems}

@@ -30,6 +30,13 @@ export async function submitOrder(
     return { status: 'success' }
   }
 
+  // Con datos precargados el DNI y el mail no llegan al navegador: vacíos = se mantienen los guardados.
+  if (lookup.order.prefilled) {
+    for (const name of ['dni', 'mail'] as const) {
+      if (!String(formData.get(name) ?? '').trim()) formData.set(name, lookup.order.cliente[name])
+    }
+  }
+
   const { data, errors } = parseCustomerData(formData)
   if (Object.keys(errors).length > 0) {
     return { status: 'error', message: 'Revisá los campos marcados.', errors }

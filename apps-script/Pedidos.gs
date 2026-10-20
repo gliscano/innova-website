@@ -36,7 +36,7 @@ const VENDEDORAS = [
 ];
 
 const COLUMNAS_PEDIDOS = [
-  'ID', 'Estado', 'Nombre', 'Teléfono', 'Total', 'Seña', 'Resta', 'Vendedora', 'Fecha',
+  'ID', 'Estado', 'Nombre', 'Teléfono', 'ID cliente', 'Total', 'Seña', 'Cobrado', 'Resta', 'Vendedora', 'Fecha',
   'Semana de entrega', 'Cant. productos', 'Requiere envío', 'Logística', 'DNI', 'Mail',
   'Calle y número', 'Dpto', 'Ciudad', 'Provincia', 'Código postal', 'Sucursal/Domicilio', 'Link',
   'Link generado', 'Datos completados', 'Clave',
@@ -47,22 +47,31 @@ const COLUMNAS_ITEMS = [
   'Diseño de piso', 'Precio unitario', 'Precio diseño', 'Cantidad', 'Subtotal',
 ];
 
+/** Una fila por cliente, identificado por su ID cliente (UUID). El teléfono sirve para buscarlo. */
 const COLUMNAS_CLIENTES = [
-  'Teléfono', 'Nombre', 'DNI', 'Mail', 'Primera compra', 'Última compra', 'Cant. pedidos',
+  'ID cliente', 'Teléfono', 'Nombre', 'DNI', 'Mail', 'Primera compra', 'Última compra', 'Cant. pedidos',
 ];
 
 const COLUMNAS_ENVIOS = [
-  'Teléfono', 'Logística', 'Sucursal/Domicilio', 'Calle y número', 'Dpto', 'Ciudad', 'Provincia',
+  'ID cliente', 'Teléfono', 'Logística', 'Sucursal/Domicilio', 'Calle y número', 'Dpto', 'Ciudad', 'Provincia',
   'Código postal', 'Última vez usada',
 ];
 
 const COLUMNAS_PRECIOS = ['Producto', 'Medidas', 'Precio'];
 
-const ESTADOS = ['Esperando datos', 'Esperando pago', 'Pagado', 'En producción', 'Entregado', 'Cancelado'];
+const ESTADOS = ['Esperando datos', 'Esperando pago', 'Seña recibida', 'Pagado', 'En producción', 'Entregado', 'Cancelado'];
+
+/**
+ * Estados que avanzan solos al cargar Cobrado. "Esperando datos" no: el cliente todavía tiene que
+ * completar el formulario, y el link sólo lo deja hacerlo mientras espera datos o pago. Después de
+ * "Pagado" el estado lo maneja Innova.
+ */
+const ESTADOS_DE_COBRO = ['Esperando pago', 'Seña recibida'];
 
 const COLORES_ESTADO = {
   'Esperando datos': '#fde68a',
   'Esperando pago': '#fed7aa',
+  'Seña recibida': '#d9f99d',
   'Pagado': '#bbf7d0',
   'En producción': '#bfdbfe',
   'Entregado': '#e5e7eb',
@@ -282,6 +291,7 @@ function buscarCliente(telefono) {
   const cliente = leerFilas(hoja, c).filter(function (f) { return normalizarTelefono(f['Teléfono']) === clave; })[0];
   if (!cliente) return null;
   return {
+    id: String(cliente['ID cliente'] || ''),
     nombre: String(cliente['Nombre'] || ''),
     pedidos: Number(cliente['Cant. pedidos']) || 0,
     ultimaCompra: String(cliente['Última compra'] || ''),
@@ -354,6 +364,9 @@ function crearPedido(datos) {
       'Estado': 'Esperando datos',
       'Nombre': cliente ? cliente.nombre : '',
       'Teléfono': telefono,
+      // Si el teléfono ya compró, el pedido queda atado a ese cliente: el sitio precarga sus datos y
+      // actualiza esa fila. Si no, el sitio le crea un ID al guardar los datos.
+      'ID cliente': cliente ? cliente.id : '',
       'Total': total,
       'Seña': sena,
       'Resta': total - sena,
@@ -462,6 +475,36 @@ function recontactar() {
   mostrarLink('Recontactar ' + f['ID'], mensaje, telefono ? linkWhatsApp(telefono, mensaje) : '');
 }
 
+// ─── Cobros ──────────────────────────────────────────────────────────────────
+
+/**
+ * Disparador simple: corre solo cada vez que alguien edita la planilla. Cuando se carga Cobrado (lo
+ * que se vio acreditado en el banco, no el comprobante), recalcula Resta = Total − Cobrado y avanza
+ * el estado: "Seña recibida" si cubre la seña, "Pagado" si cubre el total.
+ */
+function onEdit(e) {
+  const hoja = e.range.getSheet();
+  if (hoja.getName() !== HOJA_PEDIDOS || e.range.getLastRow() < 2) return;
+  const c = columnas(hoja, ['Estado', 'Total', 'Seña', 'Cobrado', 'Resta']);
+  const col = c.col('Cobrado');
+  if (col < e.range.getColumn() || col > e.range.getLastColumn()) return;
+
+  for (let fila = Math.max(2, e.range.getRow()); fila <= e.range.getLastRow(); fila++) {
+    const valor = function (nombre) { return hoja.getRange(fila, c.col(nombre)).getValue(); };
+    const total = Number(valor('Total')) || 0;
+    const sena = Number(valor('Seña')) || total;
+    const cobradoCelda = valor('Cobrado');
+    const cobrado = Number(cobradoCelda) || 0;
+    // Cobrado vacío: vuelve a la resta original (después de la seña).
+    hoja.getRange(fila, c.col('Resta')).setValue(Math.max(0, total - (cobradoCelda === '' ? sena : cobrado)));
+
+    const estado = String(valor('Estado'));
+    if (ESTADOS_DE_COBRO.indexOf(estado) === -1 || !cobrado) continue;
+    const nuevo = cobrado >= total ? 'Pagado' : cobrado >= sena ? 'Seña recibida' : estado;
+    if (nuevo !== estado) hoja.getRange(fila, c.col('Estado')).setValue(nuevo);
+  }
+}
+
 // ─── Configuración ───────────────────────────────────────────────────────────
 
 /**
@@ -513,7 +556,7 @@ function configurarPlanilla() {
   ['DNI', 'Teléfono', 'Código postal', 'Clave'].forEach(function (n) { rango(pedidos, cp, n).setNumberFormat('@'); });
   ['Fecha', 'Semana de entrega'].forEach(function (n) { rango(pedidos, cp, n).setNumberFormat('dd/mm/yyyy'); });
   rango(pedidos, cp, 'Link generado').setNumberFormat('dd/mm/yyyy hh:mm');
-  ['Total', 'Seña', 'Resta'].forEach(function (n) { rango(pedidos, cp, n).setNumberFormat('$#,##0'); });
+  ['Total', 'Seña', 'Cobrado', 'Resta'].forEach(function (n) { rango(pedidos, cp, n).setNumberFormat('$#,##0'); });
 
   const ci = columnas(items, COLUMNAS_ITEMS);
   ['Precio unitario', 'Precio diseño', 'Subtotal'].forEach(function (n) { rango(items, ci, n).setNumberFormat('$#,##0'); });

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Header from '@/app/components/Header'
 import Footer from '@/app/components/Footer'
 import { findOrderByKey } from '@/app/lib/orders'
-import { EDITABLE_STATUSES, ORDER_STATUS } from '@/app/lib/orderSchema'
+import { EDITABLE_STATUSES, ORDER_STATUS, type Order } from '@/app/lib/orderSchema'
 import { getTransferInfo } from '@/app/lib/transferInfo'
 import { submitOrder } from './actions'
 import OrderSummary from './OrderSummary'
@@ -15,6 +15,25 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
   // La URL lleva la clave del pedido: que no viaje como referrer a ninguna página, ni del sitio.
   referrer: 'no-referrer',
+}
+
+/**
+ * Datos que llegan al navegador. Si vienen precargados de una compra anterior, el DNI y el mail no
+ * salen del servidor: si la vendedora cargó mal el teléfono, el link es de otra persona y no tiene
+ * que ver esos datos. Se muestra sólo cómo terminan, y si el cliente los deja vacíos el servidor usa
+ * los guardados (ver `submitOrder`).
+ */
+function clientView(order: Order) {
+  if (!order.prefilled) return { cliente: order.cliente, saved: undefined }
+  const { dni, mail } = order.cliente
+  const [user, domain] = mail.split('@')
+  return {
+    cliente: { ...order.cliente, dni: '', mail: '' },
+    saved: {
+      dni: dni ? `•••${dni.slice(-3)}` : '',
+      mail: user && domain ? `${user[0]}•••@${domain}` : '',
+    },
+  }
 }
 
 function Notice({ title, children }: { title: string; children: React.ReactNode }) {
@@ -51,6 +70,7 @@ export default async function PedidoPage({ params }: { params: Promise<{ clave: 
   } else {
     const { order } = lookup
     const editable = EDITABLE_STATUSES.includes(order.estado)
+    const { cliente, saved } = clientView(order)
     content = (
       <>
         <div className="mb-6">
@@ -74,9 +94,10 @@ export default async function PedidoPage({ params }: { params: Promise<{ clave: 
             action={submitOrder.bind(null, clave)}
             orderId={order.id}
             estado={order.estado}
-            cliente={order.cliente}
+            cliente={cliente}
+            saved={saved}
             prefilled={order.prefilled}
-            sena={order.sena}
+            sena={Math.max(0, order.sena - order.cobrado)}
             total={order.total}
             vendedora={order.vendedora}
             numItems={order.items.reduce((n, item) => n + item.cantidad, 0)}
@@ -84,7 +105,10 @@ export default async function PedidoPage({ params }: { params: Promise<{ clave: 
           />
         ) : (
           <Notice title={`Estado: ${order.estado}`}>
-            <p className="mb-5">Ya recibimos tu pago. Cualquier consulta sobre tu pedido, escribinos.</p>
+            <p className="mb-5">
+              {order.estado === ORDER_STATUS.senaRecibida ? 'Ya recibimos tu seña' : 'Ya recibimos tu pago'}. Cualquier
+              consulta sobre tu pedido, escribinos.
+            </p>
             <ContactWhatsApp vendedora={order.vendedora} message={`Hola! Consulto por mi pedido ${order.id}`} />
           </Notice>
         )}

@@ -1,5 +1,5 @@
 import { CalendarDays, Store, Truck } from 'lucide-react'
-import type { Order, OrderItem } from '@/app/lib/orderSchema'
+import { EDITABLE_STATUSES, PICKUP, type Order, type OrderItem } from '@/app/lib/orderSchema'
 
 function price(value: number): string {
   return `$${value.toLocaleString('es-AR')}`
@@ -21,6 +21,15 @@ function longDate(value: string): string {
   return date.toLocaleDateString('es-AR', { day: 'numeric', month: 'long' })
 }
 
+function Row({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex justify-between items-baseline gap-4 mt-1 text-sm" style={{ color: 'var(--ink-soft)' }}>
+      <dt>{label}</dt>
+      <dd>{value}</dd>
+    </div>
+  )
+}
+
 function SectionLabel({ id, children }: { id: string; children: React.ReactNode }) {
   return (
     <h3 id={id} className="text-xs font-semibold tracking-widest uppercase mb-3" style={{ color: 'var(--ink-soft)' }}>
@@ -33,14 +42,16 @@ function SectionLabel({ id, children }: { id: string; children: React.ReactNode 
  * Detalle de solo lectura de lo que cargó Innova. A propósito no muestra precios por producto: al
  * cliente sólo le llega el total (el precio de diseño y los unitarios son internos).
  *
- * Tres bloques (productos, pago, entrega) y un dato protagonista por bloque: lo que el cliente tiene
- * que hacer ahora es transferir, así que ese monto es el que se destaca, no el total.
+ * Tres bloques (productos, pago, entrega) y un dato protagonista por bloque. Mientras espera el pago,
+ * lo que el cliente tiene que hacer es transferir, así que se destaca ese monto y no el total; una
+ * vez que Innova carga lo cobrado, se muestra lo recibido y lo que resta.
  */
 export default function OrderSummary({ order }: { order: Order }) {
+  const awaitingPayment = EDITABLE_STATUSES.includes(order.estado)
   const hasDeposit = order.sena > 0 && order.sena < order.total
-  const toTransfer = hasDeposit ? order.sena : order.total
+  const toTransfer = Math.max(0, order.sena - order.cobrado)
   const logistica = !order.prefilled ? order.cliente.logistica : ''
-  const pickup = logistica === 'Retiro en tienda'
+  const pickup = logistica === PICKUP
   const showDelivery = Boolean(order.semanaEntrega || logistica)
 
   return (
@@ -88,26 +99,43 @@ export default function OrderSummary({ order }: { order: Order }) {
             <dd>{price(order.total)}</dd>
           </div>
         </dl>
-        <dl
-          className="tabular-nums mt-3 rounded-xl px-4 py-3"
-          style={{
-            background: 'color-mix(in oklab, var(--accent) 8%, var(--surface))',
-            border: '1px solid color-mix(in oklab, var(--accent) 25%, var(--surface))',
-          }}
-        >
-          <div className="flex justify-between items-baseline gap-4">
-            <dt className="text-sm font-medium" style={{ color: 'var(--accent-dark)' }}>
-              {hasDeposit ? 'Seña a transferir' : 'A transferir'}
-            </dt>
-            <dd className="text-xl font-semibold" style={{ color: 'var(--accent-dark)' }}>{price(toTransfer)}</dd>
-          </div>
-          {hasDeposit && (
-            <div className="flex justify-between items-baseline gap-4 mt-1 text-sm" style={{ color: 'var(--ink-soft)' }}>
-              <dt>Resta abonar</dt>
-              <dd>{price(order.resta)}</dd>
+        {awaitingPayment ? (
+          <dl
+            className="tabular-nums mt-3 rounded-xl px-4 py-3"
+            style={{
+              background: 'color-mix(in oklab, var(--accent) 8%, var(--surface))',
+              border: '1px solid color-mix(in oklab, var(--accent) 25%, var(--surface))',
+            }}
+          >
+            <div className="flex justify-between items-baseline gap-4">
+              <dt className="text-sm font-medium" style={{ color: 'var(--accent-dark)' }}>
+                {order.cobrado > 0 ? 'Falta transferir' : hasDeposit ? 'Seña a transferir' : 'A transferir'}
+              </dt>
+              <dd className="text-xl font-semibold" style={{ color: 'var(--accent-dark)' }}>{price(toTransfer)}</dd>
             </div>
-          )}
-        </dl>
+            {order.cobrado > 0 && (
+              <Row label="Ya recibimos" value={price(order.cobrado)} />
+            )}
+            {hasDeposit && (
+              <Row label="Resta abonar" value={price(order.total - order.sena)} />
+            )}
+          </dl>
+        ) : order.cobrado > 0 && (
+          <dl
+            className="tabular-nums mt-3 rounded-xl px-4 py-3"
+            style={{ background: 'var(--surface-2)', border: '1px solid var(--line)' }}
+          >
+            <div className="flex justify-between items-baseline gap-4" style={{ color: 'var(--ink)' }}>
+              <dt className="text-sm font-medium">Recibimos</dt>
+              <dd className="text-xl font-semibold">{price(order.cobrado)}</dd>
+            </div>
+            {order.resta > 0 ? (
+              <Row label="Resta abonar" value={price(order.resta)} />
+            ) : (
+              <Row label="Pago completo" value="✓" />
+            )}
+          </dl>
+        )}
       </section>
 
       {showDelivery && (

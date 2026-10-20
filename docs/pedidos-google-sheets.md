@@ -7,7 +7,8 @@ Cómo funciona el circuito de venta y cómo dejarlo andando. Se configura **una 
 1. **La vendedora carga el pedido** desde la computadora (menú **Innova → Nuevo pedido** de la
    planilla) o desde el celular (App web, ver paso 1b). La pantalla pide:
    - vendedora (Daniela o Daimary: su botón de WhatsApp es el que ve el cliente);
-   - teléfono del cliente (opcional; si ya compró, avisa "Cliente: …" y el link llega con sus datos);
+   - teléfono del cliente (opcional; si ya compró, avisa "Cliente: …", el pedido queda atado a ese
+     cliente y el link llega con sus datos);
    - fecha y entrega estimada (precargada: hoy + 12 días hábiles, editable);
    - uno o más productos: producto y medida de la lista de precios (o medida especial con ancho y
      alto), modelo, precio, **precio de diseño**, cantidad y, si **incluye piso**, largo de pared,
@@ -20,19 +21,35 @@ Cómo funciona el circuito de venta y cómo dejarlo andando. Se configura **una 
 2. **El cliente abre el link** (`innova54.com/pedido/…`): ve su pedido, completa sus datos y elige
    cómo recibirlo (Andreani, Correo Argentino, Viacargo o Retiro en tienda; sólo Correo Argentino y
    Viacargo piden dirección). Si ya compró antes, el formulario llega precargado y lo puede corregir.
+   El DNI y el mail guardados **no se muestran enteros** (sólo "•••456" / "a•••@gmail.com"): si el
+   teléfono estaba mal cargado y el link le llega a otra persona, no ve esos datos. Si el cliente los
+   deja vacíos, se mantienen los guardados.
 3. **Al confirmar**, la fila se completa sola, pasa a `Esperando pago` y el cliente ve los datos para
    transferir y el botón para mandarle el comprobante **a su vendedora**. Además se actualizan
-   **Clientes** (una fila por teléfono) y **Envíos** (una fila por dirección usada).
+   **Clientes** (una fila por cliente, con su **ID cliente**) y **Envíos** (una fila por dirección
+   usada). Se actualiza siempre el cliente del pedido, nunca el del teléfono que se escriba en el
+   formulario: escribir el teléfono de otra persona no pisa sus datos.
 4. **Seguimiento:** pestaña **Pendientes** del panel (también en el celular), o seleccioná una fila y
    usá **Innova → Recontactar pedido seleccionado**. Arma el recordatorio que corresponde.
-5. Cuando confirmás el pago, cambiá el estado a mano: `Pagado` → `En producción` → `Entregado` (o
-   `Cancelado`, que desactiva el link).
+5. **Cobros:** cuando veas la plata **acreditada en el banco** (no alcanza con el comprobante, que
+   es una imagen y se puede editar), cargá el monto en la columna **Cobrado** (lo acumulado: si
+   entró la seña y después el resto, poné la suma). La planilla sola:
+   - recalcula **Resta** = Total − Cobrado;
+   - pasa el pedido de `Esperando pago` a `Seña recibida` si cubre la seña, o a `Pagado` si cubre
+     el total;
+   - y el cliente ve en su link cuánto recibimos y cuánto resta.
+
+   Cargá Cobrado después de que el cliente completó sus datos: un pedido en `Esperando datos` no
+   avanza solo (si avanzara, el cliente ya no podría completar el formulario).
+6. Después cambiá el estado a mano: `En producción` → `Entregado` (o `Cancelado`, que desactiva el
+   link).
 
 ### Pestañas
-- **Pedidos**: ID · Estado · Nombre · Teléfono · Total · Seña · Resta · Vendedora · … (la clave del
-  link va oculta al final).
+- **Pedidos**: ID · Estado · Nombre · Teléfono · ID cliente · Total · Seña · Cobrado · Resta ·
+  Vendedora · … (la clave del link va oculta al final).
 - **Items**: un producto por fila, con ancho, alto, piso (pared/piso), precio y precio de diseño.
-- **Clientes** y **Envíos**: los completa el sitio; sirven para precargar la próxima compra.
+- **Clientes** y **Envíos**: los completa el sitio; sirven para precargar la próxima compra. Cada
+  cliente tiene un **ID cliente** único (no lo edites): el teléfono es sólo para encontrarlo.
 - **Precios**: la lista del selector. Editala ahí cuando cambien los precios.
 
 Las columnas se buscan **por nombre**: podés reordenarlas o agregar columnas propias. Lo que no hay
@@ -125,6 +142,7 @@ producción):
 - `/pedido/00000000000000a2` — esperando datos, cliente que ya compró: datos precargados (Daimary)
 - `/pedido/00000000000000a3` — pagado
 - `/pedido/00000000000000a4` — cancelado
+- `/pedido/00000000000000a5` — seña recibida (Cobrado cargado)
 
 Los nombres de columnas que comparten el sitio y el script están en `app/lib/orderSchema.ts` y al
 principio de `apps-script/Pedidos.gs`: si se renombra una, hay que cambiarla en los dos.

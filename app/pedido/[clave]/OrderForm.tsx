@@ -38,9 +38,16 @@ const LOGISTICS_NOTES: Record<string, string> = {
   [PICKUP]: 'Te avisamos por WhatsApp cuando tu pedido esté listo para retirar.',
 }
 
+/** Cómo terminan el DNI y el mail guardados ("•••456", "a•••@gmail.com"), para no mandarlos enteros. */
+export interface SavedHints {
+  dni: string
+  mail: string
+}
+
 interface Props {
   action: (prev: SubmitOrderState, formData: FormData) => Promise<SubmitOrderState>
   defaults: CustomerData
+  saved?: SavedHints
   /** Los datos vienen de una compra anterior: se avisa para que el cliente los revise. */
   prefilled: boolean
   sena: number
@@ -48,7 +55,7 @@ interface Props {
   onSaved: () => void
 }
 
-export default function OrderForm({ action, defaults, prefilled, sena, numItems, onSaved }: Props) {
+export default function OrderForm({ action, defaults, saved, prefilled, sena, numItems, onSaved }: Props) {
   const router = useRouter()
   const [state, formAction, pending] = useActionState(action, { status: 'idle' })
   // Inputs controlados y envío por onSubmit (no `<form action>`): React 19 resetea el formulario
@@ -75,8 +82,9 @@ export default function OrderForm({ action, defaults, prefilled, sena, numItems,
     name,
     label,
     optional,
+    hint,
     ...rest
-  }: { name: CustomerField; label: string; optional?: boolean } & InputHTMLAttributes<HTMLInputElement>) => (
+  }: { name: CustomerField; label: string; optional?: boolean; hint?: string } & InputHTMLAttributes<HTMLInputElement>) => (
     <div>
       <label htmlFor={name} className="block text-sm font-semibold mb-1" style={{ color: 'var(--ink)' }}>
         {label} {optional && <span className="font-normal" style={{ color: 'var(--ink-faint)' }}>(opcional)</span>}
@@ -89,16 +97,22 @@ export default function OrderForm({ action, defaults, prefilled, sena, numItems,
         required={!optional}
         disabled={pending}
         aria-invalid={Boolean(errors[name])}
-        aria-describedby={errors[name] ? `${name}-error` : undefined}
+        aria-describedby={errors[name] ? `${name}-error` : hint ? `${name}-hint` : undefined}
         className={inputClass}
         style={errors[name] ? { ...inputStyle, borderColor: '#dc2626' } : inputStyle}
         {...rest}
       />
-      {errors[name] && (
+      {errors[name] ? (
         <p id={`${name}-error`} className="text-sm mt-1 text-red-600">{errors[name]}</p>
+      ) : hint && (
+        <p id={`${name}-hint`} className="text-sm mt-1" style={{ color: 'var(--ink-soft)' }}>{hint}</p>
       )}
     </div>
   )
+
+  // DNI y mail guardados: no se mandan al navegador. Vacío = mantener el guardado.
+  const savedField = (masked: string | undefined) =>
+    masked ? { required: false, placeholder: masked, hint: `Ya lo tenemos (${masked}). Escribilo sólo si cambió.` } : {}
 
   const select = ({ name, label, options }: { name: CustomerField; label: string; options: readonly string[] }) => (
     <div>
@@ -230,10 +244,10 @@ export default function OrderForm({ action, defaults, prefilled, sena, numItems,
         <h2 className="text-lg" style={{ color: 'var(--ink)' }}>Datos personales</h2>
         {field({ name: 'nombre', label: 'Nombre y apellido', autoComplete: 'name', maxLength: 100 })}
         <div className="grid sm:grid-cols-2 gap-4">
-          {field({ name: 'dni', label: 'DNI', inputMode: 'numeric', autoComplete: 'off', maxLength: 11, placeholder: 'Sin puntos' })}
+          {field({ name: 'dni', label: 'DNI', inputMode: 'numeric', autoComplete: 'off', maxLength: 11, placeholder: 'Sin puntos', ...savedField(saved?.dni) })}
           {field({ name: 'telefono', label: 'Teléfono', type: 'tel', inputMode: 'tel', autoComplete: 'tel', maxLength: 30, placeholder: '11 1234 5678' })}
         </div>
-        {field({ name: 'mail', label: 'Mail', type: 'email', inputMode: 'email', autoComplete: 'email', maxLength: 254 })}
+        {field({ name: 'mail', label: 'Mail', type: 'email', inputMode: 'email', autoComplete: 'email', maxLength: 254, ...savedField(saved?.mail) })}
       </section>
 
       <section className="space-y-4">

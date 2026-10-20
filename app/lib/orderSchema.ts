@@ -19,8 +19,10 @@ export const PEDIDOS_COLUMNS = [
   'Estado',
   'Nombre',
   'Teléfono',
+  'ID cliente',
   'Total',
   'Seña',
+  'Cobrado',
   'Resta',
   'Vendedora',
   'Fecha',
@@ -59,8 +61,13 @@ export const ITEMS_COLUMNS = [
   'Subtotal',
 ] as const
 
-/** Una fila por cliente, identificado por su teléfono normalizado (549…). */
+/**
+ * Una fila por cliente, identificado por su `ID cliente` (un UUID). El teléfono es un dato más: con
+ * él la vendedora encuentra al cliente al cargar un pedido, pero el sitio nunca actualiza un
+ * cliente por el teléfono que se escribe en el formulario, sino por el ID que trae el pedido.
+ */
 export const CLIENTES_COLUMNS = [
+  'ID cliente',
   'Teléfono',
   'Nombre',
   'DNI',
@@ -72,6 +79,7 @@ export const CLIENTES_COLUMNS = [
 
 /** Una fila por dirección distinta de cada cliente (sólo Correo Argentino / Viacargo piden dirección). */
 export const ENVIOS_COLUMNS = [
+  'ID cliente',
   'Teléfono',
   'Logística',
   'Sucursal/Domicilio',
@@ -89,12 +97,14 @@ export type ClientesColumn = (typeof CLIENTES_COLUMNS)[number]
 export type EnviosColumn = (typeof ENVIOS_COLUMNS)[number]
 
 /**
- * Estados del pedido. Los dos primeros los escribe el sistema (el script y el sitio); el resto los
- * cambia Innova a mano desde el desplegable de la planilla.
+ * Estados del pedido. Los dos primeros los escribe el sistema (el script y el sitio). "Seña
+ * recibida" y "Pagado" los pone el script al cargar la columna Cobrado; el resto los cambia Innova a
+ * mano desde el desplegable de la planilla.
  */
 export const ORDER_STATUS = {
   esperandoDatos: 'Esperando datos',
   esperandoPago: 'Esperando pago',
+  senaRecibida: 'Seña recibida',
   pagado: 'Pagado',
   enProduccion: 'En producción',
   entregado: 'Entregado',
@@ -182,6 +192,12 @@ export interface Order {
   total: number
   /** Lo que el cliente transfiere ahora. Igual al total si no se cobra seña. */
   sena: number
+  /**
+   * Lo que Innova confirmó que entró en la cuenta (columna Cobrado, la carga la vendedora al ver la
+   * plata en el banco, no el comprobante). 0 mientras no se cobró nada.
+   */
+  cobrado: number
+  /** Lo que falta pagar: total − cobrado una vez que hay un cobro; antes, total − seña. */
   resta: number
   vendedora: string
   items: OrderItem[]

@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto'
 import {
   appendRows,
   batchGet,
@@ -44,6 +45,11 @@ export interface OrderContext {
   envios: { header: HeaderMap; rows: SheetRows }
   /** El cliente ya había completado este pedido antes (es una corrección, no una compra nueva). */
   alreadyCompleted: boolean
+  /**
+   * `ID cliente` del pedido: lo pone el script si la vendedora cargó el teléfono de alguien que ya
+   * compró. Vacío para un cliente nuevo: el ID se crea al guardar sus datos.
+   */
+  clientId: string
   /** Sólo en modo demo: la clave del pedido en el store en memoria. */
   mockKey?: string
 }
@@ -147,18 +153,18 @@ function customerFromOrder(get: Getter): CustomerData {
 }
 
 /**
- * Datos de una compra anterior del mismo teléfono (el que cargó la vendedora). Se usan sólo para
- * precargar el formulario: el cliente los revisa y confirma.
+ * Datos de una compra anterior del cliente del pedido (el script le pone el `ID cliente` cuando la
+ * vendedora carga un teléfono que ya compró). Se usan sólo para precargar el formulario: el cliente
+ * los revisa y confirma.
  */
 function customerFromHistory(
-  phone: string,
+  clientId: string,
   clientes: OrderContext['clientes'],
   envios: OrderContext['envios'],
 ): CustomerData | null {
-  const key = normalizePhone(phone)
-  if (!key) return null
+  if (!clientId) return null
 
-  const clientRow = clientes.rows.find((row) => normalizePhone(text(getter(clientes.header, row)('Teléfono'))) === key)
+  const clientRow = clientes.rows.find((row) => text(getter(clientes.header, row)('ID cliente')) === clientId)
   if (!clientRow) return null
   const client = getter(clientes.header, clientRow)
 
@@ -167,7 +173,7 @@ function customerFromHistory(
   // última fila agregada o actualizada. Para eso alcanza con quedarse con la última del cliente.
   const addresses = envios.rows
     .map((row) => getter(envios.header, row))
-    .filter((get) => normalizePhone(text(get('Teléfono'))) === key)
+    .filter((get) => text(get('ID cliente')) === clientId)
   const latest = addresses[addresses.length - 1]
   const address = (column: string) => (latest ? text(latest(column)) : '')
 
@@ -175,7 +181,7 @@ function customerFromHistory(
     nombre: text(client('Nombre')),
     dni: text(client('DNI')),
     mail: text(client('Mail')),
-    telefono: displayPhone(phone),
+    telefono: displayPhone(text(client('Teléfono'))),
     logistica: address('Logística'),
     calle: address('Calle y número'),
     dpto: address('Dpto'),
@@ -210,10 +216,12 @@ export async function findOrderByKey(key: string): Promise<OrderLookup> {
     const id = text(get('ID'))
     const total = num(get('Total'))
     const sena = num(get('Seña')) || total
+    const cobrado = num(get('Cobrado'))
+    const clientId = text(get('ID cliente'))
     const alreadyCompleted = Boolean(text(get('Datos completados')))
 
-    // Primera vez que abre el link: si ese teléfono ya compró antes, se precargan sus datos.
-    const history = alreadyCompleted ? null : customerFromHistory(text(get('Teléfono')), clientes, envios)
+    // Primera vez que abre el link: si es un cliente que ya compró, se precargan sus datos.
+    const history = alreadyCompleted ? null : customerFromHistory(clientId, clientes, envios)
 
     const order: Order = {
       id,
@@ -222,14 +230,15 @@ export async function findOrderByKey(key: string): Promise<OrderLookup> {
       semanaEntrega: text(get('Semana de entrega')),
       total,
       sena,
-      resta: Math.max(0, total - sena),
+      cobrado,
+      resta: Math.max(0, total - (cobrado > 0 ? cobrado : sena)),
       vendedora: text(get('Vendedora')),
       items: parseItems(items, itemsRows.slice(1), id),
       cliente: history ?? customerFromOrder(get),
       prefilled: Boolean(history),
     }
     // index es base 0 sobre las filas leídas desde A1; la API es base 1.
-    return { status: 'found', order, context: { row: index + 1, pedidos, clientes, envios, alreadyCompleted } }
+    return { status: 'found', order, context: { row: index + 1, pedidos, clientes, envios, alreadyCompleted, clientId } }
   } catch (err) {
     console.error('[orders] Error leyendo la planilla:', err)
     return { status: 'unavailable' }
@@ -255,17 +264,20 @@ function sameAddress(get: Getter, cliente: CustomerData): boolean {
 /**
  * Guarda los datos del cliente en la fila del pedido y lo pasa a "Esperando pago". Escribe sólo
  * las columnas del cliente: lo que cargó Innova (productos, precios) no se toca desde la web.
- * Después actualiza Clientes (por teléfono) y Envíos (si eligió una logística con dirección).
+ * Después actualiza Clientes y Envíos (si eligió una logística con dirección), siempre por el
+ * `ID cliente` del pedido: el teléfono que se escribe en el formulario no elige qué cliente se pisa.
  */
 export async function saveCustomerData(context: OrderContext, cliente: CustomerData): Promise<boolean> {
   if (isMockEnabled()) return mockSave(context, cliente)
 
   const now = formatTimestamp(new Date())
   const phoneKey = normalizePhone(cliente.telefono)
+  const clientId = context.clientId || randomUUID()
   const P = (column: string, value: CellValue) => cell(PEDIDOS_SHEET, context.pedidos, column, context.row, value)
 
   const updates = [
     P('Estado', ORDER_STATUS.esperandoPago),
+    P('ID cliente', clientId),
     P('Nombre', cliente.nombre),
     P('Teléfono', phoneKey || cliente.telefono),
     P('DNI', cliente.dni),
@@ -282,15 +294,16 @@ export async function saveCustomerData(context: OrderContext, cliente: CustomerD
   ]
   const appends: { sheet: string; row: CellValue[] }[] = []
 
-  // Clientes: una fila por teléfono. Corregir el mismo pedido no cuenta como otra compra.
-  if (phoneKey) {
+  // Clientes: una fila por ID cliente. Corregir el mismo pedido no cuenta como otra compra.
+  {
     const { header, rows } = context.clientes
-    const index = rows.findIndex((r) => normalizePhone(text(getter(header, r)('Teléfono'))) === phoneKey)
+    const index = context.clientId ? rows.findIndex((r) => text(getter(header, r)('ID cliente')) === clientId) : -1
     if (index === -1) {
       appends.push({
         sheet: CLIENTES_SHEET,
         row: rowFor(header, {
-          'Teléfono': phoneKey,
+          'ID cliente': clientId,
+          'Teléfono': phoneKey || cliente.telefono,
           'Nombre': cliente.nombre,
           'DNI': cliente.dni,
           'Mail': cliente.mail,
@@ -302,7 +315,12 @@ export async function saveCustomerData(context: OrderContext, cliente: CustomerD
     } else {
       // +2: las filas leídas arrancan en la 2 (la 1 es el encabezado) y la API es base 1.
       const C = (column: string, value: CellValue) => cell(CLIENTES_SHEET, header, column, index + 2, value)
-      updates.push(C('Nombre', cliente.nombre), C('DNI', cliente.dni), C('Mail', cliente.mail))
+      updates.push(
+        C('Teléfono', phoneKey || cliente.telefono),
+        C('Nombre', cliente.nombre),
+        C('DNI', cliente.dni),
+        C('Mail', cliente.mail),
+      )
       if (!context.alreadyCompleted) {
         const count = num(getter(header, rows[index])('Cant. pedidos'))
         updates.push(C('Última compra', now), C('Cant. pedidos', count + 1))
@@ -311,10 +329,11 @@ export async function saveCustomerData(context: OrderContext, cliente: CustomerD
   }
 
   // Envíos: una fila por dirección distinta; si repite una, se actualiza esa fila.
-  if (phoneKey && ADDRESS_LOGISTICS.includes(cliente.logistica)) {
+  if (ADDRESS_LOGISTICS.includes(cliente.logistica)) {
     const { header, rows } = context.envios
     const values: Record<string, CellValue> = {
-      'Teléfono': phoneKey,
+      'ID cliente': clientId,
+      'Teléfono': phoneKey || cliente.telefono,
       'Logística': cliente.logistica,
       'Sucursal/Domicilio': cliente.modalidad,
       'Calle y número': cliente.calle,
@@ -326,7 +345,7 @@ export async function saveCustomerData(context: OrderContext, cliente: CustomerD
     }
     const index = rows.findIndex((r) => {
       const get = getter(header, r)
-      return normalizePhone(text(get('Teléfono'))) === phoneKey && sameAddress(get, cliente)
+      return text(get('ID cliente')) === clientId && sameAddress(get, cliente)
     })
     if (index === -1) {
       appends.push({ sheet: ENVIOS_SHEET, row: rowFor(header, values) })
@@ -379,7 +398,7 @@ function mockOrder(id: string, estado: string, extra: Partial<Order> = {}): Orde
     },
   ]
   return {
-    id, estado, fecha: '16/10/2026', semanaEntrega: '03/11/2026', total: 150000, sena: 75000, resta: 75000,
+    id, estado, fecha: '16/10/2026', semanaEntrega: '03/11/2026', total: 150000, sena: 75000, cobrado: 0, resta: 75000,
     vendedora: 'Daniela', items, cliente: { ...emptyCustomer, telefono: '5491100000000' }, prefilled: false,
     ...extra,
   }
@@ -396,6 +415,10 @@ function mockStore(): Map<string, Order> {
     })],
     ['00000000000000a3', mockOrder('INN-0003', ORDER_STATUS.pagado)],
     ['00000000000000a4', mockOrder('INN-0004', ORDER_STATUS.cancelado, { vendedora: '' })],
+    // Innova ya vio la seña en el banco y la cargó en Cobrado.
+    ['00000000000000a5', mockOrder('INN-0005', ORDER_STATUS.senaRecibida, {
+      cobrado: 75000, cliente: { ...returningCustomer },
+    })],
   ])
   return globalForMock.__innovaMockOrders
 }
@@ -407,7 +430,9 @@ function mockFind(key: string): OrderLookup {
   return {
     status: 'found',
     order: structuredClone(order),
-    context: { row: 0, pedidos: new Map(), clientes: empty, envios: empty, alreadyCompleted: false, mockKey: key },
+    context: {
+      row: 0, pedidos: new Map(), clientes: empty, envios: empty, alreadyCompleted: false, clientId: '', mockKey: key,
+    },
   }
 }
 
