@@ -42,6 +42,16 @@ const COLUMNAS_PEDIDOS = [
   'Link generado', 'Datos completados', 'Clave',
 ];
 
+/**
+ * Columnas que se sumaron después de que la planilla ya tenía pedidos, y con las que un pedido viejo
+ * funciona igual estando vacías. Si a una pestaña con datos sólo le faltan columnas de esta lista,
+ * configurarPlanilla las agrega al final en vez de archivar la pestaña. Al agregar una columna nueva
+ * que cumpla eso, sumala acá.
+ */
+const COLUMNAS_AGREGABLES = {
+  Pedidos: ['ID cliente', 'Cobrado'],
+};
+
 const COLUMNAS_ITEMS = [
   'ID pedido', 'Producto', 'Modelo', 'Ancho', 'Alto', 'Incluye piso', 'Largo pared', 'Largo piso',
   'Diseño de piso', 'Precio unitario', 'Precio diseño', 'Cantidad', 'Subtotal',
@@ -511,6 +521,8 @@ function onEdit(e) {
  * Crea o actualiza las pestañas. Se puede ejecutar las veces que haga falta:
  *   - Si una pestaña ya tiene todas las columnas, se deja como está (aunque estén en otro orden).
  *   - Si está vacía, se le ponen los encabezados.
+ *   - Si tiene datos y sólo le faltan columnas de COLUMNAS_AGREGABLES, se agregan al final y los
+ *     pedidos existentes (y sus links) siguen andando.
  *   - Si tiene datos con otro formato (versión anterior), se renombra a "<nombre> (anterior)" y se
  *     crea una nueva vacía. Los datos viejos quedan ahí para consultarlos.
  */
@@ -518,12 +530,13 @@ function configurarPlanilla() {
   const ss = SpreadsheetApp.getActive();
   guardarIdPlanilla();
   const renombradas = [];
+  const agregadas = [];
 
-  const pedidos = prepararHoja(ss, HOJA_PEDIDOS, COLUMNAS_PEDIDOS, renombradas);
-  const items = prepararHoja(ss, HOJA_ITEMS, COLUMNAS_ITEMS, renombradas);
-  const clientes = prepararHoja(ss, HOJA_CLIENTES, COLUMNAS_CLIENTES, renombradas);
-  const envios = prepararHoja(ss, HOJA_ENVIOS, COLUMNAS_ENVIOS, renombradas);
-  const precios = prepararHoja(ss, HOJA_PRECIOS, COLUMNAS_PRECIOS, renombradas);
+  const pedidos = prepararHoja(ss, HOJA_PEDIDOS, COLUMNAS_PEDIDOS, renombradas, agregadas);
+  const items = prepararHoja(ss, HOJA_ITEMS, COLUMNAS_ITEMS, renombradas, agregadas);
+  const clientes = prepararHoja(ss, HOJA_CLIENTES, COLUMNAS_CLIENTES, renombradas, agregadas);
+  const envios = prepararHoja(ss, HOJA_ENVIOS, COLUMNAS_ENVIOS, renombradas, agregadas);
+  const precios = prepararHoja(ss, HOJA_PRECIOS, COLUMNAS_PRECIOS, renombradas, agregadas);
 
   if (precios.getLastRow() < 2 && PRECIOS_INICIALES.length) {
     precios.getRange(2, 1, PRECIOS_INICIALES.length, 3).setValues(PRECIOS_INICIALES);
@@ -573,18 +586,29 @@ function configurarPlanilla() {
 
   SpreadsheetApp.getUi().alert(
     'Listo.' +
+    (agregadas.length ? '\n\nColumnas nuevas agregadas al final: ' + agregadas.join(', ') + '.' : '') +
     (renombradas.length ? '\n\nPestañas viejas guardadas como: ' + renombradas.join(', ') + '.' : '') +
     '\n\nRecordá compartir la planilla (como Editor) con el mail de la cuenta de servicio.'
   );
 }
 
-function prepararHoja(ss, nombre, encabezados, renombradas) {
+function prepararHoja(ss, nombre, encabezados, renombradas, agregadas) {
   let hoja = ss.getSheetByName(nombre);
   if (hoja) {
     const actuales = hoja.getRange(1, 1, 1, Math.max(hoja.getLastColumn(), 1)).getValues()[0]
       .map(function (h) { return String(h).trim().toLowerCase(); });
-    const completa = encabezados.every(function (h) { return actuales.indexOf(h.toLowerCase()) !== -1; });
-    if (completa) return hoja;
+    const faltan = encabezados.filter(function (h) { return actuales.indexOf(h.toLowerCase()) === -1; });
+    if (!faltan.length) return hoja;
+    const agregables = (COLUMNAS_AGREGABLES[nombre] || []).map(function (h) { return h.toLowerCase(); });
+    const soloNuevas = faltan.every(function (h) { return agregables.indexOf(h.toLowerCase()) !== -1; });
+    if (hoja.getLastRow() > 1 && soloNuevas) {
+      // Las columnas se leen por nombre (acá y en el sitio): agregarlas al final no mueve nada.
+      const desde = hoja.getLastColumn() + 1;
+      asegurarColumnas(hoja, desde + faltan.length - 1);
+      hoja.getRange(1, desde, 1, faltan.length).setValues([faltan]).setFontWeight('bold');
+      faltan.forEach(function (h) { agregadas.push(nombre + ' → ' + h); });
+      return hoja;
+    }
     if (hoja.getLastRow() > 1) {
       let viejo = nombre + ' (anterior)';
       for (let n = 2; ss.getSheetByName(viejo); n++) viejo = nombre + ' (anterior ' + n + ')';
@@ -595,9 +619,16 @@ function prepararHoja(ss, nombre, encabezados, renombradas) {
   }
   if (!hoja) hoja = ss.insertSheet(nombre);
   hoja.clear();
+  asegurarColumnas(hoja, encabezados.length);
   hoja.getRange(1, 1, 1, encabezados.length).setValues([encabezados]).setFontWeight('bold');
   hoja.setFrozenRows(1);
   return hoja;
+}
+
+/** Una hoja nueva trae 26 columnas: escribir más allá de la última tira error, así que se agregan. */
+function asegurarColumnas(hoja, cantidad) {
+  const faltan = cantidad - hoja.getMaxColumns();
+  if (faltan > 0) hoja.insertColumnsAfter(hoja.getMaxColumns(), faltan);
 }
 
 // ─── Utilidades ──────────────────────────────────────────────────────────────

@@ -56,10 +56,15 @@ Las columnas se buscan **por nombre**: podés reordenarlas o agregar columnas pr
 que hacer es **renombrar** las existentes.
 
 > **Actualizar el script:** cuando cambien `Pedidos.gs` o `PanelPedido.html`, volvé a pegarlos en
-> el editor de Apps Script y ejecutá `configurarPlanilla` otra vez. Si una pestaña tiene el formato
-> de una versión anterior, la guarda como "Pedidos (anterior)" (o el nombre que corresponda) y crea
-> una nueva vacía: los links de esos pedidos viejos dejan de funcionar. Si ya está al día, no toca
-> nada.
+> el editor de Apps Script y ejecutá `configurarPlanilla` otra vez. Si ya está al día, no toca nada.
+> Si a una pestaña con pedidos sólo le faltan columnas nuevas (como `ID cliente` o `Cobrado`), las
+> agrega al final y los pedidos y sus links siguen andando. Sólo si el formato es de una versión muy
+> anterior la guarda como "Pedidos (anterior)" (o el nombre que corresponda) y crea una nueva
+> vacía: ahí los links de esos pedidos viejos dejan de funcionar.
+>
+> Si el sitio muestra **"Faltan columnas en …. Ejecutá configurarPlanilla"**, el script pegado en la
+> planilla es más viejo que el del sitio: volvé a pegar los dos archivos y ejecutá
+> `configurarPlanilla`.
 
 > El link no tiene datos adentro, sólo una clave aleatoria: el sitio siempre lee el pedido de la
 > planilla. Si corregís un precio en la planilla, el cliente ve el precio corregido.
