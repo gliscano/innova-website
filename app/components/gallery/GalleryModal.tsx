@@ -3,11 +3,15 @@
 import { useEffect, useRef, useState, useMemo } from 'react'
 import { CldImage } from 'next-cloudinary'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Check, Plus, ShoppingBag, X } from 'lucide-react'
 import { GalleryModalProps } from '../../types/gallery'
 import WhatsAppDropdown from '../WhatsAppDropdown'
 import { useSelectedSize } from '../../context/SelectedSizeContext'
+import { useCart, cartItemKey, cartSizeLabel, formatArs } from '../../context/CartContext'
 import { SizeSelectorCompact } from '../SizeSelectorCompact'
 import { parseImageDescription } from '@/app/utils/imageDescription'
+import { formatFolderName } from '@/app/utils/catalogUtils'
+import { trackAddToCart } from '@/app/utils/tracking'
 
 function parseDescription(img?: GalleryModalProps['images'][number]) {
   const raw = typeof img?.description === 'string' && img.description.trim() !== ''
@@ -29,12 +33,15 @@ export default function GalleryModal({
   initialIndex,
   goToNext,
   goToPrevious,
-  category,
+  category: categoryProp,
 }: GalleryModalProps) {
   const modalRef = useRef<HTMLDivElement>(null)
   const [hasError, setHasError] = useState(false)
   const [showDescription, setShowDescription] = useState(false)
   const { selectedSize, setSelectedSize, setModalOpen } = useSelectedSize()
+  const { items: cartItems, count: cartCount, addItem, removeItem, openDrawer } = useCart()
+  const [justAdded, setJustAdded] = useState(false)
+  const justAddedTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     setModalOpen(isOpen)
@@ -44,6 +51,9 @@ export default function GalleryModal({
   // Cerrar modal al hacer clic fuera
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element | null
+      // El panel "Mi pedido" se abre por encima del modal: tocarlo no es un clic afuera.
+      if (target?.closest?.('[data-cart-drawer]')) return
       if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
         onClose()
       }
@@ -62,26 +72,49 @@ export default function GalleryModal({
     if (isOpen && images[initialIndex]) {
       setHasError(false)
       setShowDescription(false)
+      setJustAdded(false)
     }
   }, [initialIndex, isOpen, images])
+
+  useEffect(() => () => {
+    if (justAddedTimer.current) clearTimeout(justAddedTimer.current)
+  }, [])
 
   const handleImageError = () => {
     setHasError(true)
   }
 
   const currentImage = images[initialIndex] ?? null
+  // Sin categoría explícita (feed de inspiración) se usa la carpeta del diseño.
+  const category = categoryProp || (currentImage?.folder ? formatFolderName(currentImage.folder.split('/').pop() ?? '') : '')
   const description = useMemo(() => parseDescription(currentImage), [currentImage])
 
-  // Con medida elegida el mensaje ya trae el precio cerrado, para que la charla arranque en la
-  // compra y no en "¿cuánto sale?". Solo una medida especial (fuera de la tabla) lo deja a confirmar.
-  // Medida y precio van en negrita de WhatsApp (*texto*) para que se lean de un vistazo.
-  const designLines = `Categoría: ${category || 'diseño'}\nDiseño: ${currentImage?.display_name}`
-  const priceLine = selectedSize?.fromPrice
-    ? `\n*Precio: $${selectedSize.fromPrice.toLocaleString('es-AR')}*${selectedSize.isExactPrice ? '' : ' (medida especial, a confirmar)'}`
-    : ''
+  // WhatsApp directo (secundario): consulta puntual por este diseño. Para comprar, el camino
+  // principal es "Agregar a Mi pedido", que junta varios diseños y medidas en un solo mensaje.
+  const designLines = `Categoría: ${category || 'diseño'}\nModelo: ${currentImage?.display_name}`
   const whatsappMessage = selectedSize
-    ? `Hola! Quiero comprar este diseño:\n${designLines}\n*Medida: ${selectedSize.label}*${selectedSize.finishLabel ? `\nTerminación: ${selectedSize.finishLabel}` : ''}${priceLine}\nVer imagen: ${currentImage?.url}\n¿Cómo sigo con la compra?`
-    : `Hola! Quiero consultar por este diseño:\n${designLines}\nVer imagen: ${currentImage?.url}`
+    ? `Hola! Tengo una consulta por este diseño:\n${designLines}\nMedida que me interesa: ${selectedSize.label}${selectedSize.finishLabel ? ` · ${selectedSize.finishLabel}` : ''}\nVer imagen: ${currentImage?.url}`
+    : `Hola! Tengo una consulta por este diseño:\n${designLines}\nVer imagen: ${currentImage?.url}`
+
+  // Líneas de este diseño que ya están en el pedido (puede estar en varias medidas).
+  const linesForDesign = currentImage ? cartItems.filter(i => i.imageId === currentImage.id) : []
+  const currentKey = currentImage && selectedSize ? cartItemKey(currentImage.id, selectedSize) : null
+  const qtyInCartForSize = cartItems.find(i => i.key === currentKey)?.qty ?? 0
+
+  const handleAddToCart = () => {
+    if (!currentImage || !selectedSize) return
+    addItem({
+      imageId: currentImage.id,
+      designCode: currentImage.display_name,
+      category: category || undefined,
+      imageUrl: currentImage.url,
+      size: selectedSize,
+    })
+    trackAddToCart(category || '', selectedSize.isExactPrice ? selectedSize.fromPrice : undefined)
+    setJustAdded(true)
+    if (justAddedTimer.current) clearTimeout(justAddedTimer.current)
+    justAddedTimer.current = setTimeout(() => setJustAdded(false), 1800)
+  }
 
   if (!isOpen || !currentImage) return null
 
@@ -116,11 +149,14 @@ export default function GalleryModal({
             {/* Header overlay — solo en portrait (título + contador sobre la imagen) */}
             <div className="absolute top-0 inset-x-0 z-10 flex items-end pb-2 px-4 pt-8 bg-gradient-to-b from-black/60 to-transparent mob-landscape:hidden">
               <div className="pr-10">
-                <h2 className="text-sm font-medium text-white leading-tight truncate">
-                  {currentImage.display_name}
+                <h2 className="text-base font-semibold text-white leading-tight truncate">
+                  {category || 'Diseño'}
                 </h2>
-                <span className="text-xs text-gray-300">
-                  {initialIndex + 1} / {images.length}
+                <span className="text-xs text-gray-300 block">
+                  Diseño {initialIndex + 1} de {images.length}
+                </span>
+                <span className="text-[11px] text-gray-400 block truncate" title={currentImage.display_name}>
+                  Cód. {currentImage.display_name}
                 </span>
               </div>
             </div>
@@ -187,12 +223,13 @@ export default function GalleryModal({
             {/* Título + contador — solo visible en landscape (en portrait va como overlay sobre la imagen) */}
             <div className="hidden mob-landscape:flex items-start text-white px-4 py-3 pr-12 flex-shrink-0">
               <div>
-                <h2 className="text-base font-medium leading-tight">
-                  {currentImage.display_name}
+                <h2 className="text-base font-semibold leading-tight">
+                  {category || 'Diseño'}
                 </h2>
                 <span className="text-xs text-gray-400 mt-0.5 block">
-                  {initialIndex + 1} / {images.length}
+                  Diseño {initialIndex + 1} de {images.length}
                 </span>
+                <span className="text-[11px] text-gray-500 block break-all">Cód. {currentImage.display_name}</span>
               </div>
             </div>
 
@@ -224,7 +261,7 @@ export default function GalleryModal({
                     {description.text.length > DESCRIPTION_CLAMP_CHARS && (
                     <button
                       onClick={() => setShowDescription(prev => !prev)}
-                      className="flex items-center gap-1 text-gray-500 hover:text-white transition-colors text-xs mt-1"
+                      className="flex items-center gap-1 text-gray-300 hover:text-white transition-colors text-xs py-1.5 pr-3"
                     >
                       <svg
                         className={`w-3 h-3 transition-transform duration-200 ${showDescription ? 'rotate-180' : ''}`}
@@ -240,49 +277,95 @@ export default function GalleryModal({
               </div>
             )}
 
-            {/* Footer — size selector + WhatsApp */}
-            <div className="flex-shrink-0 px-4 pb-4 pt-2 sticky bottom-0 z-10 bg-[#111] border-t border-white/10 mob-landscape:static mob-landscape:bg-transparent mob-landscape:border-t-0">
+            {/* Footer — medida + Mi pedido (+ WhatsApp directo como secundario) */}
+            <div className="flex-shrink-0 px-4 pb-4 pt-3 sticky bottom-0 z-10 bg-[#111] border-t border-white/10 mob-landscape:static mob-landscape:bg-transparent mob-landscape:border-t-0 space-y-2.5">
 
               {selectedSize ? (
-                /* Medida confirmada: solo chip + WhatsApp */
-                <div className="flex items-center gap-2 bg-amber-400/20 border border-amber-400/40 rounded-xl px-4 h-11 w-full mb-3">
-                  <svg className="w-4 h-4 text-amber-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span className="text-white text-sm font-medium">{selectedSize.label}</span>
-                  <span className="text-amber-300 text-sm">
-                    {selectedSize.isExactPrice ? '' : 'desde '}${selectedSize.fromPrice?.toLocaleString('es-AR')}
-                  </span>
+                <div className="flex items-center gap-2 bg-amber-400/15 border border-amber-400/40 rounded-xl px-3 h-10 w-full">
+                  <span className="text-[11px] uppercase tracking-wide text-gray-400 shrink-0">Medida</span>
+                  <span className="text-white text-sm font-semibold truncate">{selectedSize.label}</span>
+                  {selectedSize.fromPrice ? (
+                    <span className="text-amber-300 text-sm shrink-0">
+                      {selectedSize.isExactPrice ? '' : 'desde '}{formatArs(selectedSize.fromPrice)}
+                    </span>
+                  ) : null}
                   <button
                     onClick={() => setSelectedSize(null)}
-                    className="ml-auto text-gray-400 hover:text-white transition-colors text-xs underline shrink-0"
+                    className="ml-auto text-gray-300 hover:text-white transition-colors text-xs underline underline-offset-2 shrink-0 py-2"
                   >
                     cambiar
                   </button>
                 </div>
               ) : (
-                /* Sin medida: selector completo */
                 <>
-                  <p className="text-gray-400 text-xs mb-2">
-                    Elegí un tamaño para agilizar tu pedido o consulta
+                  <p className="text-amber-200 text-sm font-medium">
+                    Elegí la medida para agregarlo a tu pedido
                   </p>
                   <SizeSelectorCompact onSelect={setSelectedSize} variant="dark" />
                 </>
               )}
 
-              {/* Botón WhatsApp */}
-              <div className={selectedSize ? '' : 'mt-3'}>
-                <WhatsAppDropdown
-                  buttonText={selectedSize ? `Quiero este diseño · ${selectedSize.label}` : 'Consultar'}
-                  message={whatsappMessage}
-                  className={`w-full px-5 h-11 text-white font-semibold rounded-xl flex items-center justify-center gap-2 transition-colors ${
-                    selectedSize
-                      ? 'bg-green-500 hover:bg-green-400'
-                      : 'bg-green-800 hover:bg-green-400'
+              {/* Este diseño ya en el pedido (en una o más medidas) */}
+              {linesForDesign.length > 0 && (
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="text-[11px] uppercase tracking-wide text-gray-400 mr-0.5">En tu pedido</span>
+                  {linesForDesign.map(line => (
+                    <span key={line.key} className="inline-flex items-center gap-1 rounded-full bg-white/10 pl-2.5 pr-1 py-0.5 text-xs text-gray-100">
+                      {cartSizeLabel(line.size)}{line.size.finishLabel ? ` · ${line.size.finishLabel}` : ''} ×{line.qty}
+                      <button
+                        onClick={() => removeItem(line.key)}
+                        className="p-1 rounded-full text-gray-400 hover:text-white hover:bg-white/10"
+                        aria-label={`Quitar ${cartSizeLabel(line.size)} del pedido`}
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              <div className="flex items-stretch gap-2">
+                <button
+                  onClick={handleAddToCart}
+                  disabled={!selectedSize}
+                  className={`flex-1 h-12 rounded-xl px-4 flex items-center justify-center gap-2 font-semibold transition-all active:scale-[0.98] ${
+                    justAdded
+                      ? 'bg-green-500 text-white'
+                      : selectedSize
+                        ? 'bg-amber-400 hover:bg-amber-300 text-[#1F1A14]'
+                        : 'bg-white/10 text-gray-400 cursor-not-allowed'
                   }`}
+                >
+                  {justAdded ? (
+                    <><Check className="w-5 h-5" /> Agregado a Mi pedido</>
+                  ) : !selectedSize ? (
+                    <>Elegí una medida</>
+                  ) : qtyInCartForSize > 0 ? (
+                    <><Plus className="w-5 h-5" /> Sumar otro ({qtyInCartForSize} en el pedido)</>
+                  ) : (
+                    <><Plus className="w-5 h-5" /> Agregar a Mi pedido</>
+                  )}
+                </button>
+                <WhatsAppDropdown
+                  iconOnly
+                  wrapperClassName="relative shrink-0"
+                  buttonText="Consultar este diseño por WhatsApp"
+                  message={whatsappMessage}
+                  className="h-12 w-12 rounded-xl border border-green-500/60 bg-green-500/10 hover:bg-green-500/25 flex items-center justify-center transition-colors"
                   iconClassName="brightness-0 invert"
                 />
               </div>
+
+              {cartCount > 0 && (
+                <button
+                  onClick={openDrawer}
+                  className="w-full flex items-center justify-center gap-2 text-sm text-amber-200 hover:text-amber-100 py-1"
+                >
+                  <ShoppingBag className="w-4 h-4" />
+                  Ver Mi pedido ({cartCount}) y enviarlo
+                  <span aria-hidden>→</span>
+                </button>
+              )}
             </div>
 
           </div>

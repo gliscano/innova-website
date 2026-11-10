@@ -131,3 +131,39 @@ export function trackOrderDataSubmitted(value: number, numItems: number): void {
     window.fbq('track', 'AddPaymentInfo', { value, currency: 'ARS', num_items: numItems })
   }
 }
+
+/**
+ * Diseño agregado a "Mi pedido" (el carrito del catálogo). Primer paso del embudo:
+ * AddToCart → InitiateCheckout (envío por WhatsApp) → AddPaymentInfo (`/pedido/[clave]`).
+ */
+export function trackAddToCart(category: string, value?: number): void {
+  if (typeof window === 'undefined') return
+  gaEvent('add_to_cart', {
+    event_category: 'cart',
+    event_label: category || 'unknown',
+    currency: 'ARS',
+    value: value ?? 0,
+  })
+  if (window.fbq) {
+    window.fbq('track', 'AddToCart', {
+      content_category: category || '',
+      currency: 'ARS',
+      value: value ?? 0,
+    })
+  }
+}
+
+/** "Mi pedido" enviado por WhatsApp a una vendedora. */
+export function trackBeginCheckout(value: number, numItems: number, seller: string): void {
+  if (typeof window === 'undefined') return
+  gaEvent('begin_checkout', {
+    event_category: 'cart',
+    event_label: seller,
+    currency: 'ARS',
+    value,
+    num_items: numItems,
+  })
+  if (window.fbq) {
+    window.fbq('track', 'InitiateCheckout', { currency: 'ARS', value, num_items: numItems })
+  }
+}

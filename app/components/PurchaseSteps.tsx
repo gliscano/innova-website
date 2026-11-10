@@ -2,17 +2,20 @@
 
 import React from 'react'
 import { useSelectedSize } from '@/app/context/SelectedSizeContext'
+import { useCart } from '@/app/context/CartContext'
 
 const PURCHASE_STEPS = [
-  { mobile: 'Elegí medida', desktop: 'Elegí medida'     },
-  { mobile: 'Elegí Diseño',       desktop: 'Elegí diseño'     },
-  { mobile: 'WhatsApp',           desktop: 'WhatsApp'         },
-  { mobile: 'Listo!',        desktop: '¡Tu fondo listo!' },
+  { mobile: 'Medida',   desktop: 'Elegí la medida'  },
+  { mobile: 'Diseños',  desktop: 'Agregá diseños'   },
+  { mobile: 'Enviá tu pedido', desktop: 'Enviá Mi pedido'  },
+  { mobile: '¡Listo!',  desktop: '¡Tu fondo listo!' },
 ] as const
 
 export function PurchaseSteps() {
-  const { selectedSize, isModalOpen } = useSelectedSize()
-  const activeStep = !selectedSize ? 1 : isModalOpen ? 3 : 2
+  const { selectedSize } = useSelectedSize()
+  const { count } = useCart()
+  // Paso real: con algo en el pedido ya toca enviarlo, aunque se haya cambiado la medida.
+  const activeStep = count > 0 ? 3 : !selectedSize ? 1 : 2
 
   return (
     <div className="flex items-center gap-1.5 sm:gap-2 text-sm select-none">

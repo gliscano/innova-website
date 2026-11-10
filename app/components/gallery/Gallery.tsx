@@ -150,7 +150,7 @@ export default function Gallery(props: GalleryProps) {
             initialIndex={modalIndex}
             goToNext={goToNext}
             goToPrevious={goToPrevious}
-            category={props.searchTerm}
+            category={categoryTitle}
           />
         )}
       </div>

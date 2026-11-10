@@ -8,12 +8,13 @@ import Gallery from "@/app/components/gallery/Gallery"
 import WhatsAppDropdown from "@/app/components/WhatsAppDropdown"
 import SelectedSizeBanner from "@/app/components/SelectedSizeBanner"
 import { PurchaseSteps } from "@/app/components/PurchaseSteps"
-import { trackViewContent } from "@/app/utils/tracking"
+import { trackViewContent, trackWhatsAppClick } from "@/app/utils/tracking"
 import { decodeSegment, formatFolderName } from "@/app/utils/catalogUtils"
 import StoreExitLink from "@/app/components/StoreExitLink"
 import { CollectionGallery } from "@/app/components/gallery/CollectionGallery"
 import type { CloudinarySubfolder } from "@/app/types/catalog"
 import type { FolderImagesResult } from "@/app/lib/cloudinaryImages"
+import { useCart } from "@/app/context/CartContext"
 
 interface ProductPageContentProps {
   id: string
@@ -25,6 +26,7 @@ interface ProductPageContentProps {
 
 function StickyProductBar({ title }: { title: string }) {
   const [visible, setVisible] = useState(false)
+  const { count, openDrawer } = useCart()
 
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY > 70)
@@ -39,15 +41,28 @@ function StickyProductBar({ title }: { title: string }) {
           ← Catálogo
         </Link>
         <span className="copperplate-bold-font text-sm font-bold text-[#1F1A14] truncate">{title}</span>
-        <a
-          href={`https://wa.me/5491171419752?text=${encodeURIComponent(`Hola, quiero consultar sobre el catálogo: ${title}.`)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="shrink-0 flex items-center gap-1.5 bg-[#25D366] text-white text-xs font-semibold px-3 py-1.5 rounded-full"
-        >
-          <Image src="/svg/whatsapp.svg" alt="" width={14} height={14} />
-          Comprar
-        </a>
+        {count > 0 ? (
+          <button
+            onClick={openDrawer}
+            className="shrink-0 flex items-center gap-1.5 bg-[#1F1A14] text-white text-xs font-semibold px-3 py-1.5 rounded-full"
+          >
+            Mi pedido
+            <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-amber-400 text-[#1F1A14] text-[11px] font-bold flex items-center justify-center tabular-nums">
+              {count}
+            </span>
+          </button>
+        ) : (
+          <a
+            href={`https://wa.me/5491171419752?text=${encodeURIComponent(`Hola! Estoy viendo el catálogo *${title}* y tengo una consulta.`)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackWhatsAppClick('sticky_catalog_bar')}
+            className="shrink-0 flex items-center gap-1.5 bg-[#25D366] text-white text-xs font-semibold px-3 py-1.5 rounded-full"
+          >
+            <Image src="/svg/whatsapp.svg" alt="" width={14} height={14} />
+            Consultar
+          </a>
+        )}
       </div>
     </div>
   )

@@ -53,6 +53,18 @@ No test suite is configured.
 | `/terminos-y-condiciones` | Terms & conditions |
 | `/pedido/[clave]` | Private per-customer order form (noindex). Reads the order from Google Sheets |
 
+### "Mi pedido" (catalog cart)
+
+`app/context/CartContext.tsx` is the customer-side draft: several designs × several sizes, saved in
+`localStorage` (`innova-cart-v1`) and sent as **one** WhatsApp message (`buildCartMessage`, fields in
+the order sellers type them into `Items`: Modelo, Producto, medida, cantidad). It is *not* connected to
+Sheets — the seller creates the real order from that message. Named Cart (not Order) on purpose:
+`OrderItem` / `orders.ts` are the sheet's order. Sending empties the cart (8 s "Deshacer").
+UI: `GalleryModal` ("Agregar a Mi pedido", WhatsApp direct as secondary), `components/cart/CartBar` +
+`CartDrawer` (mounted in `layout.tsx`). `WhatsAppFloat` only shows with an empty cart and sends a
+per-page message; cart UI and the float are hidden on `/pedido/<clave>`. Funnel events:
+`add_to_cart`/AddToCart → `begin_checkout`/InitiateCheckout → `order_data_submitted`/AddPaymentInfo.
+
 ### Orders (Google Sheets)
 
 Sellers create orders from `apps-script/` (Apps Script bound to the orders spreadsheet; the same

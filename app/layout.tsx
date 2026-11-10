@@ -5,6 +5,9 @@ import Script from 'next/script'
 import type { Metadata } from 'next'
 import WhatsAppFloat from './components/WhatsAppFloat'
 import { SelectedSizeProvider } from './context/SelectedSizeContext'
+import { CartProvider } from './context/CartContext'
+import CartBar from './components/cart/CartBar'
+import CartDrawer from './components/cart/CartDrawer'
 import { SITE_URL } from './lib/siteUrl'
 import JsonLd, { organizationSchema, webSiteSchema } from './components/JsonLd'
 
@@ -115,8 +118,12 @@ export default function RootLayout({
           />
         </noscript>
         <SelectedSizeProvider>
-          {children}
-          <WhatsAppFloat />
+          <CartProvider>
+            {children}
+            <WhatsAppFloat />
+            <CartBar />
+            <CartDrawer />
+          </CartProvider>
         </SelectedSizeProvider>
       </body>
     </html>

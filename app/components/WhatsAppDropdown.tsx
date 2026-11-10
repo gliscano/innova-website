@@ -15,6 +15,11 @@ export interface WhatsAppDropdownProps {
   buttonText?: string
   className?: string
   iconClassName?: string
+  /** Solo el ícono (botón cuadrado); `buttonText` queda como aria-label. */
+  iconOnly?: boolean
+  wrapperClassName?: string
+  /** Después de elegir vendedora (el link ya se abrió con el mensaje armado). */
+  onSelect?: (label: string) => void
 }
 
 export const defaultOptions: DefaultOptions[] = [
@@ -33,6 +38,9 @@ export default function WhatsAppDropdown({
   buttonText = 'Acción',
   className = '',
   iconClassName = '',
+  iconOnly = false,
+  wrapperClassName = 'relative w-full',
+  onSelect,
 }: WhatsAppDropdownProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [dropdownStyle, setDropdownStyle] = useState<CSSProperties>({})
@@ -63,11 +71,13 @@ export default function WhatsAppDropdown({
       const rect = triggerRef.current.getBoundingClientRect()
       const dropdownH = defaultOptions.length * 52
       const spaceAbove = rect.top
+      // Centrado sobre el botón, pero sin salirse de la pantalla (botón chico pegado al borde).
+      const left = Math.min(Math.max(rect.left + rect.width / 2 - 112, 8), window.innerWidth - 232)
 
       if (spaceAbove >= dropdownH) {
-        setDropdownStyle({ position: 'fixed', bottom: window.innerHeight - rect.top + 8, left: rect.left + rect.width / 2 - 112, width: 224, zIndex: 9999 })
+        setDropdownStyle({ position: 'fixed', bottom: window.innerHeight - rect.top + 8, left, width: 224, zIndex: 9999 })
       } else {
-        setDropdownStyle({ position: 'fixed', top: rect.bottom + 8, left: rect.left + rect.width / 2 - 112, width: 224, zIndex: 9999 })
+        setDropdownStyle({ position: 'fixed', top: rect.bottom + 8, left, width: 224, zIndex: 9999 })
       }
     }
     setIsOpen(v => !v)
@@ -76,34 +86,36 @@ export default function WhatsAppDropdown({
   const handleOptionClick = (label: string) => {
     trackWhatsAppClick(label)
     setIsOpen(false)
+    onSelect?.(label)
   }
 
   return (
-    <div className="relative w-full" ref={dropdownRef}>
+    <div className={wrapperClassName} ref={dropdownRef}>
       <button
         ref={triggerRef}
         onClick={toggleDropdown}
         className={className}
         aria-label={buttonText}
         aria-expanded={isOpen}
+        title={iconOnly ? buttonText : undefined}
       >
         <Image
           aria-hidden
           src="/svg/whatsapp.svg"
           alt="Whatsapp icon"
-          className={`mr-2 ${iconClassName}`}
+          className={`${iconOnly ? '' : 'mr-2'} ${iconClassName}`}
           width={20}
           height={20}
         />
-        <span>{buttonText}</span>
-        <svg
+        {!iconOnly && <span>{buttonText}</span>}
+        {!iconOnly && <svg
           className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
+        </svg>}
       </button>
 
       {isOpen && (

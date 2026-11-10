@@ -18,7 +18,7 @@ export default function SelectedSizeBanner() {
             </svg>
           </div>
           <div className="min-w-0">
-            <p className="text-xs text-amber-700 font-medium leading-none mb-0.5">Tamaño elegido</p>
+            <p className="text-xs text-amber-700 font-medium leading-none mb-0.5">Tamaño elegido · tocá un diseño para agregarlo</p>
             <p className="text-sm font-bold text-gray-900 truncate">
               {selectedSize.label}
               {selectedSize.fromPrice && (
@@ -47,7 +47,7 @@ export default function SelectedSizeBanner() {
       >
         <div className="flex flex-col text-left">
           <span className="text-sm text-[#4a3a2a] font-semibold">Elegí la medida de tu fondo</span>
-          <span className="text-xs text-[#9B8E82] leading-none mt-0.5">Te mostramos el precio al instante</span>
+          <span className="text-xs text-[#9B8E82] leading-snug mt-0.5">Precio al instante · después agregá uno o varios diseños a Mi pedido</span>
         </div>
         <svg
           className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`}
