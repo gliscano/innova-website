@@ -49,9 +49,21 @@ export function organizationSchema() {
       addressCountry: 'AR',
     },
     areaServed: { '@type': 'Country', name: 'Argentina' },
+    email: 'store@innova54.com',
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'customer service',
+      telephone: '+5491171142152',
+      email: 'store@innova54.com',
+      availableLanguage: 'es',
+      areaServed: 'AR',
+    },
+    // Mismos perfiles que enlaza el Footer; si cambia uno, cambiar el otro.
     sameAs: [
-      'https://www.instagram.com/innova54backdrops',
-      'https://www.facebook.com/innova54backdrops',
+      'https://www.instagram.com/innova54.store',
+      'https://www.facebook.com/innova54.store',
+      'https://www.tiktok.com/@innova54.store',
+      'https://ar.pinterest.com/innova54store/',
     ],
   }
 }
