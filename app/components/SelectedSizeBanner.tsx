@@ -3,9 +3,10 @@
 import { useState } from 'react'
 import { useSelectedSize } from '@/app/context/SelectedSizeContext'
 import { SizeSelectorCompact } from '@/app/components/SizeSelectorCompact'
+import { cartProductNote } from '@/app/context/CartContext'
 
 export default function SelectedSizeBanner() {
-  const { selectedSize, setSelectedSize } = useSelectedSize()
+  const { selectedSize, setSelectedSize, lastSelectedSize } = useSelectedSize()
   const [expanded, setExpanded] = useState(true)
 
   if (selectedSize) {
@@ -18,9 +19,12 @@ export default function SelectedSizeBanner() {
             </svg>
           </div>
           <div className="min-w-0">
-            <p className="text-xs text-amber-700 font-medium leading-none mb-0.5">Tamaño elegido · tocá un diseño para agregarlo</p>
+            <p className="text-xs text-amber-700 font-medium leading-none mb-0.5">Elegido · tocá un diseño para agregarlo</p>
             <p className="text-sm font-bold text-gray-900 truncate">
               {selectedSize.label}
+              {cartProductNote(selectedSize) && (
+                <span className="font-semibold text-gray-700"> · {cartProductNote(selectedSize)}</span>
+              )}
               {selectedSize.fromPrice && (
                 <span className="ml-2 font-normal text-amber-700">
                   ${selectedSize.fromPrice.toLocaleString('es-AR')}
@@ -46,7 +50,7 @@ export default function SelectedSizeBanner() {
         className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
       >
         <div className="flex flex-col text-left">
-          <span className="text-sm text-[#4a3a2a] font-semibold">Elegí la medida de tu fondo</span>
+          <span className="text-sm text-[#4a3a2a] font-semibold">Elegí producto y medida</span>
           <span className="text-xs text-[#9B8E82] leading-snug mt-0.5">Precio al instante · después agregá uno o varios diseños a Mi pedido</span>
         </div>
         <svg
@@ -58,7 +62,11 @@ export default function SelectedSizeBanner() {
       </button>
       {expanded && (
         <div className="px-4 py-4 bg-white">
-          <SizeSelectorCompact onSelect={(size) => { setSelectedSize(size); setExpanded(false) }} variant="light" />
+          <SizeSelectorCompact
+            onSelect={(size) => { setSelectedSize(size); setExpanded(false) }}
+            variant="light"
+            initialSize={lastSelectedSize}
+          />
         </div>
       )}
     </div>

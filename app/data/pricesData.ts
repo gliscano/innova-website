@@ -1,3 +1,5 @@
+import type { SelectedSize } from '@/app/context/SelectedSizeContext'
+
 // ─── Tipos base (formato legacy, usado por otros componentes) ─────────────────
 
 type propertiesProductsType = {
@@ -104,6 +106,26 @@ export const FINISH_LABEL: Record<Finish, string> = {
   hd: 'Color Vivo HD',
   neon: 'Neón (Fluo)',
   unico: 'Precio único',
+}
+
+/**
+ * Medida elegida a partir de una fila de la lista de precios. Es la única forma de armarla, la usan
+ * el selector de /prices y el selector compacto del catálogo, para que el producto llegue al
+ * pedido con el nombre de la pestaña Precios de la planilla ("Híbrido", "Fondo 2.90m Neón (Fluo)").
+ */
+export function selectedSizeFromFamily(family: Family, item: FamilyItem, finish: Finish): SelectedSize {
+  const ancho = item.ancho || family.ancho || 0
+  return {
+    id: `${family.id}-${ancho}x${item.largo}`,
+    label: dimLabel(family, item),
+    widthM: ancho,
+    heightM: item.largo,
+    fromPrice: finish === 'unico' ? item.unico : item[finish],
+    isExactPrice: true,
+    // Solo Neón: su precio es otro y sin aclararlo se confunde con el de la tela HD.
+    finishLabel: finish === 'neon' ? FINISH_LABEL.neon : undefined,
+    productName: finish === 'unico' ? family.nombre : `${family.nombre} ${FINISH_LABEL[finish]}`,
+  }
 }
 
 // ─── Familias de productos (picker interactivo) ───────────────────────────────

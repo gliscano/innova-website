@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { defaultOptions } from './WhatsAppDropdown'
 import { useSelectedSize } from '../context/SelectedSizeContext'
-import { dimLabel, FINISH_LABEL } from '@/app/data/pricesData'
+import { selectedSizeFromFamily } from '@/app/data/pricesData'
 import type { Sel, Family, FamilyItem, Finish } from './prices/types'
 import type { CloudinaryFolder } from '@/app/types/catalog'
 import PriceHero from './prices/PriceHero'
@@ -21,21 +21,7 @@ export default function PriceList({ initialFolders }: { initialFolders?: Cloudin
   const catRef = useRef<HTMLDivElement>(null)
 
   function handleSelect(family: Family, item: FamilyItem, finish: Finish) {
-    const ancho = item.ancho || family.ancho || 0
-    const price = finish === 'unico' ? item.unico! : (item[finish] ?? 0)
-    setSelectedSize({
-      id: `${ancho}x${item.largo}`,
-      label: dimLabel(family, item),
-      widthM: ancho,
-      heightM: item.largo,
-      fromPrice: price,
-      isExactPrice: true,
-      // Solo Neón: su precio es otro y sin aclararlo se confunde con el de la tela HD.
-      finishLabel: finish === 'neon' ? FINISH_LABEL.neon : undefined,
-      // Nombre de la lista de precios de la planilla: sin esto el pedido decía "Color Vivo HD"
-      // también para Híbrido, Piso Neoprene y Fundas.
-      productName: finish === 'unico' ? family.nombre : `${family.nombre} ${FINISH_LABEL[finish]}`,
-    })
+    setSelectedSize(selectedSizeFromFamily(family, item, finish))
   }
 
   function chooseDesign() {

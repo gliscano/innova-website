@@ -1,33 +1,60 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
-import { propertiesBackdrops } from '../data/pricesData'
+import {
+  FAMILIES,
+  FINISH_LABEL,
+  ars,
+  dimLabel,
+  selectedSizeFromFamily,
+  type Family,
+  type FamilyItem,
+} from '../data/pricesData'
 import { type SelectedSize } from '../context/SelectedSizeContext'
 
-const STANDARD_WIDTHS = [1.50, 2.90]
+// ─── Productos ──────────────────────────────────────────────────────────────
 
-function getStandardHeights(width: number): number[] {
-  return propertiesBackdrops
-    .filter(p => p.width === width)
-    .map(p => p.height)
-    .sort((a, b) => a - b)
+/**
+ * Tipos que se pueden pedir desde el catálogo. Fondo HD va primero y es el valor por defecto: quien
+ * no toca los chips sigue el flujo de siempre (ancho × alto de tela HD). Neón es la misma tela con
+ * otra terminación, pero va como chip propio para que sea una sola decisión y una sola fila.
+ */
+type ProductId = 'hd' | 'neon' | 'hibrido' | 'piso' | 'fundas'
+
+const PRODUCTS: { id: ProductId; label: string; familyId?: string }[] = [
+  { id: 'hd', label: 'Fondo HD' },
+  { id: 'neon', label: 'Neón' },
+  { id: 'hibrido', label: 'Híbrido', familyId: 'hibrido' },
+  { id: 'piso', label: 'Piso', familyId: 'piso' },
+  { id: 'fundas', label: 'Fundas', familyId: 'fundas' },
+]
+
+/** Fondos de tela con medida de tabla, por ancho. */
+const FABRIC_FAMILIES = FAMILIES.filter(f => f.finishes.includes('hd'))
+const STANDARD_WIDTHS = FABRIC_FAMILIES.map(f => f.ancho as number)
+
+function fabricFamily(width: number): Family | undefined {
+  return FABRIC_FAMILIES.find(f => f.ancho === width)
 }
 
-function findNearestPrice(widthM: number, heightM: number): { price: number | null; matchedLabel: string | null } {
-  const matchedWidth = STANDARD_WIDTHS.find(w => w >= widthM)
-  if (!matchedWidth) return { price: null, matchedLabel: null }
+/** Tipo de una medida ya elegida, para reabrir el selector con el mismo producto marcado. */
+function productFromSize(size?: SelectedSize | null): ProductId {
+  if (!size) return 'hd'
+  const listed = PRODUCTS.find(p => p.familyId && FAMILIES.find(f => f.id === p.familyId)?.nombre === size.productName)
+  if (listed) return listed.id
+  return size.finishLabel === FINISH_LABEL.neon ? 'neon' : 'hd'
+}
 
-  const heights = getStandardHeights(matchedWidth)
-  const matchedHeight = heights.find(h => h >= heightM)
-  if (!matchedHeight) return { price: null, matchedLabel: null }
-
-  const item = propertiesBackdrops.find(p => p.width === matchedWidth && p.height === matchedHeight)
-  if (!item) return { price: null, matchedLabel: null }
-
-  return {
-    price: item.price,
-    matchedLabel: `${matchedWidth.toFixed(2)}m × ${matchedHeight.toFixed(1)}m`,
-  }
+/**
+ * Fila de la tabla que cubre una medida de tela: el ancho estándar y el largo inmediatamente
+ * superiores. Es el precio de referencia de una medida especial.
+ */
+function nearestFabricItem(widthM: number, heightM: number): { family: Family; item: FamilyItem } | null {
+  const width = STANDARD_WIDTHS.slice().sort((a, b) => a - b).find(w => w >= widthM)
+  const family = width !== undefined ? fabricFamily(width) : undefined
+  if (!family) return null
+  const item = family.largos.slice().sort((a, b) => a.largo - b.largo).find(i => i.largo >= heightM)
+  return item ? { family, item } : null
 }
 
 // ─── Custom Dropdown ────────────────────────────────────────────────────────
@@ -168,60 +195,79 @@ function CustomDropdown({
   )
 }
 
+
 // ─── Main Component ──────────────────────────────────────────────────────────
 
 interface SizeSelectorCompactProps {
   onSelect: (size: SelectedSize) => void
   variant?: 'light' | 'dark'
+  /** Medida elegida antes ("cambiar"): el selector abre con ese producto ya marcado. */
+  initialSize?: SelectedSize | null
 }
 
-export function SizeSelectorCompact({ onSelect, variant = 'light' }: SizeSelectorCompactProps) {
+export function SizeSelectorCompact({ onSelect, variant = 'light', initialSize = null }: SizeSelectorCompactProps) {
+  const [product, setProduct] = useState<ProductId>(() => productFromSize(initialSize))
   const [widthValue, setWidthValue] = useState('')
   const [heightValue, setHeightValue] = useState('')
   const [customWidth, setCustomWidth] = useState('')
   const [customHeight, setCustomHeight] = useState('')
 
+  const isDark = variant === 'dark'
+  const listedFamily = FAMILIES.find(f => f.id === PRODUCTS.find(p => p.id === product)?.familyId)
+  const finish = product === 'neon' ? 'neon' : 'hd'
+
   const isCustomWidth = widthValue === 'custom'
   const isCustomHeight = heightValue === 'custom'
-
   const parsedWidth = isCustomWidth ? parseFloat(customWidth) : parseFloat(widthValue)
   const parsedHeight = isCustomHeight ? parseFloat(customHeight) : parseFloat(heightValue)
+  const canConfirm = !isNaN(parsedWidth) && parsedWidth > 0 && !isNaN(parsedHeight) && parsedHeight > 0
 
-  const isValidWidth = !isNaN(parsedWidth) && parsedWidth > 0
-  const isValidHeight = !isNaN(parsedHeight) && parsedHeight > 0
-  const canConfirm = isValidWidth && isValidHeight
-
-  const standardHeights = !isCustomWidth && isValidWidth ? getStandardHeights(parsedWidth) : []
-
-  const nearestSize = canConfirm ? findNearestPrice(parsedWidth, parsedHeight) : null
+  const nearest = canConfirm ? nearestFabricItem(parsedWidth, parsedHeight) : null
+  const nearestPrice = nearest ? nearest.item[finish] ?? null : null
   const isExactMatch =
-    nearestSize?.matchedLabel === `${parsedWidth.toFixed(2)}m × ${parsedHeight.toFixed(1)}m`
+    !!nearest && nearest.family.ancho === parsedWidth && nearest.item.largo === parsedHeight
 
-  useEffect(() => {
-    setHeightValue('')
-    setCustomHeight('')
-  }, [widthValue])
+  const standardHeights = !isCustomWidth && widthValue
+    ? (fabricFamily(parseFloat(widthValue))?.largos.map(i => i.largo) ?? []).sort((a, b) => a - b)
+    : []
 
-  useEffect(() => {
-    if (!isCustomWidth && !isCustomHeight && canConfirm) {
-      handleConfirm()
+  /** Confirma una medida de tela (de tabla o especial). */
+  const confirmFabric = (w: number, h: number) => {
+    const match = nearestFabricItem(w, h)
+    if (match && match.family.ancho === w && match.item.largo === h) {
+      onSelect(selectedSizeFromFamily(match.family, match.item, finish))
+      return
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [heightValue])
-
-  const handleConfirm = () => {
-    if (!canConfirm) return
     onSelect({
-      id: nearestSize?.matchedLabel ?? `${parsedWidth}x${parsedHeight}`,
-      label: `${parsedWidth.toFixed(2)}m × ${parsedHeight.toFixed(1)}m`,
-      widthM: parsedWidth,
-      heightM: parsedHeight,
-      fromPrice: nearestSize?.price ?? undefined,
-      isExactPrice: isExactMatch ?? false,
+      id: `custom-${w}x${h}`,
+      label: `${w.toFixed(2)}m × ${h.toFixed(1)}m`,
+      widthM: w,
+      heightM: h,
+      fromPrice: match?.item[finish] ?? undefined,
+      isExactPrice: false,
+      finishLabel: finish === 'neon' ? FINISH_LABEL.neon : undefined,
     })
   }
 
-  const isDark = variant === 'dark'
+  const pickProduct = (id: ProductId) => {
+    setProduct(id)
+    setWidthValue('')
+    setHeightValue('')
+    setCustomWidth('')
+    setCustomHeight('')
+  }
+
+  const pickWidth = (v: string) => {
+    setWidthValue(v)
+    setHeightValue('')
+    setCustomHeight('')
+  }
+
+  // Con ancho y alto de la tabla la medida se confirma sola; las especiales piden "Confirmar".
+  const pickHeight = (v: string) => {
+    setHeightValue(v)
+    if (v !== 'custom' && !isCustomWidth && widthValue) confirmFabric(parseFloat(widthValue), parseFloat(v))
+  }
 
   const widthOptions: DropdownOption[] = [
     ...STANDARD_WIDTHS.map(w => ({ value: String(w), label: `${w.toFixed(2)}m` })),
@@ -233,118 +279,174 @@ export function SizeSelectorCompact({ onSelect, variant = 'light' }: SizeSelecto
     { value: 'custom', label: 'Otra medida' },
   ]
 
+  const listedOptions: DropdownOption[] = listedFamily
+    ? listedFamily.largos.map((item, i) => ({
+        value: String(i),
+        label: `${dimLabel(listedFamily, item)}${item.unico ? ` · ${ars(item.unico)}` : ''}`,
+      }))
+    : []
+
   const inputClass = isDark
     ? 'w-full bg-white/10 border border-white/20 text-white placeholder-gray-500 rounded-xl px-3 py-2.5 text-sm font-medium focus:outline-none focus:border-amber-400 transition-colors'
     : 'w-full bg-white border border-gray-200 text-gray-900 placeholder-gray-400 rounded-xl px-3 py-2.5 text-sm font-medium focus:outline-none focus:border-amber-400 transition-colors'
 
   const labelClass = `block text-xs font-semibold mb-1.5 uppercase tracking-wide ${isDark ? 'text-gray-400' : 'text-gray-500'}`
 
+  const chipClass = (active: boolean) =>
+    `shrink-0 h-8 px-3 rounded-full border text-xs font-semibold whitespace-nowrap transition-colors ${
+      active
+        ? 'bg-amber-400 border-amber-400 text-[#1F1A14]'
+        : isDark
+          ? 'bg-white/5 border-white/20 text-gray-200 hover:border-white/40'
+          : 'bg-white border-gray-200 text-gray-700 hover:border-amber-300'
+    }`
+
   return (
     <div className="space-y-3">
-      <div className="flex gap-3">
-        {/* Ancho */}
-        <div className="flex-1">
-          <label className={labelClass}>Ancho</label>
-          {!isCustomWidth ? (
-            <CustomDropdown
-              value={widthValue}
-              onChange={setWidthValue}
-              options={widthOptions}
-              placeholder="— elegir —"
-              isDark={isDark}
-            />
-          ) : (
-            <div className="flex gap-1.5 items-center">
-              <input
-                type="number"
-                placeholder="ej: 2.00"
-                value={customWidth}
-                onChange={e => setCustomWidth(e.target.value)}
-                step="0.1"
-                min="0.1"
-                className={inputClass}
-              />
-              <button
-                onClick={() => { setWidthValue(''); setCustomWidth('') }}
-                className={`text-sm px-2 py-1 rounded-lg transition-colors ${isDark ? 'text-gray-400 hover:text-white hover:bg-white/10' : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100'}`}
-              >
-                ✕
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Alto */}
-        <div className="flex-1">
-          <label className={labelClass}>Alto</label>
-          {!isCustomHeight ? (
-            <CustomDropdown
-              value={heightValue}
-              onChange={setHeightValue}
-              options={heightOptions}
-              placeholder="— elegir —"
-              disabled={!widthValue}
-              isDark={isDark}
-            />
-          ) : (
-            <div className="flex gap-1.5 items-center">
-              <input
-                type="number"
-                placeholder="ej: 2.20"
-                value={customHeight}
-                onChange={e => setCustomHeight(e.target.value)}
-                step="0.1"
-                min="0.1"
-                className={inputClass}
-              />
-              <button
-                onClick={() => { setHeightValue(''); setCustomHeight('') }}
-                className={`text-sm px-2 py-1 rounded-lg transition-colors ${isDark ? 'text-gray-400 hover:text-white hover:bg-white/10' : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100'}`}
-              >
-                ✕
-              </button>
-            </div>
-          )}
+      {/* Producto — Fondo HD por defecto */}
+      <div>
+        <span className={labelClass} id="size-selector-product">Producto</span>
+        <div
+          role="radiogroup"
+          aria-labelledby="size-selector-product"
+          className="flex flex-wrap gap-1.5"
+        >
+          {PRODUCTS.map(p => (
+            <button
+              key={p.id}
+              type="button"
+              role="radio"
+              aria-checked={product === p.id}
+              onClick={() => pickProduct(p.id)}
+              className={chipClass(product === p.id)}
+            >
+              {product === p.id && <span aria-hidden className="mr-1">✓</span>}
+              {p.label}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Resultado */}
-      {canConfirm && (
-        <div className={`flex items-center justify-between gap-3 rounded-2xl px-4 py-3 ${
-          isDark ? 'bg-amber-400/15 border border-amber-400/30' : 'bg-amber-50 border border-amber-200'
-        }`}>
-          <div className="min-w-0">
-            {nearestSize?.price ? (
-              <>
-                <p className={`text-base font-bold leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                  ${nearestSize.price.toLocaleString('es-AR')}
-                </p>
-                {!isExactMatch && (
-                  <p className={`text-xs mt-0.5 ${isDark ? 'text-amber-300' : 'text-amber-700'}`}>
-                    Precio ref. para {nearestSize.matchedLabel}
-                  </p>
-                )}
-              </>
-            ) : (
-              <>
-                <p className={`text-sm font-semibold ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>
-                  Medida personalizada
-                </p>
-                <p className={`text-xs mt-0.5 ${isDark ? 'text-amber-300' : 'text-amber-700'}`}>
-                  Elegí tu medida, confirmala y te enviaremos el valor por WhatsApp.
-                </p>
-              </>
-            )}
-          </div>
-          {(isCustomWidth || isCustomHeight) && (
-            <button
-              onClick={handleConfirm}
-              className="shrink-0 px-4 py-2 bg-amber-400 hover:bg-amber-500 active:scale-95 text-white text-sm font-bold rounded-xl transition-all shadow-sm shadow-amber-200"
-            >
-              Confirmar
-            </button>
-          )}
+      {listedFamily ? (
+        /* Híbrido / Piso / Fundas: solo medidas de la lista, se confirma al elegir */
+        <div>
+          <label className={labelClass}>Medida</label>
+          <CustomDropdown
+            value=""
+            onChange={v => onSelect(selectedSizeFromFamily(listedFamily, listedFamily.largos[Number(v)], 'unico'))}
+            options={listedOptions}
+            placeholder="— elegir —"
+            isDark={isDark}
+          />
         </div>
+      ) : (
+        <>
+          <div className="flex gap-3">
+            {/* Ancho */}
+            <div className="flex-1">
+              <label className={labelClass}>Ancho</label>
+              {!isCustomWidth ? (
+                <CustomDropdown
+                  value={widthValue}
+                  onChange={pickWidth}
+                  options={widthOptions}
+                  placeholder="— elegir —"
+                  isDark={isDark}
+                />
+              ) : (
+                <div className="flex gap-1.5 items-center">
+                  <input
+                    type="number"
+                    placeholder="ej: 2.00"
+                    value={customWidth}
+                    onChange={e => setCustomWidth(e.target.value)}
+                    step="0.1"
+                    min="0.1"
+                    className={inputClass}
+                  />
+                  <button
+                    onClick={() => { pickWidth(''); setCustomWidth('') }}
+                    className={`text-sm px-2 py-1 rounded-lg transition-colors ${isDark ? 'text-gray-400 hover:text-white hover:bg-white/10' : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100'}`}
+                    aria-label="Volver a las medidas de la lista"
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Alto */}
+            <div className="flex-1">
+              <label className={labelClass}>Alto</label>
+              {!isCustomHeight ? (
+                <CustomDropdown
+                  value={heightValue}
+                  onChange={pickHeight}
+                  options={heightOptions}
+                  placeholder="— elegir —"
+                  disabled={!widthValue}
+                  isDark={isDark}
+                />
+              ) : (
+                <div className="flex gap-1.5 items-center">
+                  <input
+                    type="number"
+                    placeholder="ej: 2.20"
+                    value={customHeight}
+                    onChange={e => setCustomHeight(e.target.value)}
+                    step="0.1"
+                    min="0.1"
+                    className={inputClass}
+                  />
+                  <button
+                    onClick={() => { setHeightValue(''); setCustomHeight('') }}
+                    className={`text-sm px-2 py-1 rounded-lg transition-colors ${isDark ? 'text-gray-400 hover:text-white hover:bg-white/10' : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100'}`}
+                    aria-label="Volver a las medidas de la lista"
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Resultado de una medida especial (las de la tabla se confirman solas) */}
+          {canConfirm && (isCustomWidth || isCustomHeight) && (
+            <div className={`flex items-center justify-between gap-3 rounded-2xl px-4 py-3 ${
+              isDark ? 'bg-amber-400/15 border border-amber-400/30' : 'bg-amber-50 border border-amber-200'
+            }`}>
+              <div className="min-w-0">
+                {nearestPrice ? (
+                  <>
+                    <p className={`text-base font-bold leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                      {ars(nearestPrice)}
+                    </p>
+                    {!isExactMatch && nearest && (
+                      <p className={`text-xs mt-0.5 ${isDark ? 'text-amber-300' : 'text-amber-700'}`}>
+                        Precio ref. para {dimLabel(nearest.family, nearest.item)}
+                      </p>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <p className={`text-sm font-semibold ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>
+                      Medida personalizada
+                    </p>
+                    <p className={`text-xs mt-0.5 ${isDark ? 'text-amber-300' : 'text-amber-700'}`}>
+                      Elegí tu medida, confirmala y te enviaremos el valor por WhatsApp.
+                    </p>
+                  </>
+                )}
+              </div>
+              <button
+                onClick={() => confirmFabric(parsedWidth, parsedHeight)}
+                className="shrink-0 px-4 py-2 bg-amber-400 hover:bg-amber-500 active:scale-95 text-white text-sm font-bold rounded-xl transition-all shadow-sm shadow-amber-200"
+              >
+                Confirmar
+              </button>
+            </div>
+          )}
+        </>
       )}
     </div>
   )

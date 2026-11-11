@@ -48,7 +48,7 @@ export default function CartBar() {
           <button
             onClick={openDrawer}
             className="pointer-events-auto mx-auto w-full max-w-md flex items-center gap-3 rounded-2xl bg-[#1F1A14] text-white pl-4 pr-2 py-2 shadow-xl animate-in slide-in-from-bottom-4 fade-in duration-200"
-            aria-label={`Ver Mi pedido: ${count} ${count === 1 ? 'fondo' : 'fondos'}`}
+            aria-label={`Ver Mi pedido: ${count} ${count === 1 ? 'producto' : 'productos'}`}
           >
             <span className="relative shrink-0">
               <ShoppingBag className="w-5 h-5 text-amber-300" />
@@ -59,7 +59,7 @@ export default function CartBar() {
             <span className="flex-1 text-left leading-tight ml-1">
               <span className="block text-sm font-semibold">Mi pedido</span>
               <span className="block text-xs text-white/70 tabular-nums">
-                {count} {count === 1 ? 'fondo' : 'fondos'}
+                {count} {count === 1 ? 'producto' : 'productos'}
                 {total > 0 && ` · ${formatArs(total)}`}
                 {hasUnpricedItems && (total > 0 ? ' + a confirmar' : ' · a confirmar')}
               </span>

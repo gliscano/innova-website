@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState } from 'react'
+import { createContext, useCallback, useContext, useState } from 'react'
 
 export interface SelectedSize {
   id: string
@@ -22,6 +22,8 @@ export interface SelectedSize {
 interface SelectedSizeContextValue {
   selectedSize: SelectedSize | null
   setSelectedSize: (size: SelectedSize | null) => void
+  /** Última medida elegida (sigue ahí después de "cambiar"): el selector reabre con ese producto. */
+  lastSelectedSize: SelectedSize | null
   isModalOpen: boolean
   setModalOpen: (open: boolean) => void
 }
@@ -29,16 +31,23 @@ interface SelectedSizeContextValue {
 const SelectedSizeContext = createContext<SelectedSizeContextValue>({
   selectedSize: null,
   setSelectedSize: () => {},
+  lastSelectedSize: null,
   isModalOpen: false,
   setModalOpen: () => {},
 })
 
 export function SelectedSizeProvider({ children }: { children: React.ReactNode }) {
-  const [selectedSize, setSelectedSize] = useState<SelectedSize | null>(null)
+  const [selectedSize, setSelectedSizeState] = useState<SelectedSize | null>(null)
+  const [lastSelectedSize, setLastSelectedSize] = useState<SelectedSize | null>(null)
   const [isModalOpen, setModalOpen] = useState(false)
 
+  const setSelectedSize = useCallback((size: SelectedSize | null) => {
+    if (size) setLastSelectedSize(size)
+    setSelectedSizeState(size)
+  }, [])
+
   return (
-    <SelectedSizeContext.Provider value={{ selectedSize, setSelectedSize, isModalOpen, setModalOpen }}>
+    <SelectedSizeContext.Provider value={{ selectedSize, setSelectedSize, lastSelectedSize, isModalOpen, setModalOpen }}>
       {children}
     </SelectedSizeContext.Provider>
   )

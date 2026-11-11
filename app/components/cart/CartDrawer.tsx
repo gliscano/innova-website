@@ -76,7 +76,7 @@ function CartDrawerPanel() {
               Mi pedido
             </h2>
             <p className="text-xs text-[var(--ink-soft)]">
-              {count === 0 ? 'Todavía no agregaste diseños' : `${count} ${count === 1 ? 'fondo' : 'fondos'}`}
+              {count === 0 ? 'Todavía no agregaste diseños' : `${count} ${count === 1 ? 'producto' : 'productos'}`}
             </p>
           </div>
           <button

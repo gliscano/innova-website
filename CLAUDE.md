@@ -62,7 +62,11 @@ Sheets — the seller creates the real order from that message. Named Cart (not 
 `OrderItem` / `orders.ts` are the sheet's order. Sending empties the cart (8 s "Deshacer").
 UI: `GalleryModal` ("Agregar a Mi pedido", WhatsApp direct as secondary), `components/cart/CartBar` +
 `CartDrawer` (mounted in `layout.tsx`). `WhatsAppFloat` only shows with an empty cart and sends a
-per-page message; cart UI and the float are hidden on `/pedido/<clave>`. Funnel events:
+per-page message; cart UI and the float are hidden on `/pedido/<clave>`.
+`SelectedSize.productName` carries the product as named in the sheet's Precios tab; every selector
+builds it with `selectedSizeFromFamily()` (`data/pricesData.ts`, from `FAMILIES`). The catalog's
+`SizeSelectorCompact` (banner + modal) offers all five types as chips — Fondo HD (default), Neón,
+Híbrido, Piso Neoprene, Fundas; only fabric backdrops accept "Otra medida". Funnel events:
 `add_to_cart`/AddToCart → `begin_checkout`/InitiateCheckout → `order_data_submitted`/AddPaymentInfo.
 
 ### Orders (Google Sheets)

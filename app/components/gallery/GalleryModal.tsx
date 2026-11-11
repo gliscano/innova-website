@@ -38,7 +38,7 @@ export default function GalleryModal({
   const modalRef = useRef<HTMLDivElement>(null)
   const [hasError, setHasError] = useState(false)
   const [showDescription, setShowDescription] = useState(false)
-  const { selectedSize, setSelectedSize, setModalOpen } = useSelectedSize()
+  const { selectedSize, setSelectedSize, lastSelectedSize, setModalOpen } = useSelectedSize()
   const { items: cartItems, count: cartCount, addItem, removeItem, openDrawer } = useCart()
   const [justAdded, setJustAdded] = useState(false)
   const justAddedTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -110,7 +110,7 @@ export default function GalleryModal({
       imageUrl: currentImage.url,
       size: selectedSize,
     })
-    trackAddToCart(category || '', selectedSize.isExactPrice ? selectedSize.fromPrice : undefined)
+    trackAddToCart(category || '', selectedSize.isExactPrice ? selectedSize.fromPrice : undefined, cartProductName(selectedSize))
     setJustAdded(true)
     if (justAddedTimer.current) clearTimeout(justAddedTimer.current)
     justAddedTimer.current = setTimeout(() => setJustAdded(false), 1800)
@@ -304,9 +304,9 @@ export default function GalleryModal({
               ) : (
                 <>
                   <p className="text-amber-200 text-sm font-medium">
-                    Elegí la medida para agregarlo a tu pedido
+                    Elegí producto y medida para agregarlo a tu pedido
                   </p>
-                  <SizeSelectorCompact onSelect={setSelectedSize} variant="dark" />
+                  <SizeSelectorCompact onSelect={setSelectedSize} variant="dark" initialSize={lastSelectedSize} />
                 </>
               )}
 
