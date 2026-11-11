@@ -11,6 +11,12 @@ export interface SelectedSize {
   isExactPrice?: boolean
   /** Terminación que cambia el precio (hoy solo Neón); sin valor es la tela estándar HD. */
   finishLabel?: string
+  /**
+   * Producto tal como figura en la pestaña Precios de la planilla ("Fondo 2.90m Color Vivo HD",
+   * "Híbrido", "Piso Neoprene", "Fundas para Paneles"). Sin valor es un fondo de tela: lo
+   * deducen el ancho y la terminación (selector compacto y tarjetas de la home).
+   */
+  productName?: string
 }
 
 interface SelectedSizeContextValue {

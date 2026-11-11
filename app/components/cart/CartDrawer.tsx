@@ -9,6 +9,7 @@ import {
   useCart,
   buildCartMessage,
   cartSizeLabel,
+  cartProductTag,
   formatArs,
 } from '@/app/context/CartContext'
 import { trackBeginCheckout } from '@/app/utils/tracking'
@@ -137,7 +138,7 @@ function CartDrawerPanel() {
                       </div>
                       <p className="mt-1 text-xs text-[var(--ink-soft)]">
                         <strong className="text-[var(--ink)]">{cartSizeLabel(size)}</strong>
-                        {' · '}{size.finishLabel ?? 'Color Vivo HD'}
+                        {' · '}{cartProductTag(size)}
                         {!size.isExactPrice && ' · Medida especial'}
                       </p>
                       <div className="mt-2 flex items-center justify-between">

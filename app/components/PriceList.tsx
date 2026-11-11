@@ -32,6 +32,9 @@ export default function PriceList({ initialFolders }: { initialFolders?: Cloudin
       isExactPrice: true,
       // Solo Neón: su precio es otro y sin aclararlo se confunde con el de la tela HD.
       finishLabel: finish === 'neon' ? FINISH_LABEL.neon : undefined,
+      // Nombre de la lista de precios de la planilla: sin esto el pedido decía "Color Vivo HD"
+      // también para Híbrido, Piso Neoprene y Fundas.
+      productName: finish === 'unico' ? family.nombre : `${family.nombre} ${FINISH_LABEL[finish]}`,
     })
   }
 

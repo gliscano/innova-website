@@ -83,7 +83,12 @@ export default function GuidedPicker({
                   <button
                     key={fk}
                     className={'seg-btn' + (fk === finish ? ' on' : '')}
-                    onClick={() => setSel({ ...sel, finish: fk })}
+                    onClick={() => {
+                      setSel({ ...sel, finish: fk })
+                      // Con una medida ya elegida, cambiar la terminación cambia el producto y el
+                      // precio: sin esto el pedido seguía diciendo "Color Vivo HD".
+                      if (item) onSelect(family, item, fk)
+                    }}
                     style={fk === finish ? { background: accent } : undefined}
                   >
                     {FINISH_LABEL[fk]}

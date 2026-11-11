@@ -7,7 +7,7 @@ import { Check, Plus, ShoppingBag, X } from 'lucide-react'
 import { GalleryModalProps } from '../../types/gallery'
 import WhatsAppDropdown from '../WhatsAppDropdown'
 import { useSelectedSize } from '../../context/SelectedSizeContext'
-import { useCart, cartItemKey, cartSizeLabel, formatArs } from '../../context/CartContext'
+import { useCart, cartItemKey, cartSizeLabel, cartProductName, cartProductNote, formatArs } from '../../context/CartContext'
 import { SizeSelectorCompact } from '../SizeSelectorCompact'
 import { parseImageDescription } from '@/app/utils/imageDescription'
 import { formatFolderName } from '@/app/utils/catalogUtils'
@@ -93,7 +93,7 @@ export default function GalleryModal({
   // principal es "Agregar a Mi pedido", que junta varios diseños y medidas en un solo mensaje.
   const designLines = `Categoría: ${category || 'diseño'}\nModelo: ${currentImage?.display_name}`
   const whatsappMessage = selectedSize
-    ? `Hola! Tengo una consulta por este diseño:\n${designLines}\nMedida que me interesa: ${selectedSize.label}${selectedSize.finishLabel ? ` · ${selectedSize.finishLabel}` : ''}\nVer imagen: ${currentImage?.url}`
+    ? `Hola! Tengo una consulta por este diseño:\n${designLines}\nProducto: ${cartProductName(selectedSize)}\nMedida que me interesa: ${selectedSize.label}\nVer imagen: ${currentImage?.url}`
     : `Hola! Tengo una consulta por este diseño:\n${designLines}\nVer imagen: ${currentImage?.url}`
 
   // Líneas de este diseño que ya están en el pedido (puede estar en varias medidas).
@@ -283,7 +283,12 @@ export default function GalleryModal({
               {selectedSize ? (
                 <div className="flex items-center gap-2 bg-amber-400/15 border border-amber-400/40 rounded-xl px-3 h-10 w-full">
                   <span className="text-[11px] uppercase tracking-wide text-gray-400 shrink-0">Medida</span>
-                  <span className="text-white text-sm font-semibold truncate">{selectedSize.label}</span>
+                  <span className="text-white text-sm font-semibold truncate">
+                    {selectedSize.label}
+                    {cartProductNote(selectedSize) && (
+                      <span className="font-normal text-gray-300"> · {cartProductNote(selectedSize)}</span>
+                    )}
+                  </span>
                   {selectedSize.fromPrice ? (
                     <span className="text-amber-300 text-sm shrink-0">
                       {selectedSize.isExactPrice ? '' : 'desde '}{formatArs(selectedSize.fromPrice)}
@@ -311,7 +316,7 @@ export default function GalleryModal({
                   <span className="text-[11px] uppercase tracking-wide text-gray-400 mr-0.5">En tu pedido</span>
                   {linesForDesign.map(line => (
                     <span key={line.key} className="inline-flex items-center gap-1 rounded-full bg-white/10 pl-2.5 pr-1 py-0.5 text-xs text-gray-100">
-                      {cartSizeLabel(line.size)}{line.size.finishLabel ? ` · ${line.size.finishLabel}` : ''} ×{line.qty}
+                      {cartSizeLabel(line.size)}{cartProductNote(line.size) ? ` · ${cartProductNote(line.size)}` : ''} ×{line.qty}
                       <button
                         onClick={() => removeItem(line.key)}
                         className="p-1 rounded-full text-gray-400 hover:text-white hover:bg-white/10"

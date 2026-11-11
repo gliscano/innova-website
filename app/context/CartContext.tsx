@@ -52,7 +52,7 @@ const MAX_QTY = 20
 const UNDO_MS = 8000
 
 export function cartItemKey(imageId: string, size: SelectedSize): string {
-  return `${imageId}|${size.widthM}x${size.heightM}|${size.finishLabel ?? ''}`
+  return `${imageId}|${size.productName ?? ''}|${size.widthM}x${size.heightM}|${size.finishLabel ?? ''}`
 }
 
 const CartContext = createContext<CartContextValue | null>(null)
@@ -194,9 +194,31 @@ function sheetNumber(n: number): string {
  * ("Fondo 2.90m Color Vivo HD"), para que la vendedora lo encuentre sin traducir nada.
  */
 export function cartProductName(size: SelectedSize): string {
+  // Elegido desde /prices: el nombre ya viene de la lista (Híbrido, Piso Neoprene, Fundas…).
+  if (size.productName) return size.productName
   const finish = size.finishLabel ?? 'Color Vivo HD'
   const width = STANDARD_WIDTHS.find(w => Math.abs(w - size.widthM) < 0.001)
   return width ? `Fondo ${width.toFixed(2)}m ${finish}` : `Fondo medida especial ${finish}`
+}
+
+const DEFAULT_FINISH = 'Color Vivo HD'
+
+function isFabricBackdrop(size: SelectedSize): boolean {
+  return !size.productName || size.productName.startsWith('Fondo ')
+}
+
+/**
+ * Tipo corto para mostrar junto a la medida: la terminación en los fondos de tela
+ * ("Color Vivo HD", "Neón (Fluo)") o el producto en el resto ("Híbrido", "Piso Neoprene").
+ */
+export function cartProductTag(size: SelectedSize): string {
+  return isFabricBackdrop(size) ? size.finishLabel ?? DEFAULT_FINISH : size.productName!
+}
+
+/** Igual que `cartProductTag`, pero vacío para el caso por defecto (fondo de tela HD). */
+export function cartProductNote(size: SelectedSize): string {
+  const tag = cartProductTag(size)
+  return tag === DEFAULT_FINISH ? '' : tag
 }
 
 export function cartSizeLabel(size: SelectedSize): string {
