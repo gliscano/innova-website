@@ -106,7 +106,8 @@ All product images are hosted on Cloudinary (cloud name: `innova54`). The `next.
 
 ### Tech stack summary
 
-- **Framework**: Next.js 16, React 19, TypeScript 6 (strict mode) — Node 24 LTS (`.nvmrc`), `engines` >=22.12
+- **Framework**: Next.js 16, React 19, TypeScript 6 (strict mode) — Node 24 LTS (`.nvmrc`), `engines` >=22.12 <25 (an open range makes Vercel build on the newest Node major, ignoring the
+  project's 24.x setting — Node 26 broke the `next/font/google` build)
 - **Pinned majors**: ESLint stays on 9 (eslint-plugin-react/import/jsx-a11y don't support 10), TypeScript
   on 6.0.x (typescript-eslint requires <6.1; TS 7 not supported), Tailwind on 3 (v4 is a config rewrite)
 - **Styling**: Tailwind CSS 3 + tailwindcss-animate
