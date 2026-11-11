@@ -66,7 +66,10 @@ per-page message; cart UI and the float are hidden on `/pedido/<clave>`.
 `SelectedSize.productName` carries the product as named in the sheet's Precios tab; every selector
 builds it with `selectedSizeFromFamily()` (`data/pricesData.ts`, from `FAMILIES`). The catalog's
 `SizeSelectorCompact` (banner + modal) offers all five types as chips — Fondo HD (default), Neón,
-Híbrido, Piso Neoprene, Fundas; only fabric backdrops accept "Otra medida". Funnel events:
+Híbrido, Piso Neoprene, Fundas; only fabric backdrops accept "Otra medida". In the modal the
+selector is not shown while browsing: "Agregar a Mi pedido" is always enabled and, with no size
+chosen yet, opens an in-modal sheet where picking a size also adds the design (one step); once a
+size is chosen each design is one tap. Swiping the image changes design. Funnel events:
 `add_to_cart`/AddToCart → `begin_checkout`/InitiateCheckout → `order_data_submitted`/AddPaymentInfo.
 
 ### Orders (Google Sheets)

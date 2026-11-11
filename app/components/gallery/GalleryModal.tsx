@@ -2,11 +2,12 @@
 
 import { useEffect, useRef, useState, useMemo } from 'react'
 import { CldImage } from 'next-cloudinary'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, type PanInfo } from 'framer-motion'
 import { Check, Plus, ShoppingBag, X } from 'lucide-react'
 import { GalleryModalProps } from '../../types/gallery'
 import WhatsAppDropdown from '../WhatsAppDropdown'
 import { useSelectedSize } from '../../context/SelectedSizeContext'
+import { type SelectedSize } from '../../context/SelectedSizeContext'
 import { useCart, cartItemKey, cartSizeLabel, cartProductName, cartProductNote, formatArs } from '../../context/CartContext'
 import { SizeSelectorCompact } from '../SizeSelectorCompact'
 import { parseImageDescription } from '@/app/utils/imageDescription'
@@ -23,8 +24,15 @@ function parseDescription(img?: GalleryModalProps['images'][number]) {
   return parseImageDescription(raw)
 }
 
-/** Debajo de este largo la descripción entra en dos renglones y no hace falta "Ver más". */
-const DESCRIPTION_CLAMP_CHARS = 110
+/** Debajo de este largo la descripción entra en un renglón y no hace falta "Ver más". */
+const DESCRIPTION_CLAMP_CHARS = 55
+/** Desplazamiento horizontal (px) a partir del cual deslizar la imagen cambia de diseño. */
+const SWIPE_THRESHOLD = 60
+
+/** "Fondo HD" para el caso por defecto; si no, el tipo ("Neón (Fluo)", "Híbrido"…). */
+function productShortLabel(size: SelectedSize): string {
+  return cartProductNote(size) || 'Fondo HD'
+}
 
 export default function GalleryModal({
   isOpen,
@@ -42,6 +50,9 @@ export default function GalleryModal({
   const { items: cartItems, count: cartCount, addItem, removeItem, openDrawer } = useCart()
   const [justAdded, setJustAdded] = useState(false)
   const justAddedTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  // Hoja "Elegí producto y medida": solo aparece cuando la persona quiere agregar, así explorar
+  // diseños no es atravesar un formulario en cada uno.
+  const [sizeSheetOpen, setSizeSheetOpen] = useState(false)
 
   useEffect(() => {
     setModalOpen(isOpen)
@@ -73,8 +84,21 @@ export default function GalleryModal({
       setHasError(false)
       setShowDescription(false)
       setJustAdded(false)
+      setSizeSheetOpen(false)
     }
   }, [initialIndex, isOpen, images])
+
+  // Con la hoja abierta, Escape cierra la hoja y no el modal (en captura, antes que useGalleryModal).
+  useEffect(() => {
+    if (!sizeSheetOpen) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      e.stopImmediatePropagation()
+      setSizeSheetOpen(false)
+    }
+    document.addEventListener('keydown', onKey, true)
+    return () => document.removeEventListener('keydown', onKey, true)
+  }, [sizeSheetOpen])
 
   useEffect(() => () => {
     if (justAddedTimer.current) clearTimeout(justAddedTimer.current)
@@ -101,19 +125,38 @@ export default function GalleryModal({
   const currentKey = currentImage && selectedSize ? cartItemKey(currentImage.id, selectedSize) : null
   const qtyInCartForSize = cartItems.find(i => i.key === currentKey)?.qty ?? 0
 
-  const handleAddToCart = () => {
-    if (!currentImage || !selectedSize) return
+  // Recibe la medida explícita: desde la hoja se agrega en el mismo clic en que se elige, antes de
+  // que `selectedSize` se actualice.
+  const addToCart = (size: SelectedSize) => {
+    if (!currentImage) return
     addItem({
       imageId: currentImage.id,
       designCode: currentImage.display_name,
       category: category || undefined,
       imageUrl: currentImage.url,
-      size: selectedSize,
+      size,
     })
-    trackAddToCart(category || '', selectedSize.isExactPrice ? selectedSize.fromPrice : undefined, cartProductName(selectedSize))
+    trackAddToCart(category || '', size.isExactPrice ? size.fromPrice : undefined, cartProductName(size))
     setJustAdded(true)
     if (justAddedTimer.current) clearTimeout(justAddedTimer.current)
     justAddedTimer.current = setTimeout(() => setJustAdded(false), 1800)
+  }
+
+  // Sin medida elegida, "Agregar" abre la hoja; con medida, agrega con un toque.
+  const handleAddClick = () => {
+    if (selectedSize) addToCart(selectedSize)
+    else setSizeSheetOpen(true)
+  }
+
+  const handleSheetSelect = (size: SelectedSize) => {
+    setSelectedSize(size)
+    setSizeSheetOpen(false)
+    addToCart(size)
+  }
+
+  const handleSwipe = (_: unknown, info: PanInfo) => {
+    if (info.offset.x <= -SWIPE_THRESHOLD) goToNext()
+    else if (info.offset.x >= SWIPE_THRESHOLD) goToPrevious()
   }
 
   if (!isOpen || !currentImage) return null
@@ -153,10 +196,7 @@ export default function GalleryModal({
                   {category || 'Diseño'}
                 </h2>
                 <span className="text-xs text-gray-300 block">
-                  Diseño {initialIndex + 1} de {images.length}
-                </span>
-                <span className="text-[11px] text-gray-400 block truncate" title={currentImage.display_name}>
-                  Cód. {currentImage.display_name}
+                  {initialIndex + 1} de {images.length}
                 </span>
               </div>
             </div>
@@ -166,7 +206,14 @@ export default function GalleryModal({
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ duration: 0.3 }}
-              className="absolute inset-0 flex items-center justify-center"
+              // Deslizar a los costados cambia de diseño (el gesto natural en el celular).
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.5}
+              dragSnapToOrigin
+              onDragEnd={handleSwipe}
+              style={{ touchAction: 'pan-y' }}
+              className="absolute inset-0 flex items-center justify-center cursor-grab active:cursor-grabbing"
             >
               {!hasError ? (
                 <CldImage
@@ -180,6 +227,7 @@ export default function GalleryModal({
                   format="webp"
                   quality="auto:good"
                   loading="eager"
+                  draggable={false}
                   onError={handleImageError}
                 />
               ) : (
@@ -218,7 +266,7 @@ export default function GalleryModal({
           {/* ── PANEL INFO ──
               Portrait:  order-2 → siempre debajo de la imagen (descripción + footer)
               Landscape: order-2 → columna derecha fija (w-64), con scroll propio */}
-          <div className="flex flex-col flex-shrink-0 order-2 max-h-[50vh] overflow-y-auto overscroll-contain mob-landscape:max-h-none mob-landscape:w-64 mob-landscape:h-full mob-landscape:overflow-y-auto mob-landscape:border-l mob-landscape:border-white/10 mob-landscape:bg-black/60">
+          <div className="flex flex-col flex-shrink-0 order-2 max-h-[40vh] overflow-y-auto overscroll-contain mob-landscape:max-h-none mob-landscape:w-64 mob-landscape:h-full mob-landscape:overflow-y-auto mob-landscape:border-l mob-landscape:border-white/10 mob-landscape:bg-black/60">
 
             {/* Título + contador — solo visible en landscape (en portrait va como overlay sobre la imagen) */}
             <div className="hidden mob-landscape:flex items-start text-white px-4 py-3 pr-12 flex-shrink-0">
@@ -227,16 +275,14 @@ export default function GalleryModal({
                   {category || 'Diseño'}
                 </h2>
                 <span className="text-xs text-gray-400 mt-0.5 block">
-                  Diseño {initialIndex + 1} de {images.length}
+                  {initialIndex + 1} de {images.length}
                 </span>
-                <span className="text-[11px] text-gray-500 block break-all">Cód. {currentImage.display_name}</span>
               </div>
             </div>
 
-            {/* Descripción y colores */}
-            {description && (
-              <div className="flex-shrink-0 px-4 pb-3 space-y-2">
-                {description.colors && (
+            {/* Descripción, colores y código (detalles, plegados en un renglón) */}
+            <div className="flex-shrink-0 px-4 pt-3 pb-2 space-y-1.5">
+                {description?.colors && (
                   <div className="flex flex-wrap items-center gap-1.5">
                     <span className="text-gray-500 text-xs font-medium uppercase tracking-wider mr-1">Colores</span>
                     {description.colors.slice(0, 3).map((color) => (
@@ -249,11 +295,11 @@ export default function GalleryModal({
                     ))}
                   </div>
                 )}
-                {description.text && (
+                {description?.text && (
                   <div>
                     <p
                       className={`text-gray-300 text-sm leading-relaxed transition-all duration-200 ${
-                        showDescription ? '' : 'line-clamp-2'
+                        showDescription ? '' : 'line-clamp-1'
                       }`}
                     >
                       {description.text}
@@ -274,40 +320,34 @@ export default function GalleryModal({
                     )}
                   </div>
                 )}
-              </div>
-            )}
+                <p className="text-[11px] text-gray-500 truncate" title={currentImage.display_name}>
+                  Cód. {currentImage.display_name}
+                </p>
+            </div>
 
             {/* Footer — medida + Mi pedido (+ WhatsApp directo como secundario) */}
             <div className="flex-shrink-0 px-4 pb-4 pt-3 sticky bottom-0 z-10 bg-[#111] border-t border-white/10 mob-landscape:static mob-landscape:bg-transparent mob-landscape:border-t-0 space-y-2.5">
 
-              {selectedSize ? (
-                <div className="flex items-center gap-2 bg-amber-400/15 border border-amber-400/40 rounded-xl px-3 h-10 w-full">
-                  <span className="text-[11px] uppercase tracking-wide text-gray-400 shrink-0">Medida</span>
-                  <span className="text-white text-sm font-semibold truncate">
-                    {selectedSize.label}
-                    {cartProductNote(selectedSize) && (
-                      <span className="font-normal text-gray-300"> · {cartProductNote(selectedSize)}</span>
-                    )}
+              {/* Medida elegida: una línea compacta. Sin medida no se muestra nada: el selector
+                  aparece recién al tocar "Agregar". */}
+              {selectedSize && (
+                <div className="flex items-center gap-2 text-sm min-w-0">
+                  <Check className="w-4 h-4 text-amber-300 shrink-0" aria-hidden />
+                  <span className="text-white font-medium truncate">
+                    {productShortLabel(selectedSize)} · {selectedSize.label}
                   </span>
                   {selectedSize.fromPrice ? (
-                    <span className="text-amber-300 text-sm shrink-0">
+                    <span className="text-amber-300 shrink-0">
                       {selectedSize.isExactPrice ? '' : 'desde '}{formatArs(selectedSize.fromPrice)}
                     </span>
                   ) : null}
                   <button
-                    onClick={() => setSelectedSize(null)}
-                    className="ml-auto text-gray-300 hover:text-white transition-colors text-xs underline underline-offset-2 shrink-0 py-2"
+                    onClick={() => setSizeSheetOpen(true)}
+                    className="ml-auto text-gray-300 hover:text-white transition-colors text-xs underline underline-offset-2 shrink-0 py-1.5"
                   >
                     cambiar
                   </button>
                 </div>
-              ) : (
-                <>
-                  <p className="text-amber-200 text-sm font-medium">
-                    Elegí producto y medida para agregarlo a tu pedido
-                  </p>
-                  <SizeSelectorCompact onSelect={setSelectedSize} variant="dark" initialSize={lastSelectedSize} />
-                </>
               )}
 
               {/* Este diseño ya en el pedido (en una o más medidas) */}
@@ -331,20 +371,14 @@ export default function GalleryModal({
 
               <div className="flex items-stretch gap-2">
                 <button
-                  onClick={handleAddToCart}
-                  disabled={!selectedSize}
+                  onClick={handleAddClick}
+                  aria-haspopup={selectedSize ? undefined : 'dialog'}
                   className={`flex-1 h-12 rounded-xl px-4 flex items-center justify-center gap-2 font-semibold transition-all active:scale-[0.98] ${
-                    justAdded
-                      ? 'bg-green-500 text-white'
-                      : selectedSize
-                        ? 'bg-amber-400 hover:bg-amber-300 text-[#1F1A14]'
-                        : 'bg-white/10 text-gray-400 cursor-not-allowed'
+                    justAdded ? 'bg-green-500 text-white' : 'bg-amber-400 hover:bg-amber-300 text-[#1F1A14]'
                   }`}
                 >
                   {justAdded ? (
                     <><Check className="w-5 h-5" /> Agregado a Mi pedido</>
-                  ) : !selectedSize ? (
-                    <>Elegí una medida</>
                   ) : qtyInCartForSize > 0 ? (
                     <><Plus className="w-5 h-5" /> Sumar otro ({qtyInCartForSize} en el pedido)</>
                   ) : (
@@ -374,6 +408,55 @@ export default function GalleryModal({
             </div>
 
           </div>
+
+          {/* Hoja "Elegí producto y medida" — dentro del modal, sobre el panel */}
+          <AnimatePresence>
+            {sizeSheetOpen && (
+              <>
+                <motion.div
+                  key="size-sheet-backdrop"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="absolute inset-0 z-30 bg-black/60"
+                  onClick={() => setSizeSheetOpen(false)}
+                />
+                <motion.div
+                  key="size-sheet"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-labelledby="size-sheet-title"
+                  initial={{ y: '100%' }}
+                  animate={{ y: 0 }}
+                  exit={{ y: '100%' }}
+                  transition={{ type: 'tween', duration: 0.25, ease: 'easeOut' }}
+                  className="absolute inset-x-0 bottom-0 z-40 max-h-[85%] overflow-y-auto overscroll-contain rounded-t-2xl border-t border-white/10 bg-[#151515] px-4 pt-2 pb-5 shadow-2xl sm:mx-auto sm:w-[28rem] sm:max-w-full mob-landscape:mr-0 mob-landscape:w-80"
+                >
+                  <div aria-hidden className="mx-auto mb-3 h-1 w-10 rounded-full bg-white/20" />
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <div>
+                      <h3 id="size-sheet-title" className="text-white font-semibold leading-tight">
+                        Elegí producto y medida
+                      </h3>
+                      <p className="text-xs text-gray-400 mt-0.5">Al elegir la medida se agrega a Mi pedido</p>
+                    </div>
+                    <button
+                      onClick={() => setSizeSheetOpen(false)}
+                      className="p-1.5 -mr-1.5 rounded-full text-gray-400 hover:text-white hover:bg-white/10"
+                      aria-label="Cerrar selector de medida"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+                  <SizeSelectorCompact
+                    onSelect={handleSheetSelect}
+                    variant="dark"
+                    initialSize={selectedSize ?? lastSelectedSize}
+                  />
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>
         </div>
       </motion.div>
     </AnimatePresence>
