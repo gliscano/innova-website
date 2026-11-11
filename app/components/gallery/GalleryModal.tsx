@@ -218,7 +218,7 @@ export default function GalleryModal({
           {/* ── PANEL INFO ──
               Portrait:  order-2 → siempre debajo de la imagen (descripción + footer)
               Landscape: order-2 → columna derecha fija (w-64), con scroll propio */}
-          <div className="flex flex-col flex-shrink-0 order-2 max-h-[50vh] overflow-y-auto mob-landscape:max-h-none mob-landscape:w-64 mob-landscape:h-full mob-landscape:overflow-y-auto mob-landscape:border-l mob-landscape:border-white/10 mob-landscape:bg-black/60">
+          <div className="flex flex-col flex-shrink-0 order-2 max-h-[50vh] overflow-y-auto overscroll-contain mob-landscape:max-h-none mob-landscape:w-64 mob-landscape:h-full mob-landscape:overflow-y-auto mob-landscape:border-l mob-landscape:border-white/10 mob-landscape:bg-black/60">
 
             {/* Título + contador — solo visible en landscape (en portrait va como overlay sobre la imagen) */}
             <div className="hidden mob-landscape:flex items-start text-white px-4 py-3 pr-12 flex-shrink-0">

@@ -12,6 +12,7 @@ import {
   formatArs,
 } from '@/app/context/CartContext'
 import { trackBeginCheckout } from '@/app/utils/tracking'
+import { useBodyScrollLock } from '@/app/hooks/useBodyScrollLock'
 
 /**
  * Panel "Mi pedido". Hoja inferior en el celular y columna derecha en la compu. Se abre también
@@ -46,14 +47,11 @@ function CartDrawerPanel() {
     return () => document.removeEventListener('keydown', onKey, true)
   }, [closeDrawer])
 
-  // Bloquea el scroll de fondo y lo devuelve como estaba (puede venir bloqueado por el modal).
+  // Bloquea el scroll de fondo (se suma al del modal si el panel se abrió desde ahí).
+  useBodyScrollLock()
+
   useEffect(() => {
-    const previous = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
     closeRef.current?.focus()
-    return () => {
-      document.body.style.overflow = previous
-    }
   }, [])
 
   const message = buildCartMessage(items, total, hasUnpricedItems)
@@ -91,7 +89,7 @@ function CartDrawerPanel() {
         </div>
 
         {/* Líneas */}
-        <div className="flex-1 min-h-0 overflow-y-auto px-5 py-3">
+        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-5 py-3">
           {items.length === 0 ? (
             <div className="py-10 text-center">
               <div className="mx-auto mb-3 w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center">

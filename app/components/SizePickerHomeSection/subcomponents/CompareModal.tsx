@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import { X } from 'lucide-react'
+import { useBodyScrollLock } from '@/app/hooks/useBodyScrollLock'
 import type { SizeOption } from '../types'
 
 interface CompareModalProps {
@@ -19,12 +20,9 @@ export function CompareModal({ sizes, onClose }: CompareModalProps) {
       if (e.key === 'Escape') onClose()
     }
     document.addEventListener('keydown', handleEscape)
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.removeEventListener('keydown', handleEscape)
-      document.body.style.overflow = ''
-    }
+    return () => document.removeEventListener('keydown', handleEscape)
   }, [onClose])
+  useBodyScrollLock()
 
   const displaySizes = sizes.slice(0, 4)
 

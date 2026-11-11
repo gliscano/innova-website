@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { GalleryImage } from '../types/gallery'
 import { trackGalleryModalOpen } from '../utils/tracking'
+import { useBodyScrollLock } from './useBodyScrollLock'
 
 interface UseGalleryModalReturn {
   isOpen: boolean
@@ -70,18 +71,8 @@ export function useGalleryModal(images: GalleryImage[]): UseGalleryModalReturn {
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [isOpen, goToNext, goToPrevious, closeModal])
 
-  // Prevenir scroll del body cuando el modal está abierto
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = 'unset'
-    }
-
-    return () => {
-      document.body.style.overflow = 'unset'
-    }
-  }, [isOpen])
+  // La página de atrás no se mueve mientras el modal está abierto (también en iPhone).
+  useBodyScrollLock(isOpen)
 
   return {
     isOpen,

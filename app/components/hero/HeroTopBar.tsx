@@ -8,6 +8,7 @@ import WhatsAppDropdown from "@/app/components/WhatsAppDropdown"
 import { heroMenuLinks } from "@/app/data/heroGalleryData"
 import { searchThemes, type HeroSearchFolder } from "@/app/utils/heroSearch"
 import { useSearchTracking } from "@/app/hooks/useSearchTracking"
+import { useBodyScrollLock } from "@/app/hooks/useBodyScrollLock"
 import { HeroLink } from "./HeroLink"
 
 interface HeroTopBarProps {
@@ -157,13 +158,7 @@ function SearchOverlay({ folders, onClose }: { folders: HeroSearchFolder[]; onCl
   useSearchTracking(q, "hero_mobile")
 
   // Mientras el buscador está abierto la página de fondo no scrollea.
-  useEffect(() => {
-    const prev = document.body.style.overflow
-    document.body.style.overflow = "hidden"
-    return () => {
-      document.body.style.overflow = prev
-    }
-  }, [])
+  useBodyScrollLock()
 
   // Mantiene el foco del teclado dentro del diálogo.
   const trapFocus = (e: ReactKeyboardEvent<HTMLDivElement>) => {
