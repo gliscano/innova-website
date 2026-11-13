@@ -230,26 +230,37 @@ export function formatArs(n: number): string {
 }
 
 /**
- * Mensaje único con todas las líneas. Cada línea trae los campos en el orden en que la vendedora
- * los carga en Items (Modelo, Producto, Ancho × Alto, Cantidad), más el link a la imagen.
+ * Mensaje único con todas las líneas. Rótulos iguales a los de la web ("Diseño", no "Modelo": en la
+ * pestaña Items de la planilla el código va en la columna Modelo). El precio va en su propia línea
+ * y el cierre suma productos y total.
  */
+export function cartDesignLine(category: string | undefined, designCode: string): string {
+  return category ? `Diseño: ${category} (Cód: ${designCode})` : `Diseño: Cód. ${designCode}`
+}
+
 export function buildCartMessage(items: CartItem[], total: number, hasUnpricedItems: boolean): string {
   const lines = items.map((item, n) => {
     const { size } = item
-    const price = size.fromPrice && size.isExactPrice
-      ? ` · ${formatArs(size.fromPrice * item.qty)}`
-      : ' · (medida especial, a confirmar)'
+    const unit = size.fromPrice && size.isExactPrice ? size.fromPrice : null
+    const price = unit === null
+      ? 'a confirmar (medida especial)'
+      : item.qty > 1
+        ? `${formatArs(unit * item.qty)} (${item.qty} × ${formatArs(unit)})`
+        : formatArs(unit)
     return [
-      `${n + 1}) Modelo: ${item.designCode}${item.category ? ` (${item.category})` : ''}`,
-      `   Producto: ${cartProductName(size)}`,
-      `   Medida: *${cartSizeLabel(size)}* · Cant: ${item.qty}${price}`,
-      `   Ver: ${item.imageUrl}`,
+      `${n + 1}) ${cartDesignLine(item.category, item.designCode)}`,
+      `Producto: ${cartProductName(size)}`,
+      `Medida: ${cartSizeLabel(size)} · Cantidad: ${item.qty}`,
+      `Precio: ${price}`,
+      `Ver imagen: ${item.imageUrl}`,
     ].join('\n')
   })
 
+  const count = items.reduce((sum, i) => sum + i.qty, 0)
+  const products = `${count} ${count === 1 ? 'producto' : 'productos'}`
   const totalLine = total > 0
-    ? `\n*Total estimado: ${formatArs(total)}*${hasUnpricedItems ? ' + medidas a confirmar' : ''}\n`
-    : '\n'
+    ? `*Total: ${products} · ${formatArs(total)}*${hasUnpricedItems ? ' + medidas especiales a confirmar' : ''}`
+    : `*Total: ${products}* (precio a confirmar)`
 
-  return `Hola! Quiero hacer este pedido:\n\n${lines.join('\n\n')}\n${totalLine}¿Cómo sigo con la compra?`
+  return `Hola! Quiero hacer este pedido:\n\n${lines.join('\n\n')}\n\n${totalLine}\n¿Cómo sigo con la compra?`
 }

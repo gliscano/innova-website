@@ -199,14 +199,23 @@ function CustomDropdown({
 // ─── Main Component ──────────────────────────────────────────────────────────
 
 interface SizeSelectorCompactProps {
-  onSelect: (size: SelectedSize) => void
+  /** Medida confirmada (banner de la página): se llama una vez, al completar la elección. */
+  onSelect?: (size: SelectedSize) => void
+  /**
+   * Modo vista previa (hoja del modal): informa la medida en cada cambio — `null` mientras está
+   * incompleta — sin confirmar nada. Quien lo usa decide cuándo agregar, con su propio botón, así
+   * probar medidas para comparar precios no agrega productos al pedido. Sin botón "Confirmar".
+   */
+  onChange?: (size: SelectedSize | null) => void
   variant?: 'light' | 'dark'
   /** Medida elegida antes ("cambiar"): el selector abre con ese producto ya marcado. */
   initialSize?: SelectedSize | null
 }
 
-export function SizeSelectorCompact({ onSelect, variant = 'light', initialSize = null }: SizeSelectorCompactProps) {
+export function SizeSelectorCompact({ onSelect, onChange, variant = 'light', initialSize = null }: SizeSelectorCompactProps) {
+  const isPreview = !!onChange
   const [product, setProduct] = useState<ProductId>(() => productFromSize(initialSize))
+  const [listedIndex, setListedIndex] = useState('')
   const [widthValue, setWidthValue] = useState('')
   const [heightValue, setHeightValue] = useState('')
   const [customWidth, setCustomWidth] = useState('')
@@ -231,14 +240,13 @@ export function SizeSelectorCompact({ onSelect, variant = 'light', initialSize =
     ? (fabricFamily(parseFloat(widthValue))?.largos.map(i => i.largo) ?? []).sort((a, b) => a - b)
     : []
 
-  /** Confirma una medida de tela (de tabla o especial). */
-  const confirmFabric = (w: number, h: number) => {
+  /** Medida de tela (de tabla o especial) para un ancho y alto. */
+  const fabricSize = (w: number, h: number): SelectedSize => {
     const match = nearestFabricItem(w, h)
     if (match && match.family.ancho === w && match.item.largo === h) {
-      onSelect(selectedSizeFromFamily(match.family, match.item, finish))
-      return
+      return selectedSizeFromFamily(match.family, match.item, finish)
     }
-    onSelect({
+    return {
       id: `custom-${w}x${h}`,
       label: `${w.toFixed(2)}m × ${h.toFixed(1)}m`,
       widthM: w,
@@ -246,27 +254,60 @@ export function SizeSelectorCompact({ onSelect, variant = 'light', initialSize =
       fromPrice: match?.item[finish] ?? undefined,
       isExactPrice: false,
       finishLabel: finish === 'neon' ? FINISH_LABEL.neon : undefined,
-    })
+    }
+  }
+
+  /** Medida completa: en vista previa se informa; si no, se confirma. */
+  const emit = (size: SelectedSize) => {
+    if (isPreview) onChange?.(size)
+    else onSelect?.(size)
+  }
+
+  /** En vista previa, recalcula la medida especial con los valores que se están escribiendo. */
+  const previewFabric = (wStr: string, hStr: string) => {
+    if (!isPreview) return
+    const w = parseFloat(wStr)
+    const h = parseFloat(hStr)
+    onChange?.(w > 0 && h > 0 ? fabricSize(w, h) : null)
   }
 
   const pickProduct = (id: ProductId) => {
     setProduct(id)
+    setListedIndex('')
     setWidthValue('')
     setHeightValue('')
     setCustomWidth('')
     setCustomHeight('')
+    onChange?.(null)
   }
 
   const pickWidth = (v: string) => {
     setWidthValue(v)
     setHeightValue('')
     setCustomHeight('')
+    onChange?.(null)
   }
 
-  // Con ancho y alto de la tabla la medida se confirma sola; las especiales piden "Confirmar".
+  // Con ancho y alto de la tabla la medida queda completa al elegir; las especiales se escriben.
   const pickHeight = (v: string) => {
     setHeightValue(v)
-    if (v !== 'custom' && !isCustomWidth && widthValue) confirmFabric(parseFloat(widthValue), parseFloat(v))
+    if (v !== 'custom' && !isCustomWidth && widthValue) emit(fabricSize(parseFloat(widthValue), parseFloat(v)))
+    else if (v === 'custom') onChange?.(null)
+  }
+
+  const pickListed = (family: Family, v: string) => {
+    setListedIndex(v)
+    emit(selectedSizeFromFamily(family, family.largos[Number(v)], 'unico'))
+  }
+
+  const typeCustomWidth = (v: string) => {
+    setCustomWidth(v)
+    previewFabric(v, isCustomHeight ? customHeight : heightValue)
+  }
+
+  const typeCustomHeight = (v: string) => {
+    setCustomHeight(v)
+    previewFabric(isCustomWidth ? customWidth : widthValue, v)
   }
 
   const widthOptions: DropdownOption[] = [
@@ -332,8 +373,8 @@ export function SizeSelectorCompact({ onSelect, variant = 'light', initialSize =
         <div>
           <label className={labelClass}>Medida</label>
           <CustomDropdown
-            value=""
-            onChange={v => onSelect(selectedSizeFromFamily(listedFamily, listedFamily.largos[Number(v)], 'unico'))}
+            value={listedIndex}
+            onChange={v => pickListed(listedFamily, v)}
             options={listedOptions}
             placeholder="— elegir —"
             isDark={isDark}
@@ -359,7 +400,7 @@ export function SizeSelectorCompact({ onSelect, variant = 'light', initialSize =
                     type="number"
                     placeholder="ej: 2.00"
                     value={customWidth}
-                    onChange={e => setCustomWidth(e.target.value)}
+                    onChange={e => typeCustomWidth(e.target.value)}
                     step="0.1"
                     min="0.1"
                     className={inputClass}
@@ -393,13 +434,13 @@ export function SizeSelectorCompact({ onSelect, variant = 'light', initialSize =
                     type="number"
                     placeholder="ej: 2.20"
                     value={customHeight}
-                    onChange={e => setCustomHeight(e.target.value)}
+                    onChange={e => typeCustomHeight(e.target.value)}
                     step="0.1"
                     min="0.1"
                     className={inputClass}
                   />
                   <button
-                    onClick={() => { setHeightValue(''); setCustomHeight('') }}
+                    onClick={() => { setHeightValue(''); setCustomHeight(''); onChange?.(null) }}
                     className={`text-sm px-2 py-1 rounded-lg transition-colors ${isDark ? 'text-gray-400 hover:text-white hover:bg-white/10' : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100'}`}
                     aria-label="Volver a las medidas de la lista"
                   >
@@ -433,17 +474,19 @@ export function SizeSelectorCompact({ onSelect, variant = 'light', initialSize =
                       Medida personalizada
                     </p>
                     <p className={`text-xs mt-0.5 ${isDark ? 'text-amber-300' : 'text-amber-700'}`}>
-                      Elegí tu medida, confirmala y te enviaremos el valor por WhatsApp.
+                      {isPreview
+                        ? 'Te confirmamos el valor por WhatsApp.'
+                        : 'Elegí tu medida, confirmala y te enviaremos el valor por WhatsApp.'}
                     </p>
                   </>
                 )}
               </div>
-              <button
-                onClick={() => confirmFabric(parsedWidth, parsedHeight)}
+              {!isPreview && <button
+                onClick={() => onSelect?.(fabricSize(parsedWidth, parsedHeight))}
                 className="shrink-0 px-4 py-2 bg-amber-400 hover:bg-amber-500 active:scale-95 text-white text-sm font-bold rounded-xl transition-all shadow-sm shadow-amber-200"
               >
                 Confirmar
-              </button>
+              </button>}
             </div>
           )}
         </>

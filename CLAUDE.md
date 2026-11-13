@@ -56,8 +56,9 @@ No test suite is configured.
 ### "Mi pedido" (catalog cart)
 
 `app/context/CartContext.tsx` is the customer-side draft: several designs × several sizes, saved in
-`localStorage` (`innova-cart-v1`) and sent as **one** WhatsApp message (`buildCartMessage`, fields in
-the order sellers type them into `Items`: Modelo, Producto, medida, cantidad). It is *not* connected to
+`localStorage` (`innova-cart-v1`) and sent as **one** WhatsApp message (`buildCartMessage`: per line Diseño (category + Cloudinary
+`display_name` as "Cód", which sellers type into the `Items` "Modelo" column), Producto, Medida ·
+Cantidad, Precio, Ver imagen; then "Total: N productos · $X"). It is *not* connected to
 Sheets — the seller creates the real order from that message. Named Cart (not Order) on purpose:
 `OrderItem` / `orders.ts` are the sheet's order. Sending empties the cart (8 s "Deshacer").
 UI: `GalleryModal` ("Agregar a Mi pedido", WhatsApp direct as secondary), `components/cart/CartBar` +
@@ -68,8 +69,11 @@ builds it with `selectedSizeFromFamily()` (`data/pricesData.ts`, from `FAMILIES`
 `SizeSelectorCompact` (banner + modal) offers all five types as chips — Fondo HD (default), Neón,
 Híbrido, Piso Neoprene, Fundas; only fabric backdrops accept "Otra medida". In the modal the
 selector is not shown while browsing: "Agregar a Mi pedido" is always enabled and, with no size
-chosen yet, opens an in-modal sheet where picking a size also adds the design (one step); once a
-size is chosen each design is one tap. Swiping the image changes design. Funnel events:
+chosen yet, opens an in-modal sheet; the sheet uses the selector in preview mode (`onChange`) so
+trying sizes never adds anything — only its explicit "Agregar a Mi pedido" button does. Once a size
+is chosen each design is one tap; if the design is already in the cart in that size the button
+becomes a `− N +` stepper plus "Agregar otra medida o formato". The modal and the page share
+`CartSummaryButton`. Swiping the image changes design. Funnel events:
 `add_to_cart`/AddToCart → `begin_checkout`/InitiateCheckout → `order_data_submitted`/AddPaymentInfo.
 
 ### Orders (Google Sheets)

@@ -3,12 +3,13 @@
 import { useEffect, useRef, useState, useMemo } from 'react'
 import { CldImage } from 'next-cloudinary'
 import { motion, AnimatePresence, type PanInfo } from 'framer-motion'
-import { Check, Plus, ShoppingBag, X } from 'lucide-react'
+import { Check, Minus, Plus, X } from 'lucide-react'
 import { GalleryModalProps } from '../../types/gallery'
 import WhatsAppDropdown from '../WhatsAppDropdown'
 import { useSelectedSize } from '../../context/SelectedSizeContext'
 import { type SelectedSize } from '../../context/SelectedSizeContext'
-import { useCart, cartItemKey, cartSizeLabel, cartProductName, cartProductNote, formatArs } from '../../context/CartContext'
+import { useCart, cartItemKey, cartSizeLabel, cartProductName, cartProductNote, cartDesignLine, formatArs } from '../../context/CartContext'
+import CartSummaryButton from '../cart/CartSummaryButton'
 import { SizeSelectorCompact } from '../SizeSelectorCompact'
 import { parseImageDescription } from '@/app/utils/imageDescription'
 import { formatFolderName } from '@/app/utils/catalogUtils'
@@ -47,12 +48,14 @@ export default function GalleryModal({
   const [hasError, setHasError] = useState(false)
   const [showDescription, setShowDescription] = useState(false)
   const { selectedSize, setSelectedSize, lastSelectedSize, setModalOpen } = useSelectedSize()
-  const { items: cartItems, count: cartCount, addItem, removeItem, openDrawer } = useCart()
+  const { items: cartItems, count: cartCount, addItem, removeItem, setQty } = useCart()
   const [justAdded, setJustAdded] = useState(false)
   const justAddedTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   // Hoja "Elegí producto y medida": solo aparece cuando la persona quiere agregar, así explorar
   // diseños no es atravesar un formulario en cada uno.
   const [sizeSheetOpen, setSizeSheetOpen] = useState(false)
+  // Lo que se está eligiendo en la hoja. Probar medidas no agrega nada: solo el botón "Agregar".
+  const [draftSize, setDraftSize] = useState<SelectedSize | null>(null)
 
   useEffect(() => {
     setModalOpen(isOpen)
@@ -115,7 +118,7 @@ export default function GalleryModal({
 
   // WhatsApp directo (secundario): consulta puntual por este diseño. Para comprar, el camino
   // principal es "Agregar a Mi pedido", que junta varios diseños y medidas en un solo mensaje.
-  const designLines = `Categoría: ${category || 'diseño'}\nModelo: ${currentImage?.display_name}`
+  const designLines = cartDesignLine(category || undefined, currentImage?.display_name ?? '')
   const whatsappMessage = selectedSize
     ? `Hola! Tengo una consulta por este diseño:\n${designLines}\nProducto: ${cartProductName(selectedSize)}\nMedida que me interesa: ${selectedSize.label}\nVer imagen: ${currentImage?.url}`
     : `Hola! Tengo una consulta por este diseño:\n${designLines}\nVer imagen: ${currentImage?.url}`
@@ -125,8 +128,8 @@ export default function GalleryModal({
   const currentKey = currentImage && selectedSize ? cartItemKey(currentImage.id, selectedSize) : null
   const qtyInCartForSize = cartItems.find(i => i.key === currentKey)?.qty ?? 0
 
-  // Recibe la medida explícita: desde la hoja se agrega en el mismo clic en que se elige, antes de
-  // que `selectedSize` se actualice.
+  // Recibe la medida explícita: desde la hoja se agrega la medida elegida ahí, en el mismo clic en
+  // que pasa a ser la medida elegida (antes de que `selectedSize` se actualice).
   const addToCart = (size: SelectedSize) => {
     if (!currentImage) return
     addItem({
@@ -142,16 +145,23 @@ export default function GalleryModal({
     justAddedTimer.current = setTimeout(() => setJustAdded(false), 1800)
   }
 
+  const openSizeSheet = () => {
+    setDraftSize(null)
+    setSizeSheetOpen(true)
+  }
+
   // Sin medida elegida, "Agregar" abre la hoja; con medida, agrega con un toque.
   const handleAddClick = () => {
     if (selectedSize) addToCart(selectedSize)
-    else setSizeSheetOpen(true)
+    else openSizeSheet()
   }
 
-  const handleSheetSelect = (size: SelectedSize) => {
-    setSelectedSize(size)
+  // Botón explícito de la hoja: recién acá la medida pasa a ser la elegida y se agrega.
+  const handleSheetAdd = () => {
+    if (!draftSize) return
+    setSelectedSize(draftSize)
     setSizeSheetOpen(false)
-    addToCart(size)
+    addToCart(draftSize)
   }
 
   const handleSwipe = (_: unknown, info: PanInfo) => {
@@ -264,10 +274,13 @@ export default function GalleryModal({
           </div>
 
           {/* ── PANEL INFO ──
-              Portrait:  order-2 → siempre debajo de la imagen (descripción + footer)
-              Landscape: order-2 → columna derecha fija (w-64), con scroll propio */}
-          <div className="flex flex-col flex-shrink-0 order-2 max-h-[40vh] overflow-y-auto overscroll-contain mob-landscape:max-h-none mob-landscape:w-64 mob-landscape:h-full mob-landscape:overflow-y-auto mob-landscape:border-l mob-landscape:border-white/10 mob-landscape:bg-black/60">
+              Portrait:  order-2 → siempre debajo de la imagen (detalles + footer)
+              Landscape: order-2 → columna derecha fija (w-64)
+              El footer (medida, cantidad, Mi pedido) nunca se corta: lo que se desplaza son los
+              detalles de arriba, que ceden lugar cuando el footer crece. */}
+          <div className="flex flex-col flex-shrink-0 order-2 max-h-[60vh] min-h-0 mob-landscape:max-h-none mob-landscape:w-64 mob-landscape:h-full mob-landscape:border-l mob-landscape:border-white/10 mob-landscape:bg-black/60">
 
+            <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
             {/* Título + contador — solo visible en landscape (en portrait va como overlay sobre la imagen) */}
             <div className="hidden mob-landscape:flex items-start text-white px-4 py-3 pr-12 flex-shrink-0">
               <div>
@@ -324,9 +337,10 @@ export default function GalleryModal({
                   Cód. {currentImage.display_name}
                 </p>
             </div>
+            </div>
 
             {/* Footer — medida + Mi pedido (+ WhatsApp directo como secundario) */}
-            <div className="flex-shrink-0 px-4 pb-4 pt-3 sticky bottom-0 z-10 bg-[#111] border-t border-white/10 mob-landscape:static mob-landscape:bg-transparent mob-landscape:border-t-0 space-y-2.5">
+            <div className="flex-shrink-0 px-4 pb-4 pt-3 bg-[#111] border-t border-white/10 mob-landscape:bg-transparent mob-landscape:border-t-0 space-y-2.5">
 
               {/* Medida elegida: una línea compacta. Sin medida no se muestra nada: el selector
                   aparece recién al tocar "Agregar". */}
@@ -342,7 +356,7 @@ export default function GalleryModal({
                     </span>
                   ) : null}
                   <button
-                    onClick={() => setSizeSheetOpen(true)}
+                    onClick={openSizeSheet}
                     className="ml-auto text-gray-300 hover:text-white transition-colors text-xs underline underline-offset-2 shrink-0 py-1.5"
                   >
                     cambiar
@@ -370,21 +384,39 @@ export default function GalleryModal({
               )}
 
               <div className="flex items-stretch gap-2">
-                <button
-                  onClick={handleAddClick}
-                  aria-haspopup={selectedSize ? undefined : 'dialog'}
-                  className={`flex-1 h-12 rounded-xl px-4 flex items-center justify-center gap-2 font-semibold transition-all active:scale-[0.98] ${
-                    justAdded ? 'bg-green-500 text-white' : 'bg-amber-400 hover:bg-amber-300 text-[#1F1A14]'
-                  }`}
-                >
-                  {justAdded ? (
-                    <><Check className="w-5 h-5" /> Agregado a Mi pedido</>
-                  ) : qtyInCartForSize > 0 ? (
-                    <><Plus className="w-5 h-5" /> Sumar otro ({qtyInCartForSize} en el pedido)</>
-                  ) : (
-                    <><Plus className="w-5 h-5" /> Agregar a Mi pedido</>
-                  )}
-                </button>
+                {selectedSize && currentKey && qtyInCartForSize > 0 ? (
+                  /* Ya está en el pedido con esta medida: la cantidad se ajusta acá mismo */
+                  <div className="flex-1 h-12 rounded-xl border border-amber-400/60 bg-amber-400/10 flex items-center justify-between px-1.5">
+                    <button
+                      onClick={() => setQty(currentKey, qtyInCartForSize - 1)}
+                      className="w-9 h-9 rounded-lg flex items-center justify-center text-white hover:bg-white/10"
+                      aria-label={qtyInCartForSize === 1 ? 'Quitar del pedido' : 'Restar uno'}
+                    >
+                      <Minus className="w-4 h-4" />
+                    </button>
+                    <span className="flex flex-col items-center leading-tight" aria-live="polite">
+                      <span className="text-white font-bold tabular-nums">{qtyInCartForSize}</span>
+                      <span className={`text-[11px] ${justAdded ? 'text-green-400' : 'text-gray-400'}`}>
+                        {justAdded ? '✓ Agregado' : 'en tu pedido'}
+                      </span>
+                    </span>
+                    <button
+                      onClick={() => setQty(currentKey, qtyInCartForSize + 1)}
+                      className="w-9 h-9 rounded-lg flex items-center justify-center text-white hover:bg-white/10"
+                      aria-label="Sumar uno"
+                    >
+                      <Plus className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={handleAddClick}
+                    aria-haspopup={selectedSize ? undefined : 'dialog'}
+                    className="flex-1 min-w-0 h-12 rounded-xl px-3 flex items-center justify-center gap-1.5 whitespace-nowrap text-[15px] font-semibold transition-all active:scale-[0.98] bg-amber-400 hover:bg-amber-300 text-[#1F1A14]"
+                  >
+                    <Plus className="w-5 h-5 shrink-0" /> Agregar a Mi pedido
+                  </button>
+                )}
                 <WhatsAppDropdown
                   iconOnly
                   wrapperClassName="relative shrink-0"
@@ -395,16 +427,17 @@ export default function GalleryModal({
                 />
               </div>
 
-              {cartCount > 0 && (
+              {qtyInCartForSize > 0 && (
                 <button
-                  onClick={openDrawer}
-                  className="w-full flex items-center justify-center gap-2 text-sm text-amber-200 hover:text-amber-100 py-1"
+                  onClick={openSizeSheet}
+                  className="w-full flex items-center justify-center gap-1.5 text-sm text-amber-200 hover:text-amber-100 py-1"
                 >
-                  <ShoppingBag className="w-4 h-4" />
-                  Ver Mi pedido ({cartCount}) y enviarlo
-                  <span aria-hidden>→</span>
+                  <Plus className="w-4 h-4" /> Agregar otra medida o formato
                 </button>
               )}
+
+              {/* Mismo acceso a Mi pedido que la barra de la página */}
+              {cartCount > 0 && <CartSummaryButton className="border border-white/10" />}
             </div>
 
           </div>
@@ -430,16 +463,14 @@ export default function GalleryModal({
                   animate={{ y: 0 }}
                   exit={{ y: '100%' }}
                   transition={{ type: 'tween', duration: 0.25, ease: 'easeOut' }}
-                  className="absolute inset-x-0 bottom-0 z-40 max-h-[85%] overflow-y-auto overscroll-contain rounded-t-2xl border-t border-white/10 bg-[#151515] px-4 pt-2 pb-5 shadow-2xl sm:mx-auto sm:w-[28rem] sm:max-w-full mob-landscape:mr-0 mob-landscape:w-80"
+                  className="absolute inset-x-0 bottom-0 z-40 max-h-[90%] flex flex-col rounded-t-2xl border-t border-white/10 bg-[#151515] shadow-2xl sm:mx-auto sm:w-[28rem] sm:max-w-full mob-landscape:mr-0 mob-landscape:w-80"
                 >
+                  <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-4 pt-2 pb-3">
                   <div aria-hidden className="mx-auto mb-3 h-1 w-10 rounded-full bg-white/20" />
                   <div className="flex items-start justify-between gap-3 mb-3">
-                    <div>
-                      <h3 id="size-sheet-title" className="text-white font-semibold leading-tight">
-                        Elegí producto y medida
-                      </h3>
-                      <p className="text-xs text-gray-400 mt-0.5">Al elegir la medida se agrega a Mi pedido</p>
-                    </div>
+                    <h3 id="size-sheet-title" className="text-white font-semibold leading-tight">
+                      Elegí producto y medida
+                    </h3>
                     <button
                       onClick={() => setSizeSheetOpen(false)}
                       className="p-1.5 -mr-1.5 rounded-full text-gray-400 hover:text-white hover:bg-white/10"
@@ -449,10 +480,38 @@ export default function GalleryModal({
                     </button>
                   </div>
                   <SizeSelectorCompact
-                    onSelect={handleSheetSelect}
+                    onChange={setDraftSize}
                     variant="dark"
                     initialSize={selectedSize ?? lastSelectedSize}
                   />
+                  </div>
+
+                  {/* Pie fijo: precio de lo elegido + agregar (acción explícita) */}
+                  <div className="shrink-0 border-t border-white/10 px-4 pt-3 pb-4 space-y-2">
+                    <p className="text-sm min-h-[1.25rem]" aria-live="polite">
+                      {draftSize ? (
+                        <>
+                          <span className="text-white font-medium">{productShortLabel(draftSize)} · {draftSize.label}</span>
+                          {draftSize.fromPrice ? (
+                            <span className="text-amber-300">
+                              {' · '}{draftSize.isExactPrice ? '' : 'desde '}{formatArs(draftSize.fromPrice)}
+                            </span>
+                          ) : (
+                            <span className="text-gray-400"> · precio a confirmar</span>
+                          )}
+                        </>
+                      ) : (
+                        <span className="text-gray-400">Elegí una medida para ver el precio</span>
+                      )}
+                    </p>
+                    <button
+                      onClick={handleSheetAdd}
+                      disabled={!draftSize}
+                      className="w-full h-12 rounded-xl flex items-center justify-center gap-2 font-semibold transition-all active:scale-[0.98] bg-amber-400 hover:bg-amber-300 text-[#1F1A14] disabled:bg-white/10 disabled:text-gray-500 disabled:cursor-not-allowed"
+                    >
+                      <Plus className="w-5 h-5" /> Agregar a Mi pedido
+                    </button>
+                  </div>
                 </motion.div>
               </>
             )}
