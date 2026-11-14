@@ -72,7 +72,8 @@ selector is not shown while browsing: "Agregar a Mi pedido" is always enabled an
 chosen yet, opens an in-modal sheet; the sheet uses the selector in preview mode (`onChange`) so
 trying sizes never adds anything — only its explicit "Agregar a Mi pedido" button does. Once a size
 is chosen each design is one tap; if the design is already in the cart in that size the button
-becomes a `− N +` stepper plus "Agregar otra medida o formato". The modal and the page share
+becomes a `− N +` stepper (the common case is the same design several times in one size; other
+sizes go through "cambiar"). The modal and the page share
 `CartSummaryButton`. Swiping the image changes design. Funnel events:
 `add_to_cart`/AddToCart → `begin_checkout`/InitiateCheckout → `order_data_submitted`/AddPaymentInfo.
 

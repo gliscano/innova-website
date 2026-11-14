@@ -8,7 +8,7 @@ import { GalleryModalProps } from '../../types/gallery'
 import WhatsAppDropdown from '../WhatsAppDropdown'
 import { useSelectedSize } from '../../context/SelectedSizeContext'
 import { type SelectedSize } from '../../context/SelectedSizeContext'
-import { useCart, cartItemKey, cartSizeLabel, cartProductName, cartProductNote, cartDesignLine, formatArs } from '../../context/CartContext'
+import { useCart, cartItemKey, cartProductName, cartProductNote, cartDesignLine, formatArs } from '../../context/CartContext'
 import CartSummaryButton from '../cart/CartSummaryButton'
 import { SizeSelectorCompact } from '../SizeSelectorCompact'
 import { parseImageDescription } from '@/app/utils/imageDescription'
@@ -48,7 +48,7 @@ export default function GalleryModal({
   const [hasError, setHasError] = useState(false)
   const [showDescription, setShowDescription] = useState(false)
   const { selectedSize, setSelectedSize, lastSelectedSize, setModalOpen } = useSelectedSize()
-  const { items: cartItems, count: cartCount, addItem, removeItem, setQty } = useCart()
+  const { items: cartItems, count: cartCount, addItem, setQty } = useCart()
   const [justAdded, setJustAdded] = useState(false)
   const justAddedTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   // Hoja "Elegí producto y medida": solo aparece cuando la persona quiere agregar, así explorar
@@ -123,8 +123,6 @@ export default function GalleryModal({
     ? `Hola! Tengo una consulta por este diseño:\n${designLines}\nProducto: ${cartProductName(selectedSize)}\nMedida que me interesa: ${selectedSize.label}\nVer imagen: ${currentImage?.url}`
     : `Hola! Tengo una consulta por este diseño:\n${designLines}\nVer imagen: ${currentImage?.url}`
 
-  // Líneas de este diseño que ya están en el pedido (puede estar en varias medidas).
-  const linesForDesign = currentImage ? cartItems.filter(i => i.imageId === currentImage.id) : []
   const currentKey = currentImage && selectedSize ? cartItemKey(currentImage.id, selectedSize) : null
   const qtyInCartForSize = cartItems.find(i => i.key === currentKey)?.qty ?? 0
 
@@ -364,25 +362,6 @@ export default function GalleryModal({
                 </div>
               )}
 
-              {/* Este diseño ya en el pedido (en una o más medidas) */}
-              {linesForDesign.length > 0 && (
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <span className="text-[11px] uppercase tracking-wide text-gray-400 mr-0.5">En tu pedido</span>
-                  {linesForDesign.map(line => (
-                    <span key={line.key} className="inline-flex items-center gap-1 rounded-full bg-white/10 pl-2.5 pr-1 py-0.5 text-xs text-gray-100">
-                      {cartSizeLabel(line.size)}{cartProductNote(line.size) ? ` · ${cartProductNote(line.size)}` : ''} ×{line.qty}
-                      <button
-                        onClick={() => removeItem(line.key)}
-                        className="p-1 rounded-full text-gray-400 hover:text-white hover:bg-white/10"
-                        aria-label={`Quitar ${cartSizeLabel(line.size)} del pedido`}
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              )}
-
               <div className="flex items-stretch gap-2">
                 {selectedSize && currentKey && qtyInCartForSize > 0 ? (
                   /* Ya está en el pedido con esta medida: la cantidad se ajusta acá mismo */
@@ -426,15 +405,6 @@ export default function GalleryModal({
                   iconClassName="brightness-0 invert"
                 />
               </div>
-
-              {qtyInCartForSize > 0 && (
-                <button
-                  onClick={openSizeSheet}
-                  className="w-full flex items-center justify-center gap-1.5 text-sm text-amber-200 hover:text-amber-100 py-1"
-                >
-                  <Plus className="w-4 h-4" /> Agregar otra medida o formato
-                </button>
-              )}
 
               {/* Mismo acceso a Mi pedido que la barra de la página */}
               {cartCount > 0 && <CartSummaryButton className="border border-white/10" />}
